@@ -58,9 +58,7 @@ export class BadgeFacade {
 
   getChanges(): void {
     const access_token = localStorage.getItem("access_token");
-    if (
-      access_token && AppConfig["REWARDS"]
-    ) {
+    if (access_token && AppConfig["REWARDS"]) {
       this.authService.ensureAuthorized().subscribe(
         user => {
           if (user["features"]["id_role"]) {
@@ -73,13 +71,16 @@ export class BadgeFacade {
                 pluck("badges"),
                 tap((badges: Badge[]) => {
                   const changes = this.difference(badges);
-                  this.updateState({
-                    ..._state,
-                    badges: badges,
-                    changes: changes,
-                    loading: false
-                  });
-                  localStorage.setItem("badges", JSON.stringify(badges));
+                  // FIXME: ~~add condition here and rm init counter~~ untested
+                  if (changes && !!changes.length) {
+                    this.updateState({
+                      ..._state,
+                      badges: badges,
+                      changes: changes,
+                      loading: false
+                    });
+                    localStorage.setItem("badges", JSON.stringify(badges));
+                  }
                 }),
                 catchError(error => {
                   console.error(error);
@@ -159,29 +160,27 @@ export class BadgeFacade {
 export class RewardComponent implements IFlowComponent {
   readonly AppConfig = AppConfig;
   private _timeout: any;
-  private _init = 0;
+  // private _init = 0;
   @Input() data: any;
   reward$: Observable<Badge[]>;
 
   constructor(public badges: BadgeFacade) {
-    if (
-      !badges.username || !AppConfig["REWARDS"]
-    ) {
+    if (!badges.username || !AppConfig["REWARDS"]) {
       if (this._timeout) clearTimeout(this._timeout);
       this._timeout = setTimeout(() => this.close("REWARDS_DISABLED"), 0);
     } else {
       this.reward$ = this.badges.changes$.pipe(
         tap(reward => {
-          this._init++;
+          // this._init++;
 
-          const condition = !!reward && !!reward.length;
+          const condition = reward && !!reward.length;
 
-          if (!condition && this._init > 1) {
+          if (!condition /*&& this._init > 1*/) {
             if (this._timeout) clearTimeout(this._timeout);
             this._timeout = setTimeout(() => this.close("NOREWARD"), 0);
           }
         }),
-        filter(reward => reward && !!reward.length && this._init > 1)
+        filter(reward => reward && !!reward.length /*&& this._init > 1*/)
       );
     }
   }
