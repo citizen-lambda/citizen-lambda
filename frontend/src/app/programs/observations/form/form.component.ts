@@ -261,7 +261,8 @@ export class ObsFormComponent implements AfterViewInit {
           this.obsForm.patchValue({ geometry: this.coords });
 
           myMarker = L.marker([this.coords.y, this.coords.x], {
-            icon: obsFormMarkerIcon
+            icon: obsFormMarkerIcon,
+            draggable: true
           }).addTo(formMap);
         }
 
@@ -289,14 +290,13 @@ export class ObsFormComponent implements AfterViewInit {
           // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
           // POSSIBLE SOLUTION: See ray casting algorithm for inspiration at https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (maxBounds.contains([e.latlng.lat, e.latlng.lng])) {
-            if (myMarker) {
-              // TODO: update marker coods inplace.
-              // Implement draggable marker
-              formMap.removeLayer(myMarker);
+            if (!myMarker) {
+              myMarker = L.marker(e.latlng, {
+                icon: obsFormMarkerIcon,
+                draggable: true
+              }).addTo(formMap);
             }
-            myMarker = L.marker(e.latlng, { icon: obsFormMarkerIcon }).addTo(
-              formMap
-            );
+
             this.coords = L.point(e.latlng.lng, e.latlng.lat);
             this.obsForm.patchValue({ geometry: this.coords });
           }

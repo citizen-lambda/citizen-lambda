@@ -355,8 +355,18 @@ export class ObsMapComponent implements OnInit, OnChanges {
           // https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
           if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
             this.newObsMarker = L.marker(e.latlng, {
-              icon: this.options.NEW_OBS_MARKER_ICON()
+              icon: this.options.NEW_OBS_MARKER_ICON(),
+              draggable: true
             }).addTo(this.observationMap);
+            // myMarker.on("dragend", e => {
+            //   const position = myMarker.getLatLng();
+            //   myMarker
+            //   .setLatLng(position, {
+            //     draggable: "true"
+            //   })
+            //   .bindPopup(position)
+            //   .update();
+            // });
           }
           // emit new coordinates
           this.onClick.emit(coords);
