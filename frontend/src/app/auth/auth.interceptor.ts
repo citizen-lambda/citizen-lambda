@@ -13,7 +13,6 @@ import {
   finalize,
   take,
   filter,
-  tap,
   map,
   first
 } from "rxjs/operators";
