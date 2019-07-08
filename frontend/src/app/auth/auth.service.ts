@@ -59,13 +59,14 @@ export class AuthService {
       .pipe(
         map(payload => {
           // fixme: feed back to the ui.
-          console.debug(`[logout] payload "${payload}"`);
+          console.debug(`[logout] payload:`, payload);
           this.router.navigateByUrl("/home");
           this.authorized$.next(false);
           localStorage.removeItem("access_token");
           this.authenticated$.next(false);
           localStorage.removeItem("refresh_token");
           localStorage.removeItem("username");
+          return payload;
         }),
         catchError(error => {
           console.error(`[logout] error "${error}"`);

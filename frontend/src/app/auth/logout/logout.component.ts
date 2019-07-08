@@ -16,7 +16,7 @@ export class LogoutComponent {
       this.auth
         .logout()
         .then(logout => {
-          console.log("LogoutUser Get Status", logout.status);
+          console.log("LogoutUser Get Status", logout.msg);
         })
         .catch(err => {
           console.log(err);
