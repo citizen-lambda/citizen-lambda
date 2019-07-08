@@ -1,7 +1,7 @@
 import { Observable, throwError } from "rxjs";
 import { map, catchError } from "rxjs/operators";
 // angular
-import { Injectable } from "@angular/core";
+import { Injectable, ApplicationRef } from "@angular/core";
 import { Http, Response } from "@angular/http";
 // rxjs
 import { of } from "rxjs";
@@ -17,8 +17,13 @@ const API_URL = AppConfig.API_ENDPOINT;
 })
 export class GncService {
   private readonly URL = AppConfig.API_ENDPOINT;
+  state = 0;
 
-  constructor() {}
+  constructor(private app: ApplicationRef) {}
 
-
+  setState() {
+    this.state = Math.random();
+    // Run change detection
+    this.app.tick();
+  }
 }
