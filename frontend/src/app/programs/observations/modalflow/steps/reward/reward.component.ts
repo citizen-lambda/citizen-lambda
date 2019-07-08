@@ -26,6 +26,28 @@ export interface BadgeState {
   loading: boolean;
 }
 
+const difference = (state: BadgeState) =>
+  map((badges: Badge[]) => {
+    const oldBadges: Badge[] = state.badges;
+
+    if (!oldBadges || (oldBadges.length === 0 && badges && !!badges.length)) {
+      return { badges, changes: [] };
+    }
+
+    if (!badges || (badges && badges.length === 0)) {
+      return { badges: [], changes: [] };
+    }
+
+    function badgeListComparer(otherArray) {
+      return current =>
+        otherArray.filter(other => other.alt == current.alt).length == 0;
+    }
+
+    const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
+
+    return { badges, changes: onlyInNewState };
+  });
+
 let _state: BadgeState = {
   badges: JSON.parse(localStorage.getItem("badges")) || [],
   changes: [],
@@ -69,9 +91,10 @@ export class BadgeFacade {
               )
               .pipe(
                 pluck("badges"),
-                tap((badges: Badge[]) => {
-                  const changes = this.difference(badges);
-                  // FIXME: ~~add condition here and rm init counter~~ untested
+                // FIXME: untested
+                difference(_state),
+                tap(x => {
+                  const { badges, changes } = x;
                   if (changes && !!changes.length) {
                     this.updateState({
                       ..._state,
@@ -105,26 +128,6 @@ export class BadgeFacade {
     return this.role_id;
   }
 
-  difference(badges: Badge[]): Badge[] {
-    const oldBadges: Badge[] = _state.badges;
-
-    if (!oldBadges || (oldBadges.length === 0 && badges && !!badges.length)) {
-      return badges;
-    }
-
-    if (!badges || (badges && badges.length === 0)) {
-      return [];
-    }
-
-    function badgeListComparer(otherArray) {
-      return current =>
-        otherArray.filter(other => other.alt == current.alt).length == 0;
-    }
-
-    const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
-
-    return onlyInNewState;
-  }
 
   private updateState(state: BadgeState) {
     this.store.next((_state = state));
