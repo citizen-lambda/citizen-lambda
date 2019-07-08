@@ -106,7 +106,7 @@ section {
 
 #slider .carousel-text > p {
   font-style: italic;
-  font-size: 14px;
+  font-size: 1em;
   overflow: hidden;
   max-height: 20%;
 }
