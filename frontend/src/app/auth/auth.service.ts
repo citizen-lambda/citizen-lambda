@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, throwError } from "rxjs";
 import { share, map, catchError } from "rxjs/operators";
 
 import { AppConfig } from "../../conf/app.config";
@@ -54,17 +54,22 @@ export class AuthService {
 
   logout(): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/logout`;
-    this.authorized$.next(false);
     return this.http
       .post<LogoutPayload>(url, { headers: this.headers })
       .pipe(
+        map(payload => {
+          // fixme: feed back to the ui.
+          console.debug(`[logout] payload "${payload}"`);
+          this.router.navigateByUrl("/home");
+          this.authorized$.next(false);
+          localStorage.removeItem("access_token");
+          this.authenticated$.next(false);
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("username");
+        }),
         catchError(error => {
           console.error(`[logout] error "${error}"`);
-          localStorage.removeItem("access_token");
-          // localStorage.removeItem("refresh_token");
-          this.authenticated$.next(false);
-          // localStorage.removeItem("username");
-          return this.router.navigateByUrl("/home");
+          return throwError(error);
         })
       )
       .toPromise();
@@ -82,7 +87,7 @@ export class AuthService {
       "Authorization",
       `Bearer ${refresh_token}`
     );
-    return this.http.post<TokenRefresh>(url, null, {
+    return this.http.post<TokenRefresh>(url, "", {
       headers: headers
     });
   }

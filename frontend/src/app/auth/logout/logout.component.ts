@@ -1,6 +1,5 @@
 import { AuthService } from "./../auth.service";
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -9,11 +8,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ["./logout.component.css"]
 })
 export class LogoutComponent {
-  constructor(
-    private auth: AuthService,
-    private router: Router,
-    public activeModal: NgbActiveModal
-  ) {}
+  constructor(private auth: AuthService, public activeModal: NgbActiveModal) {}
 
   onLogout(): void {
     const access_token = localStorage.getItem("access_token");
@@ -26,10 +21,6 @@ export class LogoutComponent {
         .catch(err => {
           console.log(err);
         });
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("username");
-      this.router.navigate(["/"]);
       this.activeModal.close();
     }
   }
