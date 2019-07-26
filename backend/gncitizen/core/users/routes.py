@@ -40,7 +40,7 @@ def registration():
     ---
     tags:
       - Authentication
-    summary: Creates a new observation
+    summary: register user
     consumes:
       - application/json
     produces:
