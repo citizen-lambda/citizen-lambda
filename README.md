@@ -3,7 +3,7 @@
 
 Portail d'inventaire participatif de la biodiversité à destination du grand public
 
-[Screenshot](https://user-images.githubusercontent.com/11497003/61943639-2d394e00-af9c-11e9-94e1-de71753998e1.png)
+![Screenshot](https://user-images.githubusercontent.com/11497003/61943639-2d394e00-af9c-11e9-94e1-de71753998e1.png)
 
 Les développements de cette première version sur dans la branche [dev](https://github.com/PnX-SI/GeoNature-citizen/tree/dev).
 
