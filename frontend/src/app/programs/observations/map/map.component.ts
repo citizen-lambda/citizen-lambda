@@ -22,7 +22,6 @@ import "leaflet-gesture-handling";
 
 // import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
-import { MarkerClusterGroup } from "leaflet";
 
 const conf = {
   MAP_ID: "obsMap",
@@ -123,15 +122,16 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
   options: any;
   observationMap: L.Map;
+  programArea: L.GeoJSON;
   programMaxBounds: L.LatLngBounds;
-  observationLayer: MarkerClusterGroup;
+  observationLayer: L.MarkerClusterGroup;
   newObsMarker: L.Marker;
   markers: {
     feature: Feature;
     marker: L.Marker<any>;
   }[] = [];
-  obsPopup: Feature;
-  openPopupAfterClose: boolean;
+  obsOnFocus: Feature;
+  shouldOpenAnotherPopup: boolean;
   zoomAlertTimeout: any;
 
   constructor(
@@ -208,16 +208,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.observationMap);
 
-    // this.observationMap.scrollWheelZoom.disable();
-    this.observationMap.on("popupclose", _e => {
-      if (this.openPopupAfterClose && this.obsPopup) {
-        this.showPopup(this.obsPopup);
-      } else {
-        this.obsPopup = null;
-      }
-      this.openPopupAfterClose = false;
-    });
-
     const ZoomViewer = L.Control.extend({
       onAdd: () => {
         let container = L.DomUtil.create("div");
@@ -239,6 +229,17 @@ export class ObsMapComponent implements OnInit, OnChanges {
     let zv = new ZoomViewer();
     zv.addTo(this.observationMap);
     zv.setPosition("bottomright");
+
+    this.observationMap.on("popupclose", event => this.onPopupClose(event));
+  }
+
+  onPopupClose(_event: L.LeafletEvent) {
+    if (this.shouldOpenAnotherPopup && this.obsOnFocus) {
+      this.showPopup(this.obsOnFocus);
+    } else {
+      this.obsOnFocus = null;
+    }
+    this.shouldOpenAnotherPopup = false;
   }
 
   getPopupContent(feature): any {
@@ -258,14 +259,9 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.observationLayer = this.options.OBSERVATION_LAYER();
       this.markers = [];
 
-      const layerOptions = {
+      const observationLayerOptions: L.GeoJSONOptions = {
         onEachFeature: (feature, layer) => {
           let popupContent = this.getPopupContent(feature);
-
-          // if (feature.properties && feature.properties.popupContent) {
-          //   popupContent += feature.properties.popupContent;
-          // }
-
           layer.bindPopup(popupContent);
         },
         pointToLayer: (_feature, latlng): L.Marker => {
@@ -281,13 +277,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
       };
 
       this.observationLayer.addLayer(
-        L.geoJSON(this.observations, layerOptions)
+        L.geoJSON(this.observations, observationLayerOptions)
       );
       this.observationMap.addLayer(this.observationLayer);
 
       this.observationLayer.on("animationend", _e => {
-        if (this.obsPopup) {
-          this.openPopupAfterClose = true;
+        if (this.obsOnFocus) {
+          this.shouldOpenAnotherPopup = true;
           this.observationMap.closePopup();
         }
       });
@@ -295,13 +291,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   showPopup(obs: Feature): void {
-    this.obsPopup = obs;
-    let marker = this.markers.find(marker => {
-      return (
+    this.obsOnFocus = obs;
+    let marker = this.markers.find(
+      marker =>
         marker.feature.properties.id_observation ==
         obs.properties.id_observation
-      );
-    });
+    );
     let visibleParent: L.Marker = this.observationLayer.getVisibleParent(
       marker.marker
     );
@@ -309,7 +304,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.observationMap.panTo(marker.marker.getLatLng());
       visibleParent = marker.marker;
     }
-    const popup = L.popup()
+    L.popup()
       .setLatLng(visibleParent.getLatLng())
       .setContent(this.getPopupContent(obs))
       .openOn(this.observationMap);
@@ -317,66 +312,67 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   loadProgramArea(canSubmit = true): void {
     if (this.program) {
-      const programArea = L.geoJSON(this.program, {
+      if (this.programArea) {
+        this.observationMap.removeLayer(this.programArea);
+      }
+      this.programArea = L.geoJSON(this.program, {
         style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
       }).addTo(this.observationMap);
-      const programBounds = programArea.getBounds();
+
+      const programBounds = this.programArea.getBounds();
       this.observationMap.fitBounds(programBounds);
       // this.observationMap.setMaxBounds(programBounds)
-
       this.newObsMarker = null;
-      if (canSubmit) {
-        this.observationMap.on("click", (e: L.LeafletMouseEvent) => {
-          let coords = L.point(e.latlng.lng, e.latlng.lat);
-          if (this.newObsMarker !== null) {
-            this.observationMap.removeLayer(this.newObsMarker);
-          }
-          let z = this.observationMap.getZoom();
 
-          if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
-            // this.hasZoomAlert = true;
-            L.DomUtil.addClass(
-              this.observationMap.getContainer(),
-              "observation-zoom-statement-warning"
-            );
-            if (this.zoomAlertTimeout) {
-              clearTimeout(this.zoomAlertTimeout);
-            }
-            this.zoomAlertTimeout = setTimeout(() => {
-              L.DomUtil.removeClass(
-                this.observationMap.getContainer(),
-                "observation-zoom-statement-warning"
-              );
-            }, 2000);
-            return;
-          }
-          // PROBLEM: if program area is a concave polygon: one can still put a marker in the cavities.
-          // POSSIBLE SOLUTION: See ray casting algorithm for inspiration
-          // https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
-          if (programBounds.contains([e.latlng.lat, e.latlng.lng])) {
-            this.newObsMarker = L.marker(e.latlng, {
-              icon: this.options.NEW_OBS_MARKER_ICON(),
-              draggable: true
-            }).addTo(this.observationMap);
-            // myMarker.on("dragend", e => {
-            //   const position = myMarker.getLatLng();
-            //   myMarker
-            //   .setLatLng(position, {
-            //     draggable: "true"
-            //   })
-            //   .bindPopup(position)
-            //   .update();
-            // });
-          }
-          // emit new coordinates
-          this.onClick.emit(coords);
-        });
+      if (canSubmit) {
+        this.programArea.on("click", (e: L.LeafletMouseEvent) =>
+          this.onMarkerDrop(e)
+        );
       }
       this.programMaxBounds = programBounds;
     }
   }
 
-  canStart(): void {}
+  onMarkerDrop(event: L.LeafletMouseEvent) {
+    let coords = L.point(event.latlng.lng, event.latlng.lat);
+
+    if (this.newObsMarker !== null) {
+      this.observationMap.removeLayer(this.newObsMarker);
+    }
+
+    if (!this.checkMinZoomLevel()) {
+      return;
+    }
+
+    this.newObsMarker = L.marker(event.latlng, {
+      icon: this.options.NEW_OBS_MARKER_ICON(),
+      draggable: true
+    }).addTo(this.observationMap);
+
+    this.onClick.emit(coords);
+  }
+
+  checkMinZoomLevel(): boolean {
+    let z = this.observationMap.getZoom();
+
+    if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+      L.DomUtil.addClass(
+        this.observationMap.getContainer(),
+        "observation-zoom-statement-warning"
+      );
+      if (this.zoomAlertTimeout) {
+        clearTimeout(this.zoomAlertTimeout);
+      }
+      this.zoomAlertTimeout = setTimeout(() => {
+        L.DomUtil.removeClass(
+          this.observationMap.getContainer(),
+          "observation-zoom-statement-warning"
+        );
+      }, 2000);
+      return false;
+    }
+    return true;
+  }
 
   @HostListener("document:NewObservationEvent", ["$event"])
   newObservationEventHandler(e: CustomEvent) {
