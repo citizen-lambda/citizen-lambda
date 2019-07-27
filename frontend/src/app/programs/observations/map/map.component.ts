@@ -218,7 +218,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         container.style.width = "200px";
         container.style.background = "rgba(255,255,255,0.5)";
         container.style.textAlign = "left";
-        container.className = "mb-0";
+        container.className = "leaflet-control-zoomviewer mb-0";
         this.observationMap.on(
           "zoomstart zoom zoomend",
           _e =>
