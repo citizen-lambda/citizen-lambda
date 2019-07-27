@@ -7,7 +7,7 @@ popup {
 }
 
 #obsMap {
-  height: calc(100vh - var(--router-outlet-offset) - 25px);
+  height: calc(100vh - var(--router-outlet-offset) - 52px);
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
