@@ -129,10 +129,6 @@ section {
   line-height: 22px;
 }
 
-app-observations {
-  min-width: 100%;
-}
-
 /* OBSERVATION / MAP */
 
 app-observations {
@@ -164,7 +160,9 @@ section .observations {
 .observations {
   margin: 0px;
   min-height: inherit;
-  height: calc(100vh - 137px);
+  /* FIXME: account for 30px footer presence */
+  /* height: calc(100vh - var(--router-outlet-offset)); */
+  height: calc(100vh - var(--router-outlet-offset) - 30px);
   overflow: hidden;
 }
 

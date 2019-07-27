@@ -7,7 +7,8 @@ popup {
 }
 
 #obsMap {
-  height: calc(100vh - var(--router-outlet-offset) - 52px);
+  /* FIXME: account for additional 30px offset footer presence */
+  height: calc(100vh - var(--router-outlet-offset) - 30px - 30px);
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
@@ -51,6 +52,10 @@ a.leaflet-control-layers-toggle {
   /* Should inherit leaflet-bar sizes */
   width: 30px !important;
   height: 30px !important;
+}
+
+.leaflet-bottom.leaflet-right {
+  display: inline-flex;
 }
 
 @media screen and (max-width: 991px) {
