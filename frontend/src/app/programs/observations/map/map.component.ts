@@ -19,6 +19,7 @@ import * as L from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
 import "leaflet-gesture-handling";
+import "leaflet.heat";
 
 // import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
@@ -125,6 +126,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   programArea: L.GeoJSON;
   programMaxBounds: L.LatLngBounds;
   observationLayer: L.MarkerClusterGroup;
+  heatLayer: L.HeatLayer;
   newObsMarker: L.Marker;
   markers: {
     feature: Feature;
@@ -288,6 +290,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
         }
       });
     }
+
+    if (this.heatLayer) {
+      this.observationMap.removeLayer(this.heatLayer);
+    }
+    this.heatLayer = L.heatLayer(
+      this.markers.map(item => item.marker.getLatLng()),
+      { minOpacity: 0.5 }
+    ).addTo(this.observationMap);
   }
 
   showPopup(obs: Feature): void {
@@ -311,6 +321,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   loadProgramArea(canSubmit = true): void {
+    if (this.newObsMarker) {
+      this.observationMap.removeLayer(this.newObsMarker);
+    }
+
     if (this.program) {
       if (this.programArea) {
         this.observationMap.removeLayer(this.programArea);
