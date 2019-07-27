@@ -59,9 +59,7 @@ export class AuthInterceptor implements HttpInterceptor {
           if (data && !!data.access_token) {
             localStorage.setItem("access_token", data.access_token);
             this.token$.next(data.access_token);
-            // Fixme:
             const clone = this.addToken(request, data.access_token);
-            console.debug(clone);
             return next.handle(clone);
           }
           this.router.navigate(["/home"]);
