@@ -135,6 +135,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   obsOnFocus: Feature;
   shouldOpenAnotherPopup: boolean;
   zoomAlertTimeout: any;
+  layerControl: L.Control.Layers;
 
   constructor(
     private resolver: ComponentFactoryResolver,
@@ -192,7 +193,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       .scale({ position: this.options.SCALE_CONTROL_POSITION })
       .addTo(this.observationMap);
 
-    L.control
+    this.layerControl = L.control
       .layers(this.options.BASE_LAYERS, null, {
         collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
         position: this.options.BASE_LAYER_CONTROL_POSITION
@@ -293,11 +294,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
     if (this.heatLayer) {
       this.observationMap.removeLayer(this.heatLayer);
+      this.layerControl.removeLayer(this.heatLayer);
     }
     this.heatLayer = L.heatLayer(
       this.markers.map(item => item.marker.getLatLng()),
       { minOpacity: 0.5 }
     ).addTo(this.observationMap);
+    this.layerControl.addOverlay(this.heatLayer, "heatmap");
   }
 
   showPopup(obs: Feature): void {
