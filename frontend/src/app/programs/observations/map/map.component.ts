@@ -257,6 +257,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   loadObservations(): void {
     if (this.observations) {
       if (this.observationLayer) {
+        this.layerControl.removeLayer(this.heatLayer);
         this.observationMap.removeLayer(this.observationLayer);
       }
       this.observationLayer = this.options.OBSERVATION_LAYER();
@@ -283,13 +284,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
         L.geoJSON(this.observations, observationLayerOptions)
       );
       this.observationMap.addLayer(this.observationLayer);
-
       this.observationLayer.on("animationend", _e => {
         if (this.obsOnFocus) {
           this.shouldOpenAnotherPopup = true;
           this.observationMap.closePopup();
         }
       });
+      this.layerControl.addOverlay(this.observationLayer, "points");
     }
 
     if (this.heatLayer) {
