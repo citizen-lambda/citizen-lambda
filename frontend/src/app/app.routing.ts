@@ -56,5 +56,5 @@ export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {
   // enableTracing: true,
   scrollPositionRestoration: "enabled",
   anchorScrolling: "enabled",
-  scrollOffset: [0, 113] // TODO: source from conf: router-outlet height
+  scrollOffset: [0, 65] // TODO: source from conf: router-outlet height
 });

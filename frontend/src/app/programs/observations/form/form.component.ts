@@ -165,9 +165,7 @@ export class ObsFormComponent implements AfterViewInit {
           this.species.push({
             name:
               field === "cd_nom"
-                ? `${this.taxa[taxon]["taxref"]["cd_nom"]} - ${
-                    this.taxa[taxon]["taxref"]["nom_complet"]
-                  }`
+                ? `${this.taxa[taxon]["taxref"]["cd_nom"]} - ${this.taxa[taxon]["taxref"]["nom_complet"]}`
                 : this.taxa[taxon]["taxref"][field],
             cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
             icon:
@@ -232,7 +230,7 @@ export class ObsFormComponent implements AfterViewInit {
             container.style.width = "200px";
             container.style.background = "rgba(255,255,255,0.5)";
             container.style.textAlign = "left";
-            container.className = "mb-0";
+            container.className = "leaflet-control-zoomviewer mb-0";
             formMap.on("zoomstart zoom zoomend", function(_e) {
               gauge.innerHTML = "Zoom level: " + formMap.getZoom();
             });

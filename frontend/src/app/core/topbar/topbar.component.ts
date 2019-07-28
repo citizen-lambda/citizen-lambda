@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { Observable, Subject, throwError } from "rxjs";
 import { tap, map, catchError } from "rxjs/operators";
 
@@ -21,7 +21,6 @@ import { ActivatedRoute } from "@angular/router";
 })
 export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
-  // isLoggedIn: boolean = false;
   username: any;
   modalRef: NgbModalRef;
   programs$ = new Subject<Program[]>();
@@ -41,7 +40,6 @@ export class TopbarComponent implements OnInit {
           if (data && data.programs) {
             this.programs$.next(data.programs);
           } else {
-            // console.warn("topbar::getAllPrograms");
             this.programService.getAllPrograms().subscribe(programs => {
               this.programs$.next(programs);
             });
@@ -122,5 +120,33 @@ export class TopbarComponent implements OnInit {
 
   close(d) {
     this.modalRef.close(d);
+  }
+
+  @HostListener("window:scroll", ["$event"])
+  scrollHandler(_event) {
+    const tallSize = getComputedStyle(document.documentElement)
+      .getPropertyValue("--tall-topbar-size")
+      .trim();
+    const narrowSize = getComputedStyle(document.documentElement)
+      .getPropertyValue("--narrow-topbar-size")
+      .trim();
+    const offset = getComputedStyle(document.documentElement)
+      .getPropertyValue("--router-outlet-margin-top")
+      .trim();
+
+    if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+      const barsize = parseInt(offset) - document.documentElement.scrollTop;
+      const minSize = parseInt(narrowSize);
+      const maxSize = parseInt(tallSize);
+      document.documentElement.style.setProperty(
+        "--router-outlet-offset",
+        Math.min(Math.max(barsize, minSize), maxSize) + "px"
+      );
+    } else {
+      document.documentElement.style.setProperty(
+        "--router-outlet-offset",
+        "var(--router-outlet-margin-top)"
+      );
+    }
   }
 }

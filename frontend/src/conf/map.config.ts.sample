@@ -88,6 +88,14 @@ export const MAP_CONFIG = {
       subdomains: "abcd",
       minZoom: 0,
       maxZoom: 20
+    },
+    {
+      name: "MapboxDark",
+      layer:
+        "https://api.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoicGF0a2FwIiwiYSI6ImNqeHpvNWV1MDA0bmozbHBobmhjbWsxODQifQ.jgXkucvmL5kgacz3LwQ4UA",
+      attribution:
+        '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a>, © <a href="http://www.openstreetmap.org/about/">OpenStreetMap</a> <a href="https://apps.mapbox.com/feedback/?owner=mapbox&id=dark-v9&access_token=tk.eyJ1IjoicGF0a2FwIiwiZXhwIjoxNTY0MzA1NDY3LCJpYXQiOjE1NjQzMDE4NjYsInNjb3BlcyI6WyJlc3NlbnRpYWxzIiwic2NvcGVzOmxpc3QiLCJtYXA6cmVhZCIsIm1hcDp3cml0ZSIsInVzZXI6cmVhZCIsInVzZXI6d3JpdGUiLCJ1cGxvYWRzOnJlYWQiLCJ1cGxvYWRzOmxpc3QiLCJ1cGxvYWRzOndyaXRlIiwic3R5bGVzOnRpbGVzIiwic3R5bGVzOnJlYWQiLCJmb250czpyZWFkIiwic3R5bGVzOndyaXRlIiwic3R5bGVzOmxpc3QiLCJ0b2tlbnM6cmVhZCIsInRva2Vuczp3cml0ZSIsImRhdGFzZXRzOmxpc3QiLCJkYXRhc2V0czpyZWFkIiwiZGF0YXNldHM6d3JpdGUiLCJ0aWxlc2V0czpsaXN0IiwidGlsZXNldHM6cmVhZCIsInRpbGVzZXRzOndyaXRlIiwidmlzaW9uOnJlYWQiLCJ2aXNpb246ZG93bmxvYWQiLCJzdHlsZXM6ZHJhZnQiLCJmb250czpsaXN0IiwiZm9udHM6d3JpdGUiLCJmb250czptZXRhZGF0YSIsImRhdGFzZXRzOnN0dWRpbyIsImN1c3RvbWVyczp3cml0ZSIsImNyZWRlbnRpYWxzOnJlYWQiLCJjcmVkZW50aWFsczp3cml0ZSIsImFuYWx5dGljczpyZWFkIl0sImNsaWVudCI6Im1hcGJveC5jb20iLCJsbCI6MTU2MjkwOTgxODQ5NywiaXUiOm51bGx9.dH6SfocJrPvaDVGgIGBKNw">Improve this map</a>',
+      maxZoom: 30
     }
   ],
    CENTER: [46.52863469527167, 2.43896484375],

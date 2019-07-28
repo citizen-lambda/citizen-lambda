@@ -1,17 +1,22 @@
 import {
   Component,
   OnInit,
+  AfterViewInit,
   ViewEncapsulation,
-  AfterViewChecked,
   Inject,
   LOCALE_ID
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Meta, SafeHtml, DomSanitizer } from "@angular/platform-browser";
+import { Observable } from "rxjs";
+import { take, map } from "rxjs/operators";
 
+import { IAppConfig } from "../core/models";
 import { AppConfig } from "../../conf/app.config";
 import { ProgramsResolve } from "../programs/programs-resolve.service";
 import { Program } from "../programs/programs.models";
+
+type AppConfigHome = Pick<IAppConfig, "platform_intro" | "platform_teaser">;
 
 @Component({
   selector: "app-home",
@@ -20,12 +25,12 @@ import { Program } from "../programs/programs.models";
   encapsulation: ViewEncapsulation.None,
   providers: [ProgramsResolve]
 })
-export class HomeComponent implements OnInit, AfterViewChecked {
+export class HomeComponent implements OnInit, AfterViewInit {
   programs: Program[];
-  fragment: string;
+  fragment$: Observable<string>;
   platform_teaser: SafeHtml;
   platform_intro: SafeHtml;
-  AppConfig = AppConfig;
+  readonly AppConfig: AppConfigHome = AppConfig;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -38,14 +43,13 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     this.route.data.subscribe((data: { programs: Program[] }) => {
       this.programs = data.programs;
     });
-    this.route.fragment.subscribe(fragment => {
-      this.fragment = fragment;
-    });
+
+    this.fragment$ = this.route.fragment.pipe(map(fragment => fragment || ""));
 
     this.meta.updateTag({
       name: "description",
       content:
-        "GeoNature-citizen est une application de crowdsourcing des données sur la biodiversité."
+        "GeoNature-citizen est une application de sciences participatives à la biodiversité."
     });
     this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
       AppConfig["platform_intro"][this.localeId]
@@ -55,15 +59,17 @@ export class HomeComponent implements OnInit, AfterViewChecked {
     );
   }
 
-  ngAfterViewChecked(): void {
-    try {
-      if (this.fragment) {
-        document.querySelector("#" + this.fragment).scrollIntoView({
-          behavior: "smooth"
-        });
-      }
-    } catch (e) {
-      alert(e);
+  jumpTo(fragment) {
+    const anchor = document.getElementById(fragment);
+    if (!!anchor) {
+      window.scrollTo({
+        top: anchor.getBoundingClientRect().top + window.pageYOffset - 65,
+        behavior: "smooth"
+      });
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.fragment$.pipe(take(1)).subscribe(fragment => this.jumpTo(fragment));
   }
 }

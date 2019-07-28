@@ -31,7 +31,7 @@ const conf = {
     acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
       name: baseLayer["name"],
       attribution: baseLayer["attribution"],
-      subdomains: baseLayer["subdomains"],
+      subdomains: baseLayer["subdomains"] || "",
       detectRetina: baseLayer["detectRetina"],
       maxZoom: baseLayer["maxZoom"],
       bounds: baseLayer["bounds"]
@@ -53,8 +53,10 @@ const conf = {
   ZOOM_CONTROL_POSITION: "topright",
   BASE_LAYER_CONTROL_POSITION: "topright",
   BASE_LAYER_CONTROL_INIT_COLLAPSED: true,
+  FULLSCREEN_CONTROL_POSITION: "topright",
   GEOLOCATION_CONTROL_POSITION: "topright",
   SCALE_CONTROL_POSITION: "bottomleft",
+  ZOOMVIEW_CONTROL_POSITION: "bottomleft",
   NEW_OBS_MARKER_ICON: () =>
     L.icon({
       iconUrl: "assets/pointer-blue2.png",
@@ -189,16 +191,20 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.options.ZOOM_CONTROL_POSITION
     );
 
-    L.control
-      .scale({ position: this.options.SCALE_CONTROL_POSITION })
-      .addTo(this.observationMap);
-
     this.layerControl = L.control
       .layers(this.options.BASE_LAYERS, null, {
         collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
         position: this.options.BASE_LAYER_CONTROL_POSITION
       })
       .addTo(this.observationMap);
+
+    L.control["fullscreen"]({
+      position: this.options.FULLSCREEN_CONTROL_POSITION,
+      title: {
+        false: "View Fullscreen",
+        true: "Exit Fullscreen"
+      }
+    }).addTo(this.observationMap);
 
     L.control
       .locate({
@@ -211,18 +217,21 @@ export class ObsMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.observationMap);
 
+    L.control
+      .scale({ position: this.options.SCALE_CONTROL_POSITION })
+      .addTo(this.observationMap);
+
     const ZoomViewer = L.Control.extend({
       onAdd: () => {
         const container = L.DomUtil.create("div");
         const gauge = L.DomUtil.create("div");
-        container.style.width = "200px";
+        container.style.padding = "0 .4em";
         container.style.background = "rgba(255,255,255,0.5)";
-        container.style.textAlign = "left";
-        container.className = "leaflet-control-zoomviewer mb-0";
+        container.style.textAlign = "center";
+        container.className = "leaflet-control-zoomviewer";
         this.observationMap.on(
           "zoomstart zoom zoomend",
-          _e =>
-            (gauge.innerHTML = "Zoom level: " + this.observationMap.getZoom())
+          _e => (gauge.innerHTML = "Zoom: " + this.observationMap.getZoom())
         );
         container.appendChild(gauge);
 
@@ -231,14 +240,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
     });
     const zv = new ZoomViewer();
     zv.addTo(this.observationMap);
-    zv.setPosition("bottomright");
+    zv.setPosition(this.options.ZOOMVIEW_CONTROL_POSITION);
 
     this.observationMap.on("popupclose", event => this.onPopupClose(event));
   }
 
-  onPopupClose(_event: L.LeafletEvent) {
+  onPopupClose(event: L.LeafletEvent) {
     if (this.shouldOpenAnotherPopup && this.obsOnFocus) {
-      this.showPopup(this.obsOnFocus);
+      this.showPopup(this.obsOnFocus, event);
     } else {
       this.obsOnFocus = null;
     }
@@ -304,7 +313,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     this.layerControl.addOverlay(this.heatLayer, "heatmap");
   }
 
-  showPopup(obs: Feature): void {
+  showPopup(obs: Feature, event: L.LeafletEvent): void {
     this.obsOnFocus = obs;
     let marker = this.markers.find(
       marker =>
@@ -315,6 +324,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
       marker.marker
     );
     if (!visibleParent) {
+      console.debug(event);
+      // this.observationMap.flyToBounds(
+      //   event.propagatedFrom.getBounds().pad(0.001)
+      // );
       this.observationMap.panTo(marker.marker.getLatLng());
       visibleParent = marker.marker;
     }

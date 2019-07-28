@@ -2,11 +2,21 @@
   <section id="welcome">
     <h1 [innerHTML]="platform_intro"></h1>
     <p [innerHTML]="platform_teaser"></p>
-    <a [routerLink]="['/home']" fragment="programs" class="scroll">
+    <a
+      [routerLink]="['/home']"
+      fragment="programs"
+      class="scroll"
+      (click)="jumpTo('programs')"
+    >
       <span i18n="Scrollez pour en voir plus !"
         >Scrollez pour en voir plus !</span
       >
-      <img class="d-block" src="assets/scroll.svg" alt="scroll to #programs" />
+      <img
+        class="d-block"
+        src="assets/scroll.svg"
+        i18n-alt
+        alt="Scrollez pour en voir plus !"
+      />
     </a>
   </section>
 </div>

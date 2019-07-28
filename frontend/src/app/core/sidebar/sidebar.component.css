@@ -1,5 +1,5 @@
 .sidebar {
-  margin-top: 60px;
+  margin-top: var(--router-outlet-offset);
   height: 100%;
   width: 60px;
   position: fixed;
@@ -16,12 +16,10 @@
 .sidebar-top-content {
 }
 
-
 .sidebar-bottom-content {
   position: fixed;
   bottom: 0;
   width: 60px;
-
 }
 
 .sidebar a {
@@ -40,11 +38,10 @@
   background-color: #42b983;
 }
 
-.sidebar .active-link{
+.sidebar .active-link {
   color: #fefefe;
   background-color: #007bff;
 }
-
 
 @media screen and (max-height: 450px) {
   .sidebar {

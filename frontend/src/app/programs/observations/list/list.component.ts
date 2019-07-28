@@ -62,7 +62,7 @@ export class ObsListComponent implements OnChanges {
           return municipality.name && municipality.code;
         })
         .filter((v, _i, a) => {
-          let exists = a.find(exist => {
+          const exists = a.find(exist => {
             return exist.code == v.code;
           });
           return !exists || a.indexOf(exists) == a.indexOf(v);

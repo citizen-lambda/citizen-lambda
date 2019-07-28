@@ -31,7 +31,7 @@ section {
   background: url(/assets/background.jpg) no-repeat;
   background-size: cover;
   position: relative;
-  height: calc(100vh - 113px);
+  height: calc(100vh - var(--router-outlet-offset) - 80px);
 }
 
 #welcome:before {

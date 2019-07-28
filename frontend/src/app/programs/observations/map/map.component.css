@@ -7,8 +7,8 @@ popup {
 }
 
 #obsMap {
-  /* FIXME: account for additional 30px offset footer presence */
-  height: calc(100vh - var(--router-outlet-offset) - 30px - 30px);
+  /* FIXME: account for 30px offset footer presence */
+  height: calc(100vh - var(--router-outlet-offset) - 30px);
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }
@@ -54,8 +54,20 @@ a.leaflet-control-layers-toggle {
   height: 30px !important;
 }
 
+.leaflet-bottom.leaflet-left,
 .leaflet-bottom.leaflet-right {
-  display: inline-flex;
+  margin-bottom: 0;
+}
+
+.leaflet-bottom .leaflet-control-zoomviewer,
+.leaflet-bottom .leaflet-control-scale {
+  margin-bottom: 0;
+  margin-left: 0;
+  max-height: fit-content;
+}
+
+.leaflet-bottom .leaflet-control-zoomviewer {
+  transform: translateY(-50%);
 }
 
 @media screen and (max-width: 991px) {
