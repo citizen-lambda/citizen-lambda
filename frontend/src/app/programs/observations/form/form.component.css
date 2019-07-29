@@ -1,3 +1,7 @@
+.autocomplete-thumbs {
+  height: 3em;
+}
+
 app-obs-form .form-group .input-group {
   flex-direction: row;
 }

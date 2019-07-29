@@ -169,10 +169,9 @@ export class ObsFormComponent implements AfterViewInit {
                 ? `${this.taxa[taxon]["taxref"]["cd_nom"]} - ${this.taxa[taxon]["taxref"]["nom_complet"]}`
                 : this.taxa[taxon]["taxref"][field],
             cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
-            icon:
-              this.taxa[taxon]["medias"].length >= 1
-                ? this.taxa[taxon]["medias"][0]["url"]
-                : "assets/Azure-Commun-019.JPG"
+            icon: !!this.taxa[taxon]["medias"]
+              ? this.taxa[taxon]["medias"]["url"]
+              : "assets/Azure-Commun-019.JPG"
           });
         }
       }

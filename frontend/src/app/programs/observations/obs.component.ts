@@ -8,16 +8,15 @@ import {
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { forkJoin, combineLatest } from "rxjs";
-import { map, mergeMap, switchMap, flatMap } from "rxjs/operators";
+import { map, flatMap } from "rxjs/operators";
 
-import { FeatureCollection, Feature } from "geojson";
+import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 
 import { AppConfig } from "../../../conf/app.config";
 import { IAppConfig, AnchorNavigation } from "src/app/core/models";
 import { Program } from "../programs.models";
 import { ProgramsResolve } from "../../programs/programs-resolve.service";
-
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";

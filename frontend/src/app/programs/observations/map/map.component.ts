@@ -43,18 +43,15 @@ const conf = {
     {}
   ),
   DEFAULT_BASE_MAP: () => {
-    // Get a random base map to test
-    /*
-    return conf.BASE_LAYERS[
-      Object.keys(conf.BASE_LAYERS)[
-        (Math.random() * MAP_CONFIG["BASEMAP"].length) >> 0
-      ]
-    ];
-    */
-    // alert(MAP_CONFIG["DEFAULT_PROVIDER"]);
-    return (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[
-      MAP_CONFIG["DEFAULT_PROVIDER"]
-    ];
+    return !!MAP_CONFIG["DEFAULT_PROVIDER"]
+      ? (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[
+          MAP_CONFIG["DEFAULT_PROVIDER"]
+        ]
+      : (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[
+          Object.keys(conf.BASE_LAYERS)[
+            (Math.random() * MAP_CONFIG["BASEMAPS"].length) >> 0
+          ]
+        ];
   },
   ZOOM_CONTROL_POSITION: "topright",
   BASE_LAYER_CONTROL_POSITION: "topright",
@@ -272,17 +269,17 @@ export class ObsMapComponent implements OnInit, OnChanges {
       );
       this.observationMap.addLayer(this.observationLayer);
       this.layerControl.addOverlay(this.observationLayer, "points");
-    }
 
-    if (this.heatLayer) {
-      this.layerControl.removeLayer(this.heatLayer);
-      this.observationMap.removeLayer(this.heatLayer);
+      if (this.heatLayer) {
+        this.layerControl.removeLayer(this.heatLayer);
+        this.observationMap.removeLayer(this.heatLayer);
+      }
+      this.heatLayer = L.heatLayer(
+        this.markers.map(item => item.marker.getLatLng()),
+        { minOpacity: 0.5 }
+      ).addTo(this.observationMap);
+      this.layerControl.addOverlay(this.heatLayer, "heatmap");
     }
-    this.heatLayer = L.heatLayer(
-      this.markers.map(item => item.marker.getLatLng()),
-      { minOpacity: 0.5 }
-    ).addTo(this.observationMap);
-    this.layerControl.addOverlay(this.heatLayer, "heatmap");
   }
 
   mkObservationLayerOptions() {
@@ -326,10 +323,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
     );
     if (!visibleParent) {
       console.debug(event);
-      // this.observationMap.flyToBounds(
-      //   event.propagatedFrom.getBounds().pad(0.001)
-      // );
-      this.observationMap.panTo(marker.marker.getLatLng());
+      this.observationMap.flyTo(marker.marker.getLatLng(), 16);
+      // this.observationMap.panTo(marker.marker.getLatLng());
       visibleParent = marker.marker;
     }
     L.popup()

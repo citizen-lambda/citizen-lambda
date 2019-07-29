@@ -24,7 +24,7 @@
       >
         <select formControlName="cd_nom" class="form-control rounded-0">
           <option
-            *ngFor="let s of (surveySpecies$ | async)"
+            *ngFor="let s of surveySpecies$ | async"
             [value]="s.taxref.cd_nom"
           >
             {{ s.nom?.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
@@ -44,14 +44,10 @@
         [class.ng-valid]="selectedTaxon"
         [class.ng-invalid]="!selectedTaxon"
       >
-        <div *ngFor="let s of (surveySpecies$ | async)">
+        <div *ngFor="let s of surveySpecies$ | async">
           <div class="obs-img" [class.selected]="isSelectedTaxon(s)">
             <img
-              [src]="
-                s.medias && !!s.medias.length
-                  ? s.medias[0]?.url
-                  : 'assets/Azure-Commun-019.JPG'
-              "
+              [src]="!!s.medias ? s.medias?.url : 'assets/Azure-Commun-019.JPG'"
               [alt]="s.nom?.nom_francais"
               (click)="onTaxonSelected(s)"
             />
@@ -67,7 +63,7 @@
       class="form-group col-lg-8"
     >
       <ng-template #rt let-r="result" let-t="term">
-        <img [src]="r.icon" class="mr-1" style="height: 1em;" />
+        <img [src]="r.icon" class="mr-1 autocomplete-thumbs" />
         <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
       </ng-template>
       <input
