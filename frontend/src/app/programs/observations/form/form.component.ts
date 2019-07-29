@@ -32,7 +32,7 @@ import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import { LeafletMouseEvent } from "leaflet";
-import "leaflet-fullscreen/dist/Leaflet.fullscreen";
+import "leaflet-fullscreen";
 import "leaflet-gesture-handling";
 
 import { AppConfig } from "../../../../conf/app.config";
@@ -149,7 +149,8 @@ export class ObsFormComponent implements AfterViewInit {
           ? []
           : this.species
               .filter(
-                v => new RegExp(term, "gi").test(v["name"])
+                (v: { [name: string]: string }) =>
+                  new RegExp(term, "gi").test(v["name"])
                 // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
               )
               .slice(0, taxonAutocompleteMaxResults)
@@ -215,13 +216,15 @@ export class ObsFormComponent implements AfterViewInit {
           attribution: "OpenStreetMap"
         }).addTo(formMap);
 
-        L.control["fullscreen"]({
-          position: "topright",
-          title: {
-            false: "View Fullscreen",
-            true: "Exit Fullscreen"
-          }
-        }).addTo(formMap);
+        L.control
+          .fullscreen({
+            position: "topright",
+            title: {
+              false: "View Fullscreen",
+              true: "Exit Fullscreen"
+            }
+          })
+          .addTo(formMap);
 
         let ZoomViewer = L.Control.extend({
           onAdd: () => {
@@ -254,7 +257,7 @@ export class ObsFormComponent implements AfterViewInit {
         formMap.setMaxBounds(maxBounds.pad(0.01));
 
         // Set initial observation marker from main map if already spotted
-        let myMarker = null;
+        let myMarker: L.Marker = null;
         if (this.coords) {
           this.obsForm.patchValue({ geometry: this.coords });
 

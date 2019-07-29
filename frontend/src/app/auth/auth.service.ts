@@ -11,7 +11,8 @@ import {
   JWT,
   TokenRefresh,
   LoginPayload,
-  LogoutPayload
+  LogoutPayload,
+  UserInfo
 } from "./models";
 
 @Injectable()
@@ -76,9 +77,9 @@ export class AuthService {
       .toPromise();
   }
 
-  ensureAuthorized(): Observable<LoginUser> {
+  ensureAuthorized(): Observable<UserInfo> {
     let url: string = `${AppConfig.API_ENDPOINT}/user/info`;
-    return this.http.get<LoginUser>(url, { headers: this.headers });
+    return this.http.get<UserInfo>(url, { headers: this.headers });
   }
 
   performTokenRefresh(): Observable<TokenRefresh> {
@@ -93,7 +94,7 @@ export class AuthService {
     });
   }
 
-  selfDeleteAccount(_access_token): Promise<any> {
+  selfDeleteAccount(_access_token: string): Promise<any> {
     let url: string = `${AppConfig.API_ENDPOINT}/user/delete`;
     return this.http.delete(url, { headers: this.headers }).toPromise();
   }

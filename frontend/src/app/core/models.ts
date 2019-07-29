@@ -1,3 +1,8 @@
+import { Observable } from "rxjs";
+import { AfterViewInit, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { map, take } from "rxjs/operators";
+
 export interface IAppConfig {
   appName: string;
   API_ENDPOINT: string;
@@ -41,4 +46,34 @@ export interface IAppConfig {
   taxonAutocompleteInputThreshold: number;
   taxonAutocompleteFields: string[];
   program_list_sort: string;
+}
+
+export abstract class AnchorNavigation implements OnInit, AfterViewInit {
+  fragment$: Observable<string>;
+
+  constructor(protected route: ActivatedRoute) {}
+
+  jumpTo(fragment: string) {
+    const anchor = document.getElementById(fragment);
+    if (!!anchor) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: anchor.getBoundingClientRect().top + window.pageYOffset - 65,
+          behavior: "smooth"
+        });
+      }, 200); // FIXME: this is entirely timely !
+    }
+  }
+
+  ngOnInit() {
+    this.fragment$ = this.route.fragment.pipe(map(fragment => fragment || ""));
+  }
+
+  ngAfterViewInit(): void {
+    this.fragment$.pipe(take(1)).subscribe(fragment => this.jumpTo(fragment));
+    // this.afterViewInit();
+  }
+
+  // abstract onInit(): void;
+  // abstract afterViewInit(): void;
 }

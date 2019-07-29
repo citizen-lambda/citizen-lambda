@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Subject, throwError } from "rxjs";
 import { debounceTime, map, catchError } from "rxjs/operators";
 
@@ -68,7 +68,10 @@ export class LoginComponent {
 
   onRecoverPassword(): void {
     this.http
-      .post(`${AppConfig.API_ENDPOINT}/user/resetpasswd`, this.recovery)
+      .post<{ message: string }>(
+        `${AppConfig.API_ENDPOINT}/user/resetpasswd`,
+        this.recovery
+      )
       .pipe(catchError(error => this.handleError(error)))
       .subscribe(
         response => {
@@ -88,7 +91,7 @@ export class LoginComponent {
       );
   }
 
-  handleError(error) {
+  handleError(error: HttpErrorResponse) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       // client-side or network error
@@ -100,17 +103,17 @@ export class LoginComponent {
       } else if (error.status && error.message) {
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
       } else {
-        errorMessage = error;
+        errorMessage = error.toString();
       }
     }
     return throwError(errorMessage);
   }
 
-  displayErrorMessage(message) {
+  displayErrorMessage(message: string) {
     this._error.next(message);
   }
 
-  displaySuccessMessage(message) {
+  displaySuccessMessage(message: string) {
     this._success.next(message);
   }
 }

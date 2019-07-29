@@ -24,8 +24,8 @@ export class UserDashboardComponent implements OnInit {
   role_id: number;
   isLoggedIn: boolean = false;
   stats: any;
-  personalInfo: any = {};
-  badges = [];
+  personalInfo: { [name: string]: any };
+  badges: { img: string; alt: string }[] = [];
   badges$: Subject<Object> = new Subject<Object>();
 
   constructor(
@@ -90,7 +90,7 @@ export class UserDashboardComponent implements OnInit {
     });
   }
 
-  editInfos(content): void {
+  editInfos(content: { [name: string]: any }): void {
     this.getPersonalInfo().subscribe(data => {
       this.personalInfo = data;
       this.modalRef = this.modalService.open(content, {
@@ -118,18 +118,27 @@ export class UserDashboardComponent implements OnInit {
 
   getBadgeCategories(): Observable<Object | Error> {
     return this.http
-      .get<Object>(`${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
+      .get<{ [name: string]: any }>(
+        `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
+      )
       .pipe(
         tap(data => {
-          const categories = data["badges"].reduce((acc, item) => {
-            const category = item["alt"].split(/\.[^/.]+$/)[0];
-            if (!acc[category]) {
-              acc[category] = data["badges"].filter(item =>
-                item.alt.startsWith(category + ".")
-              );
-            }
-            return acc;
-          }, {});
+          const categories: { [name: string]: any } = data["badges"].reduce(
+            (
+              acc: { [name: string]: any },
+              item: { img: string; alt: string }
+            ) => {
+              const category: string = item["alt"].split(/\.[^/.]+$/)[0];
+              if (!acc[category]) {
+                acc[category] = data["badges"].filter(
+                  (item: { img: string; alt: string }) =>
+                    item.alt.startsWith(category + ".")
+                );
+              }
+              return acc;
+            },
+            {}
+          );
 
           Object.values(categories).map(value => this.badges.push(value));
           this.badges$.next(this.badges);

@@ -8,6 +8,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { RegisterUser } from "../models";
 import { AuthService } from "./../auth.service";
 import { AppConfig } from "../../../conf/app.config";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "register",
@@ -65,7 +66,7 @@ export class RegisterComponent {
       );
   }
 
-  handleError(error) {
+  handleError(error: HttpErrorResponse) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       console.error("client-side error");
@@ -85,12 +86,12 @@ export class RegisterComponent {
     return throwError(errorMessage);
   }
 
-  displayErrorMessage(message) {
+  displayErrorMessage(message: string) {
     this._error.next(message);
     console.error("errorMessage:", message);
   }
 
-  displaySuccessMessage(message) {
+  displaySuccessMessage(message: string) {
     this._success.next(message);
     console.info("successMessage:", message);
   }

@@ -70,6 +70,13 @@ a.leaflet-control-layers-toggle {
   transform: translateY(-50%);
 }
 
+.leaflet-control-layers-base,
+.leaflet-control-layers-overlays {
+  max-height: 12em;
+  overflow-y: scroll;
+  padding: 0.4em;
+}
+
 @media screen and (max-width: 991px) {
   .btn-group .btn-big {
     opacity: 1 !important;

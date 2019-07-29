@@ -38,8 +38,8 @@ const difference = (state: BadgeState) =>
       return { badges: [], changes: [] };
     }
 
-    function badgeListComparer(otherArray) {
-      return current =>
+    function badgeListComparer(otherArray: Badge[]) {
+      return (current: Badge) =>
         otherArray.filter(other => other.alt == current.alt).length == 0;
     }
 
@@ -56,6 +56,7 @@ let _state: BadgeState = {
 
 @Injectable()
 export class BadgeFacade {
+  readonly AppConfig = AppConfig;
   private store = new BehaviorSubject<BadgeState>(_state);
   private state$ = this.store.asObservable();
   role_id = 0;
@@ -80,14 +81,14 @@ export class BadgeFacade {
 
   getChanges(): void {
     const access_token = localStorage.getItem("access_token");
-    if (access_token && AppConfig["REWARDS"]) {
+    if (access_token && this.AppConfig["REWARDS"]) {
       this.authService.ensureAuthorized().subscribe(
         user => {
-          if (user["features"]["id_role"]) {
+          if (user.features["id_role"]) {
             this.role_id = user["features"]["id_role"];
             this.http
               .get<Object>(
-                `${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
+                `${this.AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`
               )
               .pipe(
                 pluck("badges"),
@@ -128,7 +129,6 @@ export class BadgeFacade {
     return this.role_id;
   }
 
-
   private updateState(state: BadgeState) {
     this.store.next((_state = state));
   }
@@ -137,7 +137,7 @@ export class BadgeFacade {
 @Component({
   selector: "app-reward",
   template: `
-    <div *ngIf="(reward$ | async) as rewards">
+    <div *ngIf="reward$ | async as rewards">
       <div class="modal-body new-badge" (click)="clicked('background')">
         <div><img src="assets/user.jpg" /></div>
         <h5 i18n>Félicitations !</h5>
@@ -168,7 +168,7 @@ export class RewardComponent implements IFlowComponent {
   reward$: Observable<Badge[]>;
 
   constructor(public badges: BadgeFacade) {
-    if (!badges.username || !AppConfig["REWARDS"]) {
+    if (!badges.username || !this.AppConfig["REWARDS"]) {
       if (this._timeout) clearTimeout(this._timeout);
       this._timeout = setTimeout(() => this.close("REWARDS_DISABLED"), 0);
     } else {
@@ -188,11 +188,11 @@ export class RewardComponent implements IFlowComponent {
     }
   }
 
-  close(d) {
+  close(d: string) {
     this.data.service.close(d);
   }
 
-  clicked(d) {
+  clicked(d: string) {
     this.close(d);
   }
 }

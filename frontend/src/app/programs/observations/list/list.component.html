@@ -27,7 +27,8 @@
       }}</option>
     </select>
   </div>
-  <div class="obs-found">
+  <div class="obs-count">
+    <!-- TODO: loading => recherche… -->
     <p i18n>
       {{ (features$ | async)?.length }} { +(features$ | async)?.length, plural,
       =0 { observation trouvée } =1 { observation trouvée !} other {
@@ -38,7 +39,7 @@
     <div
       *ngFor="let o of features$ | async; trackBy: trackByObs"
       class="espece obs-{{ o.properties.id_observation }}"
-      (click)="onObsClick(o)"
+      (click)="onSelected(o)"
     >
       <!-- FIXME: hardcoded api media endpoint -->
       <img

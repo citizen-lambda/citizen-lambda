@@ -34,7 +34,7 @@ const sorted = (property: string) => {
     property = property.substr(1);
   }
 
-  return (a, b) => {
+  return (a: { [property: string]: any }, b: { [property: string]: any }) => {
     return sortOrder === -1
       ? b[property].localeCompare(a[property])
       : a[property].localeCompare(b[property]);

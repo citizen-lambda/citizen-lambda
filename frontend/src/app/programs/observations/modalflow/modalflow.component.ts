@@ -32,7 +32,7 @@ import { AppConfig } from "../../../../conf/app.config";
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent {
-  @Input("coords") coords;
+  @Input("coords") coords: [number, number];
   @ViewChild("content") content: ElementRef;
   AppConfig = AppConfig;
   flowitems: FlowItem[];
@@ -48,5 +48,5 @@ export class ModalFlowComponent {
     this.flowService.open(this.content);
   }
 
-  step(componentName) {}
+  step(data: any) {}
 }

@@ -33,7 +33,7 @@ export class FlowComponent implements OnInit {
     this.loadComponent();
   }
 
-  loadComponent(data?) {
+  loadComponent(data?: any) {
     // really, cycle ?
     this.currentFlowIndex = (this.currentFlowIndex + 1) % this.flowItems.length;
     // resolve factory for current flow-item component
@@ -55,7 +55,7 @@ export class FlowComponent implements OnInit {
       !(<IFlowComponent>componentRef.instance).data.next &&
       !(<IFlowComponent>componentRef.instance).data.final
     ) {
-      (<IFlowComponent>componentRef.instance).data.next = data => {
+      (<IFlowComponent>componentRef.instance).data.next = (data: any) => {
         this.loadComponent(data || flowItem.data);
       };
     }

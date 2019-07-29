@@ -24,8 +24,8 @@ export interface ObservationFeature extends Feature {
 
 export interface TaxonomyListItem {
   medias: any;
-  nom: Object;
-  taxref: Object;
+  nom: any;
+  taxref: any;
 }
 
 export interface TaxonomyList {

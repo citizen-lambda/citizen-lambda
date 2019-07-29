@@ -1,27 +1,30 @@
 import {
   Component,
-  OnInit,
   ViewEncapsulation,
-  AfterViewInit,
   ViewChild,
   HostListener,
   Inject,
   LOCALE_ID
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { forkJoin } from "rxjs";
+import { forkJoin, combineLatest } from "rxjs";
+import { map, mergeMap, switchMap, flatMap } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 
+import { AppConfig } from "../../../conf/app.config";
+import { IAppConfig, AnchorNavigation } from "src/app/core/models";
 import { Program } from "../programs.models";
 import { ProgramsResolve } from "../../programs/programs-resolve.service";
+
 import { GncProgramsService } from "../../api/gnc-programs.service";
 import { ModalFlowService } from "./modalflow/modalflow.service";
 import { TaxonomyList } from "./observation.model";
 import { ObsMapComponent } from "./map/map.component";
 import { ObsListComponent } from "./list/list.component";
-import { AppConfig } from "../../../conf/app.config";
+
+type AppConfigObservations = Pick<IAppConfig, "platform_participate">;
 
 @Component({
   selector: "app-observations",
@@ -30,66 +33,57 @@ import { AppConfig } from "../../../conf/app.config";
   encapsulation: ViewEncapsulation.None,
   providers: [ProgramsResolve]
 })
-export class ObsComponent implements OnInit, AfterViewInit {
-  AppConfig = AppConfig;
-  fragment: string;
-  coords: L.Point;
-  program_id: any;
+export class ObsComponent extends AnchorNavigation {
+  readonly AppConfig: AppConfigObservations = AppConfig;
   programs: Program[];
   program: Program;
+  coords: L.Point;
   observations: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: TaxonomyList;
   @ViewChild(ObsMapComponent) obsMap: ObsMapComponent;
   @ViewChild(ObsListComponent) obsList: ObsListComponent;
 
-  selectedObs: Feature;
-
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
-    private route: ActivatedRoute,
+    protected route: ActivatedRoute,
     private programService: GncProgramsService,
     public flowService: ModalFlowService
   ) {
-    this.route.params.subscribe(params => (this.program_id = params["id"]));
-    this.route.fragment.subscribe(fragment => {
-      this.fragment = fragment;
-    });
-  }
-
-  ngOnInit() {
-    this.route.data.subscribe((data: { programs: Program[] }) => {
-      this.programs = data.programs;
-      this.program = this.programs.find(p => p.id_program == this.program_id);
-      forkJoin(
-        this.programService.getProgramObservations(this.program_id),
-        this.programService.getProgramTaxonomyList(this.program_id),
-        this.programService.getProgram(this.program_id)
-      ).subscribe(([observations, taxa, program]) => {
+    super(route);
+    combineLatest(this.route.params, this.route.data)
+      .pipe(
+        map(([params, data]) => {
+          const program_id: number = parseInt(params["id"]);
+          this.programs = data.programs;
+          this.program = data.programs.find(
+            (p: Program) => p.id_program === program_id
+          );
+          return this.program.id_program;
+        }),
+        flatMap(program_id =>
+          forkJoin([
+            this.programService.getProgramObservations(program_id),
+            this.programService.getProgramTaxonomyList(program_id),
+            this.programService.getProgram(program_id)
+          ])
+        )
+      )
+      .subscribe(([observations, taxa, program]) => {
         this.observations = observations;
         this.surveySpecies = taxa;
         this.programFeature = program;
       });
-    });
   }
 
-  ngAfterViewInit(): void {
-    try {
-      if (this.fragment) {
-        document
-          .querySelector("#" + this.fragment)
-          .scrollIntoView({ behavior: "smooth" });
-      }
-    } catch (e) {
-      alert(e);
-    }
-  }
+  // onInit(): void {}
+  // afterViewInit(): void {}
 
   onMapClicked(p: L.Point): void {
     this.coords = p;
   }
 
-  toggleList() {
+  onListToggle() {
     this.obsMap.observationMap.invalidateSize();
   }
 

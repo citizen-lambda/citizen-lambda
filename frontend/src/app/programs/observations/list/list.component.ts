@@ -2,23 +2,21 @@ import {
   Component,
   OnChanges,
   Input,
-  // HostListener,
-  ChangeDetectorRef,
   SimpleChanges,
   Output,
   EventEmitter
 } from "@angular/core";
-import { BehaviorSubject, merge } from "rxjs";
+import { merge, Subject } from "rxjs";
 import { pluck, share } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
-import { AppConfig } from "../../../../conf/app.config";
 import {
   TaxonomyList,
   TaxonomyListItem,
   ObservationFeature
 } from "../observation.model";
+import { AppConfig } from "../../../../conf/app.config";
 
 @Component({
   selector: "app-obs-list",
@@ -26,19 +24,21 @@ import {
   styleUrls: ["./list.component.css"]
 })
 export class ObsListComponent implements OnChanges {
+  readonly AppConfig = AppConfig;
   @Input("observations") observations: FeatureCollection;
   @Input("taxa") surveySpecies: TaxonomyList;
-  @Output("obsSelect") obsSelect: EventEmitter<Feature> = new EventEmitter();
-  municipalities: any[];
+  @Output("obsSelected") obsSelected: EventEmitter<
+    Feature
+  > = new EventEmitter();
+  municipalities: any[] = [];
   observationList: Feature[] = [];
-  program_id: number;
-  taxa: any[];
-  AppConfig = AppConfig;
+  program_id: number = 0;
+  taxa: any[] = [];
 
-  selectedTaxon: TaxonomyListItem = null;
+  selectedTaxon: TaxonomyListItem | undefined;
   selectedMunicipality: any = null;
-  changes$ = new BehaviorSubject<SimpleChanges>(null);
-  observations$ = new BehaviorSubject<Feature[]>(null);
+  changes$ = new Subject<SimpleChanges>();
+  observations$ = new Subject<Feature[]>();
   features$ = merge(
     this.observations$,
     this.changes$.pipe(
@@ -47,7 +47,7 @@ export class ObsListComponent implements OnChanges {
     )
   );
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
     this.changes$.next(changes);
@@ -57,25 +57,18 @@ export class ObsListComponent implements OnChanges {
       this.observations$.next(this.observations["features"]);
       this.municipalities = this.observations.features
         .map(features => features.properties)
+        .filter(property => !!property)
         .map(property => property.municipality)
-        .filter(municipality => {
-          return municipality.name && municipality.code;
-        })
-        .filter((v, _i, a) => {
-          const exists = a.find(exist => {
-            return exist.code == v.code;
-          });
-          return !exists || a.indexOf(exists) == a.indexOf(v);
-        });
+        .filter(
+          municipality =>
+            !!municipality && municipality.name && municipality.code
+        )
+        .filter((v, i, a) => a.indexOf(v) === i);
     }
   }
 
-  // @HostListener("document:NewObservationEvent", ["$event"])
-  // public newObservationEventHandler(e: CustomEvent) {
-  // }
-
   onFilterChange(): void {
-    let filters: { taxon: string; municipality: string } = {
+    let filters: { taxon: string | null; municipality: string | null } = {
       taxon: null,
       municipality: null
     };
@@ -108,8 +101,8 @@ export class ObsListComponent implements OnChanges {
     }
   }
 
-  onObsClick(e): void {
-    this.obsSelect.emit(e);
+  onSelected(feature: Feature): void {
+    this.obsSelected.emit(feature);
   }
 
   trackByObs(index: number, obs: ObservationFeature): number {

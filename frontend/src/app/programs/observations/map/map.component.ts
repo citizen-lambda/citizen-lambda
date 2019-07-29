@@ -16,28 +16,32 @@ import {
 
 import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
+import "leaflet-gesture-handling";
+import "leaflet-fullscreen";
+import "leaflet.heat";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
-import "leaflet-gesture-handling";
-import "leaflet.heat";
 
 // import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
+import "./typing";
 
 const conf = {
   MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
-  BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce((acc, baseLayer: Object) => {
-    acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
-      name: baseLayer["name"],
-      attribution: baseLayer["attribution"],
-      subdomains: baseLayer["subdomains"] || "",
-      detectRetina: baseLayer["detectRetina"],
-      maxZoom: baseLayer["maxZoom"],
-      bounds: baseLayer["bounds"]
-    });
-    return acc;
-  }, {}),
+  BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce(
+    (acc: { [name: string]: L.TileLayer }, baseLayer) => {
+      acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
+        name: baseLayer["name"],
+        attribution: baseLayer["attribution"],
+        subdomains: baseLayer["subdomains"] || "",
+        maxZoom: baseLayer["maxZoom"],
+        bounds: <[number, number][]>baseLayer["bounds"]
+      });
+      return acc;
+    },
+    {}
+  ),
   DEFAULT_BASE_MAP: () => {
     // Get a random base map to test
     /*
@@ -48,7 +52,9 @@ const conf = {
     ];
     */
     // alert(MAP_CONFIG["DEFAULT_PROVIDER"]);
-    return conf.BASE_LAYERS[MAP_CONFIG["DEFAULT_PROVIDER"]];
+    return (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[
+      MAP_CONFIG["DEFAULT_PROVIDER"]
+    ];
   },
   ZOOM_CONTROL_POSITION: "topright",
   BASE_LAYER_CONTROL_POSITION: "topright",
@@ -94,7 +100,7 @@ const conf = {
       iconSize: new L.Point(40, 40)
     });
   },
-  PROGRAM_AREA_STYLE: _feature => {
+  PROGRAM_AREA_STYLE: (_feature: Feature) => {
     return {
       fillColor: "transparent",
       weight: 2,
@@ -163,18 +169,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
       changes.observations.currentValue
     ) {
       this.loadObservations();
-
-      /*
-      // TODO: revisit fix for disappearing base layer when back in navigation history.
-      // update when switching layers from control.
-      // save configured map state (base_layer, center, zoom) in localStorage ?
-      let base_layer = this.observationMap.options.layers[0];
-      this.observationMap.removeLayer(this.observationMap.options.layers[0]);
-      conf.BASE_LAYERS[base_layer["options"]["name"]].addTo(
-        this.observationMap
-      );
-      this.observationMap.invalidateSize();
-      */
     }
   }
 
@@ -198,18 +192,20 @@ export class ObsMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.observationMap);
 
-    L.control["fullscreen"]({
-      position: this.options.FULLSCREEN_CONTROL_POSITION,
-      title: {
-        false: "View Fullscreen",
-        true: "Exit Fullscreen"
-      }
-    }).addTo(this.observationMap);
+    L.control
+      .fullscreen({
+        position: this.options.FULLSCREEN_CONTROL_POSITION,
+        title: {
+          false: "View Fullscreen",
+          true: "Exit Fullscreen"
+        }
+      })
+      .addTo(this.observationMap);
 
     L.control
       .locate({
         position: this.options.GEOLOCATION_CONTROL_POSITION,
-        getLocationBounds: locationEvent =>
+        getLocationBounds: (locationEvent: L.LocationEvent) =>
           locationEvent.bounds.extend(this.programMaxBounds),
         locateOptions: {
           enableHighAccuracy: this.options.GEOLOCATION_HIGH_ACCURACY
@@ -254,7 +250,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     this.shouldOpenAnotherPopup = false;
   }
 
-  getPopupContent(feature): any {
+  getPopupContent(feature: Feature): any {
     const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
     const component = factory.create(this.injector);
     component.instance.data = feature.properties;
@@ -266,51 +262,56 @@ export class ObsMapComponent implements OnInit, OnChanges {
   loadObservations(): void {
     if (this.observations) {
       if (this.observationLayer) {
-        this.layerControl.removeLayer(this.heatLayer);
+        this.layerControl.removeLayer(this.observationLayer);
         this.observationMap.removeLayer(this.observationLayer);
       }
       this.observationLayer = this.options.OBSERVATION_LAYER();
-      this.markers = [];
-
-      const observationLayerOptions: L.GeoJSONOptions = {
-        onEachFeature: (feature, layer) => {
-          let popupContent = this.getPopupContent(feature);
-          layer.bindPopup(popupContent);
-        },
-        pointToLayer: (_feature, latlng): L.Marker => {
-          let marker: L.Marker<any> = L.marker(latlng, {
-            icon: conf.OBS_MARKER_ICON()
-          });
-          this.markers.push({
-            feature: _feature,
-            marker: marker
-          });
-          return marker;
-        }
-      };
 
       this.observationLayer.addLayer(
-        L.geoJSON(this.observations, observationLayerOptions)
+        L.geoJSON(this.observations, this.mkObservationLayerOptions())
       );
       this.observationMap.addLayer(this.observationLayer);
-      this.observationLayer.on("animationend", _e => {
-        if (this.obsOnFocus) {
-          this.shouldOpenAnotherPopup = true;
-          this.observationMap.closePopup();
-        }
-      });
       this.layerControl.addOverlay(this.observationLayer, "points");
     }
 
     if (this.heatLayer) {
-      this.observationMap.removeLayer(this.heatLayer);
       this.layerControl.removeLayer(this.heatLayer);
+      this.observationMap.removeLayer(this.heatLayer);
     }
     this.heatLayer = L.heatLayer(
       this.markers.map(item => item.marker.getLatLng()),
       { minOpacity: 0.5 }
     ).addTo(this.observationMap);
     this.layerControl.addOverlay(this.heatLayer, "heatmap");
+  }
+
+  mkObservationLayerOptions() {
+    this.markers = [];
+    const observationLayerOptions: L.GeoJSONOptions = {
+      onEachFeature: (feature, layer) => {
+        let popupContent = this.getPopupContent(feature);
+        layer.bindPopup(popupContent);
+      },
+      pointToLayer: (_feature, latlng): L.Marker => {
+        let marker: L.Marker<any> = L.marker(latlng, {
+          icon: conf.OBS_MARKER_ICON()
+        });
+        this.markers.push({
+          feature: _feature,
+          marker: marker
+        });
+        return marker;
+      }
+    };
+
+    this.observationLayer.on("animationend", _e => {
+      if (this.obsOnFocus) {
+        this.shouldOpenAnotherPopup = true;
+        this.observationMap.closePopup();
+      }
+    });
+
+    return observationLayerOptions;
   }
 
   showPopup(obs: Feature, event: L.LeafletEvent): void {
@@ -442,5 +443,5 @@ export class ObsMapComponent implements OnInit, OnChanges {
   `
 })
 export class MarkerPopupComponent {
-  @Input() data;
+  @Input() data: {};
 }

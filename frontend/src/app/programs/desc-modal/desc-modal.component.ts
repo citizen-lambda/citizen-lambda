@@ -8,9 +8,9 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class DescModalComponent {
   @Input()
-  title;
+  title: string;
   @Input()
-  long_desc;
+  long_desc: string;
 
   constructor(public activeModal: NgbActiveModal) {}
 }

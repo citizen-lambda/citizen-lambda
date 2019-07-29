@@ -118,12 +118,12 @@ export class TopbarComponent implements OnInit {
     }
   }
 
-  close(d) {
+  close(d: string) {
     this.modalRef.close(d);
   }
 
   @HostListener("window:scroll", ["$event"])
-  scrollHandler(_event) {
+  scrollHandler(_event: Event) {
     const tallSize = getComputedStyle(document.documentElement)
       .getPropertyValue("--tall-topbar-size")
       .trim();

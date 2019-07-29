@@ -89,7 +89,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
   }
 
-  async handle400(error): Promise<any> {
+  async handle400(error: HttpErrorResponse): Promise<any> {
     console.error(`[400 handler] "${error.message}"`);
     this.errorHandler.handleError(error);
     return from(this.router.navigateByUrl("/home"));

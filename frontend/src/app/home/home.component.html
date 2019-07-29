@@ -27,17 +27,20 @@
     <div id="programs-cards">
       <div class="card" *ngFor="let p of programs">
         <div class="card-content">
-          <img
-            class="d-block w-100"
-            [src]="p.image || 'assets/Azure-Commun-019.JPG'"
-            alt="Programme {{ p.title }}"
-          />
+          <a [routerLink]="['/programs', p.id_program, 'observations']">
+            <img
+              class="d-block w-100"
+              [src]="p.image || 'assets/Azure-Commun-019.JPG'"
+              alt="Programme {{ p.title }}"
+            />
+          </a>
           <h3>{{ p.title }}</h3>
           <p [innerHTML]="p.html_long_desc" class="card-body"></p>
         </div>
         <a
           class="btn-big"
           [routerLink]="['/programs', p.id_program, 'observations']"
+          fragment="program"
           >{{ AppConfig.platform_participate[localeId] }}</a
         >
       </div>

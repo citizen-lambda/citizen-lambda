@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ElementRef } from "@angular/core";
 
 import {
   NgbModal,
@@ -29,7 +29,7 @@ export class ModalFlowService extends FlowService {
     super();
   }
 
-  open(content, options: NgbModalOptions = {}) {
+  open(content: ElementRef<any>, options: NgbModalOptions = {}) {
     this.modalRef = this.modalService.open(content, {
       ...MODAL_DEFAULTS,
       ...options
@@ -56,13 +56,13 @@ export class ModalFlowService extends FlowService {
     );
   }
 
-  next_(data) {}
+  next_(data: any) {}
 
-  close(data) {
+  close(data: string) {
     this.modalRef.close(data);
   }
 
-  getFlowItems(initialState) {
+  getFlowItems(initialState: any) {
     return [
       new FlowItem(OnboardComponent, { ...initialState, service: this }),
       new FlowItem(CommittedComponent, { ...initialState, service: this }),
