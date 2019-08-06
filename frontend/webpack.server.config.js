@@ -42,15 +42,15 @@ module.exports = {
       /(.+)?express(\\|\/)(.+)?/,
       path.join(__dirname, "src"),
       {}
-    ),
-    new webpack.ProvidePlugin({
-      fullscreen: path.resolve(
-        path.join(
-          __dirname,
-          "./node_modules/leaflet.fullscreen/Control.FullScreen.js"
-        )
-      )
-      // ...
-    })
+    )
+    // new webpack.ProvidePlugin({
+    //   fullscreen: path.resolve(
+    //     path.join(
+    //       __dirname,
+    //       "./node_modules/leaflet.fullscreen/Control.FullScreen.js"
+    //     )
+    //   )
+    //   // ...
+    // })
   ]
 };

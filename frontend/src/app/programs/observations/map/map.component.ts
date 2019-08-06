@@ -15,15 +15,26 @@ import {
 } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
-import L from "leaflet";
+import * as L from "leaflet";
 import "leaflet-gesture-handling";
 import "leaflet.fullscreen";
+// import "../../../../../node_modules/leaflet.fullscreen/Control.FullScreen";
 import "leaflet.heat";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
 
 // import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
+
+declare module "leaflet" {
+  interface MapOptions {
+    gestureHandling?: boolean;
+    fullscreenControl?: boolean;
+    fullscreenControlOptions?: {
+      position: string;
+    };
+  }
+}
 
 export const conf = {
   MAP_ID: "obsMap",
@@ -168,7 +179,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
     }
   }
 
-  async initMap(options: any, leafletOptions?: L.MapOptions): Promise<void> {
+  initMap(
+    options: any,
+    leafletOptions?: L.MapOptions & { gestureHandling: boolean }
+  ): void {
     this.options = options;
     this.observationMap = L.map(this.map.nativeElement, {
       ...leafletOptions,
@@ -188,20 +202,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.observationMap);
 
-    // const _fs = "Control.FullScreen";
-    // const fs = await import(
-    //   /* webpackInclude: /(Control\.FullScreen)\.js$/ */
-    //   `node_modules/leaflet.fullscreen/${_fs}`
-    // );
-    // console.debug(fs.default);
-
     L.control
-      .fullscreen<L.Control.Fullscreen>({
+      .fullscreen({
         // content: `bla`,
         position: this.options.FULLSCREEN_CONTROL_POSITION,
         title: "View Fullscreen",
         titleCancel: "Exit Fullscreen"
-      } as L.Control.FullscreenOptions)
+      } as any)
       .addTo(this.observationMap);
 
     L.control

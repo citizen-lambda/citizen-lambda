@@ -97,7 +97,7 @@ export abstract class AnchorNavigation implements AfterViewInit {
           top: anchor.getBoundingClientRect().top + window.pageYOffset - offset,
           behavior: "smooth"
         });
-      }, delay); // FIXME: this seems entirely timely !
+      }, delay); // FIXME: this is entirely timely !
     }
   }
 
