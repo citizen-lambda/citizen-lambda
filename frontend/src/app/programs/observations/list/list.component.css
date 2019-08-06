@@ -6,7 +6,7 @@
   background-color: var(--secondary-background-color);
   padding: 0px 0px 3px 3px;
   overflow: auto;
-  max-height: calc(100vh - var(--list-obs-offset));
+  max-height: var(--list-obs-height);
 }
 
 #list .espece {

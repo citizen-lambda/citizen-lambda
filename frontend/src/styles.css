@@ -12,7 +12,11 @@
   --router-outlet-margin-top: var(--tall-topbar-size);
   --router-outlet-offset: var(--router-outlet-margin-top);
   --footer-height: 30px;
-  --list-obs-offset: calc(var(--router-outlet-offset) + 65px - 3px);
+  --list-toolbar-height: 62px;
+  --list-obs-height: calc(
+    100vh - var(--router-outlet-offset) - var(--list-toolbar-height) -
+      var(--footer-height)
+  );
 
   --light-primary-color: #fff;
   --light-secondary-color: #eee;
