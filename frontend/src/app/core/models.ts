@@ -1,4 +1,4 @@
-import { Observable, combineLatest, Subject } from "rxjs";
+import { Observable, combineLatest, BehaviorSubject } from "rxjs";
 import { OnInit, AfterViewInit, HostListener } from "@angular/core";
 import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
 import { map, take, filter, tap } from "rxjs/operators";
@@ -54,11 +54,11 @@ export interface IAppConfig {
 //   return class extends Base implements OnInit {
 //     router: Router;
 //     route: ActivatedRoute;
-//     fragment$ = new Subject<string>();
+//     fragment$ = new BehaviorSubject<string>();
 //     constructor(...args: any[]) {
 //      super(...args);
 export abstract class AnchorNavigation implements AfterViewInit {
-  fragment$ = new Subject<string>();
+  fragment$ = new BehaviorSubject<string | null>(null);
 
   constructor(protected router: Router, protected route: ActivatedRoute) {
     combineLatest(
@@ -67,7 +67,8 @@ export abstract class AnchorNavigation implements AfterViewInit {
         take(1)
       ),
       this.route.fragment.pipe(
-        map(fragment => fragment || ""),
+        filter(fragment => !!fragment),
+        map(fragment => fragment),
         take(1)
       )
     )
@@ -103,7 +104,7 @@ export abstract class AnchorNavigation implements AfterViewInit {
   // abstract AfterViewInit(): void;
 
   ngAfterViewInit() {
-    this.fragment$.subscribe(fragment => this.jumpTo(fragment));
+    this.fragment$.subscribe((fragment: string) => this.jumpTo(fragment));
   }
 
   @HostListener("document:scroll", ["$event"])
