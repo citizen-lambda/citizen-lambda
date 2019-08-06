@@ -64,41 +64,6 @@
   );
 }
 
-body {
-  color: var(--color);
-  background-color: var(--ternary-color);
-  padding: 0;
-  margin: 0;
-  /* max-height: 100vh; */
-  /* max-width: 100vw; */
-  display: grid;
-  /* place-items: center; */
-  /* overflow: hidden; */
-}
-
-main.router-app {
-  z-index: 1;
-  margin-bottom: var(--footer-height);
-  position: relative;
-}
-
-app-footer {
-  z-index: 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
-
-app-footer footer .container {
-  max-width: fit-content;
-}
-
-@media screen and (max-width: 926px) {
-  :root {
-    --router-outlet-margin-top: var(--narrow-topbar-height);
-  }
-}
-
 html,
 body {
   height: 100%;
@@ -313,6 +278,43 @@ h6 {
     height: 23px;
     background-color: rgb(255, 255, 255);
     -moz-transform: translateY(-20px);
+  }
+}
+
+/* main style and structure */
+
+body {
+  color: var(--color);
+  background-color: var(--ternary-color);
+  padding: 0;
+  margin: 0;
+  display: grid;
+  /* overflow: hidden; */
+}
+
+main.router-app {
+  z-index: 1;
+  margin-bottom: var(--footer-height);
+  position: relative;
+  min-height: calc(100vh - var(--router-outlet-offset) - var(--footer-height));
+  /* overflow-y: scroll; */
+  /* max-height: calc(100vh - var(--router-outlet-offset) - var(--footer-height)); */
+}
+
+app-footer {
+  z-index: 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+app-footer footer .container {
+  max-width: fit-content;
+}
+
+@media screen and (max-width: 926px) {
+  :root {
+    --router-outlet-margin-top: var(--narrow-topbar-height);
   }
 }
 
