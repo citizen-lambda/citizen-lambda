@@ -49,7 +49,7 @@ const difference = (state: BadgeState) =>
   });
 
 let _state: BadgeState = {
-  badges: JSON.parse(localStorage.getItem("badges")) || [],
+  badges: JSON.parse(localStorage.getItem("badges") || "[]") || [],
   changes: [],
   loading: true
 };
@@ -75,7 +75,7 @@ export class BadgeFacade {
   loading$ = this.state$.pipe(map(state => state.loading));
 
   constructor(private authService: AuthService, private http: HttpClient) {
-    this.username = localStorage.getItem("username");
+    this.username = localStorage.getItem("username") || "undefined";
     this.getChanges();
   }
 
@@ -120,7 +120,7 @@ export class BadgeFacade {
           window.alert(error);
           return throwError(error);
         },
-        null
+        undefined
       );
     }
   }
@@ -165,7 +165,7 @@ export class RewardComponent implements IFlowComponent {
   private _timeout: any;
   // private _init = 0;
   @Input() data: any;
-  reward$: Observable<Badge[]>;
+  reward$: Observable<Badge[]> | null = null;
 
   constructor(public badges: BadgeFacade) {
     if (!badges.username || !this.AppConfig["REWARDS"]) {

@@ -22,9 +22,9 @@ import { IFlowComponent } from "./flow";
   encapsulation: ViewEncapsulation.None
 })
 export class FlowComponent implements OnInit {
-  @Input() flowItems: FlowItem[];
+  @Input() flowItems!: FlowItem[];
   @Output() step = new EventEmitter();
-  @ViewChild(FlowDirective) flowitem: FlowDirective;
+  @ViewChild(FlowDirective) flowitem!: FlowDirective;
   currentFlowIndex = -1;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
@@ -58,6 +58,7 @@ export class FlowComponent implements OnInit {
       (<IFlowComponent>componentRef.instance).data.next = (data: any) => {
         this.loadComponent(data || flowItem.data);
       };
+      console.debug("FlowComponent.loadComponent:", data || flowItem.data);
     }
   }
 }

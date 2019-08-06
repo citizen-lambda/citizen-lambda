@@ -22,12 +22,10 @@ export const MODAL_DEFAULTS: NgbModalOptions = {
 @Injectable({
   providedIn: "root"
 })
-export class ModalFlowService extends FlowService {
+export class ModalFlowService implements FlowService {
   modalRef: NgbModalRef;
 
-  constructor(private modalService: NgbModal) {
-    super();
-  }
+  constructor(private modalService: NgbModal) {}
 
   open(content: ElementRef<any>, options: NgbModalOptions = {}) {
     this.modalRef = this.modalService.open(content, {
@@ -39,7 +37,7 @@ export class ModalFlowService extends FlowService {
         console.debug("closed with", !!result);
       },
       reason => {
-        let trigger = undefined;
+        let trigger = "undefined reason";
         switch (reason) {
           case ModalDismissReasons.BACKDROP_CLICK:
             trigger = "BACKDROP";
@@ -63,6 +61,7 @@ export class ModalFlowService extends FlowService {
   }
 
   getFlowItems(initialState: any) {
+    console.debug("getFlowItems", initialState);
     return [
       new FlowItem(OnboardComponent, { ...initialState, service: this }),
       new FlowItem(CommittedComponent, { ...initialState, service: this }),

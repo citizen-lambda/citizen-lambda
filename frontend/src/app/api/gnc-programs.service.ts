@@ -25,7 +25,7 @@ export interface IGncFeatures extends FeatureCollection {
   count: number;
 }
 
-const sorted = (property: string) => {
+export const sorted = (property: string) => {
   if (!property) return undefined;
   let sortOrder = 1;
 
@@ -58,8 +58,8 @@ const sorted = (property: string) => {
 })
 export class GncProgramsService implements OnInit {
   private readonly URL = AppConfig.API_ENDPOINT;
-  programs: Program[];
-  programs$ = new Subject<Program[]>();
+  programs: Program[] | null;
+  programs$ = new Subject<Program[] | null>();
 
   constructor(
     protected http: HttpClient,
@@ -68,12 +68,12 @@ export class GncProgramsService implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.programs = this.state.get(PROGRAMS_KEY, null as Program[]);
+    this.programs = this.state.get(PROGRAMS_KEY, null);
     this.programs$.next(this.programs);
   }
 
-  getAllPrograms(): Observable<Program[]> {
-    if (!this.programs) {
+  getAllPrograms(): Observable<Program[] | null> {
+    if (!this.programs || this.programs.length >= 1) {
       return this.http.get<IGncFeatures>(`${this.URL}/programs`).pipe(
         pluck("features"),
         map((features: IGncProgram[]) =>
@@ -128,10 +128,10 @@ export class GncProgramsService implements OnInit {
 
   getProgramTaxonomyList(program_id: number): Observable<TaxonomyList> {
     return this.getAllPrograms().pipe(
-      map(programs => programs.find(p => p.id_program == program_id)),
+      map(programs => programs!.find(p => p.id_program === program_id)),
       mergeMap(program =>
         this.http.get<TaxonomyList>(
-          `${this.URL}/taxonomy/lists/${program["taxonomy_list"]}/species`
+          `${this.URL}/taxonomy/lists/${program!.taxonomy_list}/species`
         )
       ),
       catchError(this.handleError<TaxonomyList>(`getProgramTaxonomyList`, {}))

@@ -3,6 +3,8 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
 import { IFlowComponent } from "../../flow/flow";
 import { AppConfig } from "../../../../../../conf/app.config";
 
+const anonymous = "Anonyme";
+
 @Component({
   templateUrl: "./congrats.component.html",
   styleUrls: ["./congrats.component.css"],
@@ -11,7 +13,7 @@ import { AppConfig } from "../../../../../../conf/app.config";
 export class CongratsComponent implements IFlowComponent {
   @Input() data: any;
   timeout: any;
-  username: string;
+  username: string = anonymous;
   obs: any;
   AppConfig = AppConfig;
 
@@ -22,7 +24,7 @@ export class CongratsComponent implements IFlowComponent {
   }
 
   ngOnInit(): void {
-    this.username = localStorage.getItem("username");
+    this.username = localStorage.getItem("username") || anonymous;
     this.obs = this.data.obs.properties;
     this.timeout = setTimeout(() => {
       this.data.next(this.data);

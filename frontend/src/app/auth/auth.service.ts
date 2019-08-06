@@ -21,10 +21,10 @@ export class AuthService {
     "Content-Type": "application/json"
   });
 
-  redirectUrl: string;
+  redirectUrl: string | undefined;
   authenticated$ = new BehaviorSubject<boolean>(this.hasRefreshToken());
   authorized$ = new BehaviorSubject<boolean>(
-    this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()) > 1
+    this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()!) > 1
   );
   timeoutID: any = null;
 
@@ -36,12 +36,12 @@ export class AuthService {
       .post<LoginPayload>(url, user, { headers: this.headers })
       .pipe(
         map(user => {
-          if (user) {
-            localStorage.setItem("access_token", user.access_token);
+          if (user && user.refresh_token) {
+            localStorage.setItem("access_token", user.access_token!);
             this.authorized$.next(true);
             localStorage.setItem("refresh_token", user.refresh_token);
             this.authenticated$.next(true);
-            localStorage.setItem("username", user.username);
+            localStorage.setItem("username", user.username!);
           }
           return user;
         })
@@ -103,11 +103,11 @@ export class AuthService {
     return this.authorized$.pipe(share());
   }
 
-  getRefreshToken(): string {
+  getRefreshToken(): string | null {
     return localStorage.getItem("refresh_token");
   }
 
-  getAccessToken(): string {
+  getAccessToken(): string | null {
     return localStorage.getItem("access_token");
   }
 
@@ -119,7 +119,7 @@ export class AuthService {
     return !!localStorage.getItem("access_token");
   }
 
-  decodeToken(token: string): JWT {
+  decodeToken(token: string): JWT | void {
     if (!token) return;
     const parts: any[] = token.split(".");
     if (parts.length != 3) return;
@@ -134,7 +134,7 @@ export class AuthService {
     }
   }
 
-  tokenExpiration(token: string): number {
+  tokenExpiration(token: string): number | void {
     if (!token) return;
     const jwt = this.decodeToken(token);
     if (!jwt) return;

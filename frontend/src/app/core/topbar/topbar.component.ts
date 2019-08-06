@@ -23,7 +23,7 @@ export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
   username: any;
   modalRef: NgbModalRef;
-  programs$ = new Subject<Program[]>();
+  programs$ = new Subject<Program[] | null>();
   isAdmin = false;
 
   constructor(
@@ -32,8 +32,7 @@ export class TopbarComponent implements OnInit {
     private auth: AuthService,
     private modalService: NgbModal
   ) {
-    const tmp = localStorage.getItem("username");
-    this.username = tmp ? tmp.replace(/\"/g, "") : "Anonymous";
+    this.username = localStorage.getItem("username") || "Anonymous";
     this.route.data
       .pipe(
         tap((data: { programs: Program[] }) => {
@@ -120,33 +119,5 @@ export class TopbarComponent implements OnInit {
 
   close(d: string) {
     this.modalRef.close(d);
-  }
-
-  @HostListener("window:scroll", ["$event"])
-  scrollHandler(_event: Event) {
-    const tallSize = getComputedStyle(document.documentElement)
-      .getPropertyValue("--tall-topbar-size")
-      .trim();
-    const narrowSize = getComputedStyle(document.documentElement)
-      .getPropertyValue("--narrow-topbar-size")
-      .trim();
-    const offset = getComputedStyle(document.documentElement)
-      .getPropertyValue("--router-outlet-margin-top")
-      .trim();
-
-    if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
-      const barsize = parseInt(offset) - document.documentElement.scrollTop;
-      const minSize = parseInt(narrowSize);
-      const maxSize = parseInt(tallSize);
-      document.documentElement.style.setProperty(
-        "--router-outlet-offset",
-        Math.min(Math.max(barsize, minSize), maxSize) + "px"
-      );
-    } else {
-      document.documentElement.style.setProperty(
-        "--router-outlet-offset",
-        "var(--router-outlet-margin-top)"
-      );
-    }
   }
 }

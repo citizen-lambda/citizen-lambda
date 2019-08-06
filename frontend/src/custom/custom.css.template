@@ -7,7 +7,7 @@
 /* COLORS */
 
 :root {
-    --default-font-color: #5d6970;
+    --color: #5d6970;
     --primary: #00a99d;
     --dark-primary: #0a998f;
     --secondary: #60b15c;

@@ -6,8 +6,8 @@ import {
   Output,
   EventEmitter
 } from "@angular/core";
-import { merge, Subject } from "rxjs";
-import { pluck, share } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { pluck, share, map } from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -16,6 +16,7 @@ import {
   TaxonomyListItem,
   ObservationFeature
 } from "../observation.model";
+import { sorted } from "../../.././api/gnc-programs.service";
 import { AppConfig } from "../../../../conf/app.config";
 
 @Component({
@@ -25,26 +26,68 @@ import { AppConfig } from "../../../../conf/app.config";
 })
 export class ObsListComponent implements OnChanges {
   readonly AppConfig = AppConfig;
-  @Input("observations") observations: FeatureCollection;
-  @Input("taxa") surveySpecies: TaxonomyList;
+  @Input("observations") observations!: FeatureCollection;
+  @Input("taxa") surveySpecies!: TaxonomyList;
   @Output("obsSelected") obsSelected: EventEmitter<
     Feature
   > = new EventEmitter();
-  municipalities: any[] = [];
   observationList: Feature[] = [];
-  program_id: number = 0;
-  taxa: any[] = [];
 
-  selectedTaxon: TaxonomyListItem | undefined;
+  selectedTaxon: TaxonomyListItem | null = null;
   selectedMunicipality: any = null;
   changes$ = new Subject<SimpleChanges>();
   observations$ = new Subject<Feature[]>();
-  features$ = merge(
-    this.observations$,
-    this.changes$.pipe(
-      pluck("observations", "currentValue", "features"),
-      share()
-    )
+  features$ = this.changes$.pipe(
+    pluck("observations", "currentValue", "features"),
+    map(items => items as FeatureCollection),
+    share()
+  );
+  municipalities$ = this.features$.pipe(
+    map(
+      (
+        items: Feature[] &
+          {
+            properties: {
+              municipality: { name: string | null; code: number };
+            };
+          }[]
+      ) => {
+        const result = items.reduce(
+          (
+            acc: {
+              data: { name: string | null; code: number }[];
+              partials: { name: string | null; code: number }[];
+            },
+            item
+          ) => {
+            const i: {
+              name: string | null;
+              code: number;
+            } = item.properties!.municipality;
+            if (!!!i.name) {
+              return {
+                ...acc,
+                ...{
+                  partials: [...acc.partials, { ...i, ...{ name: "" } }]
+                }
+              };
+            }
+            const known = acc.data.find(
+              k => k.name == i.name && k.code == i.code
+            );
+            return !known
+              ? { ...acc, ...{ data: [...acc.data, i] } }
+              : { ...acc };
+          },
+          { data: [], partials: [] }
+        );
+        return [...result.data, ...result.partials].sort(sorted("name")) as {
+          name: string;
+          code: number;
+        }[];
+      }
+    ),
+    share()
   );
 
   constructor() {}
@@ -52,18 +95,14 @@ export class ObsListComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.changes$.next(changes);
 
-    if (this.observations && changes.observations.currentValue) {
-      this.observationList = this.observations["features"];
-      this.observations$.next(this.observations["features"]);
-      this.municipalities = this.observations.features
-        .map(features => features.properties)
-        .filter(property => !!property)
-        .map(property => property.municipality)
-        .filter(
-          municipality =>
-            !!municipality && municipality.name && municipality.code
-        )
-        .filter((v, i, a) => a.indexOf(v) === i);
+    if (
+      this.observations &&
+      changes.observations &&
+      changes.observations.currentValue &&
+      this.observations.features
+    ) {
+      this.observationList = this.observations.features;
+      this.observations$.next(this.observations.features);
     }
   }
 
@@ -72,18 +111,23 @@ export class ObsListComponent implements OnChanges {
       taxon: null,
       municipality: null
     };
-    // WARNING: map.observations is connected to this.observationList
+
     this.observationList = this.observations["features"].filter(obs => {
       let results: boolean[] = [];
-      if (this.selectedMunicipality) {
+      if (obs && this.selectedMunicipality) {
         results.push(
-          obs.properties.municipality.code == this.selectedMunicipality.code
+          obs.properties!.municipality.code == this.selectedMunicipality.code
         );
         filters.municipality = this.selectedMunicipality.code;
       }
-      if (this.selectedTaxon) {
+      if (
+        obs &&
+        this.selectedTaxon &&
+        this.selectedTaxon.taxref &&
+        Object.keys(this.selectedTaxon.taxref).length > 0
+      ) {
         results.push(
-          obs.properties.cd_nom == this.selectedTaxon.taxref["cd_nom"]
+          obs.properties!.cd_nom == this.selectedTaxon.taxref["cd_nom"]
         );
         filters.taxon = this.selectedTaxon.taxref["cd_nom"];
       }
@@ -101,7 +145,8 @@ export class ObsListComponent implements OnChanges {
     }
   }
 
-  onSelected(feature: Feature): void {
+  onSelected(feature: any): void {
+    console.debug(feature);
     this.obsSelected.emit(feature);
   }
 

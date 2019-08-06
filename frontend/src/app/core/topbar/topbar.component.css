@@ -2,10 +2,8 @@ nav.navbar {
   min-height: var(--narrow-topbar-size);
   max-height: var(--tall-topbar-size);
   height: var(--router-outlet-offset);
-  background-color: #fefefe;
-  /* color: #60a3bc; */
+  background-color: var(--background-color);
   color: var(--primary);
-  /* border-bottom: 1px solid #60a3bc; */
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -15,7 +13,7 @@ nav.navbar {
 }
 
 .navbar-brand img {
-  max-height: calc(var(--router-outlet-offset) - 2px);
+  max-height: calc(var(--router-outlet-offset) - 4px);
   /* transition: 0.1s; */
 }
 

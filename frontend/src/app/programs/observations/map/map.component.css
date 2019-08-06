@@ -67,7 +67,7 @@ a.leaflet-control-layers-toggle {
 }
 
 .leaflet-bottom .leaflet-control-zoomviewer {
-  transform: translateY(-50%);
+  font-size: 0.9em;
 }
 
 .leaflet-control-layers-base,

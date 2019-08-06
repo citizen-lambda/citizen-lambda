@@ -15,24 +15,23 @@ import {
 } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
-import * as L from "leaflet";
+import L from "leaflet";
 import "leaflet-gesture-handling";
-import "leaflet-fullscreen";
+import "leaflet.fullscreen";
 import "leaflet.heat";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
 
 // import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
-import "./typing";
 
-const conf = {
+export const conf = {
   MAP_ID: "obsMap",
   GEOLOCATION_HIGH_ACCURACY: false,
   BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce(
     (acc: { [name: string]: L.TileLayer }, baseLayer) => {
-      acc[baseLayer["name"]] = L.tileLayer(baseLayer["layer"], {
-        name: baseLayer["name"],
+      acc[baseLayer["name"].toString()] = L.tileLayer(baseLayer["layer"], {
+        // name: baseLayer["name"],
         attribution: baseLayer["attribution"],
         subdomains: baseLayer["subdomains"] || "",
         maxZoom: baseLayer["maxZoom"],
@@ -122,25 +121,25 @@ const conf = {
   encapsulation: ViewEncapsulation.None
 })
 export class ObsMapComponent implements OnInit, OnChanges {
-  @ViewChild("map") map: ElementRef;
-  @Input("observations") observations: FeatureCollection;
-  @Input("program") program: FeatureCollection;
+  @ViewChild("map") map!: ElementRef;
+  @Input("observations") observations!: FeatureCollection;
+  @Input("program") program!: FeatureCollection;
   @Output() onClick: EventEmitter<L.Point> = new EventEmitter();
   options: any;
-  observationMap: L.Map;
-  programArea: L.GeoJSON;
-  programMaxBounds: L.LatLngBounds;
-  observationLayer: L.MarkerClusterGroup;
-  heatLayer: L.HeatLayer;
-  newObsMarker: L.Marker;
+  observationMap!: L.Map;
+  programArea: L.GeoJSON | null = null;
+  programMaxBounds!: L.LatLngBounds;
+  observationLayer: L.MarkerClusterGroup | null = null;
+  heatLayer: L.HeatLayer | null = null;
+  newObsMarker: L.Marker | null = null;
   markers: {
     feature: Feature;
     marker: L.Marker<any>;
   }[] = [];
-  obsOnFocus: Feature;
-  shouldOpenAnotherPopup: boolean;
+  obsOnFocus: Feature | null = null;
+  shouldOpenAnotherPopup: boolean = false;
   zoomAlertTimeout: any;
-  layerControl: L.Control.Layers;
+  layerControl!: L.Control.Layers;
 
   constructor(
     private resolver: ComponentFactoryResolver,
@@ -169,12 +168,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
     }
   }
 
-  initMap(options: any, LeafletOptions: L.MapOptions = {}): void {
+  async initMap(options: any, leafletOptions?: L.MapOptions): Promise<void> {
     this.options = options;
     this.observationMap = L.map(this.map.nativeElement, {
-      layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay ?
-      gestureHandling: true,
-      ...LeafletOptions
+      ...leafletOptions,
+      layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay
+      gestureHandling: true
     });
 
     // TODO: inject controls with options
@@ -183,20 +182,26 @@ export class ObsMapComponent implements OnInit, OnChanges {
     );
 
     this.layerControl = L.control
-      .layers(this.options.BASE_LAYERS, null, {
+      .layers(this.options.BASE_LAYERS, undefined, {
         collapsed: this.options.BASE_LAYER_CONTROL_INIT_COLLAPSED,
         position: this.options.BASE_LAYER_CONTROL_POSITION
       })
       .addTo(this.observationMap);
 
+    // const _fs = "Control.FullScreen";
+    // const fs = await import(
+    //   /* webpackInclude: /(Control\.FullScreen)\.js$/ */
+    //   `node_modules/leaflet.fullscreen/${_fs}`
+    // );
+    // console.debug(fs.default);
+
     L.control
-      .fullscreen({
+      .fullscreen<L.Control.Fullscreen>({
+        // content: `bla`,
         position: this.options.FULLSCREEN_CONTROL_POSITION,
-        title: {
-          false: "View Fullscreen",
-          true: "Exit Fullscreen"
-        }
-      })
+        title: "View Fullscreen",
+        titleCancel: "Exit Fullscreen"
+      } as L.Control.FullscreenOptions)
       .addTo(this.observationMap);
 
     L.control
@@ -250,7 +255,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   getPopupContent(feature: Feature): any {
     const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
     const component = factory.create(this.injector);
-    component.instance.data = feature.properties;
+    component.instance.data = { ...feature.properties };
     component.changeDetectorRef.detectChanges();
     const popupContent = component.location.nativeElement;
     return popupContent;
@@ -262,7 +267,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         this.layerControl.removeLayer(this.observationLayer);
         this.observationMap.removeLayer(this.observationLayer);
       }
-      this.observationLayer = this.options.OBSERVATION_LAYER();
+      this.observationLayer = this.options.OBSERVATION_LAYER() as L.MarkerClusterGroup;
 
       this.observationLayer.addLayer(
         L.geoJSON(this.observations, this.mkObservationLayerOptions())
@@ -277,7 +282,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.heatLayer = L.heatLayer(
         this.markers.map(item => item.marker.getLatLng()),
         { minOpacity: 0.5 }
-      ).addTo(this.observationMap);
+      );
       this.layerControl.addOverlay(this.heatLayer, "heatmap");
     }
   }
@@ -301,7 +306,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       }
     };
 
-    this.observationLayer.on("animationend", _e => {
+    this.observationLayer!.on("animationend", _e => {
       if (this.obsOnFocus) {
         this.shouldOpenAnotherPopup = true;
         this.observationMap.closePopup();
@@ -315,17 +320,17 @@ export class ObsMapComponent implements OnInit, OnChanges {
     this.obsOnFocus = obs;
     let marker = this.markers.find(
       marker =>
-        marker.feature.properties.id_observation ==
-        obs.properties.id_observation
+        marker.feature.properties!.id_observation ==
+        obs.properties!.id_observation
     );
-    let visibleParent: L.Marker = this.observationLayer.getVisibleParent(
-      marker.marker
+    let visibleParent: L.Marker = this.observationLayer!.getVisibleParent(
+      marker!.marker
     );
     if (!visibleParent) {
       console.debug(event);
-      this.observationMap.flyTo(marker.marker.getLatLng(), 16);
+      this.observationMap.flyTo(marker!.marker.getLatLng(), 16);
       // this.observationMap.panTo(marker.marker.getLatLng());
-      visibleParent = marker.marker;
+      visibleParent = marker!.marker;
     }
     L.popup()
       .setLatLng(visibleParent.getLatLng())
@@ -352,9 +357,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       this.newObsMarker = null;
 
       if (canSubmit) {
-        this.programArea.on("click", (e: L.LeafletMouseEvent) =>
-          this.onMarkerDrop(e)
-        );
+        this.programArea.on("click", this.onMarkerDrop, this);
       }
       this.programMaxBounds = programBounds;
     }
@@ -438,5 +441,5 @@ export class ObsMapComponent implements OnInit, OnChanges {
   `
 })
 export class MarkerPopupComponent {
-  @Input() data: {};
+  @Input() data!: {};
 }

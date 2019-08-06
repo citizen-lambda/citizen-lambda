@@ -11,6 +11,8 @@ import {
 import { FlowItem } from "./flow/flow-item";
 import { ModalFlowService } from "./modalflow.service";
 import { AppConfig } from "../../../../conf/app.config";
+import { FeatureCollection } from "geojson";
+import { TaxonomyList } from "../observation.model";
 
 @Component({
   selector: "app-modalflow",
@@ -32,10 +34,14 @@ import { AppConfig } from "../../../../conf/app.config";
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent {
-  @Input("coords") coords: [number, number];
+  @Input("data") data: {
+    coords?: L.Point;
+    program?: FeatureCollection;
+    taxa?: TaxonomyList;
+  };
   @ViewChild("content") content: ElementRef;
   AppConfig = AppConfig;
-  flowitems: FlowItem[];
+  flowitems: FlowItem[] = [];
   timeout: any;
 
   constructor(
@@ -44,7 +50,8 @@ export class ModalFlowComponent {
   ) {}
 
   clicked() {
-    this.flowitems = this.flowService.getFlowItems({ coords: this.coords });
+    console.debug("before getFlowitems:", this.data);
+    this.flowitems = this.flowService.getFlowItems({ ...this.data });
     this.flowService.open(this.content);
   }
 

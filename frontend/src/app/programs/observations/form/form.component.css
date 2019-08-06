@@ -1,5 +1,30 @@
 .autocomplete-thumbs {
   height: 3em;
+  margin-right: 0 !important;
+  padding-right: 0.5em !important;
+  transition: 0.25s;
+}
+
+ngb-typeahead-window .dropdown-item.active img {
+  height: 4.5em;
+}
+
+ngb-typeahead-window .dropdown-item {
+  padding: 0.15em 3em 0.15em 0.5em !important;
+  width: 32em;
+  line-height: normal !important;
+}
+
+ngb-typeahead-window .dropdown-item ngb-highlight:nth-of-type(n + 2) {
+  font-size: 0.9em;
+}
+
+ngb-typeahead-window .dropdown-item.active {
+  padding-right: 0.5em !important;
+}
+
+ngb-typeahead-window .dropdown-menu {
+  overflow-y: hidden;
 }
 
 app-obs-form .form-group .input-group {
@@ -20,8 +45,8 @@ app-obs-form .inputfile {
   position: absolute;
 }
 
-app-obs-form #formMap {
-  min-height: 225px; /*50vh*/
+app-obs-form-map #obsFormMap {
+  min-height: 225px;
   width: 100%;
 }
 
@@ -48,6 +73,10 @@ app-obs-form .zoom-alert .btn {
 
 app-obs-form .dropdown-menu.show {
   z-index: 1001 !important;
+}
+
+app-obs-form-map {
+  padding: 0 !important;
 }
 
 .observation-zoom-statement-warning::after {

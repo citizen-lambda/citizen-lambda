@@ -15,7 +15,7 @@ import { UserInfo } from "./models";
   providedIn: "root"
 })
 export class AuthGuard implements CanActivate {
-  user: UserInfo;
+  user: UserInfo | undefined;
 
   constructor(private router: Router, private authService: AuthService) {}
 

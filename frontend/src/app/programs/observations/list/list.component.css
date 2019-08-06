@@ -3,25 +3,26 @@
 }
 
 #list {
-  background: #eee;
+  background-color: var(--secondary-background-color);
   padding: 0px 0px 3px 3px;
   overflow: auto;
   max-height: calc(100vh - var(--list-obs-offset));
 }
 
 #list .espece {
-  background: #fff;
+  background-color: var(--primary-background-color);
+  border: solid 2px;
+  border-color: var(--primary-background-color);
   margin-bottom: 5px;
   display: flex;
   position: relative;
-  border: solid 2px #eee;
+  border: solid 2px var(--primary-background-color);
   overflow: hidden;
   background-image: var(--obs-card-bg);
   background-size: 100% 100%;
 }
 
 #list .espece:hover {
-  border: solid 2px;
   border-color: var(--primary);
   cursor: pointer;
 }
@@ -45,7 +46,7 @@
   padding: 0px 10px;
   display: flex;
   align-items: center;
-  color: #fff;
+  color: var(--secondary-background-color);
 }
 
 #list .espece .hide img {
@@ -118,7 +119,7 @@
   white-space: nowrap;
   margin: 0;
   font-style: italic;
-  color: #fff;
+  color: var(--secondary-background-color);
   text-align: center;
 }
 

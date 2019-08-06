@@ -22,7 +22,7 @@
       (ngModelChange)="onFilterChange()"
     >
       <option [ngValue]="null" i18n>Toutes communes</option>
-      <option *ngFor="let t of municipalities" [ngValue]="t">{{
+      <option *ngFor="let t of municipalities$ | async" [ngValue]="t">{{
         t?.name || "?"
       }}</option>
     </select>
@@ -30,14 +30,14 @@
   <div class="obs-count">
     <!-- TODO: loading => recherche… -->
     <p i18n>
-      {{ (features$ | async)?.length }} { +(features$ | async)?.length, plural,
-      =0 { observation trouvée } =1 { observation trouvée !} other {
+      {{ (observations$ | async)?.length }} { +(observations$ | async)?.length,
+      plural, =0 { observation trouvée } =1 { observation trouvée !} other {
       observations trouvées !} }
     </p>
   </div>
   <div id="list">
     <div
-      *ngFor="let o of features$ | async; trackBy: trackByObs"
+      *ngFor="let o of observations$ | async; trackBy: trackByObs"
       class="espece obs-{{ o.properties.id_observation }}"
       (click)="onSelected(o)"
     >
@@ -63,8 +63,8 @@
               : "Anonyme"
           }}</span>
         </p>
-        <p i18n>
-          le <span>{{ o.properties.date }}</span>
+        <p i18n *ngIf="o.properties.date || O.properties.municipality?.name">
+          <span *ngIf="o.properties.date"> le {{ o.properties.date }}</span>
           <span *ngIf="o.properties.municipality?.name">
             à {{ o.properties.municipality?.name }}</span
           >

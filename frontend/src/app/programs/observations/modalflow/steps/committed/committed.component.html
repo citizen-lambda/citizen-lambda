@@ -5,7 +5,7 @@
 
 <div class="modal-body add-obs pb-0">
   <app-obs-form
-    [coords]="data.coords"
+    [data]="data"
     (newObservation)="onNewObservation($event)"
   ></app-obs-form>
 </div>

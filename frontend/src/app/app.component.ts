@@ -14,5 +14,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.appConfig = AppConfig;
+    console.debug("app-root inited");
   }
 }

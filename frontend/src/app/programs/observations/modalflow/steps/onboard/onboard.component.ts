@@ -35,9 +35,11 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   ) {}
 
   ngOnInit() {
+    console.debug("OnboardComponent.OnInit", this.data);
     this.authService.authorized$.subscribe(value => {
       if (value) {
-        this.timeout = setTimeout(() => this.data.next(), 0);
+        console.debug("OnboardComponent.next", this.data);
+        this.timeout = setTimeout(() => this.data.next(this.data), 0);
       }
     });
   }
@@ -49,7 +51,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     });
     this.RegistrationModalRef.result.then(_ => {
       this.authService.isLoggedIn().subscribe(
-        value => value!!,
+        value => !!value,
         reason => {
           console.debug("registration dismissed:", reason);
         }
@@ -73,7 +75,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   }
 
   continue() {
-    console.debug("continue");
-    this.data.next();
+    console.debug("OnboardComponent.next", this.data);
+    this.data.next(this.data);
   }
 }

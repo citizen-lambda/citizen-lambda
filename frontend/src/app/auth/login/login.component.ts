@@ -17,10 +17,10 @@ import { AuthService } from "./../auth.service";
 })
 export class LoginComponent {
   AppConfig = AppConfig;
-  private _error = new Subject<string>();
-  private _success = new Subject<string>();
-  errorMessage: string;
-  successMessage: string;
+  private _error = new Subject<string | null>();
+  private _success = new Subject<string | null>();
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
   staticAlertClosed = false;
   user: LoginUser = { username: "", password: "" };
   recovery = { username: "", email: "" };

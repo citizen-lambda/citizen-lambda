@@ -6,7 +6,7 @@ import {
   Inject,
   LOCALE_ID
 } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { forkJoin, combineLatest } from "rxjs";
 import { map, flatMap } from "rxjs/operators";
 
@@ -14,7 +14,7 @@ import { FeatureCollection } from "geojson";
 import * as L from "leaflet";
 
 import { AppConfig } from "../../../conf/app.config";
-import { IAppConfig, AnchorNavigation } from "src/app/core/models";
+import { IAppConfig, AnchorNavigation } from "../../core/models";
 import { Program } from "../programs.models";
 import { ProgramsResolve } from "../../programs/programs-resolve.service";
 import { GncProgramsService } from "../../api/gnc-programs.service";
@@ -36,7 +36,12 @@ export class ObsComponent extends AnchorNavigation {
   readonly AppConfig: AppConfigObservations = AppConfig;
   programs: Program[];
   program: Program;
-  coords: L.Point;
+  data: {
+    [name: string]: any;
+    coords?: L.Point;
+    program?: FeatureCollection;
+    taxa?: TaxonomyList;
+  } = {};
   observations: FeatureCollection;
   programFeature: FeatureCollection;
   surveySpecies: TaxonomyList;
@@ -45,11 +50,12 @@ export class ObsComponent extends AnchorNavigation {
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
+    protected router: Router,
     protected route: ActivatedRoute,
     private programService: GncProgramsService,
     public flowService: ModalFlowService
   ) {
-    super(route);
+    super(router, route);
     combineLatest(this.route.params, this.route.data)
       .pipe(
         map(([params, data]) => {
@@ -62,6 +68,7 @@ export class ObsComponent extends AnchorNavigation {
         }),
         flatMap(program_id =>
           forkJoin([
+            // TODO: potentially expensive ... defer loading obs set until first paint.
             this.programService.getProgramObservations(program_id),
             this.programService.getProgramTaxonomyList(program_id),
             this.programService.getProgram(program_id)
@@ -72,6 +79,8 @@ export class ObsComponent extends AnchorNavigation {
         this.observations = observations;
         this.surveySpecies = taxa;
         this.programFeature = program;
+        this.data.taxa = taxa;
+        this.data.program = program;
       });
   }
 
@@ -79,7 +88,7 @@ export class ObsComponent extends AnchorNavigation {
   // afterViewInit(): void {}
 
   onMapClicked(p: L.Point): void {
-    this.coords = p;
+    this.data.coords = p;
   }
 
   onListToggle() {

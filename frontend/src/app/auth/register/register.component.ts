@@ -18,11 +18,11 @@ import { HttpErrorResponse } from "@angular/common/http";
 export class RegisterComponent {
   readonly AppConfig = AppConfig;
   user: RegisterUser = new RegisterUser();
-  private _error = new Subject<string>();
-  private _success = new Subject<string>();
+  private _error = new Subject<string | null>();
+  private _success = new Subject<string | null>();
   staticAlertClosed = false;
-  errorMessage: string;
-  successMessage: string;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,

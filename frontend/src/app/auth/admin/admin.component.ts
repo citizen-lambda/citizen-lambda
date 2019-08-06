@@ -26,7 +26,7 @@ import { AuthService } from "../auth.service";
   encapsulation: ViewEncapsulation.None
 })
 export class AdminComponent implements OnInit {
-  adminUrl: SafeUrl;
+  adminUrl: SafeUrl = "";
 
   constructor(
     // @Inject(LOCALE_ID) readonly localeId: string,

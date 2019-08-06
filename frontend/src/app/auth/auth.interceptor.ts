@@ -25,7 +25,9 @@ import { ErrorHandler } from "../api/error_handler";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   refreshing = false;
-  token$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  token$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(
+    null
+  );
 
   constructor(
     public errorHandler: ErrorHandler,
@@ -111,40 +113,42 @@ export class AuthInterceptor implements HttpInterceptor {
 
     // access_token renewal 2min before expiration if interacting with backend api.
     const secondsToExpiration = this.auth.tokenExpiration(
-      this.auth.getAccessToken()
+      this.auth.getAccessToken()!
     );
     console.debug(`secs to exp: ${secondsToExpiration}`);
     if (secondsToExpiration && secondsToExpiration <= 120.0) {
       return this.handle401(request, next);
     }
 
-    return next.handle(this.addToken(request, this.auth.getAccessToken())).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (!(error.error instanceof ErrorEvent)) {
-          // api call failure response
-          switch (error.status) {
-            case 400:
-            case 422:
-              return this.handle400(error);
-            case 401:
-              return this.handle401(request, next);
-            default:
-              /*
+    return next
+      .handle(this.addToken(request, this.auth.getAccessToken()!))
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (!(error.error instanceof ErrorEvent)) {
+            // api call failure response
+            switch (error.status) {
+              case 400:
+              case 422:
+                return this.handle400(error);
+              case 401:
+                return this.handle401(request, next);
+              default:
+                /*
               When the flask backend is in debug mode ,
               no cors header is returned upon error so
               error.status=0, error.statusText="Unknown Error"
               and error.message="Http failure response for (unknown url): 0 Unknown Error".
               See comment in backend/server.py below flask_cors init.
               */
-              if (error.status !== 0) {
-                console.error("error: ", error);
-              }
+                if (error.status !== 0) {
+                  console.error("error: ", error);
+                }
+            }
           }
-        }
-        this.errorHandler.handleError(error);
-        console.error(error);
-        return throwError(error);
-      })
-    );
+          this.errorHandler.handleError(error);
+          console.error(error);
+          return throwError(error);
+        })
+      );
   }
 }

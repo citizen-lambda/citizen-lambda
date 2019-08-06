@@ -1,4 +1,4 @@
-<div class="row">
+<div class="container-fluid">
   <section id="welcome">
     <h1 [innerHTML]="platform_intro"></h1>
     <p [innerHTML]="platform_teaser"></p>
@@ -19,9 +19,6 @@
       />
     </a>
   </section>
-</div>
-
-<div class="row">
   <!-- LES PROGRAMMES -->
   <section id="programs" *ngIf="programs.length > 1">
     <div id="programs-cards">
@@ -100,4 +97,5 @@
       </a>
     </div>
   </section>
+  <app-footer *ngIf="AppConfig.FRONTEND.DISPLAY_FOOTER"></app-footer>
 </div>

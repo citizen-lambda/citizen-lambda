@@ -19,12 +19,12 @@ export class UserDashboardComponent implements OnInit {
     "Content-Type": "application/json"
   });
   readonly AppConfig = AppConfig;
-  modalRef: NgbModalRef;
+  modalRef!: NgbModalRef;
   username: string = "not defined";
-  role_id: number;
+  role_id: number | null = null;
   isLoggedIn: boolean = false;
   stats: any;
-  personalInfo: { [name: string]: any };
+  personalInfo: { [name: string]: any } = {};
   badges: { img: string; alt: string }[] = [];
   badges$: Subject<Object> = new Subject<Object>();
 
@@ -37,13 +37,11 @@ export class UserDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const access_token = localStorage.getItem("access_token");
-    console.debug("dashboard", access_token);
     if (access_token) {
       this.auth
         .ensureAuthorized()
         .pipe(
           tap(user => {
-            console.debug("user:", user);
             if (user && user["features"] && user["features"]["id_role"]) {
               this.isLoggedIn = true;
               this.username = user["features"]["username"];
@@ -63,19 +61,21 @@ export class UserDashboardComponent implements OnInit {
 
   deletePersonalData() {
     const access_token = localStorage.getItem("access_token");
-    this.auth
-      .selfDeleteAccount(access_token)
-      .then(data => {
-        let getBackHome = confirm(
-          data.hasOwnProperty("message")
-            ? `${data.message}\nRevenir à l'accueil ?`
-            : data
-        );
-        if (getBackHome) {
-          this.router.navigate(["/home"]);
-        }
-      })
-      .catch(err => alert(err));
+    if (access_token) {
+      this.auth
+        .selfDeleteAccount(access_token)
+        .then(data => {
+          let getBackHome = confirm(
+            data.hasOwnProperty("message")
+              ? `${data.message}\nRevenir à l'accueil ?`
+              : data
+          );
+          if (getBackHome) {
+            this.router.navigate(["/home"]);
+          }
+        })
+        .catch(err => alert(err));
+    }
   }
 
   getPersonalInfo(): Observable<any> {

@@ -1,0 +1,199 @@
+button:focus {
+  outline-color: var(--primary) !important;
+}
+
+body,
+app-obs-list #list,
+app-obs-list #list .espece,
+#slider .carousel-text,
+#programs-cards .card,
+.leaflet-bar a,
+.leaflet-control-layers.leaflet-control,
+.modal-content,
+.form-control,
+.form-control:focus,
+.dropdown-item.active,
+.bg-light,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+app-user-dashboard #badges div {
+  background-color: #333 !important;
+}
+
+.leaflet-control-fullscreen a {
+  background-color: #dfd !important;
+  filter: contrast(100%) invert(100%) sepia(90%) brightness(60%)
+    hue-rotate(490deg) saturate(584%);
+}
+
+/* .btn-light, */
+ngb-typeahead-window.dropdown-menu,
+ngb-datepicker.dropdown-menu .ngb-dp-day {
+  background-color: #444 !important;
+}
+
+ngb-datepicker.dropdown-menu .ngb-dp-day:hover {
+  background-color: #666 !important;
+}
+
+/* .dropdown-item.active, */
+.leaflet-bar a:hover,
+#slider h2:before {
+  background-color: #666 !important;
+}
+
+.dropdown-item,
+#slider .carousel-text,
+app-obs-list .toolbar,
+.btn-light,
+*:focus,
+ngb-datepicker.dropdown-menu .ngb-dp-day,
+.leaflet-control-layers.leaflet-control,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+.leaflet-popup-content div,
+app-user-dashboard #badges div,
+#clear {
+  color: #999 !important;
+}
+
+.form-control,
+ngb-typeahead-window .dropdown-item.active,
+.form-control:focus {
+  color: var(--dark-primary) !important;
+}
+
+.btn-link {
+  color: #666 !important;
+}
+
+#slider h2:before {
+  background-color: #bbb !important;
+}
+
+#slider h2,
+.text-white,
+.btn-link:hover {
+  color: #bbb !important;
+}
+
+.carousel-text {
+  opacity: 0.8 !important;
+}
+
+app-obs-list #list .espece,
+.dropdown-menu,
+.leaflet-bar a,
+.leaflet-bar a:hover,
+app-user-dashboard #badges div {
+  border-color: #666 !important;
+}
+
+app-flow .modal-header {
+  border-color: var(--primary) !important;
+}
+
+app-obs-list #list .espece:hover {
+  border-color: var(--primary) !important;
+  background-color: #222 !important;
+}
+
+app-obs-list #list .espece:hover {
+  cursor: pointer;
+}
+
+.leaflet-control-attribution,
+.leaflet-control-scale,
+.leaflet-control-zoomviewer,
+.leaflet-tile-container img:not([src*="lyrs=s"]):not([src*="dark"]),
+app-topbar,
+app-obs-list .obs-found,
+app-obs-list #list .espece .hide,
+app-footer footer,
+.marker-cluster,
+.leaflet-popup-content div img,
+.user-infos span,
+ngb-datepicker-navigation-select {
+  filter: brightness(80%) hue-rotate(180deg) invert(1) !important;
+}
+
+.leaflet-control-layers-toggle {
+  filter: sepia(100%) hue-rotate(457deg) saturate(150%);
+}
+.bg-primary {
+  background-color: var(--dark-primary) !important;
+}
+
+* {
+  scrollbar-color: var(--primary) #333 !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  width: 10px;
+  border: 1px solid #333 !important;
+  margin: 5px;
+}
+
+::-webkit-scrollbar {
+  background: #333 !important;
+  width: 0.8em;
+  height: 0.8em;
+  margin: 0.2em;
+  cursor: pointer;
+}
+
+::-webkit-inner-spin-button,
+::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
+
+app-topbar .navbar {
+  box-shadow: 0 2px 2px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+app-obs-list #list .espece {
+  background-image: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23373737" fill-opacity="0.9" /></svg>') !important;
+  background-size: 100% 100%;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+  animation: fadein 1s;
+}
+
+.leaflet-container a {
+  color: var(--primary);
+}
+
+.leaflet-container g path {
+  stroke: var(--primary);
+  stroke-width: 0.2em;
+  stroke-dasharray: none;
+  transition: fill 1s ease-in-out, fill-opacity 1s ease-in-out;
+  animation: fadein 1s ease-in-out;
+}
+
+.leaflet-container g path:nth-child(n + 2) {
+  /* intended for markercluster coverage polygon,
+    I'm afraid the rule catches multipolygon program areas also */
+  fill: var(--dark-primary);
+  fill-opacity: 0.3;
+}
+
+.leaflet-container g path:hover {
+  transition: fill 0.5s ease-in-out, stroke-opacity 0.5s ease-in-out;
+}
+
+app-footer footer .container {
+  text-align: center;
+}

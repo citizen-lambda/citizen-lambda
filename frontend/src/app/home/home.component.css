@@ -1,64 +1,15 @@
-section {
-  width: 100%;
-  min-height: 70vh;
-  position: relative;
-  margin-bottom: 20px;
-}
+@import "src/base.css";
 
-.section:before {
-  content: " ";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #00000056;
+app-home div.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+  background-color: var(--ternary-color);
 }
-
-.collapse {
-  transition-property: all;
-  transition-property: transform;
-  transition-duration: 0.2s;
-}
-
-/* .collapse:not(.show){
-    transform: translateX(-100%) !important;
-    display: block !important;
-    z-index: 900;
-} */
 
 #welcome {
   background: url(/assets/background.jpg) no-repeat;
   background-size: cover;
   position: relative;
-  height: calc(100vh - var(--router-outlet-offset) - 80px);
-}
-
-#welcome:before {
-  content: " ";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background: -moz-linear-gradient(
-    top,
-    rgba(0, 0, 0, 0) 3%,
-    rgba(0, 0, 0, 0.393) 99%,
-    rgba(0, 0, 0, 0.452) 100%
-  );
-  background: -webkit-linear-gradient(
-    top,
-    rgba(0, 0, 0, 0) 3%,
-    rgba(0, 0, 0, 0.393) 99%,
-    rgba(0, 0, 0, 0.452) 100%
-  );
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 3%,
-    rgba(0, 0, 0, 0.393) 99%,
-    rgba(0, 0, 0, 0.452) 100%
-  );
 }
 
 #welcome > h1 {
@@ -75,22 +26,15 @@ section {
 #welcome > p {
   font-family: "Satisfy";
   margin-top: 30px;
-  color: #fff;
+  color: var(--color);
   user-select: none;
-}
-
-#welcome a[role="button"] {
-  position: absolute;
-  bottom: 100px;
-  right: 100px;
-  background-color: var(--primary);
 }
 
 #welcome a.scroll {
   position: absolute;
   bottom: 0px;
   left: 50%;
-  color: #fff;
+  color: var(--primary-color);
   transform: translateX(-50%);
   font-size: 14px;
   background-color: transparent !important;
@@ -110,7 +54,6 @@ section {
 #programs {
   display: flex;
   justify-content: center;
-  min-height: inherit;
 }
 
 #programs-cards {
@@ -125,6 +68,7 @@ section {
   border-radius: 0px;
   width: 365px !important;
   height: 500px !important;
+  background-color: var(--primary-color);
 }
 #programs-cards .card h3,
 #programs-cards .card p {
@@ -160,10 +104,6 @@ section {
 }
 
 /* SLIDER */
-#slide {
-  min-height: inherit !important;
-  /* height: calc(100vh - var(--router-outlet-offset)); */
-}
 
 #programs #slider {
   display: none;
@@ -171,28 +111,7 @@ section {
 
 #slider .carousel-inner,
 #slider .carousel-item {
-  /* height: calc(100vh - var(--router-outlet-offset)); */
   max-height: 70vh;
-}
-
-#slider h2 {
-  position: absolute;
-  top: 10px;
-  left: 50px;
-  z-index: 999;
-  color: #fff;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 20px;
-}
-
-#slider h2:before {
-  content: " ";
-  position: absolute;
-  width: 40px;
-  height: 21px;
-  transform: translateX(-125%);
-  background: #fff;
 }
 
 #slider ol {
@@ -214,54 +133,10 @@ section {
   border: solid 1px #fff;
 }
 
-#slider .carousel-text-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  max-width: 60%;
-}
-
-#slider .carousel-text {
-  background-color: #fff;
-  padding: 35px 20px 35px 35px;
-  min-width: 450px;
-  max-height: 80%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 #slider .carousel-text div {
   max-height: 50%;
   overflow-y: auto;
   margin-bottom: 1em;
-}
-
-#slider .carousel-text h3 {
-  font-family: "Satisfy";
-  color: var(--ternary);
-}
-
-#slider .carousel-text > p {
-  font-style: italic;
-  font-size: 14px;
-  overflow: hidden;
-}
-
-#slider .carousel-text a {
-  background-color: var(--secondary);
-  width: fit-content;
-  text-align: center;
-  margin: 0 auto;
-}
-
-.mobile-hidden {
-  /* overflow: hidden; */
-  line-height: 22px;
 }
 
 .mobile-hidden h1,
@@ -271,26 +146,6 @@ section {
 .mobile-hidden h6 {
   font-size: 1rem;
   font-weight: normal;
-}
-
-app-observations {
-  min-width: 100%;
-}
-
-/* SCROLLBAR CUSTOM */
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  width: 10px;
-  border: 1px solid #eee;
-  margin: 5px;
-}
-::-webkit-scrollbar {
-  background: #eee;
-  width: 10px;
-  height: 10px;
-  margin: 5px;
-  cursor: pointer;
 }
 
 /* MEDIA QUERIES */

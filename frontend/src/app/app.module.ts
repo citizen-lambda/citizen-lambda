@@ -24,6 +24,7 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
 import { ObsFormComponent } from "./programs/observations/form/form.component";
+import { ObsFormMapComponent } from "./programs/observations/form/obs-form-map-component";
 import { ObsListComponent } from "./programs/observations/list/list.component";
 import {
   ObsMapComponent,
@@ -52,9 +53,11 @@ import { ProgramsResolve } from "./programs/programs-resolve.service";
 import { AdminComponent } from "./auth/admin/admin.component";
 
 import { AppConfig } from "../conf/app.config";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   imports: [
+    BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserTransferStateModule,
     HttpClientModule,
@@ -69,6 +72,7 @@ import { AppConfig } from "../conf/app.config";
     ObsMapComponent,
     MarkerPopupComponent,
     ObsFormComponent,
+    ObsFormMapComponent,
     ObsListComponent,
     HomeComponent,
     HomeCustomComponent,
@@ -120,6 +124,7 @@ import { AppConfig } from "../conf/app.config";
     CommittedComponent,
     CongratsComponent,
     RewardComponent,
+    ObsFormMapComponent,
     MarkerPopupComponent
   ],
   exports: [AdminComponent]
@@ -132,8 +137,10 @@ export class AppModule {
   }
 
   async localeInitializer(localeId: string): Promise<any> {
-    const module = await import(/* webpackInclude: /(fr|en)\.js$/ */
-    `@angular/common/locales/${localeId}.js`);
+    const module = await import(
+      /* webpackInclude: /(fr|en)\.js$/ */
+      `@angular/common/locales/${localeId}.js`
+    );
     return registerLocaleData(module.default);
   }
 }

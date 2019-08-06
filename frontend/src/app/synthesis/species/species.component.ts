@@ -12,7 +12,7 @@ import { TaxhubService, Taxon } from "../../api/taxhub.service";
 export class SpeciesComponent implements OnInit {
   title = "fiche espèce";
   specie_id: any;
-  taxon: Taxon;
+  taxon!: Taxon;
 
   constructor(private route: ActivatedRoute, public taxhub: TaxhubService) {
     this.route.params.subscribe(params => {

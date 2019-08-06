@@ -10,12 +10,13 @@ import { ObservationFeature } from "../../../observation.model";
   encapsulation: ViewEncapsulation.None
 })
 export class CommittedComponent implements IFlowComponent {
-  @Input() data: any;
   @ViewChild(ObsFormComponent) form: ObsFormComponent;
+  @Input() data: any;
+  newData: any = {};
 
   onNewObservation(observation: ObservationFeature) {
     if (observation) {
-      this.data.obs = observation;
+      this.newData = { obs: observation, ...this.data };
 
       const event: CustomEvent = new CustomEvent("NewObservationEvent", {
         bubbles: true,
@@ -24,7 +25,7 @@ export class CommittedComponent implements IFlowComponent {
       });
       document.dispatchEvent(event);
 
-      this.data.next(this.data);
+      this.data.next(this.newData);
     }
   }
 

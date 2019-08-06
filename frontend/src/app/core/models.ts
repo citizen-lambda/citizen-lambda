@@ -1,7 +1,7 @@
-import { Observable } from "rxjs";
-import { AfterViewInit, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { map, take } from "rxjs/operators";
+import { Observable, combineLatest, Subject } from "rxjs";
+import { OnInit, AfterViewInit, HostListener } from "@angular/core";
+import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { map, take, filter, tap } from "rxjs/operators";
 
 export interface IAppConfig {
   appName: string;
@@ -48,32 +48,92 @@ export interface IAppConfig {
   program_list_sort: string;
 }
 
-export abstract class AnchorNavigation implements OnInit, AfterViewInit {
-  fragment$: Observable<string>;
+// type Constructor<T = {}> = new (...args: any[]) => T;
 
-  constructor(protected route: ActivatedRoute) {}
+// function AnchorNavigation<TBase extends Constructor>(Base: TBase) {
+//   return class extends Base implements OnInit {
+//     router: Router;
+//     route: ActivatedRoute;
+//     fragment$ = new Subject<string>();
+//     constructor(...args: any[]) {
+//      super(...args);
+export abstract class AnchorNavigation implements AfterViewInit {
+  fragment$ = new Subject<string>();
 
-  jumpTo(fragment: string) {
+  constructor(protected router: Router, protected route: ActivatedRoute) {
+    combineLatest(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        take(1)
+      ),
+      this.route.fragment.pipe(
+        map(fragment => fragment || ""),
+        take(1)
+      )
+    )
+      .pipe(
+        map(([_, fragment]) => {
+          console.debug("tapped fragment:", fragment);
+          return fragment;
+        })
+      )
+      .subscribe(fragment => this.fragment$.next(fragment));
+  }
+
+  jumpTo(fragment: string, delay: number = 200) {
+    console.debug("jumpTo", fragment);
     const anchor = document.getElementById(fragment);
+    const offset = parseInt(
+      getComputedStyle(document.documentElement!)
+        .getPropertyValue("--narrow-topbar-size")
+        .replace("px", "")
+        .trim()
+    );
+    console.debug(offset);
     if (!!anchor) {
       setTimeout(() => {
         window.scrollTo({
-          top: anchor.getBoundingClientRect().top + window.pageYOffset - 65,
+          top: anchor.getBoundingClientRect().top + window.pageYOffset - offset,
           behavior: "smooth"
         });
-      }, 200); // FIXME: this is entirely timely !
+      }, delay); // FIXME: this seems entirely timely !
     }
   }
 
-  ngOnInit() {
-    this.fragment$ = this.route.fragment.pipe(map(fragment => fragment || ""));
+  // abstract AfterViewInit(): void;
+
+  ngAfterViewInit() {
+    this.fragment$.subscribe(fragment => this.jumpTo(fragment));
   }
 
-  ngAfterViewInit(): void {
-    this.fragment$.pipe(take(1)).subscribe(fragment => this.jumpTo(fragment));
-    // this.afterViewInit();
-  }
+  @HostListener("document:scroll", ["$event"])
+  scrollHandler(_event: Event) {
+    const tallSize = getComputedStyle(document.documentElement!)
+      .getPropertyValue("--tall-topbar-size")
+      .trim();
+    const narrowSize = getComputedStyle(document.documentElement!)
+      .getPropertyValue("--narrow-topbar-size")
+      .trim();
+    const offset = getComputedStyle(document.documentElement!)
+      .getPropertyValue("--router-outlet-margin-top")
+      .trim();
 
-  // abstract onInit(): void;
-  // abstract afterViewInit(): void;
+    if (
+      document.body.scrollTop > 0 ||
+      document.documentElement!.scrollTop > 0
+    ) {
+      const barsize = parseInt(offset) - document.documentElement!.scrollTop;
+      const minSize = parseInt(narrowSize);
+      const maxSize = parseInt(tallSize);
+      document.documentElement!.style.setProperty(
+        "--router-outlet-margin-top",
+        Math.min(Math.max(barsize, minSize), maxSize) + "px"
+      );
+    } else {
+      document.documentElement!.style.setProperty(
+        "--router-outlet-margin-top",
+        "var(--tall-topbar-size)"
+      );
+    }
+  }
 }

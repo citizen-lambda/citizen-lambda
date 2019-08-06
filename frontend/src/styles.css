@@ -7,17 +7,41 @@
 }
 
 :root {
-  --default-font-color: #5d6970;
+  --tall-topbar-size: 100px;
+  --narrow-topbar-size: 65px;
+  --router-outlet-margin-top: var(--tall-topbar-size);
+  --router-outlet-offset: var(--router-outlet-margin-top);
+  --footer-height: 30px;
+  --list-obs-offset: calc(var(--router-outlet-offset) + 65px - 3px);
+
+  --light-primary-color: #fff;
+  --light-secondary-color: #eee;
+  --light-ternary-color: #fefefe;
+
+  --dark-primary-color: #333;
+  --dark-secondary-color: #444;
+  --dark-ternary-color: #343434;
+
+  --primary-color: var(--light-primary-color);
+  --secondary-color: var(--light-secondary-color);
+  --ternary-color: var(--light-ternary-color);
+
+  --primary-background-color: var(--dark-primary-color);
+  --background-color: var(--primary-background-color);
+  --ternary-background-color: var(--dark-ternary-color);
+  --secondary-background-color: var(--dark-secondary-color);
+
+  --light-obs-card-bg: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23f9f9f9" fill-opacity="0.9" /></svg>');
+  --dark-obs-card-bg: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23373737" fill-opacity="0.9" /></svg>');
+  --obs-card-bg: var(--dark-obs-card-bg);
+
+  --color: #5d6970;
+
   --primary: #00a99d; /* rgb(0, 170, 158) */
   --dark-primary: #0a998f;
   --secondary: #60b15c;
   --secondary-gradient: #57a154;
   --ternary: #45765c;
-  --tall-topbar-size: 100px;
-  --narrow-topbar-size: 65px;
-  --router-outlet-margin-top: var(--tall-topbar-size);
-  --router-outlet-offset: var(--router-outlet-margin-top);
-  --list-obs-offset: calc(var(--router-outlet-offset) + 62px);
   --list-toggler-width: 1.2rem;
   --modal-header-bg-moz: moz-linear-gradient(
     179.4deg,
@@ -40,7 +64,22 @@
     var(--secondary-gradient) 51%,
     var(--secondary-gradient) 100%
   );
-  --obs-card-bg: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23f9f9f9" fill-opacity="0.9" /></svg>');
+}
+
+body {
+  color: var(--color);
+  background-color: var(--dark-ternary-background-color);
+  padding: 0;
+  margin: 0;
+  /* max-height: 100vh; */
+  /* max-width: 100vw; */
+  display: grid;
+  /* place-items: center; */
+  /* overflow: hidden; */
+}
+
+app-footer footer .container {
+  max-width: fit-content;
 }
 
 @media screen and (max-width: 926px) {
@@ -52,7 +91,7 @@
 html,
 body {
   height: 100%;
-  color: var(--default-font-color);
+  color: var(--color);
 }
 
 h1,
@@ -71,7 +110,7 @@ h6 {
   margin-left: auto;
   margin-right: auto;
   margin-top: 5%;
-  color: var(--default-font-color);
+  color: var(--color);
   /* position: absolute !important; */
   /* padding: 10px; */
 }
@@ -273,7 +312,7 @@ button,
 
 .btn-big {
   text-transform: uppercase;
-  color: #fff !important;
+  color: var(--dark-primary-background-color) !important;
   padding: 20px 30px;
   border: none;
   font-weight: 500;
@@ -286,7 +325,7 @@ button,
   -webkit-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
   -moz-box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
   box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.75) !important;
-  color: #fff !important;
+  color: var(--dark-primary-background-color) !important;
   transform: translateY(-5px);
 }
 
@@ -303,7 +342,7 @@ ul {
 a,
 button,
 *:focus {
-  color: #000;
+  color: var(--primary-background-color);
   box-shadow: none !important;
   cursor: pointer;
   outline: none;
@@ -351,19 +390,19 @@ select:focus {
 
 /* firefox */
 * {
-  scrollbar-color: var(--primary) var(--light);
+  scrollbar-color: var(--primary) var(--background-color);
 }
 
 /* blink scroll bar custom design */
 ::-webkit-scrollbar-thumb {
   background: var(--primary);
   width: 10px;
-  border: 1px solid #eee;
+  border: 1px solid var(--secondary-background-color);
   margin: 5px;
 }
 
 ::-webkit-scrollbar {
-  background: #eee;
+  background: var(--secondary-background-color);
   width: 10px;
   height: 10px;
   margin: 5px;

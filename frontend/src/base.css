@@ -1,0 +1,129 @@
+section#welcome {
+  height: calc(100vh - var(--router-outlet-offset) - 20px - 45px);
+}
+
+section#programs,
+section#program {
+  width: 100%;
+  min-height: 70vh;
+  position: relative;
+  background-color: var(--secondary-color);
+}
+
+section:not(:last-of-type) {
+  margin-bottom: 20px;
+}
+
+.collapse {
+  transition-property: all;
+  transition-property: transform;
+  transition-duration: 0.2s;
+}
+
+#welcome:before {
+  content: " ";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: -moz-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0) 3%,
+    rgba(0, 0, 0, 0.393) 99%,
+    rgba(0, 0, 0, 0.452) 100%
+  );
+  background: -webkit-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0) 3%,
+    rgba(0, 0, 0, 0.393) 99%,
+    rgba(0, 0, 0, 0.452) 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 3%,
+    rgba(0, 0, 0, 0.393) 99%,
+    rgba(0, 0, 0, 0.452) 100%
+  );
+}
+
+#welcome a[role="button"] {
+  position: absolute;
+  bottom: 100px;
+  right: 100px;
+  background-color: var(--primary);
+}
+
+#slide {
+  min-height: inherit !important;
+}
+
+#slider h2 {
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  z-index: 999;
+  color: var(--secondary-color);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+#slider h2:before {
+  content: " ";
+  position: absolute;
+  width: 40px;
+  height: 21px;
+  transform: translateX(-125%);
+  background-color: var(--ternary-color);
+}
+
+#slider .carousel-text-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  max-width: 70%;
+  /* max-width: 60%; */
+}
+
+#slider .carousel-text {
+  background-color: var(--background-color);
+  padding: 35px 20px 35px 35px;
+  min-width: 450px;
+  max-height: 80%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#slider .carousel-text h3 {
+  font-family: "Satisfy";
+  color: var(--ternary);
+}
+
+#slider .carousel-text > p {
+  font-style: italic;
+  font-size: 1em;
+  overflow: hidden;
+  /* max-height: 20%; */
+}
+
+#slider .carousel-text a {
+  background-color: var(--secondary);
+  width: fit-content;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.mobile-hidden {
+  /* overflow: hidden; */
+  line-height: 22px;
+}
+
+.form-control {
+  background-color: var(--ternary-background-color);
+}

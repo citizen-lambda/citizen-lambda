@@ -20,7 +20,7 @@ export class ProgramsResolve implements Resolve<Program[]> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<Program[]> | Observable<never> {
-    // console.warn("resolve::getAllPrograms");
+    console.warn("resolve::getAllPrograms");
 
     return this.programService.getAllPrograms().pipe(
       catchError(error => {
