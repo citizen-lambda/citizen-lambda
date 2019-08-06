@@ -7,15 +7,14 @@
 }
 
 :root {
-  --tall-topbar-size: 100px;
-  --narrow-topbar-size: 65px;
-  --router-outlet-margin-top: var(--tall-topbar-size);
+  --tall-topbar-height: 100px;
+  --narrow-topbar-height: 65px;
+  --router-outlet-margin-top: var(--tall-topbar-height);
   --router-outlet-offset: var(--router-outlet-margin-top);
   --footer-height: 30px;
   --list-toolbar-height: 62px;
   --list-obs-height: calc(
-    100vh - var(--router-outlet-offset) - var(--list-toolbar-height) -
-      var(--footer-height)
+    100vh - var(--router-outlet-offset) - var(--list-toolbar-height)
   );
 
   --light-primary-color: #fff;
@@ -30,14 +29,9 @@
   --secondary-color: var(--light-secondary-color);
   --ternary-color: var(--light-ternary-color);
 
-  --primary-background-color: var(--dark-primary-color);
-  --background-color: var(--primary-background-color);
-  --ternary-background-color: var(--dark-ternary-color);
-  --secondary-background-color: var(--dark-secondary-color);
-
   --light-obs-card-bg: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23f9f9f9" fill-opacity="0.9" /></svg>');
   --dark-obs-card-bg: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23373737" fill-opacity="0.9" /></svg>');
-  --obs-card-bg: var(--dark-obs-card-bg);
+  --obs-card-bg: var(--light-obs-card-bg);
 
   --color: #5d6970;
 
@@ -72,7 +66,7 @@
 
 body {
   color: var(--color);
-  background-color: var(--dark-ternary-background-color);
+  background-color: var(--ternary-color);
   padding: 0;
   margin: 0;
   /* max-height: 100vh; */
@@ -82,13 +76,26 @@ body {
   /* overflow: hidden; */
 }
 
+main.router-app {
+  z-index: 1;
+  margin-bottom: var(--footer-height);
+  position: relative;
+}
+
+app-footer {
+  z-index: 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
 app-footer footer .container {
   max-width: fit-content;
 }
 
 @media screen and (max-width: 926px) {
   :root {
-    --router-outlet-margin-top: var(--narrow-topbar-size);
+    --router-outlet-margin-top: var(--narrow-topbar-height);
   }
 }
 
@@ -394,19 +401,19 @@ select:focus {
 
 /* firefox */
 * {
-  scrollbar-color: var(--primary) var(--background-color);
+  scrollbar-color: var(--primary) var(--secondary-color);
 }
 
 /* blink scroll bar custom design */
 ::-webkit-scrollbar-thumb {
   background: var(--primary);
   width: 10px;
-  border: 1px solid var(--secondary-background-color);
+  border: 1px solid var(--secondary-color);
   margin: 5px;
 }
 
 ::-webkit-scrollbar {
-  background: var(--secondary-background-color);
+  background: var(--secondary-color);
   width: 10px;
   height: 10px;
   margin: 5px;

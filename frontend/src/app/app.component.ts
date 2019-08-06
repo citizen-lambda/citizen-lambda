@@ -1,6 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, ViewEncapsulation } from "@angular/core";
 
+import { IAppConfig } from "./core/models";
 import { AppConfig } from "../conf/app.config";
+
+type AppConfigApp = Pick<IAppConfig, "FRONTEND">;
 
 @Component({
   selector: "app-root",
@@ -8,12 +11,7 @@ import { AppConfig } from "../conf/app.config";
   styleUrls: ["./app.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = "GeoNature-citizen";
-  public appConfig: any;
-
-  ngOnInit() {
-    this.appConfig = AppConfig;
-    console.debug("app-root inited");
-  }
+  public AppConfig: AppConfigApp = AppConfig;
 }

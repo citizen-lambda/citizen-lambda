@@ -1,4 +1,9 @@
+.row {
+  width: 100%;
+}
+
 section#welcome {
+  /* margin-bottom + next section recovering */
   height: calc(100vh - var(--router-outlet-offset) - 20px - 45px);
 }
 
@@ -8,6 +13,10 @@ section#program {
   min-height: 70vh;
   position: relative;
   background-color: var(--secondary-color);
+}
+
+section#program {
+  height: calc(100vh - var(--router-outlet-offset));
 }
 
 section:not(:last-of-type) {
@@ -85,12 +94,11 @@ section:not(:last-of-type) {
   bottom: 0;
   display: flex;
   align-items: center;
-  max-width: 70%;
-  /* max-width: 60%; */
+  max-width: 60%;
 }
 
 #slider .carousel-text {
-  background-color: var(--background-color);
+  background-color: var(--primary-color);
   padding: 35px 20px 35px 35px;
   min-width: 450px;
   max-height: 80%;

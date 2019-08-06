@@ -19,13 +19,14 @@ app-observations div.container-fluid {
   height: 10px;
   border-radius: 25px;
   background: transparent;
-  border: solid 1px #fff;
+  border: solid 1px var(--primary-color);
 }
 
-#slider .carousel-text div {
+#slider carousel-text div {
   max-height: 50%;
   overflow-y: auto;
   margin-bottom: 15px;
+  background-color: var(--secondary-color);
 }
 
 /* OBSERVATION / MAP */
@@ -55,9 +56,6 @@ section .observations {
 .observations {
   margin: 0px;
   min-height: inherit;
-  /* FIXME: account for 30px footer presence */
-  /* height: calc(100vh - var(--router-outlet-offset)); */
-  height: calc(100vh - var(--router-outlet-offset) - 30px);
   overflow: hidden;
 }
 

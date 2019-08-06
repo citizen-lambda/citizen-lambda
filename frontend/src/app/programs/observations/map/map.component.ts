@@ -176,7 +176,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       gestureHandling: true
     });
 
-    // TODO: inject controls with options
+    // TODO: inject controls with mixins
     this.observationMap.zoomControl.setPosition(
       this.options.ZOOM_CONTROL_POSITION
     );

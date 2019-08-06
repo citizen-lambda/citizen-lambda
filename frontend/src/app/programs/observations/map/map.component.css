@@ -7,8 +7,7 @@ popup {
 }
 
 #obsMap {
-  /* FIXME: account for 30px offset footer presence */
-  height: calc(100vh - var(--router-outlet-offset) - 30px);
+  height: calc(100vh - var(--router-outlet-offset));
   margin-left: var(--list-toggler-width);
   width: calc(100% - var(--list-toggler-width));
 }

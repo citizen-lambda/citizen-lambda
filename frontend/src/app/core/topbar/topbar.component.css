@@ -1,8 +1,8 @@
 nav.navbar {
-  min-height: var(--narrow-topbar-size);
-  max-height: var(--tall-topbar-size);
+  min-height: var(--narrow-topbar-height);
+  max-height: var(--tall-topbar-height);
   height: var(--router-outlet-offset);
-  background-color: var(--background-color);
+  background-color: var(--primary-color);
   color: var(--primary);
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }

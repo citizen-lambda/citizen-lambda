@@ -4,6 +4,6 @@
 
 /* @media screen and (max-width: 576px) {
   .router-app {
-    margin-top: var(--narrow-topbar-size) !important;
+    margin-top: var(--narrow-topbar-height) !important;
   }
 } */

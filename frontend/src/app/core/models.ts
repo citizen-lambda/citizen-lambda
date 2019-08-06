@@ -85,7 +85,7 @@ export abstract class AnchorNavigation implements AfterViewInit {
     const anchor = document.getElementById(fragment);
     const offset = parseInt(
       getComputedStyle(document.documentElement!)
-        .getPropertyValue("--narrow-topbar-size")
+        .getPropertyValue("--narrow-topbar-height")
         .replace("px", "")
         .trim()
     );
@@ -109,10 +109,10 @@ export abstract class AnchorNavigation implements AfterViewInit {
   @HostListener("document:scroll", ["$event"])
   scrollHandler(_event: Event) {
     const tallSize = getComputedStyle(document.documentElement!)
-      .getPropertyValue("--tall-topbar-size")
+      .getPropertyValue("--tall-topbar-height")
       .trim();
     const narrowSize = getComputedStyle(document.documentElement!)
-      .getPropertyValue("--narrow-topbar-size")
+      .getPropertyValue("--narrow-topbar-height")
       .trim();
     const offset = getComputedStyle(document.documentElement!)
       .getPropertyValue("--router-outlet-margin-top")
@@ -132,7 +132,7 @@ export abstract class AnchorNavigation implements AfterViewInit {
     } else {
       document.documentElement!.style.setProperty(
         "--router-outlet-margin-top",
-        "var(--tall-topbar-size)"
+        "var(--tall-topbar-height)"
       );
     }
   }
