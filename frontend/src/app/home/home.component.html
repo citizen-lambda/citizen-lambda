@@ -27,7 +27,7 @@
           <a [routerLink]="['/programs', p.id_program, 'observations']">
             <img
               class="d-block w-100"
-              [src]="p.image || 'assets/Azure-Commun-019.JPG'"
+              [src]="p.image || 'assets/default_taxon'"
               alt="Programme {{ p.title }}"
             />
           </a>
@@ -60,7 +60,7 @@
         >
           <img
             class="d-block w-100"
-            [src]="p.image || 'assets/Azure-Commun-019.JPG'"
+            [src]="p.image || 'assets/default_taxon'"
             alt="Programme {{ p.title }}"
           />
           <div class="carousel-text-container">

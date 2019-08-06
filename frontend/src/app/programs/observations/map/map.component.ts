@@ -420,7 +420,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
             ? data.image
             : data.medias && !!data.medias.length
             ? data.medias[0].url
-            : 'assets/Azure-Commun-019.JPG'
+            : 'assets/default_taxon'
         "
       />
       <p>

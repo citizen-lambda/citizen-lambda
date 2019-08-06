@@ -3,8 +3,8 @@
 Configurer et lancer le frontend
 ********************************
 
-Installer l'environnement virtuel NodeJS avec nvm
-#################################################
+Installation de l'environnement virtuel NodeJS avec nvm
+#######################################################
 
 L'installation de ``nvm`` se fait en suivant les instructions du dépot principal de l'outil nvm par creationix `creationix/nvm <https://github.com/creationix/nvm#installation-and-update>`_.
 
@@ -65,24 +65,30 @@ Dans son incarnation actuelle, quelques fichiers de dépendances doivent être p
       export type ControlPosition = 'topleft' | 'topright' | 'bottomleft' |
      'bottomright';
 
-Lancer du frontend
-##################
+Configuration du frontend
+#########################
 
-Vous pouvez lancer le frontend dans deux modes:
+Réglages généraux du frontend:
+******************************
+``frontend/src/conf/app.config.ts``
 
-En mode développement et client-side rendering:
-***********************************************
+Paramètres de cartographie:
+***************************
+``frontend/src/conf/map.config.ts``
+
+Surcharge du rendu CSS:
+***********************
+``frontend/src/custom.css``
+
+Image par défaut pour les taxons sans image:
+********************************************
+Lancer la commande suivante depuis le répertoire ``frontend/src/assets``, pour définir l'illustration par défaut des taxons sans photo:
 
 .. code:: sh
 
-    ng serve
+    ln -s image_taxon_par_defaut.(svg,jpg,png,…) default_taxon
 
-En mode Server Side Rendering, optimisé pour le SEO et réservé aux robots d'indexation:
-***************************************************************************************
-
-.. code:: sh
-
-    npm run build:ssr && npm run serve:ssr
+NB: Faire évoluer en options de configuration, voir en service.
 
 Gestion du Server Side Rendering
 ################################
@@ -107,7 +113,7 @@ Le transfert d'état s'effectue avec accesseur et mutateur:
 
 .. code-block:: javascript
 
-    this.programs = this.state.get(PROGRAMS_KEY, null as any);
+    this.programs = this.state.get(PROGRAMS_KEY, null);
     if (!this.programs) {
       /*
         code exécuté côté serveur Node, express
@@ -115,7 +121,7 @@ Le transfert d'état s'effectue avec accesseur et mutateur:
         et génère une capture d'état
       */
 
-      this.state.set(PROGRAMS_KEY, programs as any);
+      this.state.set(PROGRAMS_KEY, programs as Programs[]);
     } else {
       /*
         code exécuté côté présentation qui consomme l'état "cristallisé"
@@ -173,11 +179,33 @@ La commande suivante permet de générer un rendu SSR multilingue et le servir e
 
     npm run build:i18n-ssr && npm run serve:ssr
 
+La détection de la langue préférée pourrait se faire au niveau du serveur web / reverse proxy, avec un filtre sur l'entête de requête ``Accept-Language``
+
+Lancer le frontend
+##################
+
+Le frontend supporte deux modes de lancement:
+*********************************************
+
+Un mode ``développement``, avec un rendu côté client:
+
+.. code:: sh
+
+    ng serve
+
+Et un mode ``production``, avec rendu serveur (ssr) optimisé pour le SEO et les robots d'indexation:
+
+.. code:: sh
+
+    npm run build:ssr && npm run serve:ssr
 
 Déploiement
 ###########
 
-Préparer la distribution avec:
+Mode ``production`` de base:
+****************************
+
+Effectuer la compilation de la distribution avec:
 
 .. code-block:: sh
 
@@ -191,9 +219,16 @@ ou:
 
 pour une version en langue anglaise.
 
-Tout est contenu dans le répertoire ``frontend/dist``, qu'il faut copier sur la plateforme acceuillant le service.
+Tout est alors contenu dans le répertoire ``frontend/dist``, qu'il faut copier sur la plate-forme offrant le service web.
 
+Mode ``production`` avec ssr et internationalisation:
+*****************************************************
 
+.. code-block:: sh
+
+    PORT=8080 npm run serve:ssr
+
+NB: Il était question de mettre en place pm2 ou d'utiliser supervisord pour gérer le processus ...
 
 Annexe:
 #######

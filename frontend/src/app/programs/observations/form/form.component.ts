@@ -155,7 +155,7 @@ export class ObsFormComponent implements OnChanges {
         cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
         icon: !!this.taxa[taxon]["medias"]
           ? this.taxa[taxon]["medias"]["url"]
-          : "assets/Azure-Commun-019.JPG"
+          : "assets/default_taxon"
       });
     }
     this.autocomplete = "isOn";
