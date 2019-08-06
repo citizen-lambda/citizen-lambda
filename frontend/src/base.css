@@ -1,7 +1,3 @@
-.row {
-  width: 100%;
-}
-
 section#welcome {
   /* margin-bottom + next section recovering */
   height: calc(100vh - var(--router-outlet-offset) - 20px - 45px);
@@ -19,7 +15,12 @@ section#program {
   height: calc(100vh - var(--router-outlet-offset));
 }
 
-section:not(:last-of-type) {
+section.row {
+  width: 100%;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+section.row:not(:last-of-type) {
   margin-bottom: 20px;
 }
 
@@ -133,5 +134,5 @@ section:not(:last-of-type) {
 }
 
 .form-control {
-  background-color: var(--ternary-background-color);
+  background-color: var(--ternary-color);
 }
