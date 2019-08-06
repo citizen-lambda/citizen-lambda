@@ -13,6 +13,8 @@ import { SpeciesComponent } from "./synthesis/species/species.component";
 import { AuthGuard } from "./auth/auth.guard";
 import { AdminComponent } from "./auth/admin/admin.component";
 
+import { ObsFormMapComponent } from "./programs/observations/form/obs-form-map-component";
+
 const appRoutes: Routes = [
   {
     path: "",
@@ -47,6 +49,7 @@ const appRoutes: Routes = [
     resolve: { programs: ProgramsResolve }
   },
   { path: "synthesis/species/:id", component: SpeciesComponent },
+  { path: "debug", component: ObsFormMapComponent },
   { path: "**", component: PageNotFoundComponent }
 ];
 

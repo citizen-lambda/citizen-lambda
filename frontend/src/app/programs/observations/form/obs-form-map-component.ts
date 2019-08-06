@@ -51,7 +51,16 @@ export function geometryValidator(): ValidatorFn {
   `,
   styles: [
     `
+      app-obs-form-map {
+        height: inherit;
+      }
+    `,
+    `
       app-obs-form-map #obsFormMap {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        bottom: 0;
         min-height: 225px;
         width: 100%;
       }
