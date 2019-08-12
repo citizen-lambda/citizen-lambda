@@ -12,7 +12,7 @@
           : o.properties.image
           ? o.properties.image
           : o.properties.medias && !!o.properties.medias.length
-          ? o.properties.medias[random(o.properties.medias.length)].url
+          ? randomItem(o.properties.medias).url
           : 'assets/default_taxon'
       "
     />

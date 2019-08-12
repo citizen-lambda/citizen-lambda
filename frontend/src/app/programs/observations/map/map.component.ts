@@ -9,7 +9,7 @@ import {
   ElementRef,
   OnChanges,
   SimpleChanges,
-  // ChangeDetectionStrategy,
+  ChangeDetectionStrategy,
   EventEmitter,
   HostListener,
   ComponentFactoryResolver
@@ -18,7 +18,7 @@ import {
 import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 import "leaflet-gesture-handling";
-import "leaflet.fullscreen";
+import "leaflet-fullscreen";
 import "leaflet.heat";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
@@ -29,10 +29,10 @@ import { MAP_CONFIG } from "../../../../conf/map.config";
 declare module "leaflet" {
   interface MapOptions {
     gestureHandling?: boolean;
-    fullscreenControl?: boolean;
-    fullscreenControlOptions?: {
-      position: string;
-    };
+    // fullscreenControl?: boolean;
+    // fullscreenControlOptions?: {
+    //   position: string;
+    // };
   }
 }
 
@@ -129,8 +129,8 @@ export const conf = {
     ></div>
   `,
   styleUrls: ["./map.component.css"],
-  encapsulation: ViewEncapsulation.None
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObsMapComponent implements OnInit, OnChanges {
   @ViewChild("map") map!: ElementRef;
@@ -205,14 +205,20 @@ export class ObsMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.observationMap);
 
-    // L.control
-    //   .fullscreen({
-    //     // content: `bla`,
-    //     position: this.options.FULLSCREEN_CONTROL_POSITION,
-    //     title: "View Fullscreen",
-    //     titleCancel: "Exit Fullscreen"
-    //   } as any)
-    //   .addTo(this.observationMap);
+    (L.control as any)
+      ["fullscreen"]({
+        // content: `bla`,
+        //   position: this.options.FULLSCREEN_CONTROL_POSITION,
+        //   title: "View Fullscreen",
+        //   titleCancel: "Exit Fullscreen"
+        // } as any
+        position: "topright",
+        title: {
+          false: "View Fullscreen",
+          true: "Exit Fullscreen"
+        }
+      })
+      .addTo(this.observationMap);
 
     L.control
       .locate({

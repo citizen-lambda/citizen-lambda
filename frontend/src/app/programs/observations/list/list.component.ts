@@ -74,7 +74,9 @@ export class ObsListComponent implements OnChanges {
     return obs.properties.id_observation;
   }
 
-  random(d: number) {
-    return (Math.random() * d) >> 0;
+  randomItem(a: Array<any>): any {
+    if (a && !!a.length) {
+      return a[(Math.random() * a.length) >> 0];
+    }
   }
 }

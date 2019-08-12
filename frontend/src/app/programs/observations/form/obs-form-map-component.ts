@@ -13,7 +13,7 @@ import {
 import { ValidatorFn, AbstractControl } from "@angular/forms";
 
 import L from "leaflet";
-import "leaflet.fullscreen";
+import "leaflet-fullscreen";
 import "leaflet-gesture-handling";
 
 // import { AppConfig } from "../../../../conf/app.config";
@@ -106,11 +106,11 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     ],
     zoom: 10,
     center: L.latLng(44.6041984880559, 4.305528958557883),
-    gestureHandling: true,
-    fullscreenControl: true,
-    fullscreenControlOptions: {
-      position: "topleft"
-    }
+    gestureHandling: true
+    // fullscreenControl: true,
+    // fullscreenControlOptions: {
+    //   position: "topleft"
+    // }
   };
   programArea: L.GeoJSON<any> | null = null;
   newObsMarker: L.Marker | null = null;
@@ -141,13 +141,15 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     this.map.zoomControl.setPosition(this.conf
       .ZOOM_CONTROL_POSITION as L.ControlPosition);
 
-    // L.control
-    //   .fullscreen<L.Control.Fullscreen>({
-    //     position: "topright",
-    //     title: "View Fullscreen",
-    //     titleCancel: "Exit Fullscreen"
-    //   } as L.Control.FullscreenOptions)
-    //   .addTo(this.map);
+    (L.control as any)
+      ["fullscreen"]({
+        position: "topright",
+        title: {
+          false: "View Fullscreen",
+          true: "Exit Fullscreen"
+        }
+      })
+      .addTo(this.map);
 
     L.control
       .locate({
