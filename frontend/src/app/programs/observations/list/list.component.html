@@ -12,7 +12,7 @@
           : o.properties.image
           ? o.properties.image
           : o.properties.medias && !!o.properties.medias.length
-          ? o.properties.medias[0].url
+          ? o.properties.medias[random(o.properties.medias.length)].url
           : 'assets/default_taxon'
       "
     />
@@ -26,7 +26,7 @@
             : "Anonyme"
         }}</span>
       </p>
-      <p i18n *ngIf="o.properties.date || O.properties.municipality?.name">
+      <p i18n *ngIf="o.properties.date || o.properties.municipality?.name">
         <span *ngIf="o.properties.date"> le {{ o.properties.date }}</span>
         <span *ngIf="o.properties.municipality?.name">
           à {{ o.properties.municipality?.name }}</span
