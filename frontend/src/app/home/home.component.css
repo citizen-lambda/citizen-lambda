@@ -134,9 +134,9 @@ app-home div.container-fluid {
 }
 
 #slider .carousel-text div {
-  max-height: 50%;
+  max-height: 6em;
+  height: fit-content;
   overflow-y: auto;
-  margin-bottom: 1em;
 }
 
 .mobile-hidden h1,

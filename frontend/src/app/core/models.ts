@@ -1,7 +1,7 @@
-import { Observable, combineLatest, BehaviorSubject } from "rxjs";
-import { OnInit, AfterViewInit, HostListener } from "@angular/core";
+import { combineLatest, BehaviorSubject } from "rxjs";
+import { AfterViewInit, HostListener } from "@angular/core";
 import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
-import { map, take, filter, tap } from "rxjs/operators";
+import { map, take, filter } from "rxjs/operators";
 
 export interface IAppConfig {
   appName: string;
@@ -62,19 +62,18 @@ export abstract class AnchorNavigation implements AfterViewInit {
 
   constructor(protected router: Router, protected route: ActivatedRoute) {
     combineLatest(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
+      this.route.fragment.pipe(
+        filter(fragment => fragment !== null),
+        map(fragment => fragment),
         take(1)
       ),
-      this.route.fragment.pipe(
-        filter(fragment => !!fragment),
-        map(fragment => fragment),
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
         take(1)
       )
     )
       .pipe(
-        map(([_, fragment]) => {
-          console.debug("tapped fragment:", fragment);
+        map(([fragment, _]) => {
           return fragment;
         })
       )
@@ -82,7 +81,6 @@ export abstract class AnchorNavigation implements AfterViewInit {
   }
 
   jumpTo(fragment: string, delay: number = 200) {
-    console.debug("jumpTo", fragment);
     const anchor = document.getElementById(fragment);
     const offset = parseInt(
       getComputedStyle(document.documentElement!)
@@ -90,39 +88,40 @@ export abstract class AnchorNavigation implements AfterViewInit {
         .replace("px", "")
         .trim()
     );
-    console.debug(offset);
+    // console.debug(offset);
     if (!!anchor) {
       setTimeout(() => {
         window.scrollTo({
           top: anchor.getBoundingClientRect().top + window.pageYOffset - offset,
           behavior: "smooth"
         });
-      }, delay); // FIXME: this is entirely timely !
+      }, delay);
     }
   }
 
   // abstract AfterViewInit(): void;
 
   ngAfterViewInit() {
-    this.fragment$.subscribe((fragment: string) => this.jumpTo(fragment));
+    // this.fragment$.subscribe((fragment: string) => this.jumpTo(fragment));
   }
 
-  @HostListener("document:scroll", ["$event"])
+  @HostListener("window:scroll", ["$event"])
   scrollHandler(_event: Event) {
-    const tallSize = getComputedStyle(document.documentElement!)
-      .getPropertyValue("--tall-topbar-height")
-      .trim();
-    const narrowSize = getComputedStyle(document.documentElement!)
-      .getPropertyValue("--narrow-topbar-height")
-      .trim();
-    const offset = getComputedStyle(document.documentElement!)
-      .getPropertyValue("--router-outlet-margin-top")
-      .trim();
+    // console.debug("scroll");
 
     if (
       document.body.scrollTop > 0 ||
       document.documentElement!.scrollTop > 0
     ) {
+      const tallSize = getComputedStyle(document.documentElement!)
+        .getPropertyValue("--tall-topbar-height")
+        .trim();
+      const narrowSize = getComputedStyle(document.documentElement!)
+        .getPropertyValue("--narrow-topbar-height")
+        .trim();
+      const offset = getComputedStyle(document.documentElement!)
+        .getPropertyValue("--router-outlet-margin-top")
+        .trim();
       const barsize = parseInt(offset) - document.documentElement!.scrollTop;
       const minSize = parseInt(narrowSize);
       const maxSize = parseInt(tallSize);

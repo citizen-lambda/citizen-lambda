@@ -9,7 +9,10 @@ popup {
 #obsMap {
   height: calc(100vh - var(--router-outlet-offset));
   margin-left: var(--list-toggler-width);
-  width: calc(100% - var(--list-toggler-width));
+  /* fixme: supplementary 80px? */
+  width: calc(
+    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px
+  );
 }
 
 .marker-cluster {

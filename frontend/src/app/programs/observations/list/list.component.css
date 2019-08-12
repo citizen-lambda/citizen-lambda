@@ -1,30 +1,27 @@
-#mapList {
-  padding: 0px !important;
-}
-
 #list {
   background-color: var(--secondary-color);
-  padding: 0px 0px 3px 3px;
-  overflow: auto;
   max-height: var(--list-obs-height);
+  overflow: auto;
+  padding: 3px 0px 3px 0px;
 }
 
+#list .espece:not(:last-of-type) {
+  margin-bottom: 3px;
+}
 #list .espece {
   background-color: var(--primary-color);
-  border: solid 2px;
-  border-color: var(--primary-color);
-  margin-bottom: 5px;
-  display: flex;
-  position: relative;
-  border: solid 2px var(--primary-color);
-  overflow: hidden;
   background-image: var(--obs-card-bg);
   background-size: 100% 100%;
+  border: solid 2px;
+  border-color: var(--secondary-color);
+  display: flex;
+  overflow: hidden;
+  position: relative;
 }
 
 #list .espece:hover {
-  border-color: var(--primary);
   cursor: pointer;
+  border-color: var(--primary);
 }
 
 .espece:hover .hide {
@@ -32,27 +29,27 @@
 }
 
 #list .espece img {
-  object-fit: cover;
+  height: 80px;
   min-width: 80px !important;
   max-width: 80px !important;
-  height: 80px;
+  object-fit: cover;
 }
 
 .hide {
-  transform: translateX(100%);
-  transition: all 0.2s ease-in-out;
+  align-items: center;
   background-color: var(--primary);
+  color: var(--secondary-color);
+  display: flex;
   height: auto;
   padding: 0px 10px;
-  display: flex;
-  align-items: center;
-  color: var(--secondary-color);
+  transform: translateX(100%);
+  transition: all 0.2s ease-in-out;
 }
 
 #list .espece .hide img {
-  min-width: 20px !important;
-  max-width: 20px !important;
   height: auto !important;
+  max-width: 20px !important;
+  min-width: 20px !important;
 }
 
 #list .espece .infos {
@@ -70,40 +67,40 @@
 
 #list .espece div p,
 #list .espece div span {
-  font-style: italic;
   color: var(--primary);
+  font-style: italic;
   margin-bottom: 0px;
 }
 
-.toolbar {
+#obslist .toolbar {
   display: flex;
   flex-flow: row nowrap;
 }
 
-.toolbar select,
-.toolbar input {
+#obslist .toolbar select,
+#obslist .toolbar input {
   /* background: none; */
   border: solid 1px;
   border-color: var(--primary);
 }
 
-.dropdown .dropdown-menu {
-  min-width: 100%;
+#obslist .dropdown .dropdown-menu {
   border-radius: 0px;
+  min-width: 100%;
 }
 
-.toolbar input {
+#obslist .toolbar input {
   flex-grow: 2;
   padding-left: 10px;
   padding-right: 30px;
 }
 
-.toolbar input:focus {
+#obslist .toolbar input:focus {
   border: solid 2px !important;
   border-color: var(--primary) !important;
 }
 
-.obs-count {
+#obslist .obs-count {
   /* background-color: var(--secondary); */
   background-image: linear-gradient(
     178deg,
@@ -115,35 +112,35 @@
   min-height: 1.5em !important;
 }
 
-.obs-count p {
-  white-space: nowrap;
-  margin: 0;
-  font-style: italic;
+#obslist .obs-count p {
   color: var(--secondary-color);
+  font-style: italic;
+  margin: 0;
   text-align: center;
+  white-space: nowrap;
 }
 
-.toolbar .dropdown button {
+#obslist .toolbar .dropdown button {
   background: none;
   width: 100%;
 }
 
-.toolbar .dropdown button:after {
-  position: absolute;
-  top: 50%;
-  right: 10px;
+#obslist .toolbar .dropdown button:after {
   color: var(--primary);
+  position: absolute;
+  right: 10px;
+  top: 50%;
 }
 
-.collapse:not(.show) {
+#obslist .collapse:not(.show) {
   display: block !important;
   transform: translateX(-100%);
 }
 
 @media screen and (max-width: 992px) {
   #list {
-    max-height: 40vh;
     height: inherit;
+    max-height: 40vh;
   }
   .toggle {
     display: none;

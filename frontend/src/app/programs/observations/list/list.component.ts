@@ -1,148 +1,65 @@
 import {
   Component,
-  OnChanges,
   Input,
-  SimpleChanges,
   Output,
-  EventEmitter
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  ViewEncapsulation
 } from "@angular/core";
-import { Subject } from "rxjs";
-import { pluck, share, map } from "rxjs/operators";
+import { Subject, Observable } from "rxjs";
+import {
+  pluck,
+  // tap,
+  filter,
+  shareReplay,
+  takeUntil
+} from "rxjs/operators";
 
 import { FeatureCollection, Feature } from "geojson";
 
-import {
-  TaxonomyList,
-  TaxonomyListItem,
-  ObservationFeature
-} from "../observation.model";
-import { sorted } from "../../.././api/gnc-programs.service";
+import { TaxonomyList } from "../observation.model";
+import { IAppConfig } from "../../../core/models";
 import { AppConfig } from "../../../../conf/app.config";
+
+type AppConfigObsList = Pick<IAppConfig, "API_ENDPOINT">;
 
 @Component({
   selector: "app-obs-list",
   templateUrl: "./list.component.html",
-  styleUrls: ["./list.component.css"]
+  styleUrls: ["./list.component.css"],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObsListComponent implements OnChanges {
-  readonly AppConfig = AppConfig;
+  readonly AppConfig: AppConfigObsList = AppConfig;
   @Input("observations") observations!: FeatureCollection;
-  @Input("taxa") surveySpecies!: TaxonomyList;
+  @Input("taxa") surveySpecies!: TaxonomyList; // keep for the medias ?
   @Output("obsSelected") obsSelected: EventEmitter<
     Feature
   > = new EventEmitter();
-  observationList: Feature[] = [];
-
-  selectedTaxon: TaxonomyListItem | null = null;
-  selectedMunicipality: any = null;
+  private unsubscribe$ = new Subject<void>();
   changes$ = new Subject<SimpleChanges>();
-  observations$ = new Subject<Feature[]>();
-  features$ = this.changes$.pipe(
-    pluck("observations", "currentValue", "features"),
-    map(items => items as FeatureCollection),
-    share()
-  );
-  municipalities$ = this.features$.pipe(
-    map(
-      (
-        items: Feature[] &
-          {
-            properties: {
-              municipality: { name: string | null; code: number };
-            };
-          }[]
-      ) => {
-        const result = items.reduce(
-          (
-            acc: {
-              data: { name: string | null; code: number }[];
-              partials: { name: string | null; code: number }[];
-            },
-            item
-          ) => {
-            const i: {
-              name: string | null;
-              code: number;
-            } = item.properties!.municipality;
-            if (!!!i.name) {
-              return {
-                ...acc,
-                ...{
-                  partials: [...acc.partials, { ...i, ...{ name: "" } }]
-                }
-              };
-            }
-            const known = acc.data.find(
-              k => k.name == i.name && k.code == i.code
-            );
-            return !known
-              ? { ...acc, ...{ data: [...acc.data, i] } }
-              : { ...acc };
-          },
-          { data: [], partials: [] }
-        );
-        return [...result.data, ...result.partials].sort(sorted("name")) as {
-          name: string;
-          code: number;
-        }[];
-      }
+  observations$: Observable<Feature[]> = this.changes$.pipe(
+    // tap(console.debug),
+    pluck<Observable<FeatureCollection>, Feature[]>(
+      "observations",
+      "currentValue",
+      "features"
     ),
-    share()
+    filter(o => !!o),
+    takeUntil(this.unsubscribe$),
+    shareReplay()
   );
-
-  constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
     this.changes$.next(changes);
-
-    if (
-      this.observations &&
-      changes.observations &&
-      changes.observations.currentValue &&
-      this.observations.features
-    ) {
-      this.observationList = this.observations.features;
-      this.observations$.next(this.observations.features);
-    }
   }
 
-  onFilterChange(): void {
-    let filters: { taxon: string | null; municipality: string | null } = {
-      taxon: null,
-      municipality: null
-    };
-
-    this.observationList = this.observations["features"].filter(obs => {
-      let results: boolean[] = [];
-      if (obs && this.selectedMunicipality) {
-        results.push(
-          obs.properties!.municipality.code == this.selectedMunicipality.code
-        );
-        filters.municipality = this.selectedMunicipality.code;
-      }
-      if (
-        obs &&
-        this.selectedTaxon &&
-        this.selectedTaxon.taxref &&
-        Object.keys(this.selectedTaxon.taxref).length > 0
-      ) {
-        results.push(
-          obs.properties!.cd_nom == this.selectedTaxon.taxref["cd_nom"]
-        );
-        filters.taxon = this.selectedTaxon.taxref["cd_nom"];
-      }
-      return results.indexOf(false) < 0;
-    });
-    this.observations$.next(this.observationList);
-
-    if (filters.taxon || filters.municipality) {
-      const event: CustomEvent = new CustomEvent("ObservationFilterEvent", {
-        bubbles: true,
-        cancelable: true,
-        detail: filters
-      });
-      document.dispatchEvent(event);
-    }
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   onSelected(feature: any): void {
@@ -150,7 +67,10 @@ export class ObsListComponent implements OnChanges {
     this.obsSelected.emit(feature);
   }
 
-  trackByObs(index: number, obs: ObservationFeature): number {
+  trackByObs(
+    _index: number,
+    obs: Feature & { properties: { [key: string]: any } }
+  ): number {
     return obs.properties.id_observation;
   }
 }

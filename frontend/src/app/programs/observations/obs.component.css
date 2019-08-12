@@ -63,12 +63,107 @@ section .observations {
   overflow: hidden;
 }
 
-.observations #map {
+section.observations#program {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#obslist {
+  flex-grow: 1;
+  /* pic width + hover binoculars width + min line length in char unit */
+  flex-basis: calc(80px + 40px + 36ch + 1px);
+  /* position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; */
+  max-width: calc(33% + var(--list-toggler-width));
+}
+
+#map {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-width: calc(50% - 1px);
+}
+
+/* OBS LIST DISPLAY TOGGLING */
+
+/* .side-bar {
+  width: 33%;
+} */
+
+input#slide-sidebar[type="checkbox"] {
+  display: none;
+}
+
+input:checked ~ #obslist {
+  display: none !important;
+}
+
+input:checked ~ label.toggle {
+  left: 0;
+}
+
+input:not(:checked) ~ #obslist {
+  display: block;
+}
+
+.map {
+  /* position: absolute;
+  top: 0;
+  left: 33%;
+  right: 0;
+  bottom: 0; */
+  -moz-transition: left 0.5s ease;
+  transition: left 0.5s ease;
+}
+
+/* fixme: target accuracy */
+.toolbar select {
+  width: 50%;
+}
+
+.toggle {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(80px + 40px + 1px + 36ch + 1px);
+  background-color: var(--primary);
+  width: var(--list-toggler-width);
+  display: flex;
+  transition: left 0.5s ease;
+  align-items: center;
   overflow: hidden;
+  margin-bottom: 0px;
+  justify-content: center;
+}
+
+/* input:checked ~ .toggle {
+  left: 0;
+} */
+
+.toggle i {
+  transition: all 0.5s ease;
+}
+
+input:checked ~ .toggle i {
+  transform: rotate(180deg);
+}
+
+.toggle:hover {
+  cursor: pointer;
+}
+
+.toggle i {
+  color: #fff;
+}
+
+.observations #map {
+  /* overflow: hidden; */
 }
 
 .observations #map,
-.observations #list {
+.observations #obslist {
   padding: 0px;
 }
 
@@ -199,7 +294,7 @@ section .observations {
   border-radius: 0px !important;
 }
 
-span.input-group-text {
+app-observations span.input-group-text {
   background-color: var(--secondary);
   color: #fff;
 }
@@ -303,10 +398,6 @@ form .d-inline-flex {
 .add-obs select,
 .add-obs .d-inline-flex input {
   border: solid 1px var(--primary) !important;
-}
-
-.toolbar select {
-  width: 50%;
 }
 
 .obs-images img {
@@ -540,73 +631,6 @@ form .d-inline-flex {
   .observations #map .btn-group {
     right: 0px;
   }
-}
-
-.side-bar {
-  width: 33%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-}
-
-input#slide-sidebar[type="checkbox"] {
-  display: none;
-}
-
-input:checked ~ .map {
-  left: 0;
-  width: 100%;
-}
-
-input:not(:checked) ~ .map {
-  width: 67%;
-}
-
-.toggle {
-  z-index: 2;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 33%;
-  background-color: var(--primary);
-  width: var(--list-toggler-width);
-  display: flex;
-  transition: left 0.5s ease;
-  align-items: center;
-  overflow: hidden;
-  margin-bottom: 0px;
-  justify-content: center;
-}
-
-input:checked ~ .toggle {
-  left: 0;
-}
-
-.toggle i {
-  transition: all 0.5s ease;
-}
-
-input:checked ~ .toggle i {
-  transform: rotate(180deg);
-}
-
-.toggle:hover {
-  cursor: pointer;
-}
-
-.toggle i {
-  color: #fff;
-}
-
-.map {
-  position: absolute;
-  top: 0;
-  left: 33%;
-  right: 0;
-  bottom: 0;
-  -moz-transition: left 0.5s ease;
-  transition: left 0.5s ease;
 }
 
 .observation-zoom-statement-warning::after {

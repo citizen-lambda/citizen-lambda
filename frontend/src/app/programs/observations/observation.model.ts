@@ -2,10 +2,10 @@ import { Feature, FeatureCollection } from "geojson";
 
 export interface PostObservationResponse extends FeatureCollection {
   message: string;
-  features: ObservationFeature[];
+  features: PostObservationResponsePayload[];
 }
 
-export interface ObservationFeature extends Feature {
+export type PostObservationResponsePayload = Feature & {
   properties: {
     cd_nom: number;
     comment: string;
@@ -20,7 +20,7 @@ export interface ObservationFeature extends Feature {
     sci_name: string;
     timestamp_create: Date;
   };
-}
+};
 
 export interface TaxonomyListItem {
   medias: any;

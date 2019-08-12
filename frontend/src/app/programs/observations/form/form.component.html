@@ -62,6 +62,7 @@
         <ng-container
           *ngFor="let field of taxonAutocompleteFields; first as isFirst"
         >
+          <!-- FIXME: on input focus: show default autocomplete values -->
           <ngb-highlight [result]="r[field]" [term]="t"></ngb-highlight
           ><br *ngIf="isFirst; else elseBlock" />
           <ng-template #elseBlock> • </ng-template>

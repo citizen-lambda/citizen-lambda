@@ -32,7 +32,7 @@ import { AppConfig } from "../../../../conf/app.config";
 import { IAppConfig } from "../../../core/models";
 import {
   PostObservationResponse,
-  ObservationFeature,
+  PostObservationResponsePayload,
   TaxonomyList,
   TaxonomyListItem
 } from "../observation.model";
@@ -72,7 +72,7 @@ export class ObsFormComponent implements OnChanges {
       }
     | undefined;
   @Output("newObservation") newObservation: EventEmitter<
-    ObservationFeature
+    PostObservationResponsePayload
   > = new EventEmitter();
   @ViewChild("formMap") formMap: ObsFormMapComponent | undefined;
   @ViewChild("photo") photo: ElementRef | undefined;
@@ -110,7 +110,7 @@ export class ObsFormComponent implements OnChanges {
   zoomAlertTimeout: any;
 
   disabledDates() {
-    return (date: NgbDate, current: { month: number }) => {
+    return (date: NgbDate, _current: { month: number }) => {
       const date_impl = new Date(date.year, date.month - 1, date.day);
       return date_impl > this.today;
     };
@@ -205,7 +205,7 @@ export class ObsFormComponent implements OnChanges {
   }
 
   onFormSubmit(): void {
-    let obs: ObservationFeature;
+    let obs: PostObservationResponsePayload;
     this.postObservation().subscribe(
       (data: PostObservationResponse) => {
         obs = data.features[0];
@@ -235,7 +235,7 @@ export class ObsFormComponent implements OnChanges {
     let formData: FormData = new FormData();
 
     const files: FileList = this.photo!.nativeElement.files;
-    if (files.length > 0) {
+    if (files.length) {
       formData.append("file", files[0], files[0].name);
     }
 

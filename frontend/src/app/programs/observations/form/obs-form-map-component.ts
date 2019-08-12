@@ -272,7 +272,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       if (this.programArea) {
         this.programArea.on("click", this.programAreaClickHandler, this);
         const maxBounds: L.LatLngBounds = this.programArea.getBounds();
-        if (Object.keys(maxBounds).length > 0) {
+        if (Object.keys(maxBounds)) {
           this.map.flyToBounds(maxBounds.pad(0.01));
         }
       }

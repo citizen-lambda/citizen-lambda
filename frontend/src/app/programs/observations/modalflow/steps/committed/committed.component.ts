@@ -1,8 +1,9 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from "@angular/core";
 
+import { Feature } from "geojson";
+
 import { IFlowComponent } from "../../flow/flow";
 import { ObsFormComponent } from "../../../form/form.component";
-import { ObservationFeature } from "../../../observation.model";
 
 @Component({
   templateUrl: "./committed.component.html",
@@ -14,7 +15,7 @@ export class CommittedComponent implements IFlowComponent {
   @Input() data: any;
   newData: any = {};
 
-  onNewObservation(observation: ObservationFeature) {
+  onNewObservation(observation: Feature) {
     if (observation) {
       this.newData = { obs: observation, ...this.data };
 

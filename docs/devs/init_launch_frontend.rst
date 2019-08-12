@@ -99,7 +99,8 @@ Le SSR a été intégré au projet à partir de la commande :
 
     npm run ng add @nguniversal/express-engine --clientProject frontend
 
-NB: L'intégration Leaflet.MarkerCluster a nécessité de déclarer une variable globale ``L`` et d'y importer Leaflet; c'est dans le script ``server.ts``.
+NB: Nous avons pris le parti d'utiliser des "``mock``" pour les objets très couplés à la plateforme (window, localStorage, etc).
+L'intégration Leaflet.MarkerCluster a nécessité de déclarer une variable globale ``L`` et d'y importer Leaflet ... tout est dans le script ``server.ts``.
 
 Les modules ``BrowserTransferState`` et ``ServerTransferState`` importés, nous avons créé un couple ``{clé: valeur}`` pour être transféré du serveur au client.
 

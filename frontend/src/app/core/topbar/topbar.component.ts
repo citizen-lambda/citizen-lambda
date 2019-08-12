@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { Observable, Subject, throwError } from "rxjs";
 import { tap, map, catchError } from "rxjs/operators";
 
@@ -17,7 +17,8 @@ import { ActivatedRoute } from "@angular/router";
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
-  styleUrls: ["./topbar.component.css"]
+  styleUrls: ["./topbar.component.css"],
+  encapsulation: ViewEncapsulation.None
 })
 export class TopbarComponent implements OnInit {
   title: string = AppConfig.appName;
@@ -49,7 +50,7 @@ export class TopbarComponent implements OnInit {
       .subscribe();
   }
 
-  isLoggedIn(): Observable<boolean> {
+  isLoggedIn$(): Observable<boolean> {
     return this.auth.authorized$.pipe(
       map(value => {
         if (value === true) {
@@ -97,7 +98,7 @@ export class TopbarComponent implements OnInit {
           tap(user => {
             if (user && user["features"] && user["features"].id_role) {
               this.username = user["features"].username;
-              this.isAdmin = user["features"].admin ? true : false;
+              this.isAdmin = user["features"].admin === true;
             }
           }),
           catchError(err => {

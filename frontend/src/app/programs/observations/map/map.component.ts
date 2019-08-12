@@ -1,24 +1,24 @@
 import {
+  Injector,
   Component,
   ViewEncapsulation,
   OnInit,
   Input,
   Output,
-  OnChanges,
-  SimpleChanges,
-  EventEmitter,
   ViewChild,
   ElementRef,
+  OnChanges,
+  SimpleChanges,
+  // ChangeDetectionStrategy,
+  EventEmitter,
   HostListener,
-  ComponentFactoryResolver,
-  Injector
+  ComponentFactoryResolver
 } from "@angular/core";
 
 import { FeatureCollection, Feature } from "geojson";
 import * as L from "leaflet";
 import "leaflet-gesture-handling";
 import "leaflet.fullscreen";
-// import "../../../../../node_modules/leaflet.fullscreen/Control.FullScreen";
 import "leaflet.heat";
 import "leaflet.markercluster";
 import "leaflet.locatecontrol";
@@ -90,7 +90,7 @@ export const conf = {
       }
     }),
   CLUSTER_MARKER_ICON: (childCount: number) => {
-    const quantifiedCssClass = (childCount: number) => {
+    const quantiles = (childCount: number) => {
       let c = " marker-cluster-";
       if (childCount < 10) {
         c += "small";
@@ -103,7 +103,7 @@ export const conf = {
     };
     return new L.DivIcon({
       html: `<div><span>${childCount}</span></div>`,
-      className: "marker-cluster" + quantifiedCssClass(childCount),
+      className: "marker-cluster" + quantiles(childCount),
       iconSize: new L.Point(40, 40)
     });
   },
@@ -130,6 +130,7 @@ export const conf = {
   `,
   styleUrls: ["./map.component.css"],
   encapsulation: ViewEncapsulation.None
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObsMapComponent implements OnInit, OnChanges {
   @ViewChild("map") map!: ElementRef;
@@ -153,15 +154,17 @@ export class ObsMapComponent implements OnInit, OnChanges {
   layerControl!: L.Control.Layers;
 
   constructor(
-    private resolver: ComponentFactoryResolver,
-    private injector: Injector
+    private injector: Injector,
+    private resolver: ComponentFactoryResolver
   ) {}
 
   ngOnInit() {
     this.initMap(conf);
+    console.debug("map initialized.");
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    // console.debug(changes);
     if (
       this.observationMap &&
       changes.program &&
@@ -202,14 +205,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.observationMap);
 
-    L.control
-      .fullscreen({
-        // content: `bla`,
-        position: this.options.FULLSCREEN_CONTROL_POSITION,
-        title: "View Fullscreen",
-        titleCancel: "Exit Fullscreen"
-      } as any)
-      .addTo(this.observationMap);
+    // L.control
+    //   .fullscreen({
+    //     // content: `bla`,
+    //     position: this.options.FULLSCREEN_CONTROL_POSITION,
+    //     title: "View Fullscreen",
+    //     titleCancel: "Exit Fullscreen"
+    //   } as any)
+    //   .addTo(this.observationMap);
 
     L.control
       .locate({
@@ -250,25 +253,33 @@ export class ObsMapComponent implements OnInit, OnChanges {
     this.observationMap.on("popupclose", event => this.onPopupClose(event));
   }
 
-  onPopupClose(event: L.LeafletEvent) {
-    if (this.shouldOpenAnotherPopup && this.obsOnFocus) {
-      this.showPopup(this.obsOnFocus, event);
-    } else {
-      this.obsOnFocus = null;
+  loadProgramArea(canSubmit = true): void {
+    if (this.newObsMarker) {
+      this.observationMap.removeLayer(this.newObsMarker);
     }
-    this.shouldOpenAnotherPopup = false;
-  }
 
-  getPopupContent(feature: Feature): any {
-    const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
-    const component = factory.create(this.injector);
-    component.instance.data = { ...feature.properties };
-    component.changeDetectorRef.detectChanges();
-    const popupContent = component.location.nativeElement;
-    return popupContent;
+    if (this.program) {
+      if (this.programArea) {
+        this.observationMap.removeLayer(this.programArea);
+      }
+      this.programArea = L.geoJSON(this.program, {
+        style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
+      }).addTo(this.observationMap);
+
+      const programBounds = this.programArea.getBounds();
+      this.observationMap.fitBounds(programBounds);
+      // this.observationMap.setMaxBounds(programBounds)
+      this.newObsMarker = null;
+
+      if (canSubmit) {
+        this.programArea.on("click", this.onMarkerDrop, this);
+      }
+      this.programMaxBounds = programBounds;
+    }
   }
 
   loadObservations(): void {
+    console.debug("map: loading obs layer.");
     if (this.observations) {
       if (this.observationLayer) {
         this.layerControl.removeLayer(this.observationLayer);
@@ -292,6 +303,15 @@ export class ObsMapComponent implements OnInit, OnChanges {
       );
       this.layerControl.addOverlay(this.heatLayer, "heatmap");
     }
+  }
+
+  getPopupContent(feature: Feature): any {
+    const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
+    const component = factory.create(this.injector);
+    component.instance.data = { ...feature.properties };
+    component.changeDetectorRef.detectChanges();
+    const popupContent = component.location.nativeElement;
+    return popupContent;
   }
 
   mkObservationLayerOptions() {
@@ -345,28 +365,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
       .openOn(this.observationMap);
   }
 
-  loadProgramArea(canSubmit = true): void {
-    if (this.newObsMarker) {
-      this.observationMap.removeLayer(this.newObsMarker);
-    }
-
-    if (this.program) {
-      if (this.programArea) {
-        this.observationMap.removeLayer(this.programArea);
-      }
-      this.programArea = L.geoJSON(this.program, {
-        style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
-      }).addTo(this.observationMap);
-
-      const programBounds = this.programArea.getBounds();
-      this.observationMap.fitBounds(programBounds);
-      // this.observationMap.setMaxBounds(programBounds)
-      this.newObsMarker = null;
-
-      if (canSubmit) {
-        this.programArea.on("click", this.onMarkerDrop, this);
-      }
-      this.programMaxBounds = programBounds;
+  onPopupClose(event: L.LeafletEvent) {
+    if (this.shouldOpenAnotherPopup && this.obsOnFocus) {
+      this.showPopup(this.obsOnFocus, event);
+    } else {
+      this.obsOnFocus = null;
+      this.shouldOpenAnotherPopup = false;
     }
   }
 

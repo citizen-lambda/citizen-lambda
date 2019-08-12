@@ -8,27 +8,32 @@
     <img
       src="assets/logo.png"
       class="d-inline-block align-top"
-      alt="GeoNature Citizen logo: flamingo origami"
+      alt="GeoNature Citizen logo: a flamingo origami clipart"
     />
   </a>
   <button
     class="navbar-toggler collapsed"
     type="button"
-    data-toggle="collapse"
+    data-toggle="collapsed"
     data-target="#nav-menu"
     aria-controls="nav-menu"
-    aria-expanded="false"
+    [attr.aria-expanded]="!collapsed"
     aria-label="Toggle navigation"
+    (click)="collapsed = !collapsed"
   >
     <i class="fa fa-bars"></i>
   </button>
 
-  <div class="navbar-collapse collapse align-top" id="nav-menu">
+  <div
+    class="navbar-collapse align-top"
+    [class.collapse]="collapsed"
+    id="nav-menu"
+  >
     <div class="navbar-nav mr-auto"></div>
     <div>
       <form class="form-inline mt-2 mt-md-0">
         <ul
-          *ngIf="programs$ | async; let _programs"
+          *ngIf="programs$ | async; let $programs"
           class="btn-group"
           role="group"
           aria-label="auth"
@@ -51,7 +56,7 @@
               >Admin</a
             >
           </li>
-          <li *ngIf="_programs.length > 1">
+          <li *ngIf="$programs.length > 1">
             <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n
               >Les programmes</a
             >
@@ -59,7 +64,7 @@
         </ul>
         <div class="btn-group">
           <div
-            *ngIf="isLoggedIn() | async; then connected; else disconnected"
+            *ngIf="isLoggedIn$() | async; then connected; else disconnected"
           ></div>
           <ng-template #connected>
             <a
