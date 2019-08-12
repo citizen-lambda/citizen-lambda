@@ -1,4 +1,4 @@
-<cdk-virtual-scroll-viewport itemSize="83" id="list">
+<cdk-virtual-scroll-viewport [itemSize]="84" id="list">
   <div
     *cdkVirtualFor="let o of observations$ | async; trackBy: trackByObs"
     class="espece obs-{{ o.properties.id_observation }}"
