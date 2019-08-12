@@ -99,6 +99,10 @@ input:checked ~ #obslist {
   display: none !important;
 }
 
+input:checked ~ #map app-obs-map #obsMap {
+  width: auto;
+}
+
 input:checked ~ label.toggle {
   left: 0;
 }
@@ -127,7 +131,7 @@ input:not(:checked) ~ #obslist {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(80px + 40px + 1px + 36ch + 1px);
+  left: calc(80px + 40px + 1px + 36ch - 3px);
   background-color: var(--primary);
   width: var(--list-toggler-width);
   display: flex;
