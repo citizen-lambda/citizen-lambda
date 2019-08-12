@@ -1,6 +1,6 @@
-<div id="list">
+<cdk-virtual-scroll-viewport itemSize="83" id="list">
   <div
-    *ngFor="let o of observations$ | async; trackBy: trackByObs"
+    *cdkVirtualFor="let o of observations$ | async; trackBy: trackByObs"
     class="espece obs-{{ o.properties.id_observation }}"
     (click)="onSelected(o)"
   >
@@ -35,4 +35,4 @@
     </div>
     <div class="hide"><img src="assets/binoculars.png" /></div>
   </div>
-</div>
+</cdk-virtual-scroll-viewport>

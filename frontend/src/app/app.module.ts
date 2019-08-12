@@ -6,6 +6,7 @@ import {
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { registerLocaleData } from "@angular/common";
+import { ScrollingModule } from "@angular/cdk-experimental/scrolling";
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
@@ -57,12 +58,13 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   imports: [
-    BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserTransferStateModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    ScrollingModule,
     NgbModule,
     routing
   ],
