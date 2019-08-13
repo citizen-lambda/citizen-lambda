@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <section id="welcome">
+  <section id="welcome" class="row">
     <h1 [innerHTML]="platform_intro"></h1>
     <p [innerHTML]="platform_teaser"></p>
     <a
@@ -20,7 +20,7 @@
     </a>
   </section>
   <!-- LES PROGRAMMES -->
-  <section id="programs" *ngIf="programs.length > 1">
+  <section id="programs" class="row" *ngIf="programs.length > 1">
     <div id="programs-cards">
       <div class="card" *ngFor="let p of programs">
         <div class="card-content">

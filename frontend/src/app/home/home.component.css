@@ -51,25 +51,48 @@ app-home div.container-fluid {
 
 /* CARDS */
 
-#programs {
+/* #programs {
   display: flex;
   justify-content: center;
-}
+} */
 
 #programs-cards {
-  display: inline-flex;
-  flex-wrap: wrap;
-  width: 85%;
+  display: flex;
+  flex-flow: column wrap;
+  align-content: space-between;
+  /* FIXME: fixed container height */
+  height: 1200px;
 }
 
 #programs-cards .card {
   /* flex: 1 1 0; */
-  margin: 10px auto; /*20px*/
+  /* margin: 10px auto; */
   border-radius: 0px;
-  width: 365px !important;
-  height: 500px !important;
+  /* width: 365px !important; */
+  width: 32%;
+  margin-bottom: 2%;
+  /* height: 500px !important; */
   background-color: var(--primary-color);
 }
+
+#programs-cards .card:nth-child(3n + 1) {
+  order: 1;
+}
+#programs-cards .card:nth-child(3n + 2) {
+  order: 2;
+}
+#programs-cards .card:nth-child(3n) {
+  order: 3;
+}
+
+#programs-cards::before,
+#programs-cards::after {
+  content: "";
+  flex-basis: 100%;
+  width: 0;
+  order: 2;
+}
+
 #programs-cards .card h3,
 #programs-cards .card p {
   padding: 0px 10px;
@@ -80,7 +103,7 @@ app-home div.container-fluid {
 }
 
 #programs-cards .card .card-body {
-  height: 180px !important;
+  max-height: 180px;
   overflow-y: auto;
   margin-bottom: 5px;
 }
