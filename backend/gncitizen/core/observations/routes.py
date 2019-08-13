@@ -454,7 +454,7 @@ def get_program_observations(
         )
 
         observations = observations.order_by(ObservationModel.timestamp_create.desc())
-        current_app.logger.critical(str(observations))
+        current_app.logger.debug(str(observations))
         observations = observations.all()
 
         if current_app.config.get("API_TAXHUB") is not None:
