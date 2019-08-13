@@ -60,18 +60,22 @@ app-home div.container-fluid {
   display: flex;
   flex-flow: column wrap;
   align-content: space-between;
-  /* FIXME: fixed container height */
-  height: 1200px;
+  /*
+    ⚠ this masonry needs fixed container height ⚠
+    our card body varying height value has to be clamped.
+    todo: partitioning in set of 3x3
+  */
+  height: 1430px;
 }
 
 #programs-cards .card {
-  /* flex: 1 1 0; */
-  /* margin: 10px auto; */
+  /* flex: 1 1 0;
+  margin: 10px auto;
+  height: 500px !important;
+  width: 365px !important; */
   border-radius: 0px;
-  /* width: 365px !important; */
   width: 32%;
   margin-bottom: 2%;
-  /* height: 500px !important; */
   background-color: var(--primary-color);
 }
 

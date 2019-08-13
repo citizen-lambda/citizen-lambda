@@ -1,6 +1,7 @@
 section#welcome {
   /* margin-bottom + next section recovering */
   height: calc(100vh - var(--router-outlet-offset) - 20px - 45px);
+  max-height: 600px;
 }
 
 section#programs,
