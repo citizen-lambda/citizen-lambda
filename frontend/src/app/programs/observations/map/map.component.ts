@@ -29,10 +29,6 @@ import { MAP_CONFIG } from "../../../../conf/map.config";
 declare module "leaflet" {
   interface MapOptions {
     gestureHandling?: boolean;
-    // fullscreenControl?: boolean;
-    // fullscreenControlOptions?: {
-    //   position: string;
-    // };
   }
 }
 
@@ -42,7 +38,6 @@ export const conf = {
   BASE_LAYERS: MAP_CONFIG["BASEMAPS"].reduce(
     (acc: { [name: string]: L.TileLayer }, baseLayer) => {
       acc[baseLayer["name"].toString()] = L.tileLayer(baseLayer["layer"], {
-        // name: baseLayer["name"],
         attribution: baseLayer["attribution"],
         subdomains: baseLayer["subdomains"] || "",
         maxZoom: baseLayer["maxZoom"],
