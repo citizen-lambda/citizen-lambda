@@ -35,7 +35,7 @@ type AppConfigObsList = Pick<IAppConfig, "API_ENDPOINT">;
 export class ObsListComponent implements OnChanges {
   readonly AppConfig: AppConfigObsList = AppConfig;
   @Input("observations") observations!: FeatureCollection;
-  @Input("taxa") surveySpecies!: TaxonomyList; // keep for the medias ?
+  @Input("taxa") surveySpecies!: TaxonomyList;
   @Output("obsSelected") obsSelected: EventEmitter<
     Feature
   > = new EventEmitter();
