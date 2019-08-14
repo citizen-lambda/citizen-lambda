@@ -51,50 +51,80 @@ app-home div.container-fluid {
 
 /* CARDS */
 
-/* #programs {
-  display: flex;
-  justify-content: center;
-} */
+/*
+  ⚠ this masonry needs fixed container height ⚠
+  our card body varying height value has to be clamped.
+  our card width will adapt the number of columns.
+  height = n rows * largest item in height
+*/
 
 #programs-cards {
   display: flex;
   flex-flow: column wrap;
   align-content: space-between;
-  /*
-    ⚠ this masonry needs fixed container height ⚠
-    our card body varying height value has to be clamped.
-    todo: partitioning in set of 3x3
-  */
-  height: 1430px;
+}
+
+@media screen and (max-width: 1366px) {
+  #programs-cards {
+    height: 1430px; /* totally arbitrary hand picked value */
+  }
+
+  #programs-cards .card:nth-child(3n + 1) {
+    order: 1;
+  }
+  #programs-cards .card:nth-child(3n + 2) {
+    order: 2;
+  }
+  #programs-cards .card:nth-child(3n) {
+    order: 3;
+  }
+
+  #programs-cards::before,
+  #programs-cards::after {
+    content: "";
+    flex-basis: 100%;
+    width: 0;
+    order: 2;
+  }
+  #programs-cards .card {
+    width: 32%;
+  }
+}
+
+@media screen and (min-width: 1366px) {
+  #programs-cards {
+    height: 1080px; /* totally arbitrary hand picked value */
+  }
+
+  #programs-cards .card:nth-child(4n + 1) {
+    order: 1;
+  }
+  #programs-cards .card:nth-child(4n + 2) {
+    order: 2;
+  }
+  #programs-cards .card:nth-child(4n + 3) {
+    order: 3;
+  }
+  #programs-cards .card:nth-child(4n) {
+    order: 4;
+  }
+
+  #programs-cards::before,
+  #programs-cards::after {
+    content: "";
+    flex-basis: 100%;
+    width: 0;
+    order: 3;
+  }
+  #programs-cards .card {
+    width: 23%;
+  }
 }
 
 #programs-cards .card {
-  /* flex: 1 1 0;
-  margin: 10px auto;
-  height: 500px !important;
-  width: 365px !important; */
   border-radius: 0px;
-  width: 32%;
   margin-bottom: 2%;
   background-color: var(--primary-color);
-}
-
-#programs-cards .card:nth-child(3n + 1) {
-  order: 1;
-}
-#programs-cards .card:nth-child(3n + 2) {
-  order: 2;
-}
-#programs-cards .card:nth-child(3n) {
-  order: 3;
-}
-
-#programs-cards::before,
-#programs-cards::after {
-  content: "";
-  flex-basis: 100%;
-  width: 0;
-  order: 2;
 }
 
 #programs-cards .card h3,
