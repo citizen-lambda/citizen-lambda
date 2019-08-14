@@ -1,6 +1,6 @@
 #list {
   background-color: var(--secondary-color);
-  max-height: var(--list-obs-height);
+  height: var(--list-obs-height);
   overflow: auto;
   padding: 3px 0px 3px 0px;
 }
