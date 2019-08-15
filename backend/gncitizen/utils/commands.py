@@ -12,15 +12,17 @@ from gncitizen.core.users.models import UserModel
 
 # wanna save 40% on image disk space ?
 # sudo apt install jpegoptim optipng advancecomp pngcrush
-# find . -iname "*.jpg" -print0 | xargs -0 --max-procs=4 --max-args 1 jpegoptim  # --max=70
-# WARNING: this is way too slow !!!
+# find . -iname "*.jpg" -print0 | \
+#   xargs -0 --max-procs=4 --max-args 1 jpegoptim --max=70
+#
+# ⚠ this is way too slow
 # find . -iname "*.png" -print0 | \
 #   xargs -0 --max-procs=4 --max-args 1 -I {} sh -c \
-#       "optipng -force -o7 {} && \
-#       advpng -z4 {} && \
+#       "optipng -force -o7 \"{}\" && \
+#       advpng -z4 \"{}\" && \
 #       pngcrush -rem gAMA -rem alla \
 #                -rem cHRM -rem iCCP -rem sRGB \
-#                -rem time {} {}.bak && mv -f {}.bak {}"
+#                -rem time \"{}\" \"{}\".bak && mv -f \"{}\".bak \"{}\""
 
 
 def register(app):
