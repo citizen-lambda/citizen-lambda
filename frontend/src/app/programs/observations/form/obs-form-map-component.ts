@@ -302,18 +302,20 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       this.newObsMarker.on("dragend", _e => {
         const feature = this.input.features[0];
         const geom = feature.geometry;
-        let polygons: any;
+        let polygon: any;
         switch (geom.type) {
           case "MultiPolygon":
-            polygons = L.polygon(geom.coordinates as L.LatLngExpression[][][]);
+            polygon = L.polygon(geom.coordinates as L.LatLngExpression[][][]);
             break;
           case "Polygon":
-            polygons = L.polygon(geom.coordinates as L.LatLngExpression[][]);
+            polygon = L.polygon(geom.coordinates as L.LatLngExpression[][]);
             break;
+          default:
+            alert(`${geom.type} has no handler`);
         }
         if (
           this.newObsMarker &&
-          !this.isMarkerInsidePolygon(this.newObsMarker, polygons)
+          !this.isMarkerInsidePolygon(this.newObsMarker, polygon)
         ) {
           alert("Marker is not inside the program area");
           this.output.emit({ coords: undefined }); // todo: patch form control value
@@ -329,44 +331,45 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     this.map.panTo([lat, lng]);
   }
 
-  isMarkerInsidePolygon(marker: L.Marker, polygons: L.Polygon) {
-    // https://en.wikipedia.org/wiki/Point_in_polygon#cite_note-6
-    // http://geomalgorithms.com/a03-_inclusion.html
+  isMarkerInsidePolygon(marker: L.Marker, polygon: L.Polygon) {
+    /*
+      https://en.wikipedia.org/wiki/Point_in_polygon#cite_note-6
+      http://geomalgorithms.com/a03-_inclusion.html
+      TODO: recommendation to follow "the right hand rule",
+      ... meaning the outer polygon is enumerated counterclockwise
+      while the inner polygons clockwise.
+      cf https://tools.ietf.org/html/rfc7946#section-3.1.6
+      also, setup a test bench for this implementation!
+    */
     let V: L.Point[] = [];
-    for (let polylines of polygons.getLatLngs()) {
+    for (let polylines of polygon.getLatLngs()) {
       for (let edges of polylines) {
-        console.debug(edges);
         for (let p of edges) {
-          V.push(L.point(p.lng, p.lat));
+          V.push(L.point(p.lat, p.lng));
         }
+        V.push(
+          L.point((edges as L.LatLng[])[0].lat, (edges as L.LatLng[])[0].lng)
+        );
       }
     }
     const isLeft = (P0: L.Point, P1: L.Point, P2: L.Point) =>
       (P1.x - P0.x) * (P2.y - P0.y) - (P2.x - P0.x) * (P1.y - P0.y);
     // inverted ?!
-    const P = L.point(marker.getLatLng().lat, marker.getLatLng().lng);
+    const P = L.point(marker.getLatLng().lng, marker.getLatLng().lat);
     const n = V.length - 1;
-    let wn = 0; // the  winding number counter
+    let wn = 0;
 
-    // loop through all edges of the polygon
     for (let i = 0; i < n; i++) {
-      // edge from V[i] to  V[i+1]
-      if (V[i].y <= P.y) {
-        // start y <= P.y
-        if (V[i + 1].y > P.y) {
-          // an upward crossing
-          if (isLeft(V[i], V[i + 1], P) > 0) {
-            // P left of  edge
-            ++wn; // have a valid up intersect
+      if (V[i + 1].y <= P.y) {
+        if (V[i].y > P.y) {
+          if (isLeft(V[i + 1], V[i], P) > 0) {
+            wn++;
           }
         }
       } else {
-        // start y > P.y (no test needed)
-        if (V[i + 1].y <= P.y) {
-          // a downward crossing
-          if (isLeft(V[i], V[i + 1], P) < 0) {
-            // P right of  edge
-            --wn; // have  a valid down intersect
+        if (V[i].y <= P.y) {
+          if (isLeft(V[i + 1], V[i], P) < 0) {
+            wn--;
           }
         }
       }
