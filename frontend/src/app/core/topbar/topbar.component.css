@@ -114,10 +114,15 @@ app-topbar #nav-menu.collapsed {
   }
 }
 
-@media screen and (max-width: 775px) {
-}
-
 @media screen and (max-width: 768px) {
+  app-topbar.fixed-top nav.navbar {
+    padding: 0.2rem 1rem;
+  }
+
+  app-topbar.fixed-top nav.navbar a.navbar-brand {
+    padding-top: 0;
+  }
+
   /* menu collapsed */
   app-topbar .navbar #nav-menu form {
     flex-direction: column;
