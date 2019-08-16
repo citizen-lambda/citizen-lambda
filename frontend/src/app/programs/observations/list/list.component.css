@@ -15,6 +15,7 @@
   border: solid 2px;
   border-color: var(--secondary-color);
   display: flex;
+  max-height: calc(80px + 2 * 2px);
   overflow: hidden;
   position: relative;
 }
@@ -137,7 +138,7 @@
   transform: translateX(-100%);
 }
 
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 779px) {
   #list {
     height: inherit;
     max-height: 40vh;

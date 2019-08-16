@@ -8,14 +8,7 @@ import {
   ChangeDetectionStrategy,
   ViewEncapsulation
 } from "@angular/core";
-import { Subject, Observable } from "rxjs";
-import {
-  pluck,
-  // tap,
-  filter,
-  shareReplay,
-  takeUntil
-} from "rxjs/operators";
+import { BehaviorSubject } from "rxjs";
 
 import { FeatureCollection, Feature } from "geojson";
 
@@ -39,27 +32,18 @@ export class ObsListComponent implements OnChanges {
   @Output("obsSelected") obsSelected: EventEmitter<
     Feature
   > = new EventEmitter();
-  private unsubscribe$ = new Subject<void>();
-  changes$ = new Subject<SimpleChanges>();
-  observations$: Observable<Feature[]> = this.changes$.pipe(
-    // tap(console.debug),
-    pluck<Observable<FeatureCollection>, Feature[]>(
-      "observations",
-      "currentValue",
-      "features"
-    ),
-    filter(o => !!o),
-    takeUntil(this.unsubscribe$),
-    shareReplay()
-  );
+  observations$: BehaviorSubject<Feature[] | null> = new BehaviorSubject<
+    Feature[] | null
+  >(null);
 
   ngOnChanges(changes: SimpleChanges) {
-    this.changes$.next(changes);
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    if (
+      this.observations &&
+      changes.observations &&
+      changes.observations.currentValue
+    ) {
+      this.observations$.next(this.observations.features);
+    }
   }
 
   onSelected(feature: any): void {

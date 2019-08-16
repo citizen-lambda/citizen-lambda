@@ -203,7 +203,7 @@ export class ObsComponent extends AnchorNavigation
     this.filteredObservations$.subscribe(observations => {
       this.observations = {
         type: "FeatureCollection",
-        features: observations!
+        features: observations || []
       };
     });
   }

@@ -15,6 +15,30 @@ popup {
   );
 }
 
+/* FIXME: responsive fallback under 760px */
+@media screen and (max-width: 760px) {
+  #obsMap {
+    margin: 0;
+  }
+
+  #map {
+    max-height: 40vh;
+  }
+}
+@media screen and (max-width: 991px) {
+  .btn-group .btn-big {
+    opacity: 1 !important;
+  }
+
+  #obsMap {
+    width: 100%;
+  }
+
+  #map {
+    width: 100%;
+  }
+}
+
 .marker-cluster {
   background-image: url(/assets/marker2.svg);
 }
@@ -77,21 +101,4 @@ a.leaflet-control-layers-toggle {
   max-height: 12em;
   overflow-y: scroll;
   padding: 0.4em;
-}
-
-@media screen and (max-width: 991px) {
-  .btn-group .btn-big {
-    opacity: 1 !important;
-  }
-
-  #obsMap {
-    margin: 0;
-    width: 100%;
-    max-height: 40vh;
-  }
-
-  #map {
-    width: 100%;
-    max-height: 40vh;
-  }
 }
