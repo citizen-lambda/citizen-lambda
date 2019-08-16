@@ -9,7 +9,7 @@
 }
 
 .modal-header h4 {
-  color: #fff;
+  color: var(--primary-color);
   text-transform: uppercase;
   margin: 0 auto;
 }
@@ -20,11 +20,12 @@
 
 .modal-body {
   border-radius: 0px;
+  color: var(--color);
 }
 
 span.input-group-text {
   background: var(--secondary);
-  color: #fff;
+  color: var(--primary-color);
 }
 
 /* .modal-body input { */
@@ -48,7 +49,7 @@ span.input-group-text {
 
 .modal-body button {
   background: var(--secondary);
-  color: #fff;
+  color: var(--primary-color);
   border: solid 1px transparent;
   display: flex;
   margin: 0 auto;
@@ -58,6 +59,15 @@ span.input-group-text {
   background: transparent;
   color: var(--secondary);
   border: solid 1px var(--secondary);
+}
+
+a.tos {
+  color: var(--color) !important;
+  font-style: italic;
+}
+
+a.tos:hover {
+  font-weight: bold;
 }
 
 @media screen and (max-width: 576px) {

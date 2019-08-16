@@ -172,21 +172,25 @@
         </div>
       </div>
       <span>
-        <ngb-alert [dismissible]="false" type="warning" *ngIf="cgu.errors" i18n>
+        <ngb-alert [dismissible]="false" type="warning" *ngIf="tos.errors" i18n>
           Veuillez accepter les conditions d'utilisation.
         </ngb-alert>
         <input
           type="checkbox"
-          id="cgu"
-          name="cgu"
-          #cgu="ngModel"
+          id="tos"
+          name="tos"
+          #tos="ngModel"
           ngModel
           required
           i18n
-        />
-        J'accepte les
-        <a href="{{AppConfig['termsOfUse'][localeId]}}" i18n
-          >conditions d&apos;utilisation</a
+        /><label for="tos" i18n>
+          J'accepte les
+          <a
+            class="tos"
+            [href]="AppConfig['termsOfUse'][localeId]"
+            target="_blank"
+            >conditions d&apos;utilisation</a
+          ></label
         ></span
       >
     </div>
