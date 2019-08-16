@@ -69,6 +69,7 @@ export function geometryValidator(): ValidatorFn {
       .leaflet-control-zoomviewer.leaflet-control {
         margin: 0;
         background: rgba(255, 255, 255, 0.5);
+        color: var(--color);
         padding: 0 5px;
         font-size: 0.9em;
       }

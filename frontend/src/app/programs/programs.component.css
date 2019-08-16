@@ -8,7 +8,7 @@
 
 .programs .row h1 {
   width: 100%;
-  color: #fff;
+  color: var(--primary-color);
   background: var(--primary);
   background: -moz-linear-gradient(
     179.4deg,

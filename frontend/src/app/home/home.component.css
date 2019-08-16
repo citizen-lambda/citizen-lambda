@@ -194,7 +194,7 @@ app-home div.container-fluid {
   height: 10px;
   border-radius: 25px;
   background: transparent;
-  border: solid 1px #fff;
+  border: solid 1px var(--primary-color);
 }
 
 #slider .carousel-text div {
@@ -363,7 +363,7 @@ app-home div.container-fluid {
     margin-top: 0px;
   }
   #slider ol.carousel-indicators li.active {
-    background: #fff;
+    background: var(--primary-color);
   }
 
   #slider .carousel-control-prev {

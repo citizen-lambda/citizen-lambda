@@ -159,7 +159,7 @@ input:checked ~ .toggle i {
 }
 
 .toggle i {
-  color: #fff;
+  color: var(--primary-color);
 }
 
 .observations #map {
@@ -264,7 +264,7 @@ input:checked ~ .toggle i {
   height: 80px;
   width: 40px;
   background: var(--primary);
-  color: #fff;
+  color: var(--primary-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -282,7 +282,7 @@ input:checked ~ .toggle i {
 }
 
 .modal-header h4 {
-  color: #fff;
+  color: var(--primary-color);
   text-transform: uppercase;
   margin: 0 auto;
   text-align: center;
@@ -300,7 +300,7 @@ input:checked ~ .toggle i {
 
 app-observations span.input-group-text {
   background-color: var(--secondary);
-  color: #fff;
+  color: var(--primary-color);
 }
 
 .modal-body input.ng-valid,
@@ -324,7 +324,7 @@ app-observations span.input-group-text {
 
 .modal-footer button {
   background-color: var(--secondary) !important;
-  color: #fff;
+  color: var(--primary-color);
   border: solid 1px transparent;
   display: flex;
   margin: 0 auto;
@@ -368,7 +368,7 @@ app-observations span.input-group-text {
 
 .add-obs .form-group.btn {
   background-color: var(--primary);
-  color: #fff;
+  color: var(--primary-color);
   padding: 5px 10px;
   border-radius: 0px;
 }
@@ -427,7 +427,7 @@ form .d-inline-flex {
 .obs-add-img {
   margin: 5px;
   background: #dcdcdc;
-  color: #fff;
+  color: var(--primary-color);
   display: flex;
   justify-content: center;
   text-align: center;
@@ -474,6 +474,9 @@ form .d-inline-flex {
 }
 
 /* MODALE CONNEXION OU NON */
+.modal-body {
+  color: var(--color);
+}
 
 .modal-body .sign {
   display: flex;
@@ -503,7 +506,7 @@ form .d-inline-flex {
 
 .modal-body .sign i:before {
   font-size: 60px;
-  color: #fff;
+  color: var(--primary-color);
 }
 
 .modal-body .sign:hover {
@@ -534,6 +537,7 @@ form .d-inline-flex {
   margin: 0 auto;
   font-style: italic;
   border-bottom: solid 1px grey;
+  color: var(--color);
 }
 
 .modal-footer span:hover {

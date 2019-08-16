@@ -57,18 +57,13 @@ app-obs-form .zoom-alert {
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.8);
-  color: red;
+  color: darkred;
   font-weight: bold;
   z-index: 1001;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-}
-
-app-obs-form .zoom-alert .btn {
-  background-color: var(--primary);
-  color: #fff;
 }
 
 app-obs-form .dropdown-menu.show {
