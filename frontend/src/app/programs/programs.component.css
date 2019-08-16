@@ -38,6 +38,7 @@
 }
 
 .programs .text-center {
+  color: var(--color);
   margin-top: 30px;
   margin-bottom: 30px;
   opacity: 0.8;
@@ -110,6 +111,16 @@
   -webkit-clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   clip-path: polygon(50% 29%, 10% 100%, 100% 100%);
   width: 25px;
+}
+
+.badge-primary {
+  color: var(--dark-primary);
+  background-color: var(--primary-color);
+}
+
+.badge.badge-pill {
+  vertical-align: top;
+  margin: 0 1ch;
 }
 
 @media screen and (max-width: 991px) {
