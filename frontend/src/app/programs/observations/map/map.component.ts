@@ -453,7 +453,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           le {{ data.date }}
         </span>
       </p>
-      <div><img class="icon" src="assets/binoculars.png" /></div>
+      <div class="icon"><img src="assets/binoculars.png" /></div>
     </ng-container>
   `
 })
