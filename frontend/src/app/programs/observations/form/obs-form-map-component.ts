@@ -201,40 +201,6 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     removeMarker = true,
     removePrevious = true
   ): void {
-    console.debug("loading area:", data);
-    /*
-
-    Points "coordinates": [0, 0]
-    MultiPoints & LineStrings "coordinates": [[0, 0], [1, 0]]
-    MultiLineStrings & Polygons "coordinates": [[[0, 0], [10, 10], [10, 0], [0, 0]]]
-    MultiPolygons
-
-    - Polygon
-      - LinearRing (exterior)
-        - Positions..
-      - LinearRing (interior)
-        - Positions...
-      - LinearRing (interior)
-        - Positions...
-
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "GeometryCollection",
-        "geometries": [{
-          "type": "Point",
-          "coordinates": [0, 0]
-        }, {
-          "type": "LineString",
-          "coordinates": [[0, 0], [1, 0]]
-        }]
-      },
-      "properties": {
-        "name": "null island"
-      }
-    }
-
-    */
     if (this.newObsMarker && removeMarker) {
       this.map.removeLayer(this.newObsMarker);
       this.newObsMarker = null;
@@ -263,7 +229,6 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
   }
 
   programAreaClickHandler(event: L.LeafletMouseEvent) {
-    // console.debug("programAreaClickHandler:", event);
     if (this.newObsMarker) {
       this.output.emit({ coords: undefined }); // todo: patch form control value
       this.map.removeLayer(this.newObsMarker);
@@ -283,8 +248,8 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
         switch (geom.type) {
           /*
             polygon ring order right hand rule
-            - the exterior ring should be counterclockwise.
-            - interior rings should be clockwise.
+            - the exterior ring edges are enumerated counterclockwise.
+            - interior rings clockwise.
           */
           case "MultiPolygon":
             const polys: {
@@ -298,20 +263,14 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
                 inners: polygons
                   .slice(1)
                   .map(coords =>
-                    L.polygon((coords.map(([lng, lat]: [number, number]) => [
-                      lat,
-                      lng
-                    ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
+                    L.polygon(coords
+                      .map(([lng, lat]: [number, number]) => [lat, lng])
+                      .reverse() as L.LatLngExpression[])
                   )
               }
             ]);
 
             if (this.newObsMarker) {
-              // console.debug(
-              //   this.newObsMarker.getLatLng(),
-              //   polys
-              // );
-
               result = polys.some(p =>
                 p.some(
                   poly =>
@@ -326,10 +285,17 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
 
           case "Polygon":
             const [outer, inners] = [
-              L.polygon(geom.coordinates[0] as L.LatLngExpression[]),
-              (geom as Polygon).coordinates
+              L.polygon(geom.coordinates[0].map(
+                ([lng, lat]: [number, number]) => [lat, lng]
+              ) as L.LatLngExpression[]),
+              geom.coordinates
                 .slice(1)
-                .map(poly => L.polygon(poly.reverse() as L.LatLngExpression[]))
+                .map(coords =>
+                  L.polygon((coords.map(([lng, lat]: [number, number]) => [
+                    lat,
+                    lng
+                  ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
+                )
             ];
             if (this.newObsMarker) {
               result =
@@ -349,10 +315,5 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
         }
       });
     }
-  }
-
-  updateMarkerLatLng(lat: number, lng: number) {
-    // this.newObsMarker.setLatLng([lat, lng]);
-    this.map.panTo([lat, lng]);
   }
 }
