@@ -37,6 +37,8 @@
   --list-toggler-width: 1.2rem;
 
   --color: #5d6970;
+  --valid: #42a948;
+  --invalid: #a94442;
 
   --primary: #00a99d; /* rgb(0, 170, 158) */
   --dark-primary: #0a998f;
@@ -382,12 +384,12 @@ select:focus {
 .ng-valid[required],
 .ng-valid.required,
 .ng-valid:not(form) {
-  border-left: 5px solid #42a948;
+  border-left: 5px solid var(--valid);
   /* green */
 }
 
 .ng-invalid:not(form) {
-  border-left: 5px solid #a94442;
+  border-left: 5px solid var(--invalid);
   /* red */
 }
 

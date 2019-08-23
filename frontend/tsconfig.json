@@ -19,7 +19,6 @@
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    /* "strict": true, */
     "noEmitOnError": true,
     "target": "es5",
     "typeRoots": ["node_modules/@types"],

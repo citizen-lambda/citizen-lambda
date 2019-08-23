@@ -48,15 +48,7 @@ export interface IAppConfig {
   program_list_sort: string;
 }
 
-// type Constructor<T = {}> = new (...args: any[]) => T;
-
-// function AnchorNavigation<TBase extends Constructor>(Base: TBase) {
-//   return class extends Base implements OnInit {
-//     router: Router;
-//     route: ActivatedRoute;
-//     fragment$ = new BehaviorSubject<string>();
-//     constructor(...args: any[]) {
-//      super(...args);
+// TODO: mv anchorNavigation to directive and handle change detection.
 export abstract class AnchorNavigation implements AfterViewInit {
   fragment$ = new BehaviorSubject<string | null>(null);
 
@@ -89,7 +81,7 @@ export abstract class AnchorNavigation implements AfterViewInit {
         .trim()
     );
     // console.debug(offset);
-    if (!!anchor) {
+    if (anchor) {
       setTimeout(() => {
         window.scrollTo({
           top: anchor.getBoundingClientRect().top + window.pageYOffset - offset,

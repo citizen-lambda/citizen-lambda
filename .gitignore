@@ -241,6 +241,8 @@ contrib/gnc_*
 
 *.pyc
 
+frontend/wallaby.js
+
 #FrontEnd config files
 frontend/src/conf/*.ts
 

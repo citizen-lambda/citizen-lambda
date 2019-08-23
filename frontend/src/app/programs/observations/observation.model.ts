@@ -1,3 +1,4 @@
+// tslint:disable: quotemark
 import { Feature, FeatureCollection } from "geojson";
 
 export interface PostObservationResponse extends FeatureCollection {

@@ -1,3 +1,4 @@
+// tslint:disable: quotemark
 import {
   Component,
   ViewEncapsulation,
@@ -45,7 +46,9 @@ export function ngbDateMaxIsToday(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const today = new Date();
     const selected = NgbDate.from(control.value);
-    if (!selected) return { "Null date": true };
+    if (!selected) {
+      return { "Null date": true };
+    }
     const date_impl = new Date(selected.year, selected.month - 1, selected.day);
     return date_impl > today ? { "Parsed a date in the future": true } : null;
   };
@@ -62,24 +65,21 @@ type AppConfigObsForm = Pick<IAppConfig, "API_ENDPOINT">;
 export class ObsFormComponent implements OnChanges {
   readonly AppConfig: AppConfigObsForm = AppConfig;
   private readonly URL = this.AppConfig.API_ENDPOINT;
-  @Input("data")
-  data:
-    | {
-        // [name: string]: any;
-        coords?: L.Point;
-        program?: FeatureCollection;
-        taxa?: TaxonomyList;
-      }
-    | undefined;
+  @Input() data: {
+    // [name: string]: any;
+    coords?: L.Point;
+    program?: FeatureCollection;
+    taxa?: TaxonomyList;
+  };
   @Output("newObservation") newObservation: EventEmitter<
     PostObservationResponsePayload
   > = new EventEmitter();
   @ViewChild("formMap") formMap: ObsFormMapComponent | undefined;
   @ViewChild("photo") photo: ElementRef | undefined;
-  program_id: number | undefined;
+  program_id = 0;
   taxa: TaxonomyListItem[] = [];
   species: { [name: string]: string }[] = [];
-  taxaCount: number | undefined;
+  taxaCount = 0;
   selectedTaxon: any;
   today = new Date();
   obsForm = new FormGroup({
@@ -136,26 +136,25 @@ export class ObsFormComponent implements OnChanges {
   inputAutoCompleteFormatter = (x: { name: string }) => x.name;
 
   inputAutoCompleteSetup() {
-    for (let taxon in this.taxa) {
+    for (const taxon of Object.keys(this.taxa)) {
       if (!!!taxon) {
         console.debug("no taxon for inputAutoCompleteSetup().");
         return;
       }
-      let str: string = "";
-      let fields: { [name: string]: string } = {};
-      for (let field of this.taxonAutocompleteFields) {
-        if (this.taxa[taxon]["taxref"][field]) {
-          fields[field] = this.taxa[taxon]["taxref"][field];
-          str += ` \n${this.taxa[taxon]["taxref"][field]}`;
+      let str = "";
+      const fields: { [name: string]: string } = {};
+      const t = this.taxa[taxon as any];
+      for (const field of this.taxonAutocompleteFields) {
+        if (t.taxref[field]) {
+          fields[field] = t.taxref[field];
+          str += ` \n${t.taxref[field]}`;
         }
       }
       this.species.push({
         ...fields,
         name: str,
-        cd_nom: this.taxa[taxon]["taxref"]["cd_nom"],
-        icon: !!this.taxa[taxon]["medias"]
-          ? this.taxa[taxon]["medias"]["url"]
-          : "assets/default_taxon"
+        cd_nom: t.taxref.cd_nom,
+        icon: t.medias.length ? t.medias.url : "assets/default_taxon"
       });
     }
     this.autocomplete = "isOn";
@@ -168,16 +167,27 @@ export class ObsFormComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.data && changes.data.currentValue && this.data) {
-      this.program_id = this.data.program!.features[0].properties![
-        "id_program"
-      ]!;
-      this.taxa = Object.values(this.data.taxa!);
-      this.taxaCount = this.taxa.length;
-
       console.debug("form onChanges:", this.data);
-      console.debug("taxa:", Object.values(this.data.taxa!));
-      console.debug("program_id:", this.program_id);
-      console.debug("taxaCount:", this.taxaCount);
+
+      if (
+        this.data.program &&
+        this.data.program.features &&
+        !!this.data.program.features.length &&
+        this.data.program.features[0].properties
+      ) {
+        // tslint:disable-next-line: no-non-null-assertion
+        this.program_id = this.data.program.features[0].properties![
+          "id_program"
+        ];
+        console.debug("program_id:", this.program_id);
+      }
+
+      if (this.data.taxa) {
+        this.taxa = Object.values(this.data.taxa);
+        console.debug("taxa:", Object.values(this.data.taxa));
+        this.taxaCount = this.taxa.length;
+        console.debug("taxaCount:", this.taxaCount);
+      }
 
       if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
         this.inputAutoCompleteSetup();
@@ -232,41 +242,55 @@ export class ObsFormComponent implements OnChanges {
 
     this.obsForm.controls["id_program"].patchValue(this.program_id);
 
-    let formData: FormData = new FormData();
+    const formData: FormData = new FormData();
 
-    const files: FileList = this.photo!.nativeElement.files;
-    if (files.length) {
-      formData.append("file", files[0], files[0].name);
+    if (this.photo) {
+      const files: FileList = this.photo.nativeElement.files;
+      if (files.length) {
+        formData.append("file", files[0], files[0].name);
+      }
     }
 
-    formData.append(
-      "geometry",
-      JSON.stringify(this.obsForm.get("geometry")!.value)
-    );
+    const geometry = this.obsForm.get("geometry");
+    if (!geometry) {
+      throw new Error("form is missing required field geometry");
+    }
+    formData.append("geometry", JSON.stringify(geometry.value));
 
-    const taxon = this.obsForm.get("cd_nom")!.value;
-    let cd_nom = Number.parseInt(taxon);
+    const taxon = this.obsForm.get("cd_nom");
+    if (!taxon) {
+      throw new Error("form is missing required field taxon");
+    }
+    let cd_nom = Number.parseInt(taxon.value, 10);
     if (isNaN(cd_nom)) {
-      cd_nom = Number.parseInt(taxon.cd_nom);
+      cd_nom = Number.parseInt(taxon.value.cd_nom, 10);
     }
 
     formData.append("cd_nom", cd_nom.toString());
 
     const obsDateControlValue = NgbDate.from(this.obsForm.controls.date.value);
-    const obsDate = new Date(
-      obsDateControlValue.year,
-      obsDateControlValue.month - 1,
-      obsDateControlValue.day
-    );
-    const normDate = new Date(
-      obsDate.getTime() - obsDate.getTimezoneOffset() * 60 * 1000
-    )
-      .toISOString()
-      .match(/\d{4}-\d{2}-\d{2}/)![0];
-    formData.append("date", normDate);
+    const normalizeObsDateControlValue = (date: NgbDate): string => {
+      const d = new Date(date.year, date.month - 1, date.day);
+      const r = new Date(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
+        .toISOString()
+        .match(/\d{4}-\d{2}-\d{2}/);
+      if (r && r.length) {
+        return r[0];
+      } else {
+        throw new Error("invalid date value");
+      }
+    };
+    const obsDate = normalizeObsDateControlValue(obsDateControlValue);
+    if (obsDate) {
+      formData.append("date", obsDate);
+    }
 
-    for (let item of ["count", "comment", "id_program"]) {
-      formData.append(item, this.obsForm.get(item)!.value);
+    for (const item of ["count", "comment", "id_program"]) {
+      const c = this.obsForm.get(item);
+      const v = c ? c.value : null;
+      if (v) {
+        formData.append(item, v);
+      }
     }
 
     return this.http.post<PostObservationResponse>(

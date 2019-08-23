@@ -1,3 +1,4 @@
+// tslint:disable: quotemark
 import {
   Component,
   ViewEncapsulation,
@@ -12,15 +13,16 @@ import {
 } from "@angular/core";
 import { ValidatorFn, AbstractControl } from "@angular/forms";
 
+import { FeatureCollection, Polygon, MultiPolygon } from "geojson";
 import L from "leaflet";
 import "leaflet-fullscreen";
 import "leaflet-gesture-handling";
 
 // import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from "../../../../conf/map.config";
-import { FeatureCollection } from "geojson";
 
-import { conf } from "../map/map.component";
+import { conf, ZoomViewer } from "../map/map.component";
+import { markerInPolygon } from "./markerInPolygon";
 
 declare let $: any;
 
@@ -80,8 +82,8 @@ export function geometryValidator(): ValidatorFn {
 export class ObsFormMapComponent implements OnInit, OnChanges {
   MAP_CONFIG = MAP_CONFIG;
   conf = conf;
-  @Input("input") input!: FeatureCollection;
-  @Output("onClick") output: EventEmitter<{
+  @Input() input: FeatureCollection;
+  @Output() output: EventEmitter<{
     coords?: L.Point;
   }> = new EventEmitter();
   @ViewChild("obsFormMap" /*, { static: true }*/) mapRef:
@@ -106,12 +108,8 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       })
     ],
     zoom: 10,
-    center: L.latLng(44.6041984880559, 4.305528958557883),
+    center: L.latLng({ lat: 44.6041984880559, lng: 4.305528958557883 }),
     gestureHandling: true
-    // fullscreenControl: true,
-    // fullscreenControlOptions: {
-    //   position: "topleft"
-    // }
   };
   programArea: L.GeoJSON<any> | null = null;
   newObsMarker: L.Marker | null = null;
@@ -121,6 +119,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
+    // tslint:disable-next-line: no-non-null-assertion
     this.map = L.map(this.mapRef!.nativeElement, this.options);
     this.map.whenReady(() => this.onMapReady());
   }
@@ -129,18 +128,18 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     if (changes.input && changes.input.currentValue) {
       console.debug(changes, this.input);
 
-      if (this.input!.features && this.map) {
-        this.loadProgramArea(this.input!);
+      if (this.input.features && this.map) {
+        this.loadProgramArea(this.input);
       }
       // if (this.input.coords) {
-      //   // Set initial observation marker from main map if already spotted
+      // TODO: Set initial observation marker from main map if already spotted
       // }
     }
   }
 
   onMapReady() {
     this.map.zoomControl.setPosition(this.conf
-      .ZOOM_CONTROL_POSITION as L.ControlPosition);
+      .CONTROL_ZOOM_POSITION as L.ControlPosition);
 
     (L.control as any)
       ["fullscreen"]({
@@ -154,7 +153,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
 
     L.control
       .locate({
-        position: this.conf.GEOLOCATION_CONTROL_POSITION,
+        position: this.conf.CONTROL_GEOLOCATION_POSITION,
         getLocationBounds: (locationEvent: L.LocationEvent) =>
           locationEvent.bounds.extend(
             this.programArea
@@ -167,20 +166,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       })
       .addTo(this.map);
 
-    let ZoomViewer = L.Control.extend({
-      onAdd: () => {
-        let container = L.DomUtil.create("div");
-        let gauge = L.DomUtil.create("div");
-        container.className = "leaflet-control-zoomviewer";
-        this.map.on("zoomstart zoom zoomend", _e => {
-          gauge.innerHTML = "Zoom: " + this.map.getZoom();
-        });
-        container.appendChild(gauge);
-
-        return container;
-      }
-    });
-    let zv = new ZoomViewer();
+    const zv = new ZoomViewer();
     zv.addTo(this.map);
     zv.setPosition("bottomleft");
 
@@ -248,18 +234,8 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       }
     }
 
-    Polygon ring order: the right hand rule
-      - The exterior ring should be counterclockwise.
-      - Interior rings should be clockwise.
-
-    Strategy:
-    if geojson.type.FeatureCollection
-      => load program areas
-      => and observation markers
-    if FeatureCollection count == 1 => load program areas and delay observation data
-    fetch until area painted.
     */
-    if (removeMarker && this.newObsMarker) {
+    if (this.newObsMarker && removeMarker) {
       this.map.removeLayer(this.newObsMarker);
       this.newObsMarker = null;
     }
@@ -287,7 +263,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
   }
 
   programAreaClickHandler(event: L.LeafletMouseEvent) {
-    console.debug("programAeraClickHandler:", event);
+    // console.debug("programAreaClickHandler:", event);
     if (this.newObsMarker) {
       this.output.emit({ coords: undefined }); // todo: patch form control value
       this.map.removeLayer(this.newObsMarker);
@@ -295,29 +271,77 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     const zoomCondition = this.checkZoomHandler();
     if (zoomCondition) {
       this.output.emit({ coords: L.point(event.latlng.lng, event.latlng.lat) });
-      this.newObsMarker = L.marker(event.latlng, {
+      this.newObsMarker = L.marker(event.latlng.wrap(), {
         icon: obsFormMarkerIcon,
-        draggable: true // FIXME: marker can be dragged outside programArea
+        draggable: true
       }).addTo(this.map);
 
       this.newObsMarker.on("dragend", _e => {
         const feature = this.input.features[0];
         const geom = feature.geometry;
-        let polygon: any;
+        let result = null;
         switch (geom.type) {
+          /*
+            polygon ring order right hand rule
+            - the exterior ring should be counterclockwise.
+            - interior rings should be clockwise.
+          */
           case "MultiPolygon":
-            polygon = L.polygon(geom.coordinates as L.LatLngExpression[][][]);
+            const polys: {
+              outer: L.Polygon;
+              inners: L.Polygon[];
+            }[][] = geom.coordinates.map(polygons => [
+              {
+                outer: L.polygon(polygons[0].map(
+                  ([lng, lat]: [number, number]) => [lat, lng]
+                ) as L.LatLngExpression[]),
+                inners: polygons
+                  .slice(1)
+                  .map(coords =>
+                    L.polygon((coords.map(([lng, lat]: [number, number]) => [
+                      lat,
+                      lng
+                    ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
+                  )
+              }
+            ]);
+
+            if (this.newObsMarker) {
+              // console.debug(
+              //   this.newObsMarker.getLatLng(),
+              //   polys
+              // );
+
+              result = polys.some(p =>
+                p.some(
+                  poly =>
+                    // tslint:disable-next-line: no-non-null-assertion
+                    markerInPolygon(this.newObsMarker!)(poly.outer) &&
+                    // tslint:disable-next-line: no-non-null-assertion
+                    !poly.inners.some(markerInPolygon(this.newObsMarker!))
+                )
+              );
+            }
             break;
+
           case "Polygon":
-            polygon = L.polygon(geom.coordinates as L.LatLngExpression[][]);
+            const [outer, inners] = [
+              L.polygon(geom.coordinates[0] as L.LatLngExpression[]),
+              (geom as Polygon).coordinates
+                .slice(1)
+                .map(poly => L.polygon(poly.reverse() as L.LatLngExpression[]))
+            ];
+            if (this.newObsMarker) {
+              result =
+                markerInPolygon(this.newObsMarker)(outer) &&
+                !inners.some(markerInPolygon(this.newObsMarker));
+            }
             break;
+
           default:
             alert(`${geom.type} has no handler`);
         }
-        if (
-          this.newObsMarker &&
-          !this.isMarkerInsidePolygon(this.newObsMarker, polygon)
-        ) {
+        if (this.newObsMarker && result === false) {
           alert("Marker is not inside the program area");
           this.output.emit({ coords: undefined }); // todo: patch form control value
           this.map.removeLayer(this.newObsMarker);
@@ -330,52 +354,5 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
   updateMarkerLatLng(lat: number, lng: number) {
     // this.newObsMarker.setLatLng([lat, lng]);
     this.map.panTo([lat, lng]);
-  }
-
-  isMarkerInsidePolygon(marker: L.Marker, polygon: L.Polygon) {
-    /*
-      https://en.wikipedia.org/wiki/Point_in_polygon#cite_note-6
-      http://geomalgorithms.com/a03-_inclusion.html
-      TODO: recommendation to follow "the right hand rule",
-      ... meaning the outer polygon is enumerated counterclockwise
-      while the inner polygons clockwise.
-      cf https://tools.ietf.org/html/rfc7946#section-3.1.6
-      also, setup a test bench for this implementation!
-    */
-    let V: L.Point[] = [];
-    for (let polylines of polygon.getLatLngs()) {
-      for (let edges of polylines) {
-        for (let p of edges) {
-          V.push(L.point(p.lat, p.lng));
-        }
-        V.push(
-          L.point((edges as L.LatLng[])[0].lat, (edges as L.LatLng[])[0].lng)
-        );
-      }
-    }
-    const isLeft = (P0: L.Point, P1: L.Point, P2: L.Point) =>
-      (P1.x - P0.x) * (P2.y - P0.y) - (P2.x - P0.x) * (P1.y - P0.y);
-    // inverted ?!
-    const P = L.point(marker.getLatLng().lng, marker.getLatLng().lat);
-    const n = V.length - 1;
-    let wn = 0;
-
-    for (let i = 0; i < n; i++) {
-      if (V[i + 1].y <= P.y) {
-        if (V[i].y > P.y) {
-          if (isLeft(V[i + 1], V[i], P) > 0) {
-            wn++;
-          }
-        }
-      } else {
-        if (V[i].y <= P.y) {
-          if (isLeft(V[i + 1], V[i], P) < 0) {
-            wn--;
-          }
-        }
-      }
-    }
-    console.debug(wn);
-    return wn > 0;
   }
 }

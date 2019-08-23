@@ -162,7 +162,7 @@
         />
         <app-obs-form-map
           [input]="data.program"
-          (onClick)="onMapClick($event)"
+          (output)="onMapClick($event)"
           class="col-lg-12"
           [class.ng-invalid]="obsForm.get('geometry').invalid"
           [class.ng-valid]="obsForm.get('geometry').valid"

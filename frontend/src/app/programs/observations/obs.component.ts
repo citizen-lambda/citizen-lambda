@@ -1,7 +1,9 @@
+// tslint:disable: quotemark
 import {
   Component,
   ViewEncapsulation,
   OnInit,
+  AfterViewInit,
   OnDestroy,
   ViewChild,
   HostListener,
@@ -56,7 +58,7 @@ export const compose = <R>(fn1: (a: R) => R, ...fns: Array<(a: R) => R>) =>
   providers: [ProgramsResolve]
 })
 export class ObsComponent extends AnchorNavigation
-  implements OnInit, OnDestroy {
+  implements OnInit, AfterViewInit, OnDestroy {
   readonly AppConfig: AppConfigObservations = AppConfig;
   @ViewChild(ObsMapComponent) obsMap: ObsMapComponent;
   @ViewChild(ObsListComponent) obsList: ObsListComponent;
@@ -85,28 +87,29 @@ export class ObsComponent extends AnchorNavigation
   );
   filteredObservations$ = new BehaviorSubject<Feature[] | null>(null);
   municipalities$ = this.obsAsFeatureArray$.pipe(
-    tap(f => console.debug("municipalities$ feature[]", f)),
     map(
       (
         items: Feature[] &
           {
             properties: {
-              municipality: { name: string | null; code: number };
+              municipality: { name: string | null; code: number | null };
             };
           }[]
       ) => {
         const result = items.reduce(
           (
             acc: {
-              data: { name: string | null; code: number }[];
-              partials: { name: string | null; code: number }[];
+              data: { name: string; code: number }[];
+              partials: { name: string | null; code: number | null }[];
             },
             item
           ) => {
             const i: {
               name: string | null;
-              code: number;
-            } = item.properties!.municipality;
+              code: number | null;
+            } = item.properties
+              ? item.properties.municipality
+              : { name: null, code: null };
             if (!!!i.name) {
               return {
                 ...acc,
@@ -116,7 +119,7 @@ export class ObsComponent extends AnchorNavigation
               };
             }
             const known = acc.data.find(
-              k => k.name == i.name && k.code == i.code
+              k => k.name === i.name && k.code === i.code
             );
             return !known
               ? { ...acc, ...{ data: [...acc.data, i] } }
@@ -141,9 +144,11 @@ export class ObsComponent extends AnchorNavigation
             o &&
             o.properties &&
             Object.keys(o.properties).length &&
-            o.properties.taxref.cd_ref == this.selectedTaxon!.taxref["cd_ref"]
+            // tslint:disable-next-line: no-non-null-assertion
+            o.properties.taxref.cd_ref === this.selectedTaxon!.taxref["cd_ref"]
         )
-      : obs;
+      : // tslint:disable-next-line: semicolon
+        obs;
   selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>
     obs && this.selectedMunicipality
       ? obs.filter(
@@ -151,9 +156,10 @@ export class ObsComponent extends AnchorNavigation
             o &&
             o.properties &&
             Object.keys(o.properties) &&
-            o.properties.municipality.code == this.selectedMunicipality.code
+            o.properties.municipality.code === this.selectedMunicipality.code
         )
-      : obs;
+      : // tslint:disable-next-line: semicolon
+        obs;
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -208,10 +214,10 @@ export class ObsComponent extends AnchorNavigation
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
     // this.obsMap.observationMap.invalidateSize();
 
-    // todo: move
+    // todo: move to directive
     const element: HTMLElement | null = document.querySelector(
       "#slider .carousel-text div"
     );
@@ -229,15 +235,15 @@ export class ObsComponent extends AnchorNavigation
         takeUntil(this.unsubscribe$)
       );
 
-      const swapClasses = (state: "top" | "bottom", element: HTMLElement) => {
+      const swapClasses = (state: "top" | "bottom", e: HTMLElement) => {
         switch (state) {
           case "bottom":
-            element.classList.remove("bottom-edge-shadow");
-            element.classList.add("top-edge-shadow");
+            e.classList.remove("bottom-edge-shadow");
+            e.classList.add("top-edge-shadow");
             break;
           case "top":
-            element.classList.remove("top-edge-shadow");
-            element.classList.add("bottom-edge-shadow");
+            e.classList.remove("top-edge-shadow");
+            e.classList.add("bottom-edge-shadow");
             break;
         }
       };
@@ -257,12 +263,12 @@ export class ObsComponent extends AnchorNavigation
     this.flowData.coords = p;
   }
 
-  onListToggle() {
+  onListToggle(): void {
     this.obsMap.observationMap.invalidateSize();
   }
 
   @HostListener("document:NewObservationEvent", ["$event"])
-  newObservationEventHandler(e: CustomEvent) {
+  newObservationEventHandler(e: CustomEvent): void {
     e.stopPropagation();
     this.observations.features.unshift(e.detail);
     this.observations$.next(this.observations);

@@ -40,7 +40,7 @@
 }
 
 .user-infos span {
-  color: #fff;
+  color: var(--primary-color);
   background-color: rgba(255, 255, 255, 0.212);
   text-transform: uppercase;
   font-weight: bold;
@@ -84,7 +84,7 @@
   justify-content: start;
   padding: 20px;
   background: #f3f3f3;
-  border: solid 3px #fff;
+  border: solid 3px var(--primary-color);
 }
 
 #badges div img {
@@ -144,7 +144,7 @@ form > button {
 }
 
 .modal-header h4 {
-  color: #fff;
+  color: var(--primary-color);
   text-transform: uppercase;
   margin: 0 auto;
 }
