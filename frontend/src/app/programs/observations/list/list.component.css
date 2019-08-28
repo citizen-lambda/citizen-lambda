@@ -1,14 +1,26 @@
-#list {
+app-obs-list #list {
   background-color: var(--secondary-color);
-  height: var(--list-obs-height);
   overflow: auto;
   padding: 3px 0px 3px 0px;
 }
 
-#list .espece:not(:last-of-type) {
+@media screen and (min-width: 568px) {
+  app-obs-list #list {
+    height: var(--obs-list-height);
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .span:last {
+    display: none !;
+  }
+}
+
+app-obs-list #list .espece:not(:last-of-type) {
   margin-bottom: 3px;
 }
-#list .espece {
+
+app-obs-list #list .espece {
   background-color: var(--primary-color);
   background-image: var(--obs-card-bg);
   background-size: 100% 100%;
@@ -20,16 +32,16 @@
   position: relative;
 }
 
-#list .espece:hover {
+app-obs-list #list .espece:hover {
   cursor: pointer;
   border-color: var(--primary);
 }
 
-.espece:hover .hide {
+app-obs-list .espece:hover .hide {
   transform: translateX(0);
 }
 
-#list .espece img {
+app-obs-list #list .espece img {
   height: 80px;
   min-width: 80px !important;
   max-width: 80px !important;
@@ -47,13 +59,13 @@
   transition: all 0.2s ease-in-out;
 }
 
-#list .espece .hide img {
+app-obs-list #list .espece .hide img {
   height: auto !important;
   max-width: 20px !important;
   min-width: 20px !important;
 }
 
-#list .espece .infos {
+app-obs-list #list .espece .infos {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -61,13 +73,13 @@
   width: 100%;
 }
 
-#list .espece div h5 {
+app-obs-list #list .espece div h5 {
   font-size: 1em;
   margin-bottom: 0px;
 }
 
-#list .espece div p,
-#list .espece div span {
+app-obs-list #list .espece div p,
+app-obs-list #list .espece div span {
   color: var(--primary);
   font-style: italic;
   margin-bottom: 0px;
@@ -138,24 +150,7 @@
   transform: translateX(-100%);
 }
 
-@media screen and (max-width: 779px) {
-  #list {
-    height: inherit;
-    max-height: 40vh;
-  }
-  .toggle {
-    display: none;
-  }
-  .side-bar,
-  .map {
-    position: static !important;
-  }
-  .map {
-    height: auto;
-  }
-  /*  #map{
-        height: 50vh;
-    } */
+@media screen and (max-width: 768px) {
   .hide {
     transform: translateX(-0%);
   }

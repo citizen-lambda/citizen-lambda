@@ -1,6 +1,12 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { Observable, Subject, throwError } from "rxjs";
-import { tap, map, catchError } from "rxjs/operators";
+// tslint:disable: quotemark
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  AfterViewInit
+} from "@angular/core";
+import { Observable, Subject, throwError, BehaviorSubject } from "rxjs";
+import { tap, map, catchError, filter } from "rxjs/operators";
 
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
@@ -20,41 +26,27 @@ import { ActivatedRoute } from "@angular/router";
   styleUrls: ["./topbar.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-export class TopbarComponent implements OnInit {
+export class TopbarComponent implements OnInit, AfterViewInit {
   title: string = AppConfig.appName;
-  username: any;
+  collapsed = true;
+  username = "Anonymous";
   modalRef: NgbModalRef;
   programs$ = new Subject<Program[] | null>();
-  isAdmin = false;
+  // FIXME: isAdmin$ topbar updates
+  isAdmin$ = new BehaviorSubject<boolean | null>(null);
 
   constructor(
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     private auth: AuthService,
     private modalService: NgbModal
-  ) {
-    this.username = localStorage.getItem("username") || "Anonymous";
-    this.route.data
-      .pipe(
-        tap((data: { programs: Program[] }) => {
-          if (data && data.programs) {
-            this.programs$.next(data.programs);
-          } else {
-            this.programService.getAllPrograms().subscribe(programs => {
-              this.programs$.next(programs);
-            });
-          }
-        }),
-        catchError(error => throwError(error))
-      )
-      .subscribe();
-  }
+  ) {}
 
   isLoggedIn$(): Observable<boolean> {
     return this.auth.authorized$.pipe(
       map(value => {
         if (value === true) {
-          this.username = localStorage.getItem("username");
+          this.username = localStorage.getItem("username") || this.username;
         }
         return value;
       })
@@ -89,7 +81,9 @@ export class TopbarComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
     const access_token = localStorage.getItem("access_token");
     if (access_token) {
       this.auth
@@ -98,7 +92,7 @@ export class TopbarComponent implements OnInit {
           tap(user => {
             if (user && user["features"] && user["features"].id_role) {
               this.username = user["features"].username;
-              this.isAdmin = user["features"].admin === true;
+              this.isAdmin$.next(user["features"].admin);
             }
           }),
           catchError(err => {
@@ -108,14 +102,38 @@ export class TopbarComponent implements OnInit {
               .then(logout => {
                 console.log("Logout Status:", logout.status);
               })
-              .catch(err => {
-                console.error("Logout error:", err);
+              .catch(error => {
+                console.error("Logout error:", error);
               });
             return throwError(err);
           })
         )
         .subscribe();
+    } else {
+      this.username = localStorage.getItem("username") || "Anonymous";
     }
+
+    this.auth.authorized$
+      .pipe(
+        filter(status => !!!status),
+        map(_ => this.isAdmin$.next(false))
+      )
+      .subscribe();
+
+    this.route.data
+      .pipe(
+        tap((data: { programs: Program[] }) => {
+          if (data && data.programs) {
+            this.programs$.next(data.programs);
+          } else {
+            this.programService.getAllPrograms().subscribe(programs => {
+              this.programs$.next(programs);
+            });
+          }
+        }),
+        catchError(error => throwError(error))
+      )
+      .subscribe();
   }
 
   close(d: string) {

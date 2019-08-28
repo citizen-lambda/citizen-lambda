@@ -7,17 +7,15 @@ export const markerInPolygon = (marker: L.Marker) => (polygon: L.Polygon) => {
     https://en.wikipedia.org/wiki/Point_in_polygon#cite_note-6
     http://geomalgorithms.com/a03-_inclusion.html
     https://tools.ietf.org/html/rfc7946#section-3.1.6
+    https://en.wikipedia.org/wiki/Rotation_number
   */
   const P = L.point(marker.getLatLng().lng, marker.getLatLng().lat);
   const V: L.Point[] = [];
-  // console.debug("shape:", polygon);
   const edges = polygon.getLatLngs()[0] as L.LatLng[];
-  // console.debug("edges:", edges);
+
   for (const edge of edges) {
-    // console.debug("edge", edge);
     V.push(L.point(edge.lng, edge.lat));
   }
-  // console.debug("V:", V);
   /*
     The first and last positions are equivalent, and they MUST contain
     identical values; their representation SHOULD also be identical.
@@ -30,7 +28,6 @@ export const markerInPolygon = (marker: L.Marker) => (polygon: L.Polygon) => {
   const isLeft = (P0: L.Point, P1: L.Point, P2: L.Point) =>
     (P1.x - P0.x) * (P2.y - P0.y) - (P2.x - P0.x) * (P1.y - P0.y);
 
-  // debugger;
   for (let i = 0; i < n; i++) {
     if (V[i].y <= P.y) {
       if (V[i + 1].y > P.y) {
@@ -46,7 +43,7 @@ export const markerInPolygon = (marker: L.Marker) => (polygon: L.Polygon) => {
       }
     }
   }
-  console.debug("wn:", wn);
+  // console.debug("wn:", wn);
   return polygon ? wn !== 0 : false;
 };
 
@@ -121,17 +118,18 @@ function testMarkerInPolygon() {
         ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
       )
   ];
-  console.debug("outer:", outer, "inners:", inners);
   return points.map(feature => {
     const marker = L.marker([
       (feature.geometry as Point).coordinates[1],
       (feature.geometry as Point).coordinates[0]
     ]);
+    /*
     console.debug(
       marker,
       markerInPolygon(marker)(outer),
       inners.some(markerInPolygon(marker))
     );
+    */
     // tslint:disable-next-line: no-non-null-assertion
     return `${feature.properties!.inside} === ${markerInPolygon(marker)(
       outer

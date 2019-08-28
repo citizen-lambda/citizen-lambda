@@ -1,4 +1,4 @@
-export class RegisterUser {
+export class RegisteredUser {
   username?: string;
   password?: string;
   email?: string;
@@ -8,7 +8,7 @@ export class RegisterUser {
   constructor() {}
 }
 
-export interface LoginUser {
+export interface LoggedUser {
   username: string;
   password: string;
 }

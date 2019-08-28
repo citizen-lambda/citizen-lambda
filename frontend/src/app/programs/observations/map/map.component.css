@@ -9,33 +9,22 @@ popup {
 #obsMap {
   height: calc(100vh - var(--router-outlet-offset));
   margin-left: var(--list-toggler-width);
-  /* fixme: supplementary 80px? */
+  /* fixme: supplementary 80px & 55px ? */
   width: calc(
-    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px
+    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px +
+      55px
   );
 }
 
-/* FIXME: responsive fallback under 760px */
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 768px) {
   #obsMap {
     margin: 0;
   }
-
-  #map {
-    max-height: 40vh;
-  }
 }
+
 @media screen and (max-width: 991px) {
   .btn-group .btn-big {
     opacity: 1 !important;
-  }
-
-  #obsMap {
-    width: 100%;
-  }
-
-  #map {
-    width: 100%;
   }
 }
 

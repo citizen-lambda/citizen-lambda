@@ -27,11 +27,9 @@ type AppConfigObsList = Pick<IAppConfig, "API_ENDPOINT">;
 })
 export class ObsListComponent implements OnChanges {
   readonly AppConfig: AppConfigObsList = AppConfig;
-  @Input("observations") observations!: FeatureCollection;
-  @Input("taxa") surveySpecies!: TaxonomyList;
-  @Output("obsSelected") obsSelected: EventEmitter<
-    Feature
-  > = new EventEmitter();
+  @Input() observations: FeatureCollection;
+  @Input() taxa: TaxonomyList;
+  @Output() obsSelected: EventEmitter<Feature> = new EventEmitter();
   observations$: BehaviorSubject<Feature[] | null> = new BehaviorSubject<
     Feature[] | null
   >(null);
@@ -60,6 +58,7 @@ export class ObsListComponent implements OnChanges {
 
   randomItem(a: Array<any>): any {
     if (a && !!a.length) {
+      // tslint:disable-next-line: no-bitwise
       return a[(Math.random() * a.length) >> 0];
     }
   }

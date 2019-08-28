@@ -7,7 +7,7 @@ import { debounceTime, map, catchError } from "rxjs/operators";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppConfig } from "../../../conf/app.config";
-import { LoginUser } from "./../models";
+import { LoggedUser } from "./../models";
 import { AuthService } from "./../auth.service";
 
 @Component({
@@ -22,7 +22,7 @@ export class LoginComponent {
   errorMessage: string | null = null;
   successMessage: string | null = null;
   staticAlertClosed = false;
-  user: LoginUser = { username: "", password: "" };
+  user: LoggedUser = { username: "", password: "" };
   recovery = { username: "", email: "" };
   recoverPassword = false;
 

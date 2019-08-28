@@ -262,27 +262,6 @@ app-home div.container-fluid {
   }
 }
 
-@media screen and (max-width: 992px) {
-  .toggle {
-    display: none !important;
-  }
-  .side-bar,
-  .map {
-    position: static !important;
-  }
-
-  .map {
-    height: auto;
-    position: relative !important;
-    left: 0% !important;
-  }
-
-  #list {
-    /* top: 50% !important; */
-    width: 100% !important;
-  }
-}
-
 @media screen and (max-width: 760px) {
   #welcome a[role="button"] {
     left: 50%;

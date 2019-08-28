@@ -70,26 +70,39 @@ section.observations#program {
 
 #obslist {
   flex-grow: 1;
-  /* pic width + hover binoculars width + min line length in char unit */
-  flex-basis: calc(80px + 40px + 36ch + 1px);
-  /* position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0; */
-  max-width: calc(33% + var(--list-toggler-width));
+  /* + hover binoculars width */
+  flex-basis: calc(var(--obs-cell-width) + 40px);
+  min-width: var(--obs-cell-width);
+  width: var(--obs-list-width);
 }
 
 #map {
   flex-basis: 0;
   flex-grow: 999;
-  min-width: calc(50% - 1px);
+}
+
+@media screen and (max-width: 568px) {
+  .toggle {
+    display: none !important;
+  }
+
+  #map,
+  app-obs-map #obsMap,
+  #obslist,
+  app-obs-list #list {
+    flex-basis: auto;
+    width: 100vw;
+    height: 50vh;
+  }
+
+  .map {
+    height: auto;
+    position: relative !important;
+    left: 0% !important;
+  }
 }
 
 /* OBS LIST DISPLAY TOGGLING */
-
-/* .side-bar {
-  width: 33%;
-} */
 
 input#slide-sidebar[type="checkbox"] {
   display: none;
@@ -112,11 +125,6 @@ input:not(:checked) ~ #obslist {
 }
 
 .map {
-  /* position: absolute;
-  top: 0;
-  left: 33%;
-  right: 0;
-  bottom: 0; */
   -moz-transition: left 0.5s ease;
   transition: left 0.5s ease;
 }
@@ -131,7 +139,7 @@ input:not(:checked) ~ #obslist {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(80px + 40px + 1px + 36ch - 3px);
+  left: calc(var(--obs-list-width) + var(--list-toggler-width) + 1px);
   background-color: var(--primary);
   width: var(--list-toggler-width);
   display: flex;
@@ -141,10 +149,6 @@ input:not(:checked) ~ #obslist {
   margin-bottom: 0px;
   justify-content: center;
 }
-
-/* input:checked ~ .toggle {
-  left: 0;
-} */
 
 .toggle i {
   transition: all 0.5s ease;
@@ -160,10 +164,6 @@ input:checked ~ .toggle i {
 
 .toggle i {
   color: var(--primary-color);
-}
-
-.observations #map {
-  /* overflow: hidden; */
 }
 
 .observations #map,
@@ -209,6 +209,21 @@ input:checked ~ .toggle i {
 
 .observations #map .btn-group button:nth-child(2n) {
   background-color: var(--primary);
+}
+
+.observation-zoom-statement-warning::after {
+  position: absolute;
+  color: darkred;
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  content: attr(data-observation-zoom-statement-warning);
+  z-index: 9999;
 }
 
 /* POPUP CUSTOM */
@@ -593,7 +608,7 @@ form .d-inline-flex {
   color: #919191;
 }
 
-/* MOdALES NEW BADGES */
+/* MODALES NEW BADGES */
 
 .new-badge {
   text-align: center;
@@ -636,34 +651,12 @@ form .d-inline-flex {
   .sign {
     padding: 0px 40px 20px 40px !important;
   }
+
   .obs-img span,
   .obs-img img {
     opacity: 1;
   }
-}
 
-@media screen and (max-width: 400px) {
-  .observations #map .btn-group {
-    right: 0px;
-  }
-}
-
-.observation-zoom-statement-warning::after {
-  position: absolute;
-  color: darkred;
-  display: flex;
-  align-items: center;
-  padding: 1em;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
-  content: attr(data-observation-zoom-statement-warning);
-  z-index: 9999;
-}
-
-@media screen and (max-width: 991px) {
   .observations {
     height: inherit;
   }
@@ -674,5 +667,23 @@ form .d-inline-flex {
 
   .observation-zoom-statement-warning::after {
     max-height: 40vh;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  :root {
+    --obs-cell-width: calc(80px + 1em + 18ch);
+  }
+
+  #list .espece > .infos > p:last-of-type > span:last-of-type {
+    display: none;
+  }
+
+  .observations #map .btn-groups {
+    right: 0px;
+  }
+
+  app-obs-map #obsMap {
+    width: 100%;
   }
 }

@@ -1,8 +1,0 @@
-/* Sticky footer styles
--------------------------------------------------- */
-.footer {
-  height: var(--footer-height);
-  line-height: var(--footer-height);
-  background-color: var(--primary-color);
-  box-shadow: 0px -2px 2px 0 rgba(0, 0, 0, 0.2);
-}

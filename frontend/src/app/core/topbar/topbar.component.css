@@ -1,4 +1,17 @@
+app-topbar .navbar-brand img {
+  max-height: calc(var(--router-outlet-offset) - 4px);
+  /* transition: 0.1s; */
+}
+
+app-topbar .navbar-brand {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  color: var(--primary);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 app-topbar nav.navbar {
+  display: flex;
   min-height: var(--narrow-topbar-height);
   max-height: var(--tall-topbar-height);
   height: var(--router-outlet-offset);
@@ -7,52 +20,30 @@ app-topbar nav.navbar {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
-app-topbar .navbar-brand {
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  color: var(--primary);
-}
-
-app-topbar .navbar-brand img {
-  max-height: calc(var(--router-outlet-offset) - 4px);
-  /* transition: 0.1s; */
+app-topbar .navbar-expand-md .navbar-collapse {
+  justify-content: space-between;
 }
 
 app-topbar .navbar-collapse.collapsed.show {
   background-color: var(--primary-color);
 }
 
-/* .main {
-  margin-top: var(--router-outlet-offset);
-  padding: 0px 10px;
+app-topbar #nav-menu ul.btn-group:first-child {
+  flex-wrap: wrap;
+  margin-bottom: 0;
 }
 
-main {
-  margin-top: var(--router-outlet-offset);
-  padding: 0px 10px;
-} */
-
-app-topbar #nav-menu form {
-  display: flex;
-  align-items: baseline;
-}
-
-app-topbar #nav-menu .btn-group li,
-app-topbar #nav-menu .btn-group a {
-  min-width: 143px !important;
-  text-align: center;
-  transition: all 0.1s ease-in-out;
-}
-
-app-topbar #nav-menu .btn-group a:hover {
-  font-weight: bold;
-}
-
-app-topbar #nav-menu ul.btn-group li a,
-app-topbar #nav-menu div.btn-group a {
+app-topbar #nav-menu ul.btn-group li a {
   color: #666565;
   font-size: 14px;
   padding: 6px 10px;
   position: relative;
+  text-align: center;
+  transition: all 0.1s ease-in-out;
+}
+
+app-topbar #nav-menu ul.btn-group li a:hover {
+  font-weight: bold;
 }
 
 app-topbar #nav-menu ul.btn-group li a.active {
@@ -65,22 +56,27 @@ app-topbar #nav-menu ul.btn-group li a.active:before {
   color: var(--primary);
 }
 
-app-topbar #nav-menu div.btn-group {
-  display: flex;
+app-topbar #nav-menu ul#auth.btn-group {
+  margin: 0;
+  padding: 0;
   flex-direction: column;
+}
+
+app-topbar #nav-menu ul#auth.btn-group li {
   border-left: solid 1px;
   border-color: var(--primary);
   margin-left: 50px;
 }
 
-app-topbar #nav-menu div.btn-group a {
+app-topbar #nav-menu div.btn-group li a {
   background: none !important;
   padding-left: 5px;
   text-align: left;
   padding: 0px 6px;
 }
 
-app-topbar #nav-menu div.btn-group a:first-child {
+app-topbar #nav-menu #auth li:first-child a {
+  justify-self: start;
   color: var(--primary);
   font-weight: bold;
 }
@@ -91,60 +87,50 @@ app-topbar #nav-menu.collapsed {
   transition-duration: 0.2s;
 }
 
-@media screen and (max-width: 992px) {
-  app-topbar #nav-menu ul.btn-group {
-    padding: 0px;
-  }
-  app-topbar #nav-menu ul.btn-group li {
-    max-width: 120px !important;
-  }
-}
-
-@media screen and (max-width: 920px) {
-  /* .navbar .navbar-collapsed {
-    display: flex !important;
-    flex-basis: auto;
-  } */
+@media screen and (max-width: 768px) {
   app-topbar #nav-menu {
     background-color: var(--primary-color);
+    color: var(--color);
+    flex-direction: column;
+    align-items: flex-end;
+    max-height: calc(100vh - var(--router-outlet-offset));
+    overflow-y: scroll;
   }
 
-  app-topbar #nav-menu div.btn-group {
-    margin-left: 0px;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  app-topbar.fixed-top nav.navbar {
-    padding: 0.2rem 1rem;
+  app-topbar .btn-group,
+  app-topbar .btn-group-vertical {
+    display: flex;
+    flex-direction: column;
+    vertical-align: middle;
   }
 
-  app-topbar.fixed-top nav.navbar a.navbar-brand {
+  app-topbar nav.fixed-top.navbar {
+    padding: 0.2em 1em;
+  }
+
+  app-topbar nav.fixed-top.navbar a.navbar-brand {
     padding-top: 0;
   }
 
-  /* menu collapsed */
-  app-topbar .navbar #nav-menu form {
-    flex-direction: column;
-    align-items: flex-end;
-  }
-
-  app-topbar .navbar #nav-menu form ul {
+  app-topbar .navbar #nav-menu ul {
     flex-direction: column;
   }
 
-  app-topbar .navbar #nav-menu form ul li {
-    min-width: none !important;
-    max-width: none !important;
-  }
-
-  app-topbar .navbar #nav-menu div.btn-group {
-    border-left: none;
-    border-right: solid 1px var(--primary);
-  }
-
-  app-topbar .navbar #nav-menu form ul li a,
-  app-topbar .navbar #nav-menu form div.btn-group a {
+  app-topbar .navbar #nav-menu ul li {
     text-align: right;
+  }
+
+  app-topbar #nav-menu ul#auth.btn-group li {
+    border-left: none;
+  }
+
+  app-topbar #nav-menu ul#auth.btn-group li a {
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  app-topbar #nav-menu ul#auth.btn-group > :first-child {
+    border-top: solid 1px;
+    border-color: var(--primary);
   }
 }

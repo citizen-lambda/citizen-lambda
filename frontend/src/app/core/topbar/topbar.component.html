@@ -1,4 +1,4 @@
-<nav class="navbar navbar-light navbar-expand-md">
+<nav class="navbar navbar-light navbar-expand-md fixed-top">
   <a
     class="navbar-brand"
     routerLink="home"
@@ -29,72 +29,127 @@
     [class.collapse]="collapsed"
     id="nav-menu"
   >
-    <div class="navbar-nav mr-auto"></div>
-    <div>
-      <form class="form-inline mt-2 mt-md-0">
-        <ul
-          *ngIf="programs$ | async; let $programs"
-          class="btn-group"
-          role="group"
-          aria-label="auth"
+    <ul class="btn-group">
+      <li>
+        <a
+          routerLink="home"
+          routerLinkActive="active"
+          class="btn my-2 my-sm-0 rounded-0"
+          i18n
+          >Accueil</a
         >
-          <li>
-            <a
-              routerLink="home"
-              routerLinkActive="active"
-              class="btn my-2 my-sm-0 rounded-0"
-              i18n
-              >Accueil</a
-            >
-          </li>
-          <li *ngIf="isAdmin">
-            <a
-              routerLink="/api/admin"
-              routerLinkActive="active"
-              class="btn my-2 my-sm-0 rounded-0"
-              i18n
-              >Admin</a
-            >
-          </li>
-          <li *ngIf="$programs.length > 1">
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n
-              >Les programmes</a
-            >
-          </li>
-        </ul>
-        <div class="btn-group">
-          <div
-            *ngIf="isLoggedIn$() | async; then connected; else disconnected"
-          ></div>
-          <ng-template #connected>
-            <a
-              placement="bottom"
-              i18n-ngbTooltip
-              ngbTooltip="Mon tableau de bord"
-              routerLink="mydashboard"
-              routerLinkActive="active"
-            >
-              <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ username }}
-            </a>
-            <a
-              class="btn btn-sm my-2 my-sm-0"
-              (click)="logout()"
-              style="min-width: 147px !important"
-              i18n
-            >
-              <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
-            </a>
-          </ng-template>
-          <ng-template #disconnected>
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="login()" i18n>
-              Se connecter
-            </a>
-            <a class="btn my-2 my-sm-0 rounded-0" (click)="register()" i18n>
-              S'inscrire
-            </a>
-          </ng-template>
-        </div>
-      </form>
-    </div>
+      </li>
+      <ng-container *ngIf="programs$ | async as $programs">
+        <li *ngIf="$programs?.length > 1">
+          <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n
+            >Les programmes</a
+          >
+        </li>
+      </ng-container>
+      <li *ngIf="isAdmin$ | async">
+        <a
+          routerLink="/api/admin"
+          routerLinkActive="active"
+          class="btn my-2 my-sm-0 rounded-0"
+          i18n
+          >Admin</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="#"
+          routerLinkActive="active"
+          class="btn my-2 my-sm-0 rounded-0"
+          i18n
+          >Dynamic1</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="#"
+          routerLinkActive="active"
+          class="btn my-2 my-sm-0 rounded-0"
+          i18n
+          >Dynamic2</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="#"
+          routerLinkActive="active"
+          class="btn my-2 my-sm-0 rounded-0"
+          i18n
+          >Dynamic3</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="#"
+          routerLinkActive="active"
+          class="btn my-2 my-sm-0 rounded-0"
+          i18n
+          >About</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="#"
+          routerLinkActive="active"
+          class="btn my-2 my-sm-0 rounded-0"
+          i18n
+          >Terms</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="#"
+          routerLinkActive="active"
+          class="btn my-2 my-sm-0 rounded-0"
+          i18n
+          >Privacy</a
+        >
+      </li>
+    </ul>
+    <ul class="btn-group" id="auth" role="group" aria-label="auth">
+      <ng-container
+        *ngIf="isLoggedIn$() | async; then connected; else disconnected"
+      >
+      </ng-container>
+      <ng-template #connected>
+        <li>
+          <a
+            placement="bottom"
+            i18n-ngbTooltip
+            ngbTooltip="Mon tableau de bord"
+            routerLink="mydashboard"
+            routerLinkActive="active"
+          >
+            <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ username }}
+          </a>
+        </li>
+        <li>
+          <a
+            class="btn btn-sm my-2 my-sm-0"
+            (click)="logout()"
+            style="min-width: 147px !important"
+            i18n
+          >
+            <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
+          </a>
+        </li>
+      </ng-template>
+      <ng-template #disconnected>
+        <li>
+          <a class="btn my-2 my-sm-0 rounded-0" (click)="login()" i18n>
+            Se connecter
+          </a>
+        </li>
+        <li>
+          <a class="btn my-2 my-sm-0 rounded-0" (click)="register()" i18n>
+            S'inscrire
+          </a>
+        </li>
+      </ng-template>
+    </ul>
   </div>
 </nav>

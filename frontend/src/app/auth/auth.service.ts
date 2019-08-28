@@ -1,3 +1,4 @@
+// tslint:disable: quotemark
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -6,8 +7,8 @@ import { share, map, catchError } from "rxjs/operators";
 
 import { AppConfig } from "../../conf/app.config";
 import {
-  LoginUser,
-  RegisterUser,
+  LoggedUser,
+  RegisteredUser,
   JWT,
   TokenRefresh,
   LoginPayload,
@@ -24,37 +25,42 @@ export class AuthService {
   redirectUrl: string | undefined;
   authenticated$ = new BehaviorSubject<boolean>(this.hasRefreshToken());
   authorized$ = new BehaviorSubject<boolean>(
+    // tslint:disable-next-line: no-non-null-assertion
     this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()!) > 1
   );
   timeoutID: any = null;
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(user: LoginUser): Observable<LoginPayload> {
-    let url = `${AppConfig.API_ENDPOINT}/login`;
+  login(user: LoggedUser): Observable<LoginPayload> {
+    const url = `${AppConfig.API_ENDPOINT}/login`;
     return this.http
       .post<LoginPayload>(url, user, { headers: this.headers })
       .pipe(
-        map(user => {
-          if (user && user.refresh_token) {
-            localStorage.setItem("access_token", user.access_token!);
-            this.authorized$.next(true);
-            localStorage.setItem("refresh_token", user.refresh_token);
-            this.authenticated$.next(true);
-            localStorage.setItem("username", user.username!);
+        map(u => {
+          if (u && u.refresh_token) {
+            localStorage.setItem("refresh_token", u.refresh_token);
+            if (u.access_token) {
+              localStorage.setItem("access_token", u.access_token);
+              this.authorized$.next(true);
+            }
+            if (u.username) {
+              localStorage.setItem("username", u.username);
+              this.authenticated$.next(true);
+            }
           }
-          return user;
+          return u;
         })
       );
   }
 
-  register(user: RegisterUser): Observable<any> {
-    let url: string = `${AppConfig.API_ENDPOINT}/registration`;
+  register(user: RegisteredUser): Observable<any> {
+    const url = `${AppConfig.API_ENDPOINT}/registration`;
     return this.http.post(url, user, { headers: this.headers });
   }
 
   logout(): Promise<any> {
-    let url: string = `${AppConfig.API_ENDPOINT}/logout`;
+    const url = `${AppConfig.API_ENDPOINT}/logout`;
     return this.http
       .post<LogoutPayload>(url, { headers: this.headers })
       .pipe(
@@ -78,12 +84,12 @@ export class AuthService {
   }
 
   ensureAuthorized(): Observable<UserInfo> {
-    let url: string = `${AppConfig.API_ENDPOINT}/user/info`;
+    const url = `${AppConfig.API_ENDPOINT}/user/info`;
     return this.http.get<UserInfo>(url, { headers: this.headers });
   }
 
   performTokenRefresh(): Observable<TokenRefresh> {
-    const url: string = `${AppConfig.API_ENDPOINT}/token_refresh`;
+    const url = `${AppConfig.API_ENDPOINT}/token_refresh`;
     const refresh_token = this.getRefreshToken();
     const headers = this.headers.set(
       "Authorization",
@@ -95,7 +101,7 @@ export class AuthService {
   }
 
   selfDeleteAccount(_access_token: string): Promise<any> {
-    let url: string = `${AppConfig.API_ENDPOINT}/user/delete`;
+    const url = `${AppConfig.API_ENDPOINT}/user/delete`;
     return this.http.delete(url, { headers: this.headers }).toPromise();
   }
 
@@ -120,9 +126,13 @@ export class AuthService {
   }
 
   decodeToken(token: string): JWT | void {
-    if (!token) return;
+    if (!token) {
+      return;
+    }
     const parts: any[] = token.split(".");
-    if (parts.length != 3) return;
+    if (parts.length != 3) {
+      return;
+    }
     try {
       return {
         header: JSON.parse(atob(parts[0])),
@@ -135,9 +145,13 @@ export class AuthService {
   }
 
   tokenExpiration(token: string): number | void {
-    if (!token) return;
+    if (!token) {
+      return;
+    }
     const jwt = this.decodeToken(token);
-    if (!jwt) return;
+    if (!jwt) {
+      return;
+    }
     const now: number = new Date().getTime();
     const delta: number = (jwt.payload.exp * 1000 - now) / 1000.0;
     return delta;

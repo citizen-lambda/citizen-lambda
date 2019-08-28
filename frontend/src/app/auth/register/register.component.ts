@@ -5,7 +5,7 @@ import { debounceTime, catchError, map } from "rxjs/operators";
 
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
-import { RegisterUser } from "../models";
+import { RegisteredUser } from "../models";
 import { AuthService } from "./../auth.service";
 import { AppConfig } from "../../../conf/app.config";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -17,7 +17,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 })
 export class RegisterComponent {
   readonly AppConfig = AppConfig;
-  user: RegisterUser = new RegisterUser();
+  user: RegisteredUser = new RegisteredUser();
   private _error = new Subject<string | null>();
   private _success = new Subject<string | null>();
   staticAlertClosed = false;
