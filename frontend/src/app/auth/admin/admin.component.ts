@@ -36,6 +36,14 @@ export class AdminComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    /*
+      WARNING: We must keep ADMIN_ENDPOINT aligned with API_ENDPOINT for now
+      ... until we ...
+      TODO: endow our backend with a login system of some sort.
+      As of today, our access token is passed as parameter in a GET request
+      and that makes it exposed if these endpoints do not share the same encrypted
+      https tunnel or certificate.
+    */
     const ADMIN_ENDPOINT = [
       AppConfig.API_ENDPOINT,
       // this.localeId,
