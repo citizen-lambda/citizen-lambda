@@ -63,10 +63,10 @@ export class TaxhubService {
     );
   }
 
-  private handleError<T>(operation = "operation", result?: T) {
+  private handleError<T>(operation = "operation", defaultValue?: T) {
     return (error: any): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`, error);
-      return of(result as T);
+      return of(defaultValue as T);
     };
   }
 }

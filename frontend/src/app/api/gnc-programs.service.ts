@@ -1,3 +1,4 @@
+// tslint:disable: quotemark
 import { Injectable, Optional, SkipSelf, OnInit } from "@angular/core";
 import {
   DomSanitizer,
@@ -26,7 +27,9 @@ export interface IGncFeatures extends FeatureCollection {
 }
 
 export const sorted = (property: string) => {
-  if (!property) return undefined;
+  if (!property) {
+    return undefined;
+  }
   let sortOrder = 1;
 
   if (property[0] === "-") {
@@ -56,7 +59,7 @@ export const sorted = (property: string) => {
     domSanitizer: DomSanitizer
   ) => instance || new GncProgramsService(http, state, domSanitizer)
 })
-export class GncProgramsService implements OnInit {
+export class GncProgramsService {
   private readonly URL = AppConfig.API_ENDPOINT;
   programs: Program[] | null;
   programs$ = new Subject<Program[] | null>();
@@ -65,9 +68,7 @@ export class GncProgramsService implements OnInit {
     protected http: HttpClient,
     private state: TransferState,
     protected domSanitizer: DomSanitizer
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.programs = this.state.get(PROGRAMS_KEY, null);
     this.programs$.next(this.programs);
   }
@@ -128,9 +129,11 @@ export class GncProgramsService implements OnInit {
 
   getProgramTaxonomyList(program_id: number): Observable<TaxonomyList> {
     return this.getAllPrograms().pipe(
+      // tslint:disable-next-line: no-non-null-assertion
       map(programs => programs!.find(p => p.id_program === program_id)),
       mergeMap(program =>
         this.http.get<TaxonomyList>(
+          // tslint:disable-next-line: no-non-null-assertion
           `${this.URL}/taxonomy/lists/${program!.taxonomy_list}/species`
         )
       ),
@@ -138,14 +141,14 @@ export class GncProgramsService implements OnInit {
     );
   }
 
-  private handleError<T>(operation = "operation", result?: T) {
+  private handleError<T>(operation = "operation", defaultValue?: T) {
     return (error: any): Observable<T> => {
       // API errors are caught within the interceptor and handled by our
       // ErrorHandler in frontend/src/app/api/error_handler.ts .
       console.error(
         `${operation} failed: ${error.message ? error.message : error}`
       );
-      return of(result as T);
+      return of(defaultValue as T);
     };
   }
 
