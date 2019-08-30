@@ -1,3 +1,4 @@
+// tslint:disable: quotemark
 import { LOCALE_ID, NgModule, Inject } from "@angular/core";
 import {
   BrowserModule,
@@ -24,8 +25,7 @@ import { HomeComponent } from "./home/home.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { DescModalComponent } from "./programs/desc-modal/desc-modal.component";
 import { ProgramsComponent } from "./programs/programs.component";
-import { ObsFormComponent } from "./programs/observations/form/form.component";
-import { ObsFormMapComponent } from "./programs/observations/form/obs-form-map-component";
+import { ObsFormModule } from "./programs/observations/form/obs-form.module";
 import { ObsListComponent } from "./programs/observations/list/list.component";
 import {
   ObsMapComponent,
@@ -42,7 +42,6 @@ import { AboutCustomComponent } from "./about/custom/custom.component";
 import { AboutFixedComponent } from "./about/fixed/fixed.component";
 import { HomeCustomComponent } from "./home/custom/custom.component";
 import { FlowComponent } from "./programs/observations/modalflow/flow/flow.component";
-// import { FlowService } from './programs/observations/flow/flow.service'
 import { FlowDirective } from "./programs/observations/modalflow/flow/flow.directive";
 import { OnboardComponent } from "./programs/observations/modalflow/steps/onboard/onboard.component";
 import { CommittedComponent } from "./programs/observations/modalflow/steps/committed/committed.component";
@@ -66,6 +65,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     FormsModule,
     ScrollingModule,
     NgbModule,
+    ObsFormModule,
     routing
   ],
   declarations: [
@@ -73,8 +73,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     ObsComponent,
     ObsMapComponent,
     MarkerPopupComponent,
-    ObsFormComponent,
-    ObsFormMapComponent,
     ObsListComponent,
     HomeComponent,
     HomeCustomComponent,
@@ -106,7 +104,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     GncService,
     GncProgramsService,
     ErrorHandler,
-    // FlowService,
     ModalFlowService,
     ProgramsResolve,
     {
@@ -126,7 +123,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     CommittedComponent,
     CongratsComponent,
     RewardComponent,
-    ObsFormMapComponent,
     MarkerPopupComponent
   ],
   exports: [AdminComponent]

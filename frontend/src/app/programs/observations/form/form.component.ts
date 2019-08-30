@@ -26,8 +26,6 @@ import { debounceTime, map, distinctUntilChanged } from "rxjs/operators";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { FeatureCollection } from "geojson";
 import L from "leaflet";
-// import "leaflet.fullscreen";
-// import "leaflet-gesture-handling";
 
 import { AppConfig } from "../../../../conf/app.config";
 import { IAppConfig } from "../../../core/models";

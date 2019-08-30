@@ -1,3 +1,4 @@
+// tslint:disable: quotemark
 import { Component, Input, ViewChild, ViewEncapsulation } from "@angular/core";
 
 import { Feature } from "geojson";
