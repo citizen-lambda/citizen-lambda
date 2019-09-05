@@ -1,0 +1,119 @@
+<div class="container-fluid">
+  <!-- LA PLATEFORME -->
+  <section *ngIf="programs?.length === 1" id="welcome" class="row">
+    <h1
+      i18n="Bienvenue<br />
+  sur Geonature Citizen"
+    >
+      Bienvenue<br />
+      sur Geonature Citizen
+    </h1>
+    <a class="btn-big">{{ AppConfig.platform_participate[localeId] }}</a>
+    <span i18n="Scrollez pour en voir plus !"
+      >Scrollez pour en voir plus !</span
+    >
+    <img class="d-block scroll" src="assets/scroll.svg" />
+  </section>
+
+  <!-- LE PROGRAMME -->
+  <section id="slide" class="slide row">
+    <div id="slider" class="carousel slide">
+      <div class="carousel-inner">
+        <h2 i18n>
+          Le programme <span>{{ program?.title }}</span>
+        </h2>
+        <div class="carousel-item active">
+          <img
+            class="d-block w-100"
+            [src]="program?.image || 'assets/default_taxon'"
+            alt="program image (fixme context)"
+          />
+          <div class="carousel-text-container">
+            <div class="carousel-text">
+              <h3>{{ program?.title }}</h3>
+              <p [innerHTML]="program?.html_short_desc"></p>
+              <div
+                [innerHTML]="program?.html_long_desc"
+                class="bottom-edge-shadow"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LES OBSERVATIONS -->
+  <section id="program" class="observations row">
+    <input
+      id="slide-sidebar"
+      type="checkbox"
+      role="button"
+      (click)="onListToggle()"
+    />
+    <label class="toggle" for="slide-sidebar"
+      ><i class="fa fa-chevron-left"></i
+    ></label>
+    <div class="col-lg-12 col-md-12 side-bar" id="obslist">
+      <!-- <div id="mapList"> -->
+      <div class="toolbar">
+        <select
+          #inputSpecies
+          class="form-control rounded-0"
+          id="inputSpecies"
+          [(ngModel)]="selectedTaxon"
+          (ngModelChange)="onFilterChange()"
+        >
+          <option [ngValue]="null" i18n>Toutes espèces</option>
+          <option *ngFor="let s of surveySpecies" [ngValue]="s" i18n>
+            {{ s.taxref?.nom_vern }} (<i>{{ s.taxref?.nom_complet }}</i
+            >)
+          </option>
+        </select>
+
+        <select
+          #municipality
+          id="municipality"
+          name="municipality"
+          type="text"
+          class="form-control rounded-0 col-lg-6"
+          [(ngModel)]="selectedMunicipality"
+          (ngModelChange)="onFilterChange()"
+        >
+          <option [ngValue]="null" i18n>Toutes communes</option>
+          <option *ngFor="let t of municipalities$ | async" [ngValue]="t">{{
+            t?.name || "?"
+          }}</option>
+        </select>
+      </div>
+      <div class="obs-count">
+        <!-- TODO: loading => recherche… -->
+        <p i18n>
+          {{ (filteredObservations$ | async)?.length }} {
+          +(filteredObservations$ | async)?.length, plural, =0 { observation
+          trouvée } =1 { observation trouvée !} other { observations trouvées !}
+          }
+        </p>
+      </div>
+      <app-obs-list
+        #obsListRef
+        [observations]="observations"
+        [taxa]="surveySpecies"
+        (obsSelected)="obsMapRef.showPopup($event)"
+      ></app-obs-list>
+      <!-- </div> -->
+    </div>
+
+    <div class="map col-lg-12 col-md-12" id="map">
+      <app-obs-map
+        #obsMapRef
+        [observations]="observations"
+        [program]="programFeature"
+        (click)="onMapClicked($event)"
+      ></app-obs-map>
+      <div class="btn-groups">
+        <app-modalflow [data]="flowData"></app-modalflow>
+      </div>
+    </div>
+  </section>
+</div>

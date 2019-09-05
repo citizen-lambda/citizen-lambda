@@ -1,0 +1,111 @@
+export const MAP_CONFIG = {
+  DEFAULT_PROVIDER: 'OpenStreetMapFRHot',
+  BASEMAPS: [
+    {
+      name: 'OpenStreetMapOrg',
+      maxZoom: 19,
+      layer: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      subdomains: 'abc',
+      attribution:
+        // tslint:disable-next-line: max-line-length
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
+    },
+    {
+      name: 'OpenStreetMapFRHot',
+      maxZoom: 19,
+      layer: '//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+      subdomains: 'abc',
+      attribution:
+        // tslint:disable-next-line: max-line-length
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
+    },
+    {
+      name: 'OpenStreetMapCH',
+      maxZoom: 18,
+      layer: '//tile.osm.ch/switzerland/{z}/{x}/{y}.png',
+      subdomains: 'abc',
+      attribution:
+        '&copy; <a href="&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      bounds: [[45, 5], [48, 11]]
+    },
+    {
+      name: 'OpenStreetMapDE',
+      maxZoom: 18,
+      layer: '//{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+      subdomains: 'abc',
+      attribution:
+        '&copy; <a href="&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    },
+    {
+      name: 'OpenStreetMapBZH',
+      maxZoom: 18,
+      layer: '//tile.openstreetmap.bzh/br/{z}/{x}/{y}.png',
+      subdomains: '',
+      attribution:
+        // tslint:disable-next-line: max-line-length
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles courtesy of <a href="http://www.openstreetmap.bzh/" target="_blank">Breton OpenStreetMap Team</a>',
+      bounds: [[46.2, -5.5], [50, 0.7]]
+    },
+    {
+      name: 'OpenTopoMap',
+      maxZoom: 17,
+      layer: '//{s}.opentopomap.org/{z}/{x}/{y}.png',
+      subdomains: 'abc',
+      attribution: '© OpenTopoMap'
+    },
+    {
+      // ⚠ google's terms&conditions
+      // https://github.com/Leaflet/Leaflet/blob/master/FAQ.md#i-want-to-use-google-maps-api-tiles-with-leaflet-can-i-do-that
+      name: 'GoogleSatellite',
+      maxZoom: 20,
+      layer: '//mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+      subdomains: '1',
+      attribution: '© GoogleMap'
+    },
+    {
+      name: 'Stamen',
+      // layer: "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg",
+      // layer: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+      // layer:
+      //   "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg",
+      // maxZoom: 22,
+      layer: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',
+      maxZoom: 20,
+      subdomains: 'abcd',
+      attribution: 'maps.stamen.com'
+    },
+    {
+      name: 'CartoCDNLight',
+      layer: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+      attribution:
+        // tslint:disable-next-line: max-line-length
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      minZoom: 0,
+      maxZoom: 20
+    },
+    {
+      name: 'CartoCDNDark',
+      layer: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+      attribution:
+        // tslint:disable-next-line: max-line-length
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      minZoom: 0,
+      maxZoom: 20
+    },
+    {
+      name: 'MapboxDark',
+      layer:
+        // tslint:disable-next-line: max-line-length
+        'https://api.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoicGF0a2FwIiwiYSI6ImNqeHpvNWV1MDA0bmozbHBobmhjbWsxODQifQ.jgXkucvmL5kgacz3LwQ4UA',
+      attribution:
+        // tslint:disable-next-line: max-line-length
+        '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a>, © <a href="http://www.openstreetmap.org/about/">OpenStreetMap</a> <a href="https://apps.mapbox.com/feedback/?owner=mapbox&id=dark-v9&access_token=tk.eyJ1IjoicGF0a2FwIiwiZXhwIjoxNTY0MzA1NDY3LCJpYXQiOjE1NjQzMDE4NjYsInNjb3BlcyI6WyJlc3NlbnRpYWxzIiwic2NvcGVzOmxpc3QiLCJtYXA6cmVhZCIsIm1hcDp3cml0ZSIsInVzZXI6cmVhZCIsInVzZXI6d3JpdGUiLCJ1cGxvYWRzOnJlYWQiLCJ1cGxvYWRzOmxpc3QiLCJ1cGxvYWRzOndyaXRlIiwic3R5bGVzOnRpbGVzIiwic3R5bGVzOnJlYWQiLCJmb250czpyZWFkIiwic3R5bGVzOndyaXRlIiwic3R5bGVzOmxpc3QiLCJ0b2tlbnM6cmVhZCIsInRva2Vuczp3cml0ZSIsImRhdGFzZXRzOmxpc3QiLCJkYXRhc2V0czpyZWFkIiwiZGF0YXNldHM6d3JpdGUiLCJ0aWxlc2V0czpsaXN0IiwidGlsZXNldHM6cmVhZCIsInRpbGVzZXRzOndyaXRlIiwidmlzaW9uOnJlYWQiLCJ2aXNpb246ZG93bmxvYWQiLCJzdHlsZXM6ZHJhZnQiLCJmb250czpsaXN0IiwiZm9udHM6d3JpdGUiLCJmb250czptZXRhZGF0YSIsImRhdGFzZXRzOnN0dWRpbyIsImN1c3RvbWVyczp3cml0ZSIsImNyZWRlbnRpYWxzOnJlYWQiLCJjcmVkZW50aWFsczp3cml0ZSIsImFuYWx5dGljczpyZWFkIl0sImNsaWVudCI6Im1hcGJveC5jb20iLCJsbCI6MTU2MjkwOTgxODQ5NywiaXUiOm51bGx9.dH6SfocJrPvaDVGgIGBKNw">Improve this map</a>',
+      maxZoom: 30
+    }
+  ],
+  CENTER: [46.52863469527167, 2.43896484375],
+  ZOOM_LEVEL: 6,
+  ZOOM_LEVEL_RELEVE: 15
+};

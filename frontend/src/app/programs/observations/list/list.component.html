@@ -1,0 +1,39 @@
+<ng-container *ngIf="observations$ | async as obs; else loading">
+  <cdk-virtual-scroll-viewport [itemSize]="84" id="list">
+    <div
+      *cdkVirtualFor="let o of obs; trackBy: trackByObs"
+      class="espece obs-{{ o.properties.id_observation }}"
+      (click)="onSelected(o)"
+    >
+      <!-- FIXME: hardcoded api media endpoint -->
+      <img
+        [src]="
+          o.properties.images && !!o.properties.images.length
+            ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
+            : o.properties.image
+            ? o.properties.image
+            : o.properties.medias && !!o.properties.medias.length
+            ? randomItem(o.properties.medias).url
+            : 'assets/default_taxon'
+        "
+      />
+      <div class="infos">
+        <h5 i18n>{{ o.properties.taxref?.nom_vern }}</h5>
+        <p i18n>
+          Observé par
+          <span>{{
+            o.properties.observer?.username ? o.properties.observer.username : 'Anonyme'
+          }}</span>
+        </p>
+        <p i18n *ngIf="o.properties.date || o.properties.municipality?.name">
+          <span *ngIf="o.properties.date"> le {{ o.properties.date }}</span>
+          <span *ngIf="o.properties.municipality?.name">
+            à {{ o.properties.municipality?.name }}</span
+          >
+        </p>
+      </div>
+      <div class="hide"><img src="assets/binoculars.png" /></div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</ng-container>
+<ng-template #loading>Loading ... </ng-template>
