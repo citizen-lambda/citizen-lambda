@@ -3,7 +3,6 @@ import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
-import { ObsComponent } from './programs/observations/obs.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ProgramsComponent } from './programs/programs.component';
 import { ProgramsResolve } from './programs/programs-resolve.service';
@@ -12,8 +11,6 @@ import { UserDashboardComponent } from './auth/user-dashboard/user-dashboard.com
 import { SpeciesComponent } from './synthesis/species/species.component';
 import { AuthGuard } from './auth/auth.guard';
 import { AdminComponent } from './auth/admin/admin.component';
-
-import { ObsFormMapComponent } from './programs/observations/form/obs-form-map-component';
 
 const appRoutes: Routes = [
   {
@@ -45,11 +42,10 @@ const appRoutes: Routes = [
   },
   {
     path: 'programs/:id/observations',
-    component: ObsComponent,
+    loadChildren: () => import('./programs/observations/observations.module').then(m => m.ObservationsModule),
     resolve: { programs: ProgramsResolve }
   },
   { path: 'synthesis/species/:id', component: SpeciesComponent },
-  { path: 'debug', component: ObsFormMapComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 

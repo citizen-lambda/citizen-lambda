@@ -19,7 +19,7 @@ export const AppConfig = {
     fr: 'Bienvenue<br /> sur GeoNature Citizen',
     en: 'Welcome<br /> on GeoNature Citizen'
   },
-  platform_teaser: {
+  platform_greeter: {
     fr:
       // tslint:disable-next-line: max-line-length
       'Hae duae provinciae bello quondam piratico catervis mixtae praedonum a Servilio pro consule missae sub iugum factae sunt vectigales. et hae quidem regiones velut in prominenti terrarum lingua positae ob orbe eoo monte Amano disparantur.',

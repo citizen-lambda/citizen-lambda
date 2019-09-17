@@ -164,8 +164,8 @@
           [input]="data.program"
           (output)="onMapClick($event)"
           class="col-lg-12"
-          [class.ng-invalid]="obsForm.get('geometry').invalid"
-          [class.ng-valid]="obsForm.get('geometry').valid"
+          [class.ng-invalid]="obsForm.get('geometry')?.invalid"
+          [class.ng-valid]="obsForm.get('geometry')?.valid"
         ></app-obs-form-map>
         <div class="zoom-alert" *ngIf="hasZoomAlert">
           <div class="mb-2 text-center" i18n>

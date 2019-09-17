@@ -1,24 +1,5 @@
 <div class="container-fluid">
-  <section id="welcome" class="row">
-    <h1 [innerHTML]="platform_intro"></h1>
-    <p [innerHTML]="platform_teaser"></p>
-    <a
-      [routerLink]="['/home']"
-      fragment="programs"
-      class="scroll"
-      (click)="jumpTo('programs')"
-    >
-      <span i18n="Scrollez pour en voir plus !"
-        >Scrollez pour en voir plus !</span
-      >
-      <img
-        class="d-block"
-        src="assets/scroll.svg"
-        i18n-alt
-        alt="Scrollez pour en voir plus !"
-      />
-    </a>
-  </section>
+  <app-greeter></app-greeter>
   <!-- LES PROGRAMMES -->
   <section id="programs" class="row" *ngIf="programs.length > 1">
     <div id="programs-cards">
@@ -38,7 +19,7 @@
           class="btn-big"
           [routerLink]="['/programs', p.id_program, 'observations']"
           fragment="program"
-          >{{ AppConfig.platform_participate[localeId] }}</a
+          >{{ appConfig.platform_participate[localeId] }}</a
         >
       </div>
     </div>
@@ -71,7 +52,7 @@
               <a
                 class="btn-big"
                 [routerLink]="['/programs', p.id_program, 'observations']"
-                >{{ AppConfig.platform_participate[localeId] }}</a
+                >{{ appConfig.platform_participate[localeId] }}</a
               >
             </div>
           </div>

@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import { FeatureCollection, Point, Polygon, MultiPolygon } from 'geojson';
 
 export const markerInPolygon = (marker: L.Marker) => (polygon: L.Polygon) => {
   /*

@@ -1,6 +1,6 @@
-import { combineLatest, BehaviorSubject } from 'rxjs';
 import { AfterViewInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, take, filter } from 'rxjs/operators';
 
 export interface IAppConfig {
@@ -26,7 +26,7 @@ export interface IAppConfig {
     fr: string;
     en: string;
   };
-  platform_teaser: {
+  platform_greeter: {
     fr: string;
     en: string;
   };
@@ -48,7 +48,7 @@ export interface IAppConfig {
   program_list_sort: string;
 }
 
-// TODO: mv anchorNavigation to directive and handle change detection.
+// TODO: mv anchorNavigation to directive.
 export abstract class AnchorNavigation implements AfterViewInit {
   fragment$ = new BehaviorSubject<string | null>(null);
 
@@ -75,14 +75,12 @@ export abstract class AnchorNavigation implements AfterViewInit {
   jumpTo(fragment: string, delay: number = 200) {
     const anchor = document.getElementById(fragment);
     const offset = parseInt(
-      // tslint:disable-next-line: no-non-null-assertion
-      getComputedStyle(document.documentElement!)
+      getComputedStyle(document.documentElement)
         .getPropertyValue('--narrow-topbar-height')
         .replace('px', '')
         .trim(),
       10
     );
-    // console.debug(offset);
     if (anchor) {
       setTimeout(() => {
         window.scrollTo({
@@ -101,34 +99,25 @@ export abstract class AnchorNavigation implements AfterViewInit {
 
   @HostListener('window:scroll', ['$event'])
   scrollHandler(_event: Event) {
-    // console.debug("scroll");
-
-    // tslint:disable-next-line: no-non-null-assertion
-    if (document.body.scrollTop > 0 || document.documentElement!.scrollTop > 0) {
-      // tslint:disable-next-line: no-non-null-assertion
-      const tallSize = getComputedStyle(document.documentElement!)
+    if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+      const tallSize = getComputedStyle(document.documentElement)
         .getPropertyValue('--tall-topbar-height')
         .trim();
-      // tslint:disable-next-line: no-non-null-assertion
-      const narrowSize = getComputedStyle(document.documentElement!)
+      const narrowSize = getComputedStyle(document.documentElement)
         .getPropertyValue('--narrow-topbar-height')
         .trim();
-      // tslint:disable-next-line: no-non-null-assertion
-      const offset = getComputedStyle(document.documentElement!)
+      const offset = getComputedStyle(document.documentElement)
         .getPropertyValue('--router-outlet-margin-top')
         .trim();
-      // tslint:disable-next-line: no-non-null-assertion
-      const barsize = parseInt(offset, 10) - document.documentElement!.scrollTop;
+      const barSize = parseInt(offset, 10) - document.documentElement.scrollTop;
       const minSize = parseInt(narrowSize, 10);
       const maxSize = parseInt(tallSize, 10);
-      // tslint:disable-next-line: no-non-null-assertion
-      document.documentElement!.style.setProperty(
+      document.documentElement.style.setProperty(
         '--router-outlet-margin-top',
-        Math.min(Math.max(barsize, minSize), maxSize) + 'px'
+        Math.min(Math.max(barSize, minSize), maxSize) + 'px'
       );
     } else {
-      // tslint:disable-next-line: no-non-null-assertion
-      document.documentElement!.style.setProperty(
+      document.documentElement.style.setProperty(
         '--router-outlet-margin-top',
         'var(--tall-topbar-height)'
       );

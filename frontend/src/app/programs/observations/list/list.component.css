@@ -73,9 +73,10 @@ app-obs-list #list .espece .infos {
   width: 100%;
 }
 
-app-obs-list #list .espece div h5 {
+app-obs-list #list .espece div b {
   font-size: 1em;
   margin-bottom: 0px;
+  font-weight: bolder;
 }
 
 app-obs-list #list .espece div p,
@@ -83,6 +84,7 @@ app-obs-list #list .espece div span {
   color: var(--primary);
   font-style: italic;
   margin-bottom: 0px;
+  font-size: small;
 }
 
 #obslist .toolbar {

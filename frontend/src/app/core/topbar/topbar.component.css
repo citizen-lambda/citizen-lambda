@@ -4,7 +4,7 @@ app-topbar .navbar-brand img {
 }
 
 app-topbar .navbar-brand {
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   color: var(--primary);
   padding-top: 0;
   padding-bottom: 0;
@@ -17,7 +17,8 @@ app-topbar nav.navbar {
   height: var(--router-outlet-offset);
   background-color: var(--primary-color);
   color: var(--primary);
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2); */
+  box-shadow: 0 2px 2px 0 #00a99d48;
 }
 
 app-topbar .navbar-expand-md .navbar-collapse {
@@ -52,7 +53,7 @@ app-topbar #nav-menu ul.btn-group li a.active {
 }
 
 app-topbar #nav-menu ul.btn-group li a.active:before {
-  content: "■ ";
+  content: '■ ';
   color: var(--primary);
 }
 

@@ -78,24 +78,24 @@ export function geometryValidator(): ValidatorFn {
 })
 export class ObsFormMapComponent implements OnInit, OnChanges {
   MAP_CONFIG = MAP_CONFIG;
-  conf = conf;
   @Input()
   input!: FeatureCollection;
   @Output() output: EventEmitter<{
     coords?: L.Point;
   }> = new EventEmitter();
-  @ViewChild('obsFormMap' /*, { static: true }*/) mapRef: ElementRef | undefined;
+  @ViewChild('obsFormMap' /*, { static: true }*/) mapRef!: ElementRef;
   map!: L.Map;
   options: L.MapOptions = {
     layers: [
-      // TODO: troubleshoot this.conf.DEFAULT_BASE_MAP()
+      // TODO: troubleshoot conf.DEFAULT_BASE_MAP()
+      // conf.DEFAULT_BASE_MAP()
       // L.tileLayer(
-      //   "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}",
+      //   'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
       //   {
       //     maxZoom: 18,
-      //     id: "mapbox.dark",
+      //     id: 'mapbox.light',
       //     accessToken:
-      //       "pk.eyJ1IjoicGF0a2FwIiwiYSI6ImNqeHpvNWV1MDA0bmozbHBobmhjbWsxODQifQ.jgXkucvmL5kgacz3LwQ4UA"
+      //       'pk.eyJ1IjoicGF0a2FwIiwiYSI6ImNqeHpvNWV1MDA0bmozbHBobmhjbWsxODQifQ.jgXkucvmL5kgacz3LwQ4UA'
       //   }
       // )
       L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
@@ -115,8 +115,10 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
+    console.debug({ layers: [conf.DEFAULT_BASE_MAP()] }, this.options.center);
+    console.debug(this.options);
     // tslint:disable-next-line: no-non-null-assertion
-    this.map = L.map(this.mapRef!.nativeElement, this.options);
+    this.map = L.map(this.mapRef!.nativeElement, { ...this.options });
     this.map.whenReady(() => this.onMapReady());
   }
 
@@ -134,7 +136,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
   }
 
   onMapReady() {
-    this.map.zoomControl.setPosition(this.conf.CONTROL_ZOOM_POSITION as L.ControlPosition);
+    this.map.zoomControl.setPosition(conf.CONTROL_ZOOM_POSITION as L.ControlPosition);
 
     (L.control as any)
       ['fullscreen']({
@@ -148,13 +150,13 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
 
     L.control
       .locate({
-        position: this.conf.CONTROL_GEOLOCATION_POSITION,
+        position: conf.CONTROL_GEOLOCATION_POSITION,
         getLocationBounds: (locationEvent: L.LocationEvent) =>
           locationEvent.bounds.extend(
             this.programArea ? this.programArea.getBounds() : (this.options.center as L.LatLng)
           ),
         locateOptions: {
-          enableHighAccuracy: this.conf.GEOLOCATION_HIGH_ACCURACY
+          enableHighAccuracy: conf.GEOLOCATION_HIGH_ACCURACY
         }
       })
       .addTo(this.map);

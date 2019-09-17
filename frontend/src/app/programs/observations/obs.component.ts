@@ -5,9 +5,7 @@ import {
   AfterViewInit,
   OnDestroy,
   ViewChild,
-  HostListener,
-  Inject,
-  LOCALE_ID
+  HostListener
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, combineLatest, fromEvent, Subject, Observable, BehaviorSubject } from 'rxjs';
@@ -20,14 +18,14 @@ import {
   pluck,
   shareReplay,
   share,
-  take
+  take,
+  switchMap
 } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 import * as L from 'leaflet';
 
-import { AppConfig } from '../../../conf/app.config';
-import { IAppConfig, AnchorNavigation } from '../../core/models';
+import { AnchorNavigation } from '../../core/models';
 import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
 import { GncProgramsService, sorted } from '../../api/gnc-programs.service';
@@ -35,8 +33,6 @@ import { ModalFlowService } from './modalflow/modalflow.service';
 import { TaxonomyList, TaxonomyListItem } from './observation.model';
 import { ObsMapComponent } from './map/map.component';
 import { ObsListComponent } from './list/list.component';
-
-type AppConfigObservations = Pick<IAppConfig, 'platform_participate'>;
 
 export const compose = <R>(fn1: (a: R) => R, ...fns: Array<(a: R) => R>) =>
   fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn1);
@@ -49,7 +45,7 @@ export const compose = <R>(fn1: (a: R) => R, ...fns: Array<(a: R) => R>) =>
   providers: [ProgramsResolve]
 })
 export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewInit, OnDestroy {
-  readonly AppConfig: AppConfigObservations = AppConfig;
+  private unsubscribe$ = new Subject<void>();
   @ViewChild(ObsMapComponent)
   obsMap!: ObsMapComponent;
   @ViewChild(ObsListComponent)
@@ -59,16 +55,15 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
   programFeature: FeatureCollection | undefined;
   observations: FeatureCollection | undefined;
   surveySpecies: TaxonomyList | undefined;
-  flowData: {
+  surveyData: {
     [name: string]: any;
     coords?: L.Point;
     program?: FeatureCollection;
     taxa?: TaxonomyList;
   } = {};
   programID$ = this.route.params.pipe(map(params => parseInt(params['id'], 10)));
-  private unsubscribe$ = new Subject<void>();
   observations$ = new BehaviorSubject<FeatureCollection | undefined>(undefined);
-  obsAsFeatureArray$: Observable<Feature[]> = this.observations$.pipe(
+  obsFeaturesArray$: Observable<Feature[]> = this.observations$.pipe(
     filter(collection => !!collection),
     pluck<FeatureCollection, Feature[]>('features'),
     filter(o => !!o),
@@ -76,7 +71,7 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
     shareReplay()
   );
   filteredObservations$ = new BehaviorSubject<Feature[] | null>(null);
-  municipalities$ = this.obsAsFeatureArray$.pipe(
+  municipalities$ = this.obsFeaturesArray$.pipe(
     map((items: Feature[]) => {
       const result = items.reduce(
         (
@@ -145,7 +140,6 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
         obs;
 
   constructor(
-    @Inject(LOCALE_ID) readonly localeId: string,
     protected router: Router,
     protected route: ActivatedRoute,
     private programService: GncProgramsService,
@@ -172,21 +166,24 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
         // console.debug(taxa, program);
         this.programFeature = program;
         this.surveySpecies = taxa;
-        this.flowData.taxa = taxa;
+        this.surveyData.taxa = taxa;
 
-        this.flowData.program = program;
+        this.surveyData.program = program;
+      });
+
+    this.programID$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        switchMap(id => this.programService.getProgramObservations(id))
+      )
+      .subscribe(observations => {
+        this.observations = observations;
+        this.observations$.next(observations);
       });
   }
 
   ngOnInit() {
-    this.programID$.pipe(takeUntil(this.unsubscribe$)).subscribe(id => {
-      this.programService.getProgramObservations(id).subscribe(observations => {
-        this.observations = observations;
-        this.observations$.next(observations);
-      });
-    });
-
-    this.obsAsFeatureArray$.subscribe(o => this.filteredObservations$.next(o));
+    this.obsFeaturesArray$.subscribe(o => this.filteredObservations$.next(o));
 
     this.filteredObservations$.subscribe(observations => {
       // FIXME: observations changes dispatch
@@ -198,10 +195,8 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
   }
 
   ngAfterViewInit() {
-    // this.obsMap.observationMap.invalidateSize();
-
     // todo: move to directive and make the <p> tag an <article>
-    const element: HTMLElement | null = document.querySelector('#slider .carousel-text div');
+    const element: HTMLElement | null = document.querySelector('#slider .carousel-text article');
     if (element) {
       const scroll$ = fromEvent(element, 'scroll').pipe(
         throttleTime(10),
@@ -239,7 +234,7 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
   }
 
   onMapClicked(p: L.Point): void {
-    this.flowData.coords = p;
+    this.surveyData.coords = p;
   }
 
   onListToggle(): void {
@@ -256,7 +251,7 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
   }
 
   onFilterChange(): void {
-    this.obsAsFeatureArray$
+    this.obsFeaturesArray$
       .pipe(
         take(1),
         map(observations =>

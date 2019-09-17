@@ -18,17 +18,16 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <app-root>
-      <div id="loading">
-        <div class="loading-text">
+      <div id="loading" class="loading-text">
           <h1>GeoNature-citizen</h1>
-          <h4>Chargement en cours...</h4>
-          <p i18n="loading app"></p>
-        </div>
-        <div id="spinner">
-          <div class="loader-1"></div>
-          <div class="loader-2"></div>
-          <div class="loader-3"></div>
-        </div>
+          <h4 i18n="loading app">Chargement en cours...</h4>
+          <p>
+            <div id="spinner" aria-label-i18n="Chargement en cours..." role="progressbar">
+              <div class="loader-1"></div>
+              <div class="loader-2"></div>
+              <div class="loader-3"></div>
+            </div>
+          </p>
       </div>
     </app-root>
   </body>

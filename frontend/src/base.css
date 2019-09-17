@@ -2,33 +2,17 @@
   --section-margin-bottom: 20px;
 }
 
-section#welcome {
-  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
-}
-
-section#programs,
-section#program {
-  width: 100%;
-  position: relative;
-  background-color: var(--secondary-color);
-}
-
-section#program {
-  height: calc(100vh - var(--router-outlet-offset));
-}
-
-section.row {
-  width: 100%;
-  margin-left: 0px;
-  margin-right: 0px;
-}
-
-section.row:not(:last-of-type) {
+app-greeter > section {
+  height: calc(
+    100vh - var(--router-outlet-offset) - var(--section-margin-bottom) -
+    var(--fold)
+    );
+  /* section.row:not(:last-of-type) {} */
   margin-bottom: var(--section-margin-bottom);
 }
 
-#welcome:before {
-  content: ' ';
+app-greeter > section >:before {
+  content: " ";
   position: absolute;
   top: 0;
   bottom: 0;
@@ -51,18 +35,37 @@ section.row:not(:last-of-type) {
     rgba(0, 0, 0, 0) 3%,
     rgba(0, 0, 0, 0.393) 99%,
     rgba(0, 0, 0, 0.452) 100%
-  );
+    );
 }
 
-#welcome a[role='button'] {
+app-greeter > section > a[role="button"] {
   position: absolute;
   bottom: 100px;
   right: 100px;
   background-color: var(--primary);
 }
 
+section#programs,
+section#program {
+  width: 100%;
+  position: relative;
+  background-color: var(--secondary-color);
+}
+
+section#program {
+  height: calc(100vh - var(--router-outlet-offset));
+}
+
+section.row {
+  width: 100%;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
 #slide {
   min-height: inherit !important;
+  /* section.row:not(:last-of-type) {} */
+  margin-bottom: var(--section-margin-bottom);
 }
 
 #slider h2 {
@@ -92,7 +95,7 @@ section.row:not(:last-of-type) {
   bottom: 0;
   display: flex;
   align-items: center;
-  max-width: 60%;
+  max-width: 80ch;
 }
 
 #slider .carousel-text {

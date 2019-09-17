@@ -12,8 +12,11 @@ export class ErrorHandler {
       if (!navigator.onLine) {
         // Handle offline error .. to test
         errorMessage = `OffLineError: No connectivity.`;
+      } else if (error.status >= 500 && error.status < 600) {
+          // Unavailable
+          errorMessage = `UnavailableError: ${error.status} - ${error.message}`;
       } else if (error.status !== 0) {
-        // client-side or network
+        // client-side
         errorMessage = `${error.status} - ${error.message}`;
       } else {
         errorMessage = JSON.stringify(error);

@@ -16,7 +16,7 @@ import { IFlowComponent } from './flow';
 @Component({
   selector: 'app-flow',
   template: `
-    <ng-template appUserFlow></ng-template>
+    <ng-template appFlow></ng-template>
   `,
   styleUrls: ['./flow.component.css'],
   encapsulation: ViewEncapsulation.None

@@ -10,27 +10,22 @@ import {
 
 import { FlowItem } from './flow/flow-item';
 import { ModalFlowService } from './modalflow.service';
+import { IAppConfig } from 'src/app/core/models';
 import { AppConfig } from '../../../../conf/app.config';
 import { FeatureCollection } from 'geojson';
 import { TaxonomyList } from '../observation.model';
 
+type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
+
 @Component({
   selector: 'app-modalflow',
-  template: `
-    <div class="btn-group">
-      <button class="btn-big text-center text-nowrap text-uppercase" (click)="clicked()">
-        {{ AppConfig.program_add_an_observation[localeId] }}
-      </button>
-      <!-- <button class="btn-big">Réaliser un programme</button> -->
-    </div>
-    <ng-template #content>
-      <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>
-    </ng-template>
-  `,
+  templateUrl: './modalflow.component.html',
   styleUrls: ['./modalflow.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent {
+  readonly appConfig: AppConfigModalFlow = AppConfig;
+  program_add_an_observation: string;
   @Input()
   data!: {
     coords?: L.Point;
@@ -39,11 +34,14 @@ export class ModalFlowComponent {
   };
   @ViewChild('content')
   content!: ElementRef;
-  AppConfig = AppConfig;
   flowitems: FlowItem[] = [];
   timeout: any;
 
-  constructor(@Inject(LOCALE_ID) readonly localeId: string, public flowService: ModalFlowService) {}
+  constructor(@Inject(LOCALE_ID) readonly localeId: string, public flowService: ModalFlowService) {
+    this.program_add_an_observation = (this.appConfig.program_add_an_observation as {
+      [name: string]: string;
+    })[localeId];
+  }
 
   clicked() {
     console.debug('before getFlowitems:', this.data);

@@ -1,0 +1,9 @@
+<div class="btn-group">
+  <button class="btn-big text-center text-nowrap text-uppercase" (click)="clicked()">
+    {{ program_add_an_observation }}
+  </button>
+  <!-- <button class="btn-big">Réaliser un programme</button> -->
+</div>
+<ng-template #content>
+  <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>
+</ng-template>

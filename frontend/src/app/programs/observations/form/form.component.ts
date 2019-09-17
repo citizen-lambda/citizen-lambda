@@ -179,11 +179,13 @@ export class ObsFormComponent implements OnChanges {
         this.data.program.features[0].properties &&
         // ERROR in src/app/programs/observations/form/form.component.ts(182,9):
         // error TS2531: Object is possibly 'null'.
-        !!this.data.program.features[0].properties.id_program
+        // tslint:disable-next-line: no-non-null-assertion
+        !!this.data.program.features[0].properties!.id_program
       ) {
         // src/app/programs/observations/form/form.component.ts(186,27):
         // error TS2531: Object is possibly 'null'.
-        this.program_id = this.data.program.features[0].properties.id_program;
+        // tslint:disable-next-line: no-non-null-assertion
+        this.program_id = this.data.program.features[0].properties!.id_program;
         console.debug('program_id:', this.program_id);
       }
 

@@ -26,9 +26,9 @@ app-observations div.container-fluid {
   border: solid 1px var(--primary-color);
 }
 
-#slider carousel-text div {
+#slider .carousel-text article {
   max-height: 50%;
-  overflow-y: auto;
+  overflow: auto;
   margin-bottom: 15px;
   background-color: var(--secondary-color);
 }

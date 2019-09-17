@@ -68,11 +68,7 @@ export class AuthInterceptor implements HttpInterceptor {
     } else {
       return this.token$.pipe(
         filter((token: string | null) => !!token),
-        tap(token => console.debug(token)),
-        switchMap((token: string) => {
-          console.debug('waited after refresh:', token);
-          return next.handle(this.addToken(request, token));
-        })
+        switchMap((token: string) => next.handle(this.addToken(request, token))),
       );
     }
   }
@@ -131,11 +127,10 @@ export class AuthInterceptor implements HttpInterceptor {
               See comment in backend/server.py below flask_cors init.
               */
                   if (error.status !== 0) {
-                    console.error('error: ', error);
+                    this.errorHandler.handleError(error);
                   }
               }
             }
-            // this.errorHandler.handleError(error);
             console.error(error);
             return throwError(error);
           })

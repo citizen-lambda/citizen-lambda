@@ -102,11 +102,13 @@ export const conf = {
     }),
   MARKER_ICON_CLUSTER: (childCount: number) => {
     // preferences ?
+    const qs = 10;
+    const qm = 10;
     const quantiles = (count: number) => {
       let c = ' marker-cluster-';
-      if (count < 10) {
+      if (count < qs) {
         c += 'small';
-      } else if (count < 10) {
+      } else if (count < qm) {
         c += 'medium';
       } else {
         c += 'large';
@@ -171,6 +173,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.options = conf;
+    console.debug({
+      layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay
+      gestureHandling: true
+    });
     this.observationMap = L.map(this.map.nativeElement, {
       layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay
       gestureHandling: true
@@ -257,24 +263,26 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   loadObservations(): void {
     if (this.observations) {
-      if (this.observationLayer) {
-        this.layerControl.removeLayer(this.observationLayer);
-        this.observationMap.removeLayer(this.observationLayer);
-      }
-      this.observationLayer = this.options.OBSERVATION_LAYER() as L.MarkerClusterGroup;
+      this.observationMap.whenReady(() => {
+        if (this.observationLayer) {
+          this.layerControl.removeLayer(this.observationLayer);
+          this.observationMap.removeLayer(this.observationLayer);
+        }
+        this.observationLayer = this.options.OBSERVATION_LAYER() as L.MarkerClusterGroup;
 
-      this.observationLayer.addLayer(L.geoJSON(this.observations, this.layerOptions()));
-      this.observationMap.addLayer(this.observationLayer);
-      this.layerControl.addOverlay(this.observationLayer, 'points');
+        this.observationLayer.addLayer(L.geoJSON(this.observations, this.layerOptions()));
+        this.observationMap.addLayer(this.observationLayer);
+        this.layerControl.addOverlay(this.observationLayer, 'points');
 
-      if (this.heatLayer) {
-        this.layerControl.removeLayer(this.heatLayer);
-        this.observationMap.removeLayer(this.heatLayer);
-      }
-      this.heatLayer = L.heatLayer(this.featureMarkers.map(item => item.marker.getLatLng()), {
-        minOpacity: 0.5
+        if (this.heatLayer) {
+          this.layerControl.removeLayer(this.heatLayer);
+          this.observationMap.removeLayer(this.heatLayer);
+        }
+        this.heatLayer = L.heatLayer(this.featureMarkers.map(item => item.marker.getLatLng()), {
+          minOpacity: 0.5
+        });
+        this.layerControl.addOverlay(this.heatLayer, 'heatmap');
       });
-      this.layerControl.addOverlay(this.heatLayer, 'heatmap');
     }
   }
 
@@ -365,7 +373,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   onMark(event: L.LeafletEvent): void {
     const e = event as L.LeafletMouseEvent;
-    this.click.emit(L.point(e.latlng.lng, e.latlng.lat));
 
     if (this.newObsMarker !== null) {
       this.observationMap.removeLayer(this.newObsMarker);
@@ -374,6 +381,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
     if (!this.checkMinZoomLevel()) {
       return;
     }
+
+    this.click.emit(L.point(e.latlng.lng, e.latlng.lat));
 
     this.newObsMarker = L.marker(e.latlng, {
       icon: this.options.MARKER_ICON_NEW_OBS(),
@@ -394,7 +403,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           this.observationMap.getContainer(),
           'observation-zoom-statement-warning'
         );
-      }, 2000);
+      }, 1800);
       return false;
     }
     return true;

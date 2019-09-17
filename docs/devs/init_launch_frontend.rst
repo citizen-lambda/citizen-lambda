@@ -27,43 +27,6 @@ Installer angular CLI (version LTS 6) et les dépendances requises:
     npm install -g @angular/cli@v6-lts
     npm install
 
-Dans son incarnation actuelle, quelques fichiers de dépendances doivent être patchés pour passer l'étape de compilation.
-
-.. code:: diff
-
-    --- frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts.old	2019-03-07 08:47:03.475859400 +0100
-    +++ frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts	2019-03-07 08:47:23.460562933 +0100
-    @@ -38,6 +38,7 @@
-               onLocationOutsideMapBounds?: any;
-               showPopup?: boolean;
-               strings?: any;
-    +          getLocationBounds?: Function;
-               locateOptions?: L.LocateOptions;
-           }
-       }
-
-.. code:: diff
-
-    --- frontend/node_modules/@types/leaflet/index.d.ts.old  2019-04-10 09:02:08.012010439 +0200
-    +++ frontend/node_modules/@types/leaflet/index.d.ts      2019-04-10 09:02:23.239901103 +0200
-    @@ -495,7 +495,7 @@
-         zoomReverse?: boolean;
-         detectRetina?: boolean;
-         crossOrigin?: boolean;
-    -    // [name: string]: any;
-    +    [name: string]: any;
-         // You are able add additional properties, but it makes this interface unchackable.
-         // See: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/15313
-         // Example:
-    @@ -1025,6 +1025,7 @@
-          tapTolerance?: number;
-          touchZoom?: Zoom;
-          bounceAtZoomLimits?: boolean;
-     +    gestureHandling?: boolean;
-      }
-
-      export type ControlPosition = 'topleft' | 'topright' | 'bottomleft' |
-     'bottomright';
 
 Configuration du frontend
 #########################
@@ -82,13 +45,14 @@ Surcharge du rendu CSS:
 
 Image par défaut pour les taxons sans image:
 ********************************************
-Lancer la commande suivante depuis le répertoire ``frontend/src/assets``, pour définir l'illustration par défaut des taxons sans photo:
+Lier l'illustration par défaut des taxons sans photo:
 
 .. code:: sh
 
     ln -s image_taxon_par_defaut.(svg,jpg,png,…) default_taxon
 
-NB: Faire évoluer en options de configuration, voire en service.
+
+TODO: AppConf.default_taxon = 'default_taxon'
 
 Gestion du Server Side Rendering
 ################################
@@ -202,6 +166,56 @@ Et un mode ``production``, avec rendu serveur (ssr) optimisé pour le SEO et les
 
 Déploiement
 ###########
+
+Informations personnelles:
+**************************
+
+Les échanges entre backend et frontend
+sont cryptés si le réseau n'est pas sécurisé.
+
+Notre actuel système d'authentification et d'administration,
+basé sur l'échange de `JWT <https://tools.ietf.org/html/rfc7519>`_
+(TODO: Migrer vers `JWS <https://tools.ietf.org/html/rfc7797>`_),
+dépendent en effet de cette infrastructure.
+
+Ainsi la mise en oeuvre de HTTPS ou d'un VPN est nécessaire
+pour garantir le transfert sécurisé de données potentiellement personnelles.
+
+Les données à caractère personnel
+(mdp, email, N° de téléphone, types d'appareil,
+adresses IP et horodatages des connexions,
+localisation,
+journaux de connexion et de consultations ou d'éventuel debogage,
+etc ...)
+si collectées, doivent être retenues confidentiellement.
+Ainsi leur stockage est, lui aussi crypté,
+son emplacement géographiquement déterminé (pays?),
+sa sauvegarde assurée.
+
+L'utilisateur est tenu informé des services ou processeurs tiers connus
+(services de localisation,
+les fournisseurs de tuiles,
+médias et autres actifs extérieurs),
+des services sous-traitants
+(fournisseurs de solution d'hébergement, stockage de contenu, etc).
+
+L'usage de ces informations est justifié
+et présenté de façon transparente
+à l'utilisateur,
+avant d'accéder à son consentement.
+(
+opérations de maintenance: email pour obtenir un nouveau mdp,
+opérations d'amélioration: optimisation du site,
+obligations légales?: conservation des journaux de connexion par IP,
+...).
+
+L'application offre un accès libre quant à l'anonymat ou l'authentification.
+Il en va de la responsabilité
+des équipes de développement,
+de maintenance
+mais aussi de l'utilisateur
+de mettre tout en oeuvre pour garantir la pérennité de ce choix.
+
 
 Mode ``production`` de base:
 ****************************
