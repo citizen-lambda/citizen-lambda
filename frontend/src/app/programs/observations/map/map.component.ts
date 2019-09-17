@@ -428,7 +428,7 @@ import { PostObservationResponsePayload, TaxonomyListItem } from '../observation
             ? data.image
             : data.medias && !!data.medias.length
             ? data.medias[0].url
-            : 'assets/default_taxon'
+            : 'assets/default_taxon.jpg'
         "
       />
       <p>

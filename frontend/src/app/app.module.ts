@@ -39,6 +39,8 @@ import { ProgramsResolve } from './programs/programs-resolve.service';
 import { AdminComponent } from './auth/admin/admin.component';
 
 import { AppConfig } from '../conf/app.config';
+import localeFr from '@angular/common/locales/fr';
+registerLocaleData(localeFr, 'fr');
 
 @NgModule({
   imports: [
@@ -71,7 +73,7 @@ import { AppConfig } from '../conf/app.config';
     AboutComponent,
     AboutCustomComponent,
     AboutFixedComponent,
-    AdminComponent,
+    AdminComponent
   ],
   providers: [
     AuthService,
@@ -87,28 +89,21 @@ import { AppConfig } from '../conf/app.config';
     { provide: LOCALE_ID, useValue: 'fr' }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [
-    DescModalComponent,
-    LoginComponent,
-    LogoutComponent,
-    RegisterComponent
-  ],
-  exports: [
-    AdminComponent,
-  ]
+  entryComponents: [DescModalComponent, LoginComponent, LogoutComponent, RegisterComponent],
+  exports: [AdminComponent]
 })
 export class AppModule {
-  constructor(@Inject(LOCALE_ID) localeId: string) {
-    this.localeInitializer(localeId).then(() => {
-      console.info(`Locale: ${localeId}.`);
-    });
-  }
-
-  async localeInitializer(localeId: string): Promise<any> {
-    const module = await import(
-      /* webpackInclude: /(fr|en)\.js$/ */
-      `@angular/common/locales/${localeId}.js`
-    );
-    return registerLocaleData(module.default);
-  }
+  // constructor(@Inject(LOCALE_ID) localeId: string) {
+  //   this.localeInitializer(localeId).then(() => {
+  //     console.info(`Locale: ${localeId}.`);
+  //   });
+  // }
+  //
+  // async localeInitializer(localeId: string): Promise<any> {
+  //   const module = await import(
+  //     /* webpackInclude: /(fr|en)\.js$/ */
+  //     `@angular/common/locales/${localeId}.js`
+  //   );
+  //   return registerLocaleData(module.default);
+  // }
 }
