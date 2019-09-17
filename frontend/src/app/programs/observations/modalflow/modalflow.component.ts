@@ -10,7 +10,7 @@ import {
 
 import { FlowItem } from './flow/flow-item';
 import { ModalFlowService } from './modalflow.service';
-import { IAppConfig } from 'src/app/core/models';
+import { IAppConfig } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
 import { FeatureCollection } from 'geojson';
 import { TaxonomyList } from '../observation.model';

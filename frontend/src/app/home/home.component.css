@@ -1,4 +1,4 @@
-@import "src/base.css";
+@import '../../base.css';
 
 app-home div.container-fluid {
   padding-left: 0;
@@ -31,7 +31,7 @@ app-home div.container-fluid {
 
 #welcome > h1,
 #welcome > p {
-  font-family: "Satisfy";
+  font-family: 'Satisfy';
   padding-top: 1em;
   color: var(--secondary-color);
   user-select: none;
@@ -88,7 +88,7 @@ app-home div.container-fluid {
 
   #programs-cards::before,
   #programs-cards::after {
-    content: "";
+    content: '';
     flex-basis: 100%;
     width: 0;
     order: 2;
@@ -118,7 +118,7 @@ app-home div.container-fluid {
 
   #programs-cards::before,
   #programs-cards::after {
-    content: "";
+    content: '';
     flex-basis: 100%;
     width: 0;
     order: 3;
@@ -263,7 +263,7 @@ app-home div.container-fluid {
 }
 
 @media screen and (max-width: 760px) {
-  #welcome a[role="button"] {
+  #welcome a[role='button'] {
     left: 50%;
     transform: translateX(-50%);
   }

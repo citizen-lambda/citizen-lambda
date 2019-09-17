@@ -1,4 +1,4 @@
-@import "src/base.css";
+@import '../../../base.css';
 
 app-observations div.container-fluid {
   padding-left: 0;
@@ -104,7 +104,7 @@ section.observations#program {
 
 /* OBS LIST DISPLAY TOGGLING */
 
-input#slide-sidebar[type="checkbox"] {
+input#slide-sidebar[type='checkbox'] {
   display: none;
 }
 

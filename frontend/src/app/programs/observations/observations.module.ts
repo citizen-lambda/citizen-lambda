@@ -6,6 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ObservationsRoutingModule } from './observations-routing.module';
 
+import { GreeterModule } from '../../shared/greeter/greeter.module';
 import { ObsFormModule } from './form/obs-form.module';
 
 import { ObsListComponent } from './list/list.component';
@@ -20,8 +21,6 @@ import { OnboardComponent } from './modalflow/steps/onboard/onboard.component';
 import { CommittedComponent } from './modalflow/steps/committed/committed.component';
 import { CongratsComponent } from './modalflow/steps/congrats/congrats.component';
 import { RewardComponent } from './modalflow/steps/reward/reward.component';
-import { GreeterModule } from 'src/app/shared/greeter/greeter.module';
-
 
 @NgModule({
   imports: [
@@ -43,17 +42,15 @@ import { GreeterModule } from 'src/app/shared/greeter/greeter.module';
     CommittedComponent,
     CongratsComponent,
     ModalFlowComponent,
-    RewardComponent,
+    RewardComponent
   ],
-  providers: [
-    ModalFlowService
-  ],
+  providers: [ModalFlowService],
   entryComponents: [
     OnboardComponent,
     CommittedComponent,
     CongratsComponent,
     RewardComponent,
-    MarkerPopupComponent,
+    MarkerPopupComponent
   ]
 })
-export class ObservationsModule { }
+export class ObservationsModule {}

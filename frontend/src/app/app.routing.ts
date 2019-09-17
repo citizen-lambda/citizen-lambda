@@ -42,7 +42,8 @@ const appRoutes: Routes = [
   },
   {
     path: 'programs/:id/observations',
-    loadChildren: () => import('./programs/observations/observations.module').then(m => m.ObservationsModule),
+    // loadChildren: () => import('./programs/observations/observations.module').then(m => m.ObservationsModule),
+    loadChildren: './programs/observations/observations.module#ObservationsModule',
     resolve: { programs: ProgramsResolve }
   },
   { path: 'synthesis/species/:id', component: SpeciesComponent },
