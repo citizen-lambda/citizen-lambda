@@ -1,9 +1,11 @@
 import { LOCALE_ID, NgModule, Inject } from '@angular/core';
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { registerLocaleData } from '@angular/common';
+// TODO: stabilize locale dyn loading
+import localeFr from '@angular/common/locales/fr';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { registerLocaleData } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -43,8 +45,6 @@ import { ProgramsResolve } from './programs/programs-resolve.service';
 import { AdminComponent } from './auth/admin/admin.component';
 
 import { AppConfig } from '../conf/app.config';
-import localeFr from '@angular/common/locales/fr';
-registerLocaleData(localeFr, 'fr');
 
 @NgModule({
   imports: [
@@ -100,17 +100,21 @@ registerLocaleData(localeFr, 'fr');
   exports: [AdminComponent]
 })
 export class AppModule {
-  // constructor(@Inject(LOCALE_ID) localeId: string) {
-  //   this.localeInitializer(localeId).then(() => {
-  //     console.info(`Locale: ${localeId}.`);
-  //   });
-  // }
-  //
-  // async localeInitializer(localeId: string): Promise<any> {
-  //   const module = await import(
-  //     /* webpackInclude: /(fr|en)\.js$/ */
-  //     `@angular/common/locales/${localeId}.js`
-  //   );
-  //   return registerLocaleData(module.default);
-  // }
+  constructor(@Inject(LOCALE_ID) localeId: string) {
+    this.localeInitializer(localeId).then(() => {
+      console.info(`Locale: ${localeId}.`);
+    });
+  }
+
+  async localeInitializer(localeId: string): Promise<any> {
+    try {
+      const module = await import(
+        /* webpackInclude: /(fr|en)\.js$/ */
+        `@angular/common/locales/${localeId}.js`
+      );
+      return registerLocaleData(module.default);
+    } catch {
+      registerLocaleData(localeFr, 'fr');
+    }
+  }
 }
