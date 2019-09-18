@@ -452,3 +452,5 @@ export class MarkerPopupComponent {
     date: Date;
   };
 }
+
+// FIXME: i18n taxonData.taxref?.nom_vern_eng may be empty

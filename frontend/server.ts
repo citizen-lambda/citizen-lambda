@@ -71,6 +71,7 @@ app.get(
 );
 
 // All regular routes use the Universal engine
+// app.get('*', (req: express.Request, res: express.Response) => {
 app.get('*', (req: any, res: any) => {
   const matches = req.url.match(/^\/([a-z]{2}(?:-[A-Z]{2})?)\//);
   // check if the requested url has a correct format '/locale' and matches any of the supportedLocales
