@@ -5,10 +5,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProgramsComponent } from './programs/programs.component';
 import { ProgramsResolve } from './programs/programs-resolve.service';
 import { UniqueProgramGuard } from './programs/default-program.guard';
-import { UserDashboardComponent } from './auth/user-dashboard/user-dashboard.component';
 import { SpeciesComponent } from './synthesis/species/species.component';
 import { AuthGuard } from './auth/auth.guard';
-import { AdminComponent } from './auth/admin/admin.component';
 
 const appRoutes: Routes = [
   {
@@ -24,7 +22,7 @@ const appRoutes: Routes = [
   { path: 'about', component: AboutComponent },
   {
     path: 'mydashboard',
-    component: UserDashboardComponent,
+    loadChildren: './auth/user-dashboard/user-dashboard.module#UserDashboardModule',
     canActivate: [AuthGuard]
   },
   {

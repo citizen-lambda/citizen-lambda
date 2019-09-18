@@ -29,7 +29,6 @@ import { TopbarComponent } from './core/topbar/topbar.component';
 import { DescModalComponent } from './programs/desc-modal/desc-modal.component';
 import { ProgramsComponent } from './programs/programs.component';
 
-import { UserDashboardComponent } from './auth/user-dashboard/user-dashboard.component';
 import { SpeciesComponent } from './synthesis/species/species.component';
 import { GncService } from './api/gnc.service';
 import { GncProgramsService } from './api/gnc-programs.service';
@@ -39,7 +38,6 @@ import { AboutComponent } from './about/about.component';
 import { AboutCustomComponent } from './about/custom/custom.component';
 import { AboutFixedComponent } from './about/fixed/fixed.component';
 import { ProgramsResolve } from './programs/programs-resolve.service';
-import { AdminComponent } from './auth/admin/admin.component';
 
 import { AppConfig } from '../conf/app.config';
 
@@ -69,7 +67,6 @@ import { AppConfig } from '../conf/app.config';
     LoginComponent,
     LogoutComponent,
     RegisterComponent,
-    UserDashboardComponent,
     SpeciesComponent,
     AboutComponent,
     AboutCustomComponent,
