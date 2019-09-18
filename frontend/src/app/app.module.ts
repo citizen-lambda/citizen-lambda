@@ -8,6 +8,10 @@ import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+
 import { GreeterModule } from './shared/greeter/greeter.module';
 
 import { AppComponent } from './app.component';
@@ -52,6 +56,9 @@ registerLocaleData(localeFr, 'fr');
     FormsModule,
     ScrollingModule,
     NgbModule,
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule,
+    LoadingBarModule,
     GreeterModule,
     routing
   ],
