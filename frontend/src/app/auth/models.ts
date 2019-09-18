@@ -1,24 +1,31 @@
-export class RegisteredUser {
-  username?: string;
-  password?: string;
-  email?: string;
-  name?: string;
-  surname?: string;
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
 
-  constructor() {}
+export interface RegisteredUser {
+  username: string;
+  password: string;
+  email: string;
+  name: string;
+  surname: string;
 }
 
-export interface LoggedUser {
+export type RegisteringUser = Partial<RegisteredUser>;
+
+export interface LoggingUser {
   username: string;
   password: string;
 }
 
-export interface LoginPayload {
+export interface LoggedUser {
   message: string;
-  access_token?: string;
-  refresh_token?: string;
-  username?: string;
+  access_token: string;
+  refresh_token: string;
+  username: string;
+  status: string;
 }
+
+export type LoginPayload = Partial<LoggedUser>;
 
 export interface LogoutPayload {
   msg: string;

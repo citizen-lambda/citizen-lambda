@@ -8,7 +8,7 @@ import { debounceTime, map, catchError } from 'rxjs/operators';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppConfig } from '../../../conf/app.config';
-import { LoggedUser } from './../models';
+import { LoggingUser, LoggedUser } from './../models';
 import { AuthService } from './../auth.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class LoginComponent {
   errorMessage: string | null = null;
   successMessage: string | null = null;
   staticAlertClosed = false;
-  user: LoggedUser = { username: '', password: '' };
+  user: LoggingUser = { username: '', password: '' };
   recovery = { username: '', email: '' };
   recoveringPassword = false;
   loginForm: FormGroup = new FormGroup({
@@ -46,21 +46,19 @@ export class LoginComponent {
     this.auth
       .login(this.user)
       .pipe(
-        map(user => {
-          if (user) {
-            const message = user.message;
-            this._success.subscribe(msg => (this.successMessage = msg));
-            this._success.pipe(debounceTime(1800)).subscribe(() => {
-              this.activeModal.close();
-            });
-            this.displaySuccessMessage(message);
+        map((user: LoggedUser) => {
+          const message = user.message;
+          this._success.subscribe(msg => (this.successMessage = msg));
+          this._success.pipe(debounceTime(1800)).subscribe(() => {
+            this.activeModal.close();
+          });
+          this.displaySuccessMessage(message);
 
-            if (this.auth.redirectUrl) {
-              this.router.navigate([this.auth.redirectUrl]);
-            }
-
-            return user;
+          if (this.auth.redirectUrl) {
+            this.router.navigate([this.auth.redirectUrl]);
           }
+
+          return user;
         }),
         catchError(error => this.handleError(error))
       )

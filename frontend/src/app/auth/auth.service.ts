@@ -6,8 +6,8 @@ import { share, map, catchError } from 'rxjs/operators';
 
 import { AppConfig } from '../../conf/app.config';
 import {
-  LoggedUser,
-  RegisteredUser,
+  LoggingUser,
+  RegisteringUser,
   JWT,
   TokenRefresh,
   LoginPayload,
@@ -31,7 +31,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(user: LoggedUser): Observable<LoginPayload> {
+  login(user: LoggingUser): Observable<LoginPayload> {
     const url = `${AppConfig.API_ENDPOINT}/login`;
     return this.http.post<LoginPayload>(url, user, { headers: this.headers }).pipe(
       map(u => {
@@ -51,7 +51,7 @@ export class AuthService {
     );
   }
 
-  register(user: RegisteredUser): Observable<any> {
+  register(user: RegisteringUser): Observable<any> {
     const url = `${AppConfig.API_ENDPOINT}/registration`;
     return this.http.post(url, user, { headers: this.headers });
   }
