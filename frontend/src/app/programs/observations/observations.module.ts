@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+// WARNING: cdk-virtual-scrroll-viewport rx scheduler calls requestAnimationFrame
+// our ssr will log the resulting error, fixed in 8.2.0
+// see https://github.com/angular/components/commit/4ff1c95ae7e7901ac6b954ad4813db8d71aa5224
 import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
