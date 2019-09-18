@@ -2,7 +2,6 @@ import { AboutComponent } from './about/about.component';
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ProgramsComponent } from './programs/programs.component';
 import { ProgramsResolve } from './programs/programs-resolve.service';
@@ -20,9 +19,8 @@ const appRoutes: Routes = [
   },
   {
     path: 'home',
-    component: HomeComponent,
+    loadChildren: './home/home.module#HomeModule',
     canActivate: [UniqueProgramGuard],
-    resolve: { programs: ProgramsResolve }
   },
   { path: 'about', component: AboutComponent },
   {

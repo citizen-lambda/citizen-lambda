@@ -26,7 +26,6 @@ import { RegisterComponent } from './auth/register/register.component';
 import { FooterComponent } from './core/footer/footer.component';
 import { SidebarComponent } from './core/sidebar/sidebar.component';
 import { TopbarComponent } from './core/topbar/topbar.component';
-import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { DescModalComponent } from './programs/desc-modal/desc-modal.component';
 import { ProgramsComponent } from './programs/programs.component';
@@ -40,7 +39,6 @@ import { ErrorHandler } from './api/error_handler';
 import { AboutComponent } from './about/about.component';
 import { AboutCustomComponent } from './about/custom/custom.component';
 import { AboutFixedComponent } from './about/fixed/fixed.component';
-import { HomeCustomComponent } from './home/custom/custom.component';
 import { ProgramsResolve } from './programs/programs-resolve.service';
 import { AdminComponent } from './auth/admin/admin.component';
 
@@ -64,8 +62,6 @@ import { AppConfig } from '../conf/app.config';
   ],
   declarations: [
     AppComponent,
-    HomeComponent,
-    HomeCustomComponent,
     ProgramsComponent,
     PageNotFoundComponent,
     DescModalComponent,
