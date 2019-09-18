@@ -26,7 +26,6 @@ import { RegisterComponent } from './auth/register/register.component';
 import { FooterComponent } from './core/footer/footer.component';
 import { SidebarComponent } from './core/sidebar/sidebar.component';
 import { TopbarComponent } from './core/topbar/topbar.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { DescModalComponent } from './programs/desc-modal/desc-modal.component';
 import { ProgramsComponent } from './programs/programs.component';
 
@@ -63,7 +62,6 @@ import { AppConfig } from '../conf/app.config';
   declarations: [
     AppComponent,
     ProgramsComponent,
-    PageNotFoundComponent,
     DescModalComponent,
     SidebarComponent,
     FooterComponent,

@@ -2,7 +2,6 @@ import { AboutComponent } from './about/about.component';
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ProgramsComponent } from './programs/programs.component';
 import { ProgramsResolve } from './programs/programs-resolve.service';
 import { UniqueProgramGuard } from './programs/default-program.guard';
@@ -45,7 +44,7 @@ const appRoutes: Routes = [
     resolve: { programs: ProgramsResolve }
   },
   { path: 'synthesis/species/:id', component: SpeciesComponent },
-  { path: '**', component: PageNotFoundComponent }
+  { path: '**', loadChildren: './page-not-found/page-not-found.module#PageNotFoundModule' }
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {
