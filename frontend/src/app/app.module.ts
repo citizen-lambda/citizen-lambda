@@ -73,8 +73,7 @@ import { AppConfig } from '../conf/app.config';
     SpeciesComponent,
     AboutComponent,
     AboutCustomComponent,
-    AboutFixedComponent,
-    AdminComponent
+    AboutFixedComponent
   ],
   providers: [
     AuthService,
@@ -90,8 +89,7 @@ import { AppConfig } from '../conf/app.config';
     { provide: LOCALE_ID, useValue: 'fr' }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [DescModalComponent, LoginComponent, LogoutComponent, RegisterComponent],
-  exports: [AdminComponent]
+  entryComponents: [DescModalComponent, LoginComponent, LogoutComponent, RegisterComponent]
 })
 export class AppModule {
   constructor(@Inject(LOCALE_ID) localeId: string) {

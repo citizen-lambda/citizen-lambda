@@ -19,7 +19,7 @@ const appRoutes: Routes = [
   {
     path: 'home',
     loadChildren: './home/home.module#HomeModule',
-    canActivate: [UniqueProgramGuard],
+    canActivate: [UniqueProgramGuard]
   },
   { path: 'about', component: AboutComponent },
   {
@@ -29,7 +29,7 @@ const appRoutes: Routes = [
   },
   {
     path: 'api/admin',
-    component: AdminComponent,
+    loadChildren: './auth/admin/admin.module#AdminModule',
     canActivate: [AuthGuard]
   },
   {
