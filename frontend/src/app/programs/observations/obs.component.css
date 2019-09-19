@@ -12,12 +12,16 @@ app-observations div.container-fluid {
 }
 
 /* SLIDER */
-
-#slider {
-  width: 100%;
+#program-teaser {
+  height: calc(
+    100vh - var(--router-outlet-offset) - var(--section-margin-bottom) -
+    var(--fold)
+    );
+  /* section.row:not(:last-of-type) {} */
+  margin-bottom: var(--section-margin-bottom);
 }
 
-#slider ol.carousel-indicators li {
+#program-teaser ol.carousel-indicators li {
   margin-top: 10px;
   width: 10px;
   height: 10px;
@@ -26,11 +30,30 @@ app-observations div.container-fluid {
   border: solid 1px var(--primary-color);
 }
 
-#slider .carousel-text article {
+#program-teaser .carousel-text article {
   max-height: 50%;
   overflow: auto;
   margin-bottom: 15px;
   background-color: var(--secondary-color);
+}
+
+#program-teaser a.scroll {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  color: var(--primary-color);
+  transform: translateX(-50%);
+  font-size: 14px;
+  background-color: transparent !important;
+  width: fit-content;
+  min-width: 100px;
+  text-align: center;
+}
+
+#program-teaser a.scroll img {
+  width: 15px;
+  height: auto;
+  margin: auto;
 }
 
 /* OBSERVATION / MAP */
@@ -179,15 +202,6 @@ input:checked ~ .toggle i {
   position: absolute;
   bottom: 0px;
   right: 0px;
-}
-
-.scroll {
-  width: 15px;
-  height: auto;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .observations #map .btn-group button,

@@ -2,15 +2,13 @@ import {
   Component,
   ViewEncapsulation,
   OnInit,
-  AfterViewInit,
   OnDestroy,
   ViewChild,
   HostListener
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, combineLatest, fromEvent, Subject, Observable, BehaviorSubject } from 'rxjs';
+import { forkJoin, combineLatest, Subject, Observable, BehaviorSubject } from 'rxjs';
 import {
-  throttleTime,
   map,
   flatMap,
   filter,
@@ -25,7 +23,6 @@ import {
 import { FeatureCollection, Feature } from 'geojson';
 import * as L from 'leaflet';
 
-import { AnchorNavigation } from '../../core/models';
 import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
 import { GncProgramsService, sorted } from '../../api/gnc-programs.service';
@@ -44,7 +41,7 @@ export const compose = <R>(fn1: (a: R) => R, ...fns: Array<(a: R) => R>) =>
   encapsulation: ViewEncapsulation.None,
   providers: [ProgramsResolve]
 })
-export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewInit, OnDestroy {
+export class ObsComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   @ViewChild(ObsMapComponent)
   obsMap!: ObsMapComponent;
@@ -145,7 +142,6 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
     private programService: GncProgramsService,
     public flowService: ModalFlowService
   ) {
-    super(router, route);
     combineLatest(this.programID$, this.route.data)
       .pipe(
         map(([id, data]) => {
@@ -192,40 +188,6 @@ export class ObsComponent extends AnchorNavigation implements OnInit, AfterViewI
         features: observations || []
       };
     });
-  }
-
-  ngAfterViewInit() {
-    // todo: move to directive and make the <p> tag an <article>
-    const element: HTMLElement | null = document.querySelector('#slider .carousel-text article');
-    if (element) {
-      const scroll$ = fromEvent(element, 'scroll').pipe(
-        throttleTime(10),
-        map(() =>
-          element.offsetHeight + element.scrollTop === element.scrollHeight
-            ? 'bottom'
-            : element.scrollTop === 0
-            ? 'top'
-            : null
-        ),
-        filter(reached => reached !== null),
-        takeUntil(this.unsubscribe$)
-      );
-
-      const swapClasses = (state: 'top' | 'bottom', e: HTMLElement) => {
-        switch (state) {
-          case 'bottom':
-            e.classList.remove('bottom-edge-shadow');
-            e.classList.add('top-edge-shadow');
-            break;
-          case 'top':
-            e.classList.remove('top-edge-shadow');
-            e.classList.add('bottom-edge-shadow');
-            break;
-        }
-      };
-
-      scroll$.subscribe(reached => swapClasses(<'top' | 'bottom'>reached, element));
-    }
   }
 
   ngOnDestroy() {

@@ -1,46 +1,14 @@
 <div class="container-fluid">
   <!-- LA PLATEFORME -->
-    <app-greeter *ngIf="programs?.length === 1"></app-greeter>
+  <app-greeter *ngIf="programs?.length === 1"></app-greeter>
 
   <!-- LE PROGRAMME -->
-  <section id="slide" class="slide row">
-    <div id="slider" class="carousel slide">
-      <div class="carousel-inner">
-        <h2 i18n>
-          Le programme <span>{{ program?.title }}</span>
-        </h2>
-        <div class="carousel-item active">
-          <img
-            class="d-block w-100"
-            [src]="program?.image || 'assets/default_taxon.jpg'"
-            alt="program image (fixme context)"
-          />
-          <div class="carousel-text-container">
-            <div class="carousel-text">
-              <h3>{{ program?.title }}</h3>
-              <p [innerHTML]="program?.html_short_desc"></p>
-              <article
-                [innerHTML]="program?.html_long_desc"
-                class="bottom-edge-shadow"
-              ></article>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <app-program-teaser [program]="program"></app-program-teaser>
 
   <!-- LES OBSERVATIONS -->
   <section id="program" class="observations row">
-    <input
-      id="slide-sidebar"
-      type="checkbox"
-      role="button"
-      (click)="onListToggle()"
-    />
-    <label class="toggle" for="slide-sidebar"
-      ><i class="fa fa-chevron-left"></i
-    ></label>
+    <input id="slide-sidebar" type="checkbox" role="button" (click)="onListToggle()" />
+    <label class="toggle" for="slide-sidebar"><i class="fa fa-chevron-left"></i></label>
     <div class="col-lg-12 col-md-12 side-bar" id="obslist">
       <div class="toolbar">
         <select
@@ -68,17 +36,16 @@
         >
           <option [ngValue]="null" i18n>Toutes communes</option>
           <option *ngFor="let t of municipalities$ | async" [ngValue]="t">{{
-            t?.name || "?"
+            t?.name || '?'
           }}</option>
         </select>
       </div>
       <div class="obs-count">
         <!-- TODO: loading => recherche… -->
         <p i18n>
-          {{ (filteredObservations$ | async)?.length }} {
-          +(filteredObservations$ | async)?.length, plural, =0 { observation
-          trouvée } =1 { observation trouvée !} other { observations trouvées !}
-          }
+          {{ (filteredObservations$ | async)?.length }} { +(filteredObservations$ | async)?.length,
+          plural, =0 { observation trouvée } =1 { observation trouvée !} other { observations
+          trouvées !} }
         </p>
       </div>
       <app-obs-list
