@@ -49,10 +49,10 @@ Lier l'illustration par défaut des taxons sans photo:
 
 .. code:: sh
 
-    ln -s image_taxon_par_defaut.(svg,jpg,png,…) default_taxon
+    ln -s image_taxon_par_defaut.jpg default_taxon.jpg
 
 
-TODO: AppConf.default_taxon = 'default_taxon'
+TODO: AppConf.no_taxon_pic = 'no_taxon.(svg,jpg,png)'
 
 Gestion du Server Side Rendering
 ################################
@@ -61,10 +61,13 @@ Le SSR a été intégré au projet à partir de la commande :
 
 .. code-block:: sh
 
-    npm run ng add @nguniversal/express-engine --clientProject frontend
+    npm run ng -- add @nguniversal/express-engine --clientProject frontend
 
-NB: Nous avons pris le parti d'utiliser des "``mock``" pour les objets couplés à la plateforme (window, localStorage, etc).
-L'intégration Leaflet.MarkerCluster a nécessité de déclarer une variable globale ``L`` et d'y importer Leaflet ... tout est dans le script ``server.ts``.
+NB:
+Nous avons pris le parti d'utiliser des "`mock <https://fr.wikipedia.org/wiki/Mock_(programmation_orientée_objet)>`_" pour les objets couplés
+à la plateforme (window, localStorage, etc).
+L'intégration de Leaflet.MarkerCluster a nécessité de déclarer une variable
+globale ``L`` et d'y importer Leaflet: tout est dans le script ``server.ts``.
 
 Les modules ``BrowserTransferState`` et ``ServerTransferState`` importés, nous avons créé un couple ``{clé: valeur}`` pour être transféré du serveur au client.
 
@@ -94,13 +97,14 @@ Le transfert d'état s'effectue avec accesseur et mutateur:
       */
     }
 
-Le ``build`` et le démarrage du service sur le port ``4000`` s'effectue via le oneliner :
+Le démarrage du service sur le port ``4000`` s'effectue via le oneliner :
 
 .. code-block:: sh
 
-    npm run build:ssr && npm run serve:ssr
+    npm run serve:ssr
 
-La redirection de port pourrait se faire au niveau du serveur web / reverse proxy, avec un filtre sur l'entête de requête ``User-Agent``
+La redirection de port pourrait se faire au niveau du reverse proxy,
+avec un filtre sur l'entête de requête ``User-Agent``
 
 Gestion de l'internationalisation (i18n)
 ########################################
@@ -114,37 +118,34 @@ Si l'on souhaitait la servir en langue anglaise:
 
 .. code-block:: sh
 
-    npm run ng serve -- --configuration=en
+    npm run ng -- serve --configuration=en
 
-La stratégie en cas de traduction manquante est de faire remonter une erreur.
+La stratégie, en cas de traduction manquante, est de faire remonter une erreur.
 
 (Ré)génération des fichiers de traduction:
 ******************************************
 
 .. code-block:: sh
 
-    npm run -- ng xi18n --output-path locale --out-file _messages.fr.xlf --i18n-locale fr
+    npm run ng -- xi18n --output-path locale --out-file _messages.fr.xlf --i18n-locale fr
 
 .. code-block:: sh
 
-    npm run -- ng xi18n --output-path locale --out-file _messages.en.xlf --i18n-locale en
+    npm run ng -- xi18n --output-path locale --out-file _messages.en.xlf --i18n-locale en
 
 
 Les fichiers de traduction se retrouvent dans le répertoire ``frontend/src/locale``.
 
 Les copier en ``messages.fr.xlf`` et ``messages.en.xlf`` après édition (mon approche est de les mettre à jour depuis un éditeur de différence).
 
-Génération du rendu SSR dans le context de l'i18n:
-**************************************************
+Note: La détection de la langue préférée pourrait se faire au niveau du serveur web / reverse proxy, avec un filtre sur l'entête de requête ``Accept-Language``
 
-La commande suivante permet de générer un rendu SSR multilingue et le servir en langue française.
-
+Construction du frontend multilingue:
+*************************************
 
 .. code-block:: sh
 
-    npm run build:i18n-ssr && npm run serve:ssr
-
-La détection de la langue préférée pourrait se faire au niveau du serveur web / reverse proxy, avec un filtre sur l'entête de requête ``Accept-Language``
+    npm run build:i18n-ssr
 
 Lancer le frontend
 ##################
@@ -156,13 +157,13 @@ Un mode ``développement``, avec un rendu côté client:
 
 .. code:: sh
 
-    ng serve
+    ng run start
 
-Et un mode ``production``, avec rendu serveur (ssr) optimisé pour le SEO et les robots d'indexation:
+Et un mode ``production``, multilingue, avec rendu serveur (ssr) optimisé pour le SEO et les robots d'indexation:
 
 .. code:: sh
 
-    npm run build:ssr && npm run serve:ssr
+    npm run build:i18n-ssr && PORT=8080 npm run serve:ssr
 
 Déploiement
 ###########
@@ -224,13 +225,13 @@ Effectuer la compilation de la distribution avec:
 
 .. code-block:: sh
 
-    npm run ng build -- --prod
+    npm run ng -- build --prod
 
 ou:
 
 .. code-block:: sh
 
-    npm run ng build -- --configuration=en --prod
+    npm run ng -- build --configuration=en --prod
 
 pour une version en langue anglaise.
 
