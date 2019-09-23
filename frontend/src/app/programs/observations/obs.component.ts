@@ -122,8 +122,7 @@ export class ObsComponent implements OnInit, OnDestroy {
             // tslint:disable-next-line: no-non-null-assertion
             o.properties.taxref.cd_ref === this.selectedTaxon!.taxref['cd_ref']
         )
-      : // tslint:disable-next-line: semicolon
-        obs;
+      : obs
   selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>
     obs && this.selectedMunicipality
       ? obs.filter(
@@ -133,8 +132,7 @@ export class ObsComponent implements OnInit, OnDestroy {
             Object.keys(o.properties) &&
             o.properties.municipality.code === this.selectedMunicipality.code
         )
-      : // tslint:disable-next-line: semicolon
-        obs;
+      : obs
 
   constructor(
     protected router: Router,
@@ -180,14 +178,6 @@ export class ObsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.obsFeaturesArray$.subscribe(o => this.filteredObservations$.next(o));
-
-    this.filteredObservations$.subscribe(observations => {
-      // FIXME: observations changes dispatch
-      this.observations = {
-        type: 'FeatureCollection',
-        features: observations || []
-      };
-    });
   }
 
   ngOnDestroy() {

@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, AfterViewInit, Input } from '@angular/core';
 import { AnchorNavigation } from 'src/app/core/models';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, fromEvent } from 'rxjs';
-import { throttleTime, map, filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { Program } from '../../programs.models';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-program-teaser',
@@ -11,9 +10,8 @@ import { Program } from '../../programs.models';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProgramTeaserComponent extends AnchorNavigation  implements OnInit, AfterViewInit, OnDestroy {
+export class ProgramTeaserComponent extends AnchorNavigation  implements AfterViewInit {
 
-  private unsubscribe$ = new Subject<void>();
   @Input() program!: Program;
 
   constructor(
@@ -21,47 +19,5 @@ export class ProgramTeaserComponent extends AnchorNavigation  implements OnInit,
     protected route: ActivatedRoute
   ) {
     super(router, route);
-  }
-
-  ngOnInit() {
-  }
-
-  ngAfterViewInit() {
-    // todo: move to directive and make the <p> tag an <article>
-    const element: HTMLElement | null = document.querySelector('#slider .carousel-text article');
-    if (element) {
-      const scroll$ = fromEvent(element, 'scroll').pipe(
-        throttleTime(10),
-        map(() =>
-          element.offsetHeight + element.scrollTop === element.scrollHeight
-            ? 'bottom'
-            : element.scrollTop === 0
-            ? 'top'
-            : null
-        ),
-        filter(reached => reached !== null),
-        takeUntil(this.unsubscribe$)
-      );
-
-      const swapClasses = (state: 'top' | 'bottom', e: HTMLElement) => {
-        switch (state) {
-          case 'bottom':
-            e.classList.remove('bottom-edge-shadow');
-            e.classList.add('top-edge-shadow');
-            break;
-          case 'top':
-            e.classList.remove('top-edge-shadow');
-            e.classList.add('bottom-edge-shadow');
-            break;
-        }
-      };
-
-      scroll$.subscribe(reached => swapClasses(<'top' | 'bottom'>reached, element));
-    }
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 }

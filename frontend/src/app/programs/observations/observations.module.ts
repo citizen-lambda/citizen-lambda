@@ -17,6 +17,7 @@ import { ObsMapComponent, MarkerPopupComponent } from './map/map.component';
 import { ObsComponent } from './obs.component';
 
 import { ProgramTeaserComponent } from './program-teaser/program-teaser.component';
+import { ProgramContentComponent } from './program-content/program-content.component';
 
 import { FlowDirective } from './modalflow/flow/flow.directive';
 import { FlowComponent } from './modalflow/flow/flow.component';
@@ -48,7 +49,8 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     CongratsComponent,
     ModalFlowComponent,
     RewardComponent,
-    ProgramTeaserComponent
+    ProgramTeaserComponent,
+    ProgramContentComponent
   ],
   providers: [ModalFlowService],
   entryComponents: [
@@ -58,6 +60,6 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     RewardComponent,
     MarkerPopupComponent
   ],
-  exports: [ProgramTeaserComponent]
+  exports: [ProgramTeaserComponent, ProgramContentComponent]
 })
 export class ObservationsModule {}

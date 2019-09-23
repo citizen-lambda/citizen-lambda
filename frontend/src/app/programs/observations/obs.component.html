@@ -3,13 +3,18 @@
   <app-greeter *ngIf="programs?.length === 1"></app-greeter>
 
   <!-- LE PROGRAMME -->
-  <app-program-teaser [program]="program"></app-program-teaser>
-
+  <section id="program-teaser" class="row">
+    <app-program-teaser [program]="program"></app-program-teaser>
+  </section>
+  <section id="program-content"  class="row">
+    <app-program-content [program]="program"></app-program-content>
+  </section>
   <!-- LES OBSERVATIONS -->
-  <section id="program" class="observations row">
+  <section id="observations" class="observations row">
     <input id="slide-sidebar" type="checkbox" role="button" (click)="onListToggle()" />
     <label class="toggle" for="slide-sidebar"><i class="fa fa-chevron-left"></i></label>
-    <div class="col-lg-12 col-md-12 side-bar" id="obslist">
+
+    <div class="side-bar" id="obslist">
       <div class="toolbar">
         <select
           #inputSpecies
@@ -50,16 +55,22 @@
       </div>
       <app-obs-list
         #obsListRef
-        [observations]="observations"
+        [observations]="{
+          type: 'FeatureCollection',
+          features: filteredObservations$ | async
+        }"
         [taxa]="surveySpecies"
         (obsSelected)="obsMapRef.showPopup($event)"
       ></app-obs-list>
     </div>
 
-    <div class="map col-lg-12 col-md-12" id="map">
+    <div class="map" id="map">
       <app-obs-map
         #obsMapRef
-        [observations]="observations"
+        [observations]="{
+          type: 'FeatureCollection',
+          features: filteredObservations$ | async
+        }"
         [program]="programFeature"
         (click)="onMapClicked($event)"
       ></app-obs-map>

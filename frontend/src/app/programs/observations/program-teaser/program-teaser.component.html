@@ -1,37 +1,25 @@
-<section id="program-teaser" class="slide row">
-  <div class="carousel-inner">
-      <h2 i18n>
-        Le programme <span>{{ program?.title }}</span>
-      </h2>
-      <div class="carousel-item active">
-        <img
-          class="d-block w-100"
-          [src]="program.image || 'assets/default_taxon.jpg'"
-          [alt]="program.short_desc"
-        />
-        <div class="carousel-text-container">
-          <div class="carousel-text">
-            <h3>{{ program?.title }}</h3>
-            <p [innerHTML]="program?.html_short_desc"></p>
-            <article [innerHTML]="program.html_long_desc" class="bottom-edge-shadow"></article>
-          </div>
-        </div>
-      </div>
-    </div>
-    <a
-      [routerLink]=""
-      fragment="program"
-      class="scroll"
-      (click)="jumpTo('program')"
-    >
-      <span i18n="Scrollez pour en voir plus !"
-        >Scrollez pour en voir plus !</span
-      >
-      <img
-        class="d-block"
-        src="assets/scroll.svg"
-        i18n-alt
-        alt="Scrollez pour en voir plus !"
-      />
-    </a>
-</section>
+<figure>
+  <!-- TODO: backend, add missing img alt string to program model -->
+  <img
+    [src]="program?.image || 'assets/ragondin.jpg'"
+    [alt]="program?.short_desc"
+  />
+  <figcaption i18n>Le programme <span>{{ program?.title }}</span></figcaption>
+  <p [innerHTML]="program?.html_short_desc"></p>
+</figure>
+<a
+  [routerLink]=""
+  fragment="program-content"
+  class="scroll"
+  (click)="jumpTo('program-content')"
+>
+  <span i18n="Scrollez pour en voir plus !"
+    >Scrollez pour en voir plus !</span
+  >
+  <img
+    class="d-block"
+    src="assets/scroll.svg"
+    i18n-alt
+    alt="Scrollez pour en voir plus !"
+  />
+</a>

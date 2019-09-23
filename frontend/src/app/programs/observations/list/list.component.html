@@ -5,6 +5,7 @@
       class="espece obs-{{ o.properties.id_observation }}"
       (click)="onSelected(o)"
     >
+      <!-- mv to ng-template, refact with map popup, ngTemplateOutlet with implicit context -->
       <!-- FIXME: hardcoded api media endpoint -->
       <img
         [src]="

@@ -11,49 +11,112 @@ app-observations div.container-fluid {
   background-size: cover;
 }
 
-/* SLIDER */
-#program-teaser {
+section#program-teaser,
+section#program-content {
+  margin-bottom: var(--section-margin-bottom);
+}
+
+section#program-teaser {
   height: calc(
     100vh - var(--router-outlet-offset) - var(--section-margin-bottom) -
     var(--fold)
     );
-  /* section.row:not(:last-of-type) {} */
-  margin-bottom: var(--section-margin-bottom);
 }
 
-#program-teaser ol.carousel-indicators li {
-  margin-top: 10px;
-  width: 10px;
-  height: 10px;
-  border-radius: 25px;
+section#program-content {
+  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom));
+}
+
+section#program-teaser > app-program-teaser,
+section#program-content > app-program-content {
+  background-color: var(--primary-color);
+  width: 100%;
+}
+
+section#program-teaser > app-program-teaser > figure {
+  height: calc( 100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold) );
+  display: grid;
+  grid-template-columns: 1fr 1fr auto 1fr;
+  grid-template-rows: 2fr 1fr 1fr;
+  margin: 0 0 0;
+  overflow: hidden;
+}
+
+section#program-teaser > app-program-teaser > figure > img {
+  height: auto;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 4;
+  object-fit: cover;
+  width: 100%;
+}
+
+section#program-teaser > app-program-teaser > figure figcaption {
   background: transparent;
-  border: solid 1px var(--primary-color);
+  color: var(--primary-color);
+  font-size: 1.5em;
+  font-weight: bold;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 1;
+  max-height: 1.7em;
+  text-transform: uppercase;
 }
 
-#program-teaser .carousel-text article {
-  max-height: 50%;
-  overflow: auto;
-  margin-bottom: 15px;
-  background-color: var(--secondary-color);
+section#program-teaser > app-program-teaser > figure > p {
+  background-color: var(--primary-color);
+  color: var(--ternary);
+  font-family: 'Satisfy';
+  font-size: calc(100% + 1vw);
+  grid-column-start: 3;
+  grid-column-end: 5;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  padding: 1.6em;
 }
 
-#program-teaser a.scroll {
+section#program-teaser > app-program-teaser > a.scroll {
   position: absolute;
   bottom: 0px;
-  left: 50%;
-  color: var(--primary-color);
-  transform: translateX(-50%);
-  font-size: 14px;
   background-color: transparent !important;
-  width: fit-content;
+  color: var(--primary-color);
+  font-size: 14px;
+  left: 50%;
   min-width: 100px;
   text-align: center;
+  transform: translateX(-50%) translateY(-100%);
+  width: fit-content;
 }
 
-#program-teaser a.scroll img {
-  width: 15px;
+section#program-teaser > app-program-teaser > a.scroll img {
   height: auto;
   margin: auto;
+  width: 15px;
+}
+
+section#program-content > app-program-content > article {
+  background-color: var(--secondary-color);
+  font-size: calc(80% + 1vw);
+  height: calc( 100vh - var(--router-outlet-offset) - var(--section-margin-bottom));
+  overflow: auto;
+  padding: 1.2em;
+}
+
+section#program-content > app-program-content > a.btn-big {
+  background-color: var(--secondary);
+  border-radius: 0;
+  opacity: .8;
+  padding: 10px 30px !important;
+  position: absolute;
+  right: 0px;
+  top: calc(2 * (100vh - var(--router-outlet-offset) - var(--section-margin-bottom)) - var(--fold));
+  transform: translateX(-50%);
+}
+
+section#program-content > app-program-content > a.btn-big:hover {
+  opacity: 1;
 }
 
 /* OBSERVATION / MAP */
@@ -86,22 +149,24 @@ section .observations {
   overflow: hidden;
 }
 
-section.observations#program {
-  display: flex;
-  flex-wrap: wrap;
+section.observations#observations {
+  display: grid;
+  grid-template-columns: 9fr auto auto;
+  grid-template-rows: 1fr;
 }
 
 #obslist {
-  flex-grow: 1;
-  /* + hover binoculars width */
-  flex-basis: calc(var(--obs-cell-width) + 40px);
-  min-width: var(--obs-cell-width);
-  width: var(--obs-list-width);
+  /* min-width: var(--obs-cell-width); */
+  /* width: var(--obs-list-width); */
+  grid-column-start: 1;
+  grid-row-start: 1;
+  grid-row-end: 1;
 }
 
 #map {
-  flex-basis: 0;
-  flex-grow: 999;
+  grid-column-start: 10;
+  grid-row-start: 1;
+  grid-row-end: 1;
 }
 
 @media screen and (max-width: 568px) {
@@ -109,20 +174,20 @@ section.observations#program {
     display: none !important;
   }
 
-  #map,
+  /* #map,
   app-obs-map #obsMap,
   #obslist,
   app-obs-list #list {
     flex-basis: auto;
     width: 100vw;
     height: 50vh;
-  }
+  } */
 
-  .map {
+  /* .map {
     height: auto;
     position: relative !important;
     left: 0% !important;
-  }
+  } */
 }
 
 /* OBS LIST DISPLAY TOGGLING */
@@ -136,15 +201,20 @@ input:checked ~ #obslist {
 }
 
 input:checked ~ #map app-obs-map #obsMap {
-  width: auto;
+  /* 10px scrollbar width ? */
+  width: calc(100vw - var(--list-toggler-width) - 10px);
+  grid-column-start: 2;
 }
 
 input:checked ~ label.toggle {
-  left: 0;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 1;
 }
 
 input:not(:checked) ~ #obslist {
-  display: block;
+  width: fit-content;
 }
 
 .map {
@@ -159,10 +229,10 @@ input:not(:checked) ~ #obslist {
 
 .toggle {
   z-index: 2;
-  position: absolute;
+  /* position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(var(--obs-list-width) + var(--list-toggler-width) + 1px);
+  left: calc(var(--obs-list-width) + var(--list-toggler-width) + 1px); */
   background-color: var(--primary);
   width: var(--list-toggler-width);
   display: flex;
@@ -171,6 +241,8 @@ input:not(:checked) ~ #obslist {
   overflow: hidden;
   margin-bottom: 0px;
   justify-content: center;
+  grid-column-start: 8;
+  grid-column-end: 9;
 }
 
 .toggle i {
@@ -194,13 +266,9 @@ input:checked ~ .toggle i {
   padding: 0px;
 }
 
-.observations #map iframe {
-  height: 100%;
-}
-
 .observations #map .btn-group {
   position: absolute;
-  bottom: 0px;
+  top: calc(2 * (100vh - var(--section-margin-bottom) - var(--router-outlet-offset) - var(--fold)));
   right: 0px;
 }
 
@@ -223,6 +291,73 @@ input:checked ~ .toggle i {
 
 .observations #map .btn-group button:nth-child(2n) {
   background-color: var(--primary);
+}
+
+#obsMap {
+  height: calc(100vh - var(--router-outlet-offset));
+  /* fixme: supplementary 80px & 55px ? */
+  min-width: calc(
+    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px +
+      55px
+  );
+}
+
+@media screen and (max-width: 768px) {
+  #obsMap {
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .btn-group .btn-big {
+    opacity: 1 !important;
+  }
+}
+
+.marker-cluster {
+  background-image: url(/assets/marker2.svg);
+}
+
+.marker-cluster span {
+  color: var(--primary);
+  font-size: 0.9em;
+  font-weight: bold;
+  line-height: 45px;
+}
+
+.marker-cluster-small {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.marker-cluster-small div {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.marker-cluster-medium {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.marker-cluster-medium div {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.marker-cluster-large {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.marker-cluster-large div {
+  background-color: rgba(254, 250, 245, 0.1);
+}
+
+.leaflet-popup-tip,
+.leaflet-popup-content-wrapper {
+  border-radius: 0px !important;
+}
+
+.leaflet-popup-tip {
+  color: var(--primary);
+  font-style: italic;
+  font-size: 13px;
 }
 
 .observation-zoom-statement-warning::after {
@@ -296,15 +431,41 @@ app-marker-popup > div.icon {
   font-size: 18px;
 }
 
-.leaflet-popup-tip,
-.leaflet-popup-content-wrapper {
-  border-radius: 0px !important;
+popup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
 }
 
-.leaflet-popup-tip {
-  color: var(--primary);
-  font-style: italic;
-  font-size: 13px;
+a.leaflet-control-layers-toggle {
+  /* Should inherit leaflet-bar sizes */
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.leaflet-bottom.leaflet-left,
+.leaflet-bottom.leaflet-right {
+  margin-bottom: 0;
+}
+
+.leaflet-bottom .leaflet-control-zoomviewer,
+.leaflet-bottom .leaflet-control-scale {
+  margin-bottom: 0;
+  margin-left: 0;
+  max-height: fit-content;
+}
+
+.leaflet-bottom .leaflet-control-zoomviewer {
+  font-size: 0.9em;
+}
+
+.leaflet-control-layers-base,
+.leaflet-control-layers-overlays {
+  max-height: 12em;
+  overflow-y: scroll;
+  padding: 0.4em;
 }
 
 .modal-header {

@@ -142,7 +142,6 @@ export const conf = {
       data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
     ></div>
   `,
-  styleUrls: ['./map.component.css'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
