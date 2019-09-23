@@ -80,7 +80,7 @@
       <div class="form-row">
         <div class="col-md-6 col-sm-12">
           <div class="form-group">
-            <label for="personalInfo.username" i18n
+            <label for="personalInfo['username']" i18n
               >Votre nom d'utilisateur</label
             >
             <div class="input-group">
@@ -94,7 +94,7 @@
                 class="form-control rounded-0"
                 i18n-placeholder
                 placeholder="Entrez votre nom d'utilisateur"
-                [(ngModel)]="personalInfo.username"
+                [(ngModel)]="personalInfo['username']"
                 #username="ngModel"
                 autocomplete="username"
                 required
@@ -118,7 +118,7 @@
                 id="email"
                 i18n-placeholder
                 placeholder="Entrez votre email"
-                [(ngModel)]="personalInfo.email"
+                [(ngModel)]="personalInfo['email']"
                 #email="ngModel"
                 autocomplete="email"
                 required
@@ -139,7 +139,7 @@
               name="fname"
               i18n-placeholder
               placeholder="Entrez votre prénom"
-              [(ngModel)]="personalInfo.name"
+              [(ngModel)]="personalInfo['name']"
               #fname="ngModel"
               autocomplete="fname"
               required
@@ -156,7 +156,7 @@
               name="surname"
               i18n-placeholder
               placeholder="Entrez votre nom"
-              [(ngModel)]="personalInfo.surname"
+              [(ngModel)]="personalInfo['surname']"
               #surname="ngModel"
               autocomplete="lname"
               required
@@ -184,7 +184,7 @@
               id="password"
               i18n-placeholder
               placeholder="Votre nouveau mot de passe"
-              [(ngModel)]="personalInfo.password"
+              [(ngModel)]="personalInfo['password']"
               name="password"
               #password="ngModel"
               autocomplete="current-password"

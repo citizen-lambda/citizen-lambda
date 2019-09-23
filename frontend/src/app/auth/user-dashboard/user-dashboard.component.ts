@@ -27,6 +27,7 @@ export class UserDashboardComponent implements OnInit {
   personalInfo: { [name: string]: any } = {};
   badges: { img: string; alt: string }[] = [];
   badges$: Subject<Object> = new Subject<Object>();
+  errorMessage = '';
 
   constructor(
     private auth: AuthService,
@@ -42,11 +43,11 @@ export class UserDashboardComponent implements OnInit {
         .ensureAuthorized()
         .pipe(
           tap(user => {
-            if (user && user['features'] && user['features']['id_role']) {
+            if (user) {
               this.isLoggedIn = true;
-              this.username = user['features']['username'];
-              this.stats = user['features']['stats'];
-              this.role_id = user['features']['id_role'];
+              this.username = user.features.username;
+              this.stats = user.features.stats;
+              this.role_id = user.features.id_role;
               // FIXME: source backend conf
               if (AppConfig['REWARDS']) {
                 this.getBadgeCategories().subscribe();
