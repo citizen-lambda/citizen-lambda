@@ -57,3 +57,9 @@ export interface UserInfo {
   message: string;
   features?: any;
 }
+
+// export class APIPayload<T> {
+//   message: string;
+//   result: T | T[];
+//   status: boolean;
+// }
