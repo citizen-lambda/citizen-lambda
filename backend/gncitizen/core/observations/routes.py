@@ -23,6 +23,10 @@ from gncitizen.core.users.models import UserModel
 from gncitizen.core.taxonomy.models import Taxref, TMedias
 
 # DOING: TaxRef REST as alternative
+# TODO: if we were to implement pagination lets have relative cursor pagination
+# SELECT * FROM `observations` WHERE `observervations`.`date` > some_date
+# ORDER BY `observations`.`date` DESC LIMIT 100
+# TODO: eval BRIN index on observations
 # from gncitizen.core.taxonomy.routes import get_list
 
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
@@ -54,20 +58,20 @@ obs_keys = (
 def generate_observation_geojson(id_observation):
     """generate observation in geojson format from observation id
 
-      :param id_observation: Observation unique id
-      :type id_observation: int
+    :param id_observation: Observation unique id
+    :type id_observation: int
 
-      :return features: Observations as a Feature dict
-      :rtype features: dict
+    :return features: Observations as a Feature dict
+    :rtype features: dict
     """
 
     # Crée le dictionnaire de l'observation
     observation = (
         db.session.query(
-            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
+            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code  # noqa: E501
         )
-        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
-        .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
+        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)  # noqa: E501
+        .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)  # noqa: E501
         .filter(ObservationModel.id_observation == id_observation)
     ).one()
 
@@ -103,7 +107,8 @@ def generate_observation_geojson(id_observation):
             TMedias.cd_ref == observation.ObservationModel.cd_nom
         ).all()
         if medias:
-            feature["properties"]["medias"] = [media.as_dict(True) for media in medias]
+            feature["properties"]["medias"] = [
+                media.as_dict(True) for media in medias]
 
     else:
         taxhub_list_id = (
@@ -133,30 +138,30 @@ def generate_observation_geojson(id_observation):
 @json_resp
 def get_observation(pk):
     """Get on observation by id
-         ---
-         tags:
-          - observations
-         parameters:
-          - name: pk
-            in: path
-            type: integer
-            required: true
-            example: 1
-         definitions:
-           cd_nom:
-             type: integer
-             description: cd_nom taxref
-           geometry:
-             type: dict
-             description: Géométrie de la donnée
-           name:
-             type: string
-           geom:
-             type: geojson
-         responses:
-           200:
-             description: A list of all observations
-         """
+        ---
+        tags:
+            - observations
+        parameters:
+            - name: pk
+                in: path
+                type: integer
+                required: true
+                example: 1
+        definitions:
+            cd_nom:
+                type: integer
+                description: cd_nom taxref
+            geometry:
+                type: dict
+                description: Géométrie de la donnée
+            name:
+                type: string
+            geom:
+                type: geojson
+        responses:
+            200:
+                description: A list of all observations
+        """
     try:
         features = generate_observation_geojson(pk)
         return {"features": features}, 200
@@ -172,63 +177,64 @@ def post_observation():
     add a observation to database
         ---
         tags:
-          - observations
+            - observations
         # security:
         #   - bearerAuth: []
         summary: Creates a new observation (JWT auth optional, if used, obs_txt replaced by username)
         consumes:
-          - application/json
-          - multipart/form-data
+            - application/json
+            - multipart/form-data
         produces:
-          - application/json
+            - application/json
         parameters:
-          - name: json
-            in: body
-            description: JSON parameters.
-            required: true
-            schema:
-              id: observation
-              required:
-                - cd_nom
-                - date
-                - geom
-              properties:
-                id_program:
-                  type: string
-                  description: Program unique id
-                  example: 1
-                  default: 1
-                cd_nom:
-                  type: string
-                  description: CD_Nom Taxref
-                  example: 3582
-                obs_txt:
-                  type: string
-                  default:  none
-                  description: User name
-                  required: false
-                  example: Martin Dupont
-                count:
-                  type: integer
-                  description: Number of individuals
-                  default:  none
-                  example: 1
-                date:
-                  type: string
-                  description: Date
-                  required: false
-                  example: "2018-09-20"
-                geometry:
-                  type: string
-                  description: Geometry (GeoJson format)
-                  example: {"type":"Point", "coordinates":[5,45]}
+            - name: json
+                in: body
+                description: JSON parameters.
+                required: true
+                schema:
+                    id: observation
+                    required:
+                        - cd_nom
+                        - date
+                        - geom
+                    properties:
+                        id_program:
+                            type: string
+                            description: Program unique id
+                            example: 1
+                            default: 1
+                        cd_nom:
+                            type: string
+                            description: CD_Nom Taxref
+                            example: 3582
+                        obs_txt:
+                            type: string
+                            default:  none
+                            description: User name
+                            required: false
+                            example: Martin Dupont
+                        count:
+                            type: integer
+                            description: Number of individuals
+                            default:  none
+                            example: 1
+                        date:
+                            type: string
+                            description: Date
+                            required: false
+                            example: "2018-09-20"
+                        geometry:
+                            type: string
+                            description: Geometry (GeoJson format)
+                            example: {"type":"Point", "coordinates":[5,45]}
         responses:
-          200:
-            description: Adding a observation
-        """
+            200:
+                description: Adding a observation
+        """  # noqa: E501
     try:
         request_datas = request.form
-        current_app.logger.debug("[post_observation] request data:", request_datas)
+        current_app.logger.debug(
+            "[post_observation] request data:", request_datas)
 
         datas2db = {}
         for field in request_datas:
@@ -297,21 +303,21 @@ def get_observations():
     """Get all observations
         ---
         tags:
-          - observations
+            - observations
         definitions:
-          cd_nom:
-            type: integer
-            description: cd_nom taxref
-          geometry:
-            type: dict
-            description: Géométrie de la donnée
-          name:
-            type: string
-          geom:
-            type: geometry
+            cd_nom:
+                type: integer
+                description: cd_nom taxref
+            geometry:
+                type: dict
+                description: Géométrie de la donnée
+            name:
+                type: string
+            geom:
+                type: geometry
         responses:
-          200:
-            description: A list of all observations
+            200:
+                description: A list of all observations
         """
     try:
         observations = ObservationModel.query.order_by(
@@ -341,27 +347,27 @@ def get_observations_from_list(id):  # noqa: A002
     GET
         ---
         tags:
-          - observations
+            - observations
         parameters:
-          - name: id
-            in: path
-            type: integer
-            required: true
-            example: 1
+            - name: id
+                in: path
+                type: integer
+                required: true
+                example: 1
         definitions:
-          cd_nom:
-            type: integer
-            description: cd_nom taxref
-          geometry:
-            type: dict
-            description: Géométrie de la donnée
-          name:
-            type: string
-          geom:
-            type: geometry
+            cd_nom:
+                type: integer
+                description: cd_nom taxref
+            geometry:
+                type: dict
+                description: Géométrie de la donnée
+            name:
+                type: string
+            geom:
+                type: geometry
         responses:
-          200:
-            description: A list of all species lists
+            200:
+                description: A list of all species lists
         """
     # taxhub_url = load_config()['TAXHUB_API_URL']
     taxhub_lists_taxa_url = taxhub_lists_url + "taxons/" + str(id)
@@ -384,7 +390,8 @@ def get_observations_from_list(id):  # noqa: A002
                     for k in observation_dict:
                         if k in obs_keys:
                             feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+                    taxref = get_specie_from_cd_nom(
+                        feature["properties"]["cd_nom"])
                     for k in taxref:
                         feature["properties"][k] = taxref[k]
                     features.append(feature)
@@ -402,27 +409,27 @@ def get_program_observations(
     GET
         ---
         tags:
-          - observations
+            - observations
         parameters:
-          - name: id
-            in: path
-            type: integer
-            required: true
-            example: 1
+            - name: id
+                in: path
+                type: integer
+                required: true
+                example: 1
         definitions:
-          cd_nom:
-            type: integer
-            description: cd_nom taxref
-          geometry:
-            type: dict
-            description: Géométrie de la donnée
-          name:
-            type: string
-          geom:
-            type: geometry
+            cd_nom:
+                type: integer
+                description: cd_nom taxref
+            geometry:
+                type: dict
+                description: Géométrie de la donnée
+            name:
+                type: string
+            geom:
+                type: geometry
         responses:
-          200:
-            description: A list of all species lists
+            200:
+                description: A list of all species lists
         """
     try:
         observations = (
@@ -453,13 +460,15 @@ def get_program_observations(
             .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         )
 
-        observations = observations.order_by(ObservationModel.timestamp_create.desc())
+        observations = observations.order_by(
+            ObservationModel.timestamp_create.desc())
         current_app.logger.debug(str(observations))
         observations = observations.all()
 
         if current_app.config.get("API_TAXHUB") is not None:
             taxhub_list_id = (
-                ProgramsModel.query.filter_by(id_program=program_id).one().taxonomy_list
+                ProgramsModel.query.filter_by(
+                    id_program=program_id).one().taxonomy_list
             )
             taxon_repository = mkTaxonRepository(taxhub_list_id)
 
@@ -472,7 +481,8 @@ def get_program_observations(
             }
 
             # Observer
-            feature["properties"]["observer"] = {"username": observation.username}
+            feature["properties"]["observer"] = {
+                "username": observation.username}
 
             # Observer submitted media
             feature["properties"]["image"] = (

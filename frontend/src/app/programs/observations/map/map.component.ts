@@ -173,7 +173,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.options = conf;
     console.debug({
-      layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay
+      layers: [this.options.DEFAULT_BASE_MAP()],
       gestureHandling: true
     });
     this.observationMap = L.map(this.map.nativeElement, {
@@ -297,7 +297,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           icon: conf.MARKER_ICON_OBS()
         });
         this.featureMarkers.push({
-          // TODO: loose redundant feature field on this.featureMarkers, utilize marker feature
+          // TODO: simplify marker collection refs handling
           feature: feature,
           marker: marker
         });

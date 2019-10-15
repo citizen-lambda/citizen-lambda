@@ -1,8 +1,10 @@
+from typing import Dict, Any
 import os
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
+from flask import current_app
 from flasgger import Swagger
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
@@ -46,7 +48,7 @@ db = SQLAlchemy()
 
 jwt = JWTManager()
 
-swagger_template = {
+swagger_template: Dict[str, Any] = {
     # "openapi": "3.0.0",
     # "components": {
     #     "securitySchemes": {
@@ -83,20 +85,21 @@ def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
 
     # iter over external_modules dir
     #   and import only modules which are enabled
-    for f in mod_path.iterdir():
-        if f.is_dir():
-            conf_manifest = load_toml(str(f / "manifest.toml"))
-            module_name = conf_manifest["module_name"]
-            module_path = Path(GNC_EXTERNAL_MODULE / module_name)
+    for path in mod_path.iterdir():
+        if path.is_dir():
+            manifest = load_toml(str(path / "manifest.toml"))
+            name = manifest["module_name"]
+            module_path = Path(GNC_EXTERNAL_MODULE / name)
             module_parent_dir = str(module_path.parent)
             module_name = "{}.config.conf_schema_toml".format(module_path.name)
             sys.path.insert(0, module_parent_dir)
-            module = __import__(module_name, globals=globals())
+            # module = __import__(module_name, globals=globals())
             module_name = "{}.backend.blueprint".format(module_path.name)
             module_blueprint = __import__(module_name, globals=globals())
             sys.path.pop(0)
 
-            conf_module = load_toml(str(f / "config/conf_gn_module.toml"))
-            print(conf_module, conf_manifest, module_blueprint)
+            conf_module = load_toml(str(path / "config/conf_gn_module.toml"))
+            current_app.logger.info(
+                f":{manifest['module_name']} loaded ✨ {app_conf['API_ENDPOINT']}{conf_module['api_url']} ✨")  # noqa: E501
 
-            yield conf_module, conf_manifest, module_blueprint
+            yield conf_module, manifest, module_blueprint

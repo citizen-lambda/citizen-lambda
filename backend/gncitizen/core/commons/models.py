@@ -80,8 +80,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
 @serializable
 @geoserializable
 class MediaModel(TimestampMixinModel, db.Model):
-    """Table des Programmes de GeoNature-citizen
-        """
+    """Table des media de GeoNature-citizen """
 
     __tablename__ = "t_medias"
     __table_args__ = {"schema": "gnc_core"}

@@ -28,13 +28,16 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
     )
-    cd_nom = db.Column(db.Integer, db.ForeignKey(Taxref.cd_nom), nullable=False)
+    cd_nom = db.Column(db.Integer, db.ForeignKey(
+        Taxref.cd_nom), nullable=False)
     # specie = db.Column(db.String(200))
     date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
-    # FIXME: remove nullable prop from ObservationModel.municipality once debugged
-    municipality = db.Column(db.Integer, db.ForeignKey(LAreas.id_area), nullable=True)
+    # FIXME: remove nullable prop from ObservationModel.municipality
+    #        once debugged
+    municipality = db.Column(
+        db.Integer, db.ForeignKey(LAreas.id_area))  # , nullable=True)
     geom = db.Column(Geometry("POINT", 4326))
 
 

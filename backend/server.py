@@ -5,7 +5,8 @@ import logging
 from flask import Flask, current_app
 from flask_cors import CORS
 
-from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger, admin
+from gncitizen.utils.env import (
+    db, list_and_import_gnc_modules, jwt, swagger, admin)
 from gncitizen.utils.sqlalchemy import create_schemas
 from gncitizen.utils import commands
 
@@ -26,7 +27,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
+                environ["PATH_INFO"] = path_info[len(script_name):]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -51,7 +52,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         handler = colorlog.StreamHandler()
         handler.setFormatter(
             colorlog.ColoredFormatter(
-                """%(log_color)s%(asctime)s %(levelname)s:%(name)s:%(message)s [in %(pathname)s:%(lineno)d]"""
+                """%(log_color)s%(asctime)s %(levelname)s:%(name)s:%(message)s [%(pathname)s:%(lineno)d]"""  # noqa: E501
             )
         )
 
@@ -113,7 +114,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        # Chargement des mosdules tiers
+        # Chargement des modules tiers
         if with_external_mods:
             for conf, manifest, module in list_and_import_gnc_modules(app):
                 try:
@@ -121,7 +122,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                 except Exception as e:
                     current_app.logger.debug(e)
                     prefix = url_prefix
-                print(prefix)
+                # print(prefix)
                 app.register_blueprint(
                     module.backend.blueprint.blueprint, url_prefix=prefix
                 )
@@ -129,6 +130,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
                     module.backend.models.create_schema(db)
                 except Exception as e:
                     current_app.logger.debug(e)
+
                 # chargement de la configuration
                 # du module dans le blueprint.config
                 module.backend.blueprint.blueprint.config = conf
