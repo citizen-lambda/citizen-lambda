@@ -14,6 +14,7 @@ class MnhnTaxRefRest:
     API_URL = f"{BASE_URL}/api"
     TAXA_URL = f"{API_URL}/taxa"
     CACHE_ITEMS = 128
+    # TODO: zip TAXON_ATTR columns from respective definitions
     TAXON_ATTR = {
         "cd_nom": ["id"],
         "cd_ref": ["referenceId"],
