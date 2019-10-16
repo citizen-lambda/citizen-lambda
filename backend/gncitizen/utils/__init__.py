@@ -56,7 +56,7 @@ def parsed_url(link="") -> str:
 
 def _pick(mapping: Mapping[K, V]) -> Callable:
     # https://github.com/microsoft/python-language-server/issues/121
-    # split annontation and definition
+    # split annotation and definition on nonlocal variable
     m: Any
     m = mapping
 
