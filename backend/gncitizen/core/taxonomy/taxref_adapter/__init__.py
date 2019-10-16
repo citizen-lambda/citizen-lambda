@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from warnings import warn
-from typing import (Optional, Sequence, List, Dict, Mapping, Callable)
+from typing import (Optional, Sequence, List, Dict, Mapping, Callable, Union)
 from functools import lru_cache
 import json
 import requests
 
 from gncitizen.core.taxonomy.taxon import Taxon, TaxonMedium
-from gncitizen.utils import (pick_str, parsed_url, pick_url, mapper)
+from gncitizen.utils import (V, pick_str, parsed_url, pick_url, mapper)
 
 
 class MnhnTaxRefRest:
@@ -166,34 +166,12 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest):
         return None
 
     def get_info(self, ref: int) -> Optional[Dict]:
-        url = parsed_url(f"{super().TAXA_URL}/{ref}")
         # assert url == f"{super().TAXA_URL}/{ref}"
-        r = requests.get(url)
-        try:
-            r.raise_for_status()
-            return r.json()
-        except (
-            requests.exceptions.HTTPError,
-            json.decoder.JSONDecodeError,
-            ValueError
-        ) as e:
-            warn(str(e))
-            return None
+        return self.api_call(f"{super().TAXA_URL}/{ref}", None)
 
     def get_media(self, ref, link) -> List[TaxonMedium]:
-        url = parsed_url(link)
-        # assert url == f"{super().TAXA_URL}/{ref}/media"
-        r = requests.get(url)
-        try:
-            r.raise_for_status()
-        except (
-            requests.exceptions.HTTPError,
-            json.decoder.JSONDecodeError,
-            ValueError
-        ) as e:
-            warn(str(e))
-            return []
-        data = r.json()
+        # assert link == f"{super().TAXA_URL}/{ref}/media"
+        data: Mapping = self.api_call(link, dict())
         if data and "_embedded" in data and "media" in data["_embedded"]:
             media = data["_embedded"]["media"]
             return [
@@ -206,6 +184,20 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest):
 
     # def resolve(self, prop: str, value: Any) -> Iterable[T]:
     #     ...
+
+    def api_call(self, link: str, defaultvalue: V) -> Union[Dict, V]:
+        url = parsed_url(link)
+        r = requests.get(url)
+        try:
+            r.raise_for_status()
+            return r.json()
+        except (
+            requests.exceptions.HTTPError,
+            json.decoder.JSONDecodeError,
+            ValueError
+        ) as e:
+            warn(str(e))
+            return defaultvalue
 
 
 if __name__ == "__main__":
