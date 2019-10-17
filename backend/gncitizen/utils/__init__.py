@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from typing import (Iterable, Optional, TypeVar, Callable,
-                    Mapping, Any, Sequence, Dict)
+                    Mapping, Any, Sequence, List, Dict, Generic, Type)
 from functools import reduce
 from urllib.parse import urlparse
 
 
 K = TypeVar("K")
 V = TypeVar("V")
+T = TypeVar("T")
 
 
 def compose(*fns):
@@ -95,6 +96,44 @@ def pick_url(
         return ""
     link = pick_str(nodes, mapping)
     return parsed_url(link) if is_url(link) else ""
+
+
+class ReadRepoAdapter(Generic[T]):
+    name: str
+
+    def get(self, *args: Any, **kwargs: Any) -> Optional[T]:
+        ...
+
+
+class ReadRepoProxy(Generic[T]):
+    def __init__(self, adapter: ReadRepoAdapter[T]):
+        self.adapter = adapter
+
+    def get(self, ref: Any) -> Optional[T]:
+        return self.adapter.get(ref)
+
+    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
+    #     todo: merge with accessor
+    #     ...
+
+
+class WriteRepo(Generic[T]):
+    def __init__(self, adapter):
+        self.adapter = adapter
+
+    def upsert(self, item: T, payload: Any):
+        self.adapter.upsert(item, payload)
+
+
+class ReadRepoAdapterRegistration(Generic[T]):
+    def __init__(self):
+        self._adapters: List[Type[ReadRepoAdapter[T]]] = []
+
+    def register(self, adapter: Type[ReadRepoAdapter[T]]):
+        self._adapters.append(adapter)
+
+    def get(self):
+        return self._adapters
 
 
 if __name__ == "__main__":
