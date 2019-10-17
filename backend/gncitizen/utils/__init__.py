@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from typing import (Iterable, Optional, TypeVar, Callable,
+from typing import (Iterable, Optional, TypeVar, Callable, Union,
                     Mapping, Any, Sequence, List, Dict, Generic, Type)
 from functools import reduce
 from urllib.parse import urlparse
@@ -106,23 +106,60 @@ class ReadRepoAdapter(Generic[T]):
 
 
 class ReadRepoProxy(Generic[T]):
-    def __init__(self, adapter: ReadRepoAdapter[T]):
-        self.adapter = adapter
+    def __init__(self, read_adapter: ReadRepoAdapter[T]):
+        self.read_adapter = read_adapter
 
     def get(self, ref: Any) -> Optional[T]:
-        return self.adapter.get(ref)
+        return self.read_adapter.get(ref)
 
     # def resolve(self, prop: str, match: Any) -> Iterable[T]:
     #     todo: merge with accessor
     #     ...
 
 
-class WriteRepo(Generic[T]):
-    def __init__(self, adapter):
-        self.adapter = adapter
+class ReadRepository(Generic[T]):
+    def __init__(self, read_repo: ReadRepoProxy[T]):
+        self.read_repo = read_repo
+
+    def get(self, ref: Any) -> Optional[T]:
+        return self.read_repo.get(ref)
+
+    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
+    #     todo: merge with accessor
+    #     ...
+
+
+class WriteRepoProxy(Generic[T]):
+    def __init__(self, write_adapter):
+        self.write_adapter = write_adapter
 
     def upsert(self, item: T, payload: Any):
-        self.adapter.upsert(item, payload)
+        self.write_adapter.upsert(item, payload)
+
+
+class WriteRepository(Generic[T]):
+    def __init__(self, write_repo: WriteRepoProxy[T]):
+        self.write_repo = write_repo
+
+    def upsert(self, item: T, payload: Any):
+        return self.write_repo.upsert(item, payload)
+
+    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
+    #     todo: merge with accessor
+    #     ...
+
+
+class RWRepository(ReadRepository[T], WriteRepository[T]):
+    def __init__(
+        self,
+        read_repo: ReadRepoProxy[T],
+        write_repo: WriteRepoProxy[T]
+    ):
+        self.read_repo = read_repo
+        self.write_repo = write_repo
+
+
+Repository = Union[ReadRepository[T], WriteRepository[T], RWRepository[T]]
 
 
 class ReadRepoAdapterRegistration(Generic[T]):

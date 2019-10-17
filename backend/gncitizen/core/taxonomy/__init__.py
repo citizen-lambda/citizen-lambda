@@ -1,38 +1,22 @@
 from typing import Type, Optional
-from gncitizen.utils import ReadRepoProxy, ReadRepoAdapter, ReadRepoAdapterRegistration
+
+from gncitizen.utils import (
+    ReadRepoProxy,
+    ReadRepoAdapter,
+    ReadRepoAdapterRegistration,
+    ReadRepository,
+    # RWRepository
+)
 from gncitizen.core.taxonomy.taxon import Taxon
 
-
-class TaxaRepo:
-    def __init__(
-        self,
-        read_repo: ReadRepoProxy[Taxon],
-        # write_repo: WriteRepo[Taxon]
-    ):
-        self.read_repo = read_repo
-        # self.write_repo = write_repo
-
-    def get(self, item):
-        return self.read_repo.get(item)
-
-    # def resolve(self, prop, matching):
-    #     todo: merge with accessor
-    #     return self.read_repo.resolve(prop, matching)
-
-    # def upsert(self, item, payload):
-    #     if isinstance(item, int):
-    #         ref = self.get(item)
-    #     elif isinstance(item, Taxon):
-    #         ref = item.id
-    #     return self.write_repo.upsert(ref, payload)
-
-
+TaxonRepository = ReadRepository[Taxon]
+TAXA: Optional[TaxonRepository] = None
 TAXA_READ_REPO_ADAPTERS: ReadRepoAdapterRegistration[
     Taxon
-] = ReadRepoAdapterRegistration()  # noqa: E501
+] = ReadRepoAdapterRegistration()
 
 
-def read_repo_factory(adapter: Type[ReadRepoAdapter]):
+def read_repo_factory(adapter: Optional[Type[ReadRepoAdapter]] = None):
     adapter_types = TAXA_READ_REPO_ADAPTERS.get()
     if not len(adapter_types) > 0:
         raise Exception("No registered adapter.")
@@ -46,19 +30,24 @@ def read_repo_factory(adapter: Type[ReadRepoAdapter]):
     return ReadRepoProxy(read_repo_adapter())
 
 
-TAXA: Optional[TaxaRepo] = None
-
-
-def setup_default_repo(
-    read_repo: ReadRepoProxy,
-    # write_repo: WriteRepoProxy
+def setup_taxon_repo(
+    read_repo: Optional[ReadRepoProxy[Taxon]] = None,
+    # write_repo: Optional[WriteRepoProxy[Taxon]]
 ):
     global TAXA
 
-    if read_repo is None:
-        raise Exception("No surrogate repository could be found.")
-    if TAXA is not None:
+    if (read_repo is not None and TAXA is not None):
         TAXA.read_repo = read_repo
-    else:
-        TAXA = TaxaRepo(read_repo)
+    if (read_repo is not None and TAXA is None):
+        TAXA = TaxonRepository(read_repo)
+    if (read_repo is None and TAXA is None):
+        try:
+            read_repo = read_repo_factory()
+            TAXA = TaxonRepository(read_repo)
+        except Exception:
+            # ("No surrogate repository could be found.")
+            raise
     # print(f"test: {str(TAXA.get(61153))}")
+
+
+setup_default_repo = setup_taxon_repo
