@@ -3,7 +3,7 @@ from typing import Type, Optional
 from gncitizen.utils import (
     ReadRepoProxy,
     ReadRepoAdapter,
-    ReadRepoAdapterRegistration,
+    AdapterCollection,
     ReadRepository,
     # RWRepository
 )
@@ -11,12 +11,14 @@ from gncitizen.core.taxonomy.taxon import Taxon
 
 TaxonRepository = ReadRepository[Taxon]
 TAXA: Optional[TaxonRepository] = None
-TAXA_READ_REPO_ADAPTERS: ReadRepoAdapterRegistration[
+TAXA_READ_REPO_ADAPTERS: AdapterCollection[
     Taxon
-] = ReadRepoAdapterRegistration()
+] = AdapterCollection()
 
 
-def read_repo_factory(adapter: Optional[Type[ReadRepoAdapter]] = None):
+def read_repo_factory(
+    adapter: Optional[Type[ReadRepoAdapter]] = None
+) -> ReadRepoProxy:
     adapter_types = TAXA_READ_REPO_ADAPTERS.get()
     if not len(adapter_types) > 0:
         raise Exception("No registered adapter.")
@@ -40,12 +42,12 @@ def setup_taxon_repo(
         TAXA.read_repo = read_repo
     if (read_repo is not None and TAXA is None):
         TAXA = TaxonRepository(read_repo)
-    if (read_repo is None and TAXA is None):
+    else:
         try:
             read_repo = read_repo_factory()
             TAXA = TaxonRepository(read_repo)
         except Exception:
-            # ("No surrogate repository could be found.")
+            # No surrogate repository could be found
             raise
     # print(f"test: {str(TAXA.get(61153))}")
 

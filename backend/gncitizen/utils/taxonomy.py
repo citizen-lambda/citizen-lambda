@@ -11,7 +11,6 @@ if current_app.config.get("API_TAXHUB") is None:
     from gncitizen.core.taxonomy.models import Taxref
 else:
     import requests
-    from requests.models import Response
 
     TAXHUB_API = (
         current_app.config["API_TAXHUB"] + "/"
@@ -23,10 +22,13 @@ Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 
 
 def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
-    payload = {"existing": "true", "order": "asc",
-               "orderby": "taxref.nom_complet"}
+    payload = {
+        "existing": "true",
+        "order": "asc",
+        "orderby": "taxref.nom_complet"
+    }
     res = requests.get(
-        "{}biblistes/taxons/{}".format(TAXHUB_API, taxhub_list_id),
+        f"{TAXHUB_API}biblistes/taxons/{taxhub_list_id}",
         params=payload,
         timeout=1,
     )
@@ -38,7 +40,7 @@ def taxhub_rest_get_taxon(taxhub_id: int) -> Taxon:
     if not taxhub_id:
         raise ValueError("Null value for taxhub taxon id")
     res = requests.get(
-        "{}bibnoms/{}".format(TAXHUB_API, taxhub_id), timeout=1)
+        f"{TAXHUB_API}bibnoms/{taxhub_id}", timeout=1)
     res.raise_for_status()
     return res.json()
 

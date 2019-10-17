@@ -105,7 +105,26 @@ class ReadRepoAdapter(Generic[T]):
         ...
 
 
-class ReadRepoProxy(Generic[T]):
+class WriteRepoAdapter(Generic[T]):
+    name: str
+
+    def upsert(self, item: T, payload: Any):
+        ...
+
+
+class ReadRepository(Generic[T]):
+    def __init__(self, *args, **kwargs):
+        ...
+
+    def get(self, ref: Any) -> Optional[T]:
+        ...
+
+    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
+    #     todo: merge with accessor
+    #     ...
+
+
+class ReadRepoProxy(ReadRepository, Generic[T]):
     def __init__(self, read_adapter: ReadRepoAdapter[T]):
         self.read_adapter = read_adapter
 
@@ -117,36 +136,24 @@ class ReadRepoProxy(Generic[T]):
     #     ...
 
 
-class ReadRepository(Generic[T]):
-    def __init__(self, read_repo: ReadRepoProxy[T]):
-        self.read_repo = read_repo
+class WriteRepository(Generic[T]):
+    def __init__(self, *args, **kwargs):
+        ...
 
-    def get(self, ref: Any) -> Optional[T]:
-        return self.read_repo.get(ref)
+    def upsert(self, item: T, payload: Any):
+        ...
 
     # def resolve(self, prop: str, match: Any) -> Iterable[T]:
     #     todo: merge with accessor
     #     ...
 
 
-class WriteRepoProxy(Generic[T]):
+class WriteRepoProxy(WriteRepository[T], Generic[T]):
     def __init__(self, write_adapter):
         self.write_adapter = write_adapter
 
     def upsert(self, item: T, payload: Any):
         self.write_adapter.upsert(item, payload)
-
-
-class WriteRepository(Generic[T]):
-    def __init__(self, write_repo: WriteRepoProxy[T]):
-        self.write_repo = write_repo
-
-    def upsert(self, item: T, payload: Any):
-        return self.write_repo.upsert(item, payload)
-
-    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
-    #     todo: merge with accessor
-    #     ...
 
 
 class RWRepository(ReadRepository[T], WriteRepository[T]):
@@ -160,13 +167,14 @@ class RWRepository(ReadRepository[T], WriteRepository[T]):
 
 
 Repository = Union[ReadRepository[T], WriteRepository[T], RWRepository[T]]
+RepoAdapter = Union[ReadRepoAdapter[T], WriteRepoAdapter[T]]
 
 
-class ReadRepoAdapterRegistration(Generic[T]):
+class AdapterCollection(Generic[T]):
     def __init__(self):
-        self._adapters: List[Type[ReadRepoAdapter[T]]] = []
+        self._adapters: List[Type[RepoAdapter[T]]] = []
 
-    def register(self, adapter: Type[ReadRepoAdapter[T]]):
+    def register(self, adapter: Type[RepoAdapter[T]]):
         self._adapters.append(adapter)
 
     def get(self):

@@ -3,7 +3,7 @@ from dataclasses import fields
 import json
 from functools import lru_cache
 from typing import (Optional, Sequence, List, Dict,
-                    Mapping, Callable, Union)
+                    Mapping, Callable, Union, overload)
 from warnings import warn
 from flask import current_app
 
@@ -12,7 +12,6 @@ from gncitizen.utils import (
     ReadRepoAdapter, V)
 from gncitizen.core.taxonomy import (
     TAXA_READ_REPO_ADAPTERS,
-    read_repo_factory,
     setup_default_repo)
 from gncitizen.core.taxonomy.taxon import Taxon, TaxonMedium
 
@@ -21,7 +20,7 @@ from . import models  # noqa: F401
 
 module_name = '.'.join(__name__.split('.')[:-1])
 logger = current_app.logger
-logger.info(f":{module_name} loading")
+logger.info(f":{module_name} loading 🌠")
 
 
 class MnhnTaxRefRest:
@@ -192,7 +191,15 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
     # def resolve(self, prop: str, value: Any) -> Iterable[T]:
     #     ...
 
-    def api_call(self, link: str, defaultvalue: V) -> Union[Dict, V]:
+    @overload
+    def api_call(self, link: str) -> Optional[Dict]: ...
+
+    @overload  # noqa: F811
+    def api_call(self, link: str, defaultvalue: V) -> Union[Dict, V]: ...
+
+    def api_call(  # noqa: F811
+        self, link: str, defaultvalue: Optional[V] = None
+    ) -> Union[Dict, V]:
         url = parsed_url(link)
         r = requests.get(url)
         try:
@@ -208,5 +215,4 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
 
 
 TAXA_READ_REPO_ADAPTERS.register(MnhnTaxRefRestAdapter)
-read_repo_adapter = read_repo_factory(MnhnTaxRefRestAdapter)
-setup_default_repo(read_repo_adapter)
+setup_default_repo()
