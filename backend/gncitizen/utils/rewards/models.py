@@ -3,14 +3,70 @@ import re
 from collections import OrderedDict
 from typing import Optional
 
-from flask import current_app
+try:
+    from flask import current_app
+    conf = current_app.config["REWARDS"]["CONF"]
+    logger = current_app.logger
+except RuntimeError as e:
+    import logging
+    logger = logging.getLogger()
+    if str(e.args[0]).startswith('Working outside of application context.\n'):
+        conf = {
+            "attendance": {"Au": 348, "Ar": 347, "CuSn": 345},
+            "seniority": {
+                "oeuf": "1month",
+                "chenille": "6months",
+                "papillon": "7 months"
+            },
+            "program_attendance": {"Au": 64, "Ar": 48, "CuSn": 46},
+            "program_date_bounds": {"start": "2019-03-20", "end": ""},
+            "recognition": [
+                {
+                    "class": "Aves",
+                    "specialization": "Ornitologue",
+                    "attendance": {"Au": 110, "Ar": 109, "CuSn": 10}
+                },
+                {
+                    "class": "Mammalia",
+                    "specialization": "Mammalogiste",
+                    "attendance": {"Au": 500, "Ar": 94, "CuSn": 7}
+                },
+                {
+                    "class": "Reptilia",
+                    "specialization": "Herpétologue",
+                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10}
+                },
+                {
+                    "order": "Odonata",
+                    "specialization": "Odonatologue",
+                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10}
+                },
+                {
+                    "order": "Lepidoptera",
+                    "specialization": "Lépidoptériste",
+                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10}
+                }
+            ]
+        }
+    else:
+        raise
 
-conf = current_app.config["REWARDS"]["CONF"]
-logger = current_app.logger
 Timestamp = float
 
 
 def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
+    """
+    >>> datetime.date.fromtimestamp(config_duration2timestamp("3 months")) == (datetime.datetime.now() - datetime.timedelta(weeks=3 * 4.345)).date()
+    True
+    >>> datetime.date.fromtimestamp(config_duration2timestamp("28days")) == (datetime.datetime.now() - datetime.timedelta(days=28)).date()
+    True
+    >>> datetime.date.fromtimestamp(config_duration2timestamp("1year")) == (datetime.datetime.now() - datetime.timedelta(weeks=52.143)).date()
+    True
+    >>> config_duration2timestamp("52elephants") is None
+    True
+    >>> config_duration2timestamp("1969-08-18") == datetime.datetime.strptime("1969-08-18", "%Y-%m-%d").timestamp()
+    True
+    """  # noqa: E501
     if s is None or s == "":
         return (datetime.datetime.now()).timestamp()
 
@@ -64,7 +120,10 @@ attendance_model = OrderedDict(
 seniority_model = OrderedDict(
     reversed(
         sorted(
-            [(k, config_duration2timestamp(v)) for k, v in conf["seniority"].items()],
+            [
+                (k, config_duration2timestamp(v))
+                for k, v in conf["seniority"].items()
+            ],
             key=lambda t: t[1],
         )
     )
@@ -81,42 +140,24 @@ program_date_bounds_model = {
 
 recognition_model = [
     {
-        "class"
-        if "class" in conf["recognition"][i]
+        "class" if "class" in conf["recognition"][i]
         else "order": conf["recognition"][i]["class"]
         if "class" in conf["recognition"][i]
         else conf["recognition"][i]["order"],
         "specialization": conf["recognition"][i]["specialization"],
         "attendance": OrderedDict(
             reversed(
-                sorted(conf["recognition"][i]["attendance"].items(), key=lambda t: t[1])
+                sorted(
+                    conf["recognition"][i]["attendance"].items(),
+                    key=lambda t: t[1])
             )
         ),
     }
     for i in range(len(conf["recognition"]))
 ]
 
-test_config_duration2timestamp = """
->>> datetime.date.fromtimestamp(config_duration2timestamp("3 months")) == (datetime.datetime.now() - datetime.timedelta(weeks=3 * 4.345)).date()
-True
->>> datetime.date.fromtimestamp(config_duration2timestamp("28days")) == (datetime.datetime.now() - datetime.timedelta(days=28)).date()
-True
->>> datetime.date.fromtimestamp(config_duration2timestamp("1year")) == (datetime.datetime.now() - datetime.timedelta(weeks=52.143)).date()
-True
->>> config_duration2timestamp("52elephants") is None
-True
->>> config_duration2timestamp("1969-08-18") == datetime.datetime.strptime("1969-08-18", "%Y-%m-%d").timestamp()
-True
-"""  # noqa: E501
 
-__test__ = {"test_config_duration2timestamp": test_config_duration2timestamp}
-
-
-def test():
+if __name__ == "__main__":
     import doctest
 
     doctest.testmod(verbose=1)
-
-
-if __name__ == "__main__":
-    test()
