@@ -5,8 +5,8 @@ from functools import reduce
 from urllib.parse import urlparse
 
 
-K = TypeVar("K")
-V = TypeVar("V")
+K = TypeVar("K", str, int)
+V = TypeVar("V", Mapping, int, str)
 T = TypeVar("T")
 
 
@@ -23,7 +23,7 @@ def transformer(k):
 
 def extractor(data: Mapping) -> Callable:
     def _str_extract(nodes: Sequence[str]) -> str:
-        return pick_str(nodes, data)
+        return path_str(nodes, data)
     return _str_extract
 
 
@@ -55,46 +55,48 @@ def parsed_url(link="") -> str:
         return ""
 
 
-def _pick(mapping: Mapping[K, V]) -> Callable:
+def _path(mapping: Mapping[K, V]) -> Callable:
     # https://github.com/microsoft/python-language-server/issues/121
     # split annotation and definition on nonlocal variable
     m: Any
     m = mapping
 
-    def pick_val(nodes: Sequence[K]) -> Optional[V]:
+    def path_val(nodes: Sequence[K]) -> Optional[V]:
         nonlocal m
+        head: Union[K, int, str]
+        tail: Sequence[Union[K, int, str]]
         if (all(hasattr(m, attr) for attr in {'keys', '__getitem__'})
                 and len(nodes) >= 1):
             head, *tail = nodes
             m = m.get(head)
-            return pick_val(tail)
+            return path_val(tail)
         else:
             return m
 
-    return pick_val
+    return path_val
 
 
-def pick_str(
+def path_str(
     nodes: Sequence[str],
     mapping: Mapping[str, V]
 ) -> str:
     """Traverse the map following the nodes path
     and return the value of the terminal node
-    >>> pick_str(["A", "B", "Z"], {"A": {"B": {"C": "bingo"}}})
+    >>> path_str(["A", "B", "Z"], {"A": {"B": {"C": "bingo"}}})
     ''
-    >>> pick_str(["A", "B", "C"], {"A": {"B": {"C": "bingo"}}})
+    >>> path_str(["A", "B", "C"], {"A": {"B": {"C": "bingo"}}})
     'bingo'
     """
-    r = _pick(mapping)(nodes)
+    r = _path(mapping)(nodes)
     return str(r) if r else ""
 
 
-def pick_url(
+def path_url(
     nodes: Sequence[str], mapping: Mapping[str, str]
 ) -> str:
     if not mapping or not nodes:
         return ""
-    link = pick_str(nodes, mapping)
+    link = path_str(nodes, mapping)
     return parsed_url(link) if is_url(link) else ""
 
 
@@ -112,19 +114,7 @@ class WriteRepoAdapter(Generic[T]):
         ...
 
 
-class ReadRepository(Generic[T]):
-    def __init__(self, *args, **kwargs):
-        ...
-
-    def get(self, ref: Any) -> Optional[T]:
-        ...
-
-    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
-    #     todo: merge with accessor
-    #     ...
-
-
-class ReadRepoProxy(ReadRepository, Generic[T]):
+class ReadRepoProxy(Generic[T]):
     def __init__(self, read_adapter: ReadRepoAdapter[T]):
         self.read_adapter = read_adapter
 
@@ -136,7 +126,31 @@ class ReadRepoProxy(ReadRepository, Generic[T]):
     #     ...
 
 
+class ReadRepository(Generic[T]):
+    read_repo: Union[ReadRepoProxy[T], Any]
+
+    def __init__(self, repo, *args, **kwargs):
+        self.read_repo = repo
+
+    def get(self, ref: Any) -> Optional[T]:
+        return self.read_repo.get(ref)
+
+    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
+    #     todo: merge with accessor
+    #     ...
+
+
+class WriteRepoProxy(Generic[T]):
+    def __init__(self, write_adapter):
+        self.write_adapter = write_adapter
+
+    def upsert(self, item: T, payload: Any):
+        self.write_adapter.upsert(item, payload)
+
+
 class WriteRepository(Generic[T]):
+    _repo: Union[WriteRepoProxy[T], Any]
+
     def __init__(self, *args, **kwargs):
         ...
 
@@ -148,15 +162,7 @@ class WriteRepository(Generic[T]):
     #     ...
 
 
-class WriteRepoProxy(WriteRepository[T], Generic[T]):
-    def __init__(self, write_adapter):
-        self.write_adapter = write_adapter
-
-    def upsert(self, item: T, payload: Any):
-        self.write_adapter.upsert(item, payload)
-
-
-class RWRepository(ReadRepository[T], WriteRepository[T]):
+class RWRepository(ReadRepository, WriteRepository, Generic[T]):
     def __init__(
         self,
         read_repo: ReadRepoProxy[T],

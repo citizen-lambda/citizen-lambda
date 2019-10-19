@@ -8,7 +8,7 @@ from warnings import warn
 from flask import current_app
 
 from gncitizen.utils import (
-    pick_str, parsed_url, pick_url, mapper,
+    path_str, parsed_url, path_url, mapper,
     ReadRepoAdapter, V)
 from gncitizen.core.taxonomy import (
     TAXA_READ_REPO_ADAPTERS,
@@ -148,9 +148,9 @@ def transformer(k: str) -> Callable:
 def extractor(data: Mapping) -> Callable:
     def _extract(nodes: Sequence[str]) -> str:
         return (
-            pick_url(nodes, data)
+            path_url(nodes, data)
             if nodes[0] == "_links" and nodes[-1] == "href"
-            else pick_str(nodes, data)
+            else path_str(nodes, data)
         )
     return _extract
 
@@ -164,7 +164,7 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
         data = self.get_info(ref)
         if data:
             media: List[TaxonMedium] = []
-            href = pick_url(["_links", "media", "href"], data)
+            href = path_url(["_links", "media", "href"], data)
             if href and fetch_media:
                 media = self.get_media(ref, href)
             data.update({"media": media})
@@ -172,6 +172,7 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
         return None
 
     def get_info(self, ref: int) -> Optional[Dict]:
+        logger.info(ref)
         # assert url == f"{super().TAXA_URL}/{ref}"
         return self.api_call(f"{super().TAXA_URL}/{ref}", None)
 
