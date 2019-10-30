@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""A module to manage medias"""
+"""A module to manage media"""
 
 import datetime
 import os
@@ -37,7 +37,7 @@ def save_upload_files(
 
     for each files in flask request.files, this function does:
 
-        * verify if file type is in allowed medias
+        * verify if file type is in allowed media
         * generate a filename from ``prefix``, ``cdnom``, ``index``, ``timestamp``
         * save file in ``./media`` dir
         * save filename in MediaModel and then in a matching media model

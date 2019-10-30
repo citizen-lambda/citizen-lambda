@@ -24,7 +24,7 @@ export type PostObservationResponsePayload = Feature & {
 
 export interface TaxonomyListItem {
   // TODO: enhance TaxonomyListItem interface definition
-  medias: any;
+  media: any;
   nom: any;
   taxref: any;
 }

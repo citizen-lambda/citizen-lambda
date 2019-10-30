@@ -5,7 +5,7 @@ from flask import Blueprint, current_app
 from gncitizen.utils.env import db
 from gncitizen.utils.sqlalchemy import json_resp
 
-if current_app.config.get("API_TAXHUB") is None:
+if current_app.config.get("API_TAXHUB") is not None:
     from gncitizen.core.taxonomy.models import (
         BibNoms,
         BibListes,
@@ -27,25 +27,25 @@ def get_lists():
     GET
         ---
         tags:
-          - TaxHub api
+            - TaxHub api
         definitions:
-          id_liste:
-            type: integer
-          nb_taxons:
-            type: integer
-          desc_liste:
-            type: string
-          picto:
-            type: string
-          group2inpn:
-            type: string
-          nom_liste:
-            type: string
-          regne:
-            type: string
+            id_liste:
+                type: integer
+            nb_taxons:
+                type: integer
+            desc_liste:
+                type: string
+            picto:
+                type: string
+            group2inpn:
+                type: string
+            nom_liste:
+                type: string
+            regne:
+                type: string
         responses:
-          200:
-            description: A list of all species lists
+            200:
+                description: A list of all species lists
         """
     # r = requests.get(taxhub_lists_url)
     # if r.status_code == 200:
@@ -68,29 +68,29 @@ def get_list(id):
     GET
         ---
         tags:
-          - TaxHub api
+            - TaxHub api
         definitions:
-          id_liste:
-            type: integer
-          nb_taxons:
-            type: integer
-          desc_liste:
-            type: string
-          picto:
-            type: string
-          group2inpn:
-            type: string
-          nom_liste:
-            type: string
-          regne:
-            type: string
-        responses:
-          200:
-            description: A list of all species lists
+            id_liste:
+                type: integer
+            nb_taxons:
+                type: integer
+            desc_liste:
+                type: string
+            picto:
+                type: string
+            group2inpn:
+                type: string
+            nom_liste:
+                type: string
+            regne:
+                type: string
+            responses:
+            200:
+                description: A list of all species lists
         """
 
-    if current_app.config.get("API_TAXHUB") is not None:
-        current_app.logger.info("Calling TaxHub REST API.")
+    if current_app.config.get("API_TAXHUB") is None:
+        current_app.logger.info("Calling TaxRef REST API.")
         return mkTaxonRepository(id)
 
     else:
@@ -111,7 +111,7 @@ def get_list(id):
                 {
                     "nom": d[0].as_dict(),
                     "taxref": d[1].as_dict(),
-                    "medias": d[2].as_dict() if d[2] else None,
+                    "media": d[2].as_dict() if d[2] else None,
                 }
                 for d in data
             ]
@@ -195,22 +195,22 @@ def get_list(id):
 @json_resp
 def get_taxon_from_cd_nom(cd_nom):
     """Get taxon TaxRef data from cd_nom
-         ---
-         tags:
-          - taxon
-         parameters:
-          - name: cd_nom
-            in: path
-            type: integer
-            required: true
-            example: 1
-         definitions:
-           cd_nom:
-             type: integer
-             description: cd_nom from TaxRef
-         responses:
-           200:
-             description: Taxon data from Taxref
+        ---
+        tags:
+            - taxon
+        parameters:
+            - name: cd_nom
+                in: path
+                type: integer
+                required: true
+                example: 1
+        definitions:
+            cd_nom:
+                type: integer
+                description: cd_nom from TaxRef
+        responses:
+            200:
+                description: Taxon data from Taxref
     """
     """Renvoie la fiche TaxRef de l'espèce d'après le cd_nom"""
     taxon = Taxref.query.filter_by(cd_nom=cd_nom).first()

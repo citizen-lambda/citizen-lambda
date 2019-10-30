@@ -55,7 +55,7 @@ class CorNomListe(db.Model):
         return "<CorNomListe %r>" % self.id_liste
 
     # listes = db.relationship("CorNomListe", lazy='select')
-    # medias = db.relationship("TMedias", lazy='select')
+    # media = db.relationship("TMedias", lazy='select')
     #
 
 

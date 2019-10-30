@@ -160,7 +160,7 @@ export class ObsFormComponent implements OnChanges {
         ...fields,
         name: str,
         cd_nom: t.taxref.cd_nom,
-        icon: t.medias.length ? t.medias.url : 'assets/default_taxon.jpg'
+        icon: t.media.length ? t.media.url : 'assets/default_taxon.jpg'
       });
     }
     this.autocomplete = 'isOn';

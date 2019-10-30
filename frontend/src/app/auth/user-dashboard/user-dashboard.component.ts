@@ -85,7 +85,7 @@ export class UserDashboardComponent implements OnInit {
   exportPersonalData() {
     this.getPersonalInfo().subscribe(data => {
       alert(JSON.stringify(data));
-      // TODO: data format: csv, geojson ? Link observations and associated medias ?
+      // TODO: data format: csv, geojson ? Link observations and associated media ?
     });
   }
 

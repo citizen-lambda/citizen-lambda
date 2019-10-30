@@ -108,11 +108,11 @@ def generate_observation_geojson(id_observation):
         if taxref:
             feature["properties"]["taxref"] = taxref.as_dict(True)
 
-        medias = TMedias.query.filter(
+        media = TMedias.query.filter(
             TMedias.cd_ref == observation.ObservationModel.cd_nom
         ).all()
-        if medias:
-            feature["properties"]["medias"] = [media.as_dict(True) for media in medias]
+        if media:
+            feature["properties"]["media"] = [medium.as_dict(True) for medium in media]
 
     else:
         taxhub_list_id = (
@@ -130,7 +130,7 @@ def generate_observation_geojson(id_observation):
                 if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
             )
             feature["properties"]["taxref"] = taxon["taxref"]
-            feature["properties"]["medias"] = taxon["medias"]
+            feature["properties"]["media"] = taxon["media"]
         except StopIteration:
             pass
 
@@ -512,12 +512,12 @@ def get_program_observations(
             #     if taxref:
             #         feature["properties"]["taxref"] = taxref.as_dict(True)
 
-            #     medias = TMedias.query.filter(
+            #     media = TMedias.query.filter(
             #         TMedias.cd_ref == observation.ObservationModel.cd_nom
             #     ).all()
-            #     if medias:
-            #         feature["properties"]["medias"] = [
-            #             media.as_dict(True) for media in medias
+            #     if media:
+            #         feature["properties"]["media"] = [
+            #             media.as_dict(True) for media in media
             #         ]
             # else:
             #     try:
@@ -527,7 +527,7 @@ def get_program_observations(
             #             if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
             #         )
             #         feature["properties"]["taxref"] = taxon["taxref"]
-            #         feature["properties"]["medias"] = taxon["medias"]
+            #         feature["properties"]["media"] = taxon["media"]
             #     except StopIteration:
             #         pass
             #     features.append(feature)
