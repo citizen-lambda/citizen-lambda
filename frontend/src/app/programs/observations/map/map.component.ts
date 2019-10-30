@@ -23,7 +23,6 @@ import 'leaflet.heat';
 import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
 
-// import { AppConfig } from "../../../../conf/app.config";
 import { MAP_CONFIG } from '../../../../conf/map.config';
 
 declare module 'leaflet' {
@@ -414,8 +413,9 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 }
 
-import { Taxon } from '../../../api/taxhub.service';
-import { PostObservationResponsePayload, TaxonomyListItem } from '../observation.model';
+import { AppConfig } from '../../../../conf/app.config';
+// import { Taxon } from '../../../api/taxhub.service';
+import { TaxonomyListItem } from '../observation.model';
 
 @Component({
   selector: 'app-marker-popup',
@@ -423,10 +423,12 @@ import { PostObservationResponsePayload, TaxonomyListItem } from '../observation
     <ng-container>
       <img
         [src]="
-          data.image
+          data.images && !!data.images.length
+            ? AppConfig.API_ENDPOINT + '/media/' + data.images[0]
+            : data.image
             ? data.image
-            : data.medias && !!data.medias.length
-            ? data.medias[0].url
+            : data.media && !!data.media.length
+            ? data.media[0].thumb_url
             : 'assets/default_taxon.jpg'
         "
       />
@@ -444,9 +446,12 @@ import { PostObservationResponsePayload, TaxonomyListItem } from '../observation
   `
 })
 export class MarkerPopupComponent {
+  AppConfig = AppConfig;
   @Input()
   data!: TaxonomyListItem & {
+    images?: string;
     image?: string;
+    media?: any;
     observer: { username: string };
     date: Date;
   };

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
+import dataclasses
 import uuid
 from typing import Union, Tuple, Dict
 
@@ -39,7 +39,10 @@ from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
 from server import db
 
 
+logger = current_app.logger
 routes = Blueprint("observations", __name__)
+
+# logger.debug(TAXA.get(61153))
 
 """Used attributes in observation features"""
 obs_keys = (
@@ -58,20 +61,20 @@ obs_keys = (
 def generate_observation_geojson(id_observation):
     """generate observation in geojson format from observation id
 
-    :param id_observation: Observation unique id
-    :type id_observation: int
+        :param id_observation: Observation unique id
+        :type id_observation: int
 
-    :return features: Observations as a Feature dict
-    :rtype features: dict
+        :return features: Observations as a Feature dict
+        :rtype features: dict
     """
 
     # Crée le dictionnaire de l'observation
     observation = (
         db.session.query(
-            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code  # noqa: E501
+            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
         )
-        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)  # noqa: E501
-        .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)  # noqa: E501
+        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+        .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
         .filter(ObservationModel.id_observation == id_observation)
     ).one()
 
@@ -92,8 +95,10 @@ def generate_observation_geojson(id_observation):
             feature["properties"][k] = result_dict[k]
 
     if current_app.config.get("API_TAXHUB") is None:
-        current_app.logger.critical("Selecting TaxHub Medias schema.")
-        # Get official taxref scientific and common names (first one) from cd_nom where cd_nom = cd_ref
+        logger.critical("Selecting TaxHub Medias schema.")
+        # Get official taxref scientific
+        # and common names (first one)
+        # from cd_nom where cd_nom = cd_ref
         # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
         # for k in taxref:
         #     feature["properties"][k] = taxref[k]
@@ -107,8 +112,7 @@ def generate_observation_geojson(id_observation):
             TMedias.cd_ref == observation.ObservationModel.cd_nom
         ).all()
         if medias:
-            feature["properties"]["medias"] = [
-                media.as_dict(True) for media in medias]
+            feature["properties"]["medias"] = [media.as_dict(True) for media in medias]
 
     else:
         taxhub_list_id = (
@@ -232,29 +236,28 @@ def post_observation():
                 description: Adding a observation
         """  # noqa: E501
     try:
-        request_datas = request.form
-        current_app.logger.debug(
-            "[post_observation] request data:", request_datas)
+        request_data = request.form
+        logger.debug("[post_observation] request data:", request_data)
 
-        datas2db = {}
-        for field in request_datas:
+        dat2rec = {}
+        for field in request_data:
             if hasattr(ObservationModel, field):
-                datas2db[field] = request_datas[field]
-        current_app.logger.debug("[post_observation] datas2db: %s", datas2db)
+                dat2rec[field] = request_data[field]
+        logger.debug("[post_observation] dat2rec: %s", dat2rec)
 
         try:
-            newobs = ObservationModel(**datas2db)
+            newobs = ObservationModel(**dat2rec)
         except Exception as e:
-            current_app.logger.debug("[post_observation] data2db ", e)
+            logger.debug("[post_observation] data2rec ", e)
             raise GeonatureApiError(e)
 
         try:
-            _coordinates = json.loads(request_datas["geometry"])
-            _point = Point(_coordinates["x"], _coordinates["y"])
+            _coord = json.loads(request_data["geometry"])
+            _point = Point(_coord["x"], _coord["y"])
             _shape = asShape(_point)
             newobs.geom = from_shape(Point(_shape), srid=4326)
         except Exception as e:
-            current_app.logger.debug("[post_observation] coords ", e)
+            logger.debug("[post_observation] coords ", e)
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
@@ -269,31 +272,31 @@ def post_observation():
         newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
         db.session.add(newobs)
         db.session.commit()
-        current_app.logger.debug(newobs.as_dict())
+        logger.debug(newobs.as_dict())
         # Réponse en retour
         features = generate_observation_geojson(newobs.id_observation)
-        current_app.logger.debug("FEATURES: {}".format(features))
+        logger.debug("FEATURES: {}".format(features))
         # Enregistrement de la photo et correspondance Obs Photo
         try:
             file = save_upload_files(
                 request.files,
                 "obstax",
-                datas2db["cd_nom"],
+                dat2rec["cd_nom"],
                 newobs.id_observation,
                 ObservationMediaModel,
             )
-            current_app.logger.debug("ObsTax UPLOAD FILE {}".format(file))
+            logger.debug("ObsTax UPLOAD FILE {}".format(file))
             features[0]["properties"]["images"] = file
 
         except Exception as e:
-            current_app.logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
+            logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
-            current_app.logger.critical(str(e))
+            logger.critical(str(e))
 
         return ({"message": "Nouvelle observation créée.", "features": features}, 200)
 
     except Exception as e:
-        current_app.logger.warning("[post_observation] Error: %s", str(e))
+        logger.warning("[post_observation] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -375,10 +378,10 @@ def get_observations_from_list(id):  # noqa: A002
     if rtaxa.status_code == 200:
         try:
             taxa = rtaxa.json()["items"]
-            current_app.logger.debug(taxa)
+            logger.debug(taxa)
             features = []
             for t in taxa:
-                current_app.logger.debug("R", t["cd_nom"])
+                logger.debug("R", t["cd_nom"])
                 datas = (
                     ObservationModel.query.filter_by(cd_nom=t["cd_nom"])
                     .order_by(ObservationModel.timestamp_create.desc())
@@ -390,8 +393,7 @@ def get_observations_from_list(id):  # noqa: A002
                     for k in observation_dict:
                         if k in obs_keys:
                             feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(
-                        feature["properties"]["cd_nom"])
+                    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
                     for k in taxref:
                         feature["properties"][k] = taxref[k]
                     features.append(feature)
@@ -401,35 +403,35 @@ def get_observations_from_list(id):  # noqa: A002
 
 
 @routes.route("/programs/<int:program_id>/observations", methods=["GET"])
-@json_resp
+# @json_resp
 def get_program_observations(
     program_id: int
 ) -> Union[FeatureCollection, Tuple[Dict, int]]:
     """Get all observations from a program
-    GET
-        ---
-        tags:
-            - observations
-        parameters:
-            - name: id
-                in: path
-                type: integer
-                required: true
-                example: 1
-        definitions:
-            cd_nom:
-                type: integer
-                description: cd_nom taxref
-            geometry:
-                type: dict
-                description: Géométrie de la donnée
-            name:
-                type: string
-            geom:
-                type: geometry
-        responses:
-            200:
-                description: A list of all species lists
+        GET
+            ---
+            tags:
+                - observations
+            parameters:
+                - name: id
+                    in: path
+                    type: integer
+                    required: true
+                    example: 1
+            definitions:
+                cd_nom:
+                    type: integer
+                    description: cd_nom taxref
+                geometry:
+                    type: dict
+                    description: Géométrie de la donnée
+                name:
+                    type: string
+                geom:
+                    type: geometry
+            responses:
+                200:
+                    description: A list of all species lists
         """
     try:
         observations = (
@@ -460,17 +462,15 @@ def get_program_observations(
             .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         )
 
-        observations = observations.order_by(
-            ObservationModel.timestamp_create.desc())
-        current_app.logger.debug(str(observations))
+        observations = observations.order_by(ObservationModel.timestamp_create.desc())
+        logger.debug(str(observations))
         observations = observations.all()
 
-        if current_app.config.get("API_TAXHUB") is not None:
-            taxhub_list_id = (
-                ProgramsModel.query.filter_by(
-                    id_program=program_id).one().taxonomy_list
-            )
-            taxon_repository = mkTaxonRepository(taxhub_list_id)
+        # if current_app.config.get("API_TAXHUB") is not None:
+        #     taxhub_list_id = (
+        #         ProgramsModel.query.filter_by(id_program=program_id).one().taxonomy_list
+        #     )
+        #     taxon_repository = mkTaxonRepository(taxhub_list_id)
 
         features = []
         for observation in observations:
@@ -481,10 +481,10 @@ def get_program_observations(
             }
 
             # Observer
-            feature["properties"]["observer"] = {
-                "username": observation.username}
+            feature["properties"]["observer"] = {"username": observation.username}
 
             # Observer submitted media
+            # WARN: media route, really!
             feature["properties"]["image"] = (
                 "/".join(
                     [
@@ -504,31 +504,49 @@ def get_program_observations(
                     feature["properties"][k] = observation_dict[k]
 
             # TaxRef
-            if current_app.config.get("API_TAXHUB") is None:
-                taxref = Taxref.query.filter(
-                    Taxref.cd_nom == observation.ObservationModel.cd_nom
-                ).first()
-                if taxref:
-                    feature["properties"]["taxref"] = taxref.as_dict(True)
+            # TODO: breakup dependency !
+            # if current_app.config.get("API_TAXHUB") is None:
+            #     taxref = Taxref.query.filter(
+            #         Taxref.cd_nom == observation.ObservationModel.cd_nom
+            #     ).first()
+            #     if taxref:
+            #         feature["properties"]["taxref"] = taxref.as_dict(True)
 
-                medias = TMedias.query.filter(
-                    TMedias.cd_ref == observation.ObservationModel.cd_nom
-                ).all()
-                if medias:
-                    feature["properties"]["medias"] = [
-                        media.as_dict(True) for media in medias
-                    ]
+            #     medias = TMedias.query.filter(
+            #         TMedias.cd_ref == observation.ObservationModel.cd_nom
+            #     ).all()
+            #     if medias:
+            #         feature["properties"]["medias"] = [
+            #             media.as_dict(True) for media in medias
+            #         ]
+            # else:
+            #     try:
+            #         taxon = next(
+            #             taxon
+            #             for taxon in taxon_repository
+            #             if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
+            #         )
+            #         feature["properties"]["taxref"] = taxon["taxref"]
+            #         feature["properties"]["medias"] = taxon["medias"]
+            #     except StopIteration:
+            #         pass
+            #     features.append(feature)
+            from gncitizen.core.taxonomy import TAXA
+
+            if TAXA is not None:
+                taxon = TAXA.get(feature["properties"]["cd_nom"])
+                # logger.debug(f"media {type(taxon.media)} {taxon.media}")
+                feature["properties"]["taxref"] = dataclasses.asdict(taxon)
+                feature["properties"]["media"] = [
+                    # FIXME: timeit taxon media tree graft
+                    #  dataclasses.asdict(medium) for medium in taxon.media
+                    medium
+                    for medium in feature["properties"]["taxref"]["media"]
+                ]
+                del feature["properties"]["taxref"]["media"]
             else:
-                try:
-                    taxon = next(
-                        taxon
-                        for taxon in taxon_repository
-                        if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-                    )
-                    feature["properties"]["taxref"] = taxon["taxref"]
-                    feature["properties"]["medias"] = taxon["medias"]
-                except StopIteration:
-                    pass
+                logger.warning(f"TAXA is None")
+
             features.append(feature)
 
         return FeatureCollection(features)
@@ -559,7 +577,7 @@ def get_rewards(id):
     from gncitizen.utils.rewards import get_rewards, get_badges
 
     badges, rewards = get_badges(id), get_rewards(id)
-    current_app.logger.debug("rewards: %s", json.dumps(rewards, indent=4))
+    logger.debug("rewards: %s", json.dumps(rewards, indent=4))
     return (
         {
             "badges": badges,

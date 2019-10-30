@@ -13,7 +13,7 @@ const anonymous = 'Anonyme';
 export class CongratsComponent implements IFlowComponent, OnInit, OnDestroy {
   @Input() data: any;
   timeout: any;
-  username: string = anonymous;
+  username = 'anonyme';
   obs: any;
   AppConfig = AppConfig;
 
@@ -24,7 +24,7 @@ export class CongratsComponent implements IFlowComponent, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.username = localStorage.getItem('username') || anonymous;
+    this.username = localStorage.getItem('username') || 'anonymous';
     this.obs = this.data.obs.properties;
     this.timeout = setTimeout(() => {
       this.data.next(this.data);

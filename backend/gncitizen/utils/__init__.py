@@ -1,6 +1,18 @@
 #!/usr/bin/env python3
-from typing import (Iterable, Optional, TypeVar, Callable, Union,
-                    Mapping, Any, Sequence, List, Dict, Generic, Type)
+from typing import (
+    Iterable,
+    Optional,
+    TypeVar,
+    Callable,
+    Union,
+    Mapping,
+    Any,
+    Sequence,
+    List,
+    Dict,
+    Generic,
+    Type,
+)
 from functools import reduce
 from urllib.parse import urlparse
 
@@ -14,29 +26,29 @@ def compose(*fns):
     return reduce(lambda f, g: lambda x: f(g(x)), fns, lambda x: x)  # noqa
 
 
-def transformer(k):
-    def _dummy_transform(v):
+def pass_through(k):
+    def _inner_passthrough(v):
         # print(f"k:{k} v:{v}")
         return v
-    return _dummy_transform
+
+    return _inner_passthrough
 
 
 def extractor(data: Mapping) -> Callable:
     def _str_extract(nodes: Sequence[str]) -> str:
         return path_str(nodes, data)
+
     return _str_extract
 
 
+# alignment
+transformer = pass_through
+
+
 def mapper(
-    transformer: Callable,
-    extractor: Callable,
-    extractions: Dict,
-    data: Mapping[K, V]
+    transformer: Callable, extractor: Callable, extractions: Dict, data: Mapping[K, V]
 ) -> Iterable[V]:
-    return [
-        compose(transformer(k), extractor(data))(v)
-        for k, v in extractions.items()
-    ]
+    return [compose(transformer(k), extractor(data))(v) for k, v in extractions.items()]
 
 
 def is_url(link="") -> bool:
@@ -65,8 +77,10 @@ def _path(mapping: Mapping[K, V]) -> Callable:
         nonlocal m
         head: Union[K, int, str]
         tail: Sequence[Union[K, int, str]]
-        if (all(hasattr(m, attr) for attr in {'keys', '__getitem__'})
-                and len(nodes) >= 1):
+        if (
+            all(hasattr(m, attr) for attr in {"keys", "__getitem__"})
+            and len(nodes) >= 1
+        ):
             head, *tail = nodes
             m = m.get(head)
             return path_val(tail)
@@ -76,10 +90,10 @@ def _path(mapping: Mapping[K, V]) -> Callable:
     return path_val
 
 
-def path_str(
-    nodes: Sequence[str],
-    mapping: Mapping[str, V]
-) -> str:
+# TODO: pick
+
+
+def path_str(nodes: Sequence[str], mapping: Mapping[str, V]) -> str:
     """Traverse the map following the nodes path
     and return the value of the terminal node
     >>> path_str(["A", "B", "Z"], {"A": {"B": {"C": "bingo"}}})
@@ -91,9 +105,7 @@ def path_str(
     return str(r) if r else ""
 
 
-def path_url(
-    nodes: Sequence[str], mapping: Mapping[str, str]
-) -> str:
+def path_url(nodes: Sequence[str], mapping: Mapping[str, str]) -> str:
     if not mapping or not nodes:
         return ""
     link = path_str(nodes, mapping)
@@ -101,14 +113,14 @@ def path_url(
 
 
 class ReadRepoAdapter(Generic[T]):
-    name: str
+    provides: str
 
     def get(self, *args: Any, **kwargs: Any) -> Optional[T]:
         ...
 
 
 class WriteRepoAdapter(Generic[T]):
-    name: str
+    provides: str
 
     def upsert(self, item: T, payload: Any):
         ...
@@ -163,11 +175,7 @@ class WriteRepository(Generic[T]):
 
 
 class RWRepository(ReadRepository, WriteRepository, Generic[T]):
-    def __init__(
-        self,
-        read_repo: ReadRepoProxy[T],
-        write_repo: WriteRepoProxy[T]
-    ):
+    def __init__(self, read_repo: ReadRepoProxy[T], write_repo: WriteRepoProxy[T]):
         self.read_repo = read_repo
         self.write_repo = write_repo
 

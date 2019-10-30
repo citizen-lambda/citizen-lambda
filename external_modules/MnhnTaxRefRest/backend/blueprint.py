@@ -16,7 +16,7 @@ blueprint = Blueprint("taxref", __name__)
 def default(taxon_id: int, **kwargs):
     taxon: Taxon = TAXA.get(taxon_id)
     return {
-        "adapters": [str(item.__name__) for item in TAXA_READ_REPO_ADAPTERS.get()],
+        "adapters": [str(item.__name__) for item in TAXA_READ_REPO_ADAPTERS.get()],  # noqa: E501
         "test": f"{taxon.cd_nom} {taxon.nom_valide} {taxon.nom_vern}"
         if taxon
         else "Reference not found",

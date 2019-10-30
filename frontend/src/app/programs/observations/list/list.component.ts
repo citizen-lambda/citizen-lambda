@@ -7,6 +7,7 @@ import {
   SimpleChanges,
   ChangeDetectionStrategy,
   ViewEncapsulation
+  // HostListener
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -55,4 +56,9 @@ export class ObsListComponent implements OnChanges {
       return a[(Math.random() * a.length) >> 0];
     }
   }
+
+  // @HostListener('document:NewObservationEvent', ['$event'])
+  // public newObservationEventHandler(e: CustomEvent) {
+  //   console.debug('[ObsListComponent.newObservationEventHandler]', e.detail);
+  // }
 }

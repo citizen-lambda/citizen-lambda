@@ -9,14 +9,15 @@
       <!-- FIXME: hardcoded api media endpoint -->
       <img
         [src]="
-          o.properties.images && !!o.properties.images.length
+          o?.properties?.images && !!o.properties.images.length
             ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
-            : o.properties.image
+            : o?.properties?.image
             ? o.properties.image
-            : o.properties.medias && !!o.properties.medias.length
-            ? randomItem(o.properties.medias).url
+            : o?.properties?.media && !!o.properties.media.length
+            ? o.properties.media[0].thumb_url
             : 'assets/default_taxon.jpg'
         "
+        loading="lazy"
       />
       <div class="infos">
         <b i18n>{{ o.properties.taxref?.nom_vern }}</b>

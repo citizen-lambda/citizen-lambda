@@ -16,15 +16,13 @@ class TaxonMedium:
     def __repr__(self):
         return f"<TaxonMedium {self.cd_ref} {self.id_type} {self.url}>"
 
-    __str__ = __repr__
-
 
 TaxonMedia = List[TaxonMedium]
 
 
 @dataclass
 class Taxon:
-    cd_nom: int   # id
+    cd_nom: int  # id
     cd_ref: int  # referenceId
     cd_sup: int  # parentId
     nom_valide: str  # scientificName,
@@ -69,9 +67,11 @@ class Taxon:
     # pf,
     # cli,
     # taxrefVersion,
-    media: TaxonMedia = field(default_factory=list)
+    media: TaxonMedia = field(default_factory=list, repr=False)
 
     def __repr__(self):
-        return f"""<Taxon {self.cd_nom} "{self.nom_valide}" "{self.nom_vern}">"""  # noqa: E501
+        return (
+            f"""<Taxon {self.cd_nom} "{self.nom_valide}" "{self.nom_vern}">"""
+        )  # noqa: E501
 
     __str__ = __repr__

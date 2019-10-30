@@ -9,7 +9,7 @@ export type PostObservationResponsePayload = Feature & {
   properties: {
     cd_nom: number;
     comment: string;
-    common_name: string;
+    vernacular_name: string;
     count: number;
     date: Date;
     id_observation: number;
@@ -23,6 +23,7 @@ export type PostObservationResponsePayload = Feature & {
 };
 
 export interface TaxonomyListItem {
+  // TODO: enhance TaxonomyListItem interface definition
   medias: any;
   nom: any;
   taxref: any;

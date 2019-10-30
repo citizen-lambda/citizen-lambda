@@ -23,7 +23,7 @@ export class CommittedComponent implements IFlowComponent {
       const event: CustomEvent = new CustomEvent('NewObservationEvent', {
         bubbles: true,
         cancelable: true,
-        detail: this.data.obs
+        detail: this.newData.obs
       });
       document.dispatchEvent(event);
 

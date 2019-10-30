@@ -122,7 +122,7 @@ export class ObsComponent implements OnInit, OnDestroy {
             // tslint:disable-next-line: no-non-null-assertion
             o.properties.taxref.cd_ref === this.selectedTaxon!.taxref['cd_ref']
         )
-      : obs
+      : obs;
   selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>
     obs && this.selectedMunicipality
       ? obs.filter(
@@ -132,7 +132,7 @@ export class ObsComponent implements OnInit, OnDestroy {
             Object.keys(o.properties) &&
             o.properties.municipality.code === this.selectedMunicipality.code
         )
-      : obs
+      : obs;
 
   constructor(
     protected router: Router,
@@ -197,9 +197,9 @@ export class ObsComponent implements OnInit, OnDestroy {
   newObservationEventHandler(e: CustomEvent): void {
     e.stopPropagation();
     if (this.observations) {
-      this.observations.features.unshift(e.detail);
+      this.observations.features = [e.detail as Feature, ...this.observations.features];
+      this.observations$.next(this.observations);
     }
-    this.observations$.next(this.observations);
   }
 
   onFilterChange(): void {

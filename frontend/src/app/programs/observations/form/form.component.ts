@@ -20,6 +20,7 @@ import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { FeatureCollection } from 'geojson';
 import L from 'leaflet';
 
+import { MAP_CONFIG } from '../../../../conf/map.config';
 import { AppConfig } from '../../../../conf/app.config';
 import { IAppConfig } from '../../../core/models';
 import {
@@ -65,6 +66,7 @@ type AppConfigObsForm = Pick<IAppConfig, 'API_ENDPOINT'>;
   encapsulation: ViewEncapsulation.None
 })
 export class ObsFormComponent implements OnChanges {
+  MAP_CONFIG = MAP_CONFIG;
   readonly AppConfig: AppConfigObsForm = AppConfig;
   private readonly URL = this.AppConfig.API_ENDPOINT;
   @Input()
@@ -164,7 +166,7 @@ export class ObsFormComponent implements OnChanges {
     this.autocomplete = 'isOn';
   }
 
-  constructor(@Inject(LOCALE_ID) readonly localeId: string, private http: HttpClient) {}
+  constructor(@Inject(LOCALE_ID) readonly localeId: string, private client: HttpClient) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.data && changes.data.currentValue && this.data) {
@@ -298,7 +300,7 @@ export class ObsFormComponent implements OnChanges {
       formData.append(item, c.value);
     }
 
-    return this.http.post<PostObservationResponse>(
+    return this.client.post<PostObservationResponse>(
       `${this.URL}/observations`,
       formData,
       httpOptions

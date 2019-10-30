@@ -65,7 +65,7 @@ export class BadgeFacade {
   );
   loading$ = this.state$.pipe(map(state => state.loading));
 
-  constructor(private authService: AuthService, private http: HttpClient) {
+  constructor(private authService: AuthService, private client: HttpClient) {
     this.username = localStorage.getItem('username') || 'undefined';
     this.getChanges();
   }
@@ -77,7 +77,7 @@ export class BadgeFacade {
         user => {
           if (user.features['id_role']) {
             this.role_id = user['features']['id_role'];
-            this.http
+            this.client
               .get<Object>(`${this.AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
               .pipe(
                 pluck('badges'),
