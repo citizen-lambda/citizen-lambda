@@ -78,8 +78,8 @@ export function geometryValidator(): ValidatorFn {
 })
 export class ObsFormMapComponent implements OnInit, OnChanges {
   MAP_CONFIG = MAP_CONFIG;
-  @Input()
-  input!: FeatureCollection;
+  @Input() coords!: L.Point;
+  @Input() input!: FeatureCollection;
   @Output() output: EventEmitter<{
     coords?: L.Point;
   }> = new EventEmitter();
@@ -129,9 +129,14 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       if (this.input.features && this.map) {
         this.loadProgramArea(this.input);
       }
-      // if (this.input.coords) {
-      // TODO: Set initial observation marker from main map if already spotted
-      // }
+    }
+    if (
+      changes.coords &&
+      changes.coords.currentValue &&
+      this.coords &&
+      !changes.coords.firstChange
+    ) {
+      this.addMarker(L.latLng(this.coords.y, this.coords.x));
     }
   }
 
@@ -167,6 +172,10 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
 
     if (this.input.features) {
       this.loadProgramArea(this.input);
+    }
+
+    if (this.coords) {
+      this.addMarker(L.latLng(this.coords.y, this.coords.x));
     }
   }
 
@@ -224,86 +233,90 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       this.output.emit({
         coords: L.point(e.latlng.lng, e.latlng.lat)
       });
-      this.newObsMarker = L.marker(e.latlng.wrap(), {
-        icon: obsFormMarkerIcon,
-        draggable: true
-      }).addTo(this.map);
+      this.addMarker(e.latlng.wrap());
+    }
+  }
 
-      this.newObsMarker.on('dragend', _e => {
-        const feature = this.input.features[0];
-        const geom = feature.geometry;
-        let result = null;
-        switch (geom.type) {
-          /*
-            polygon ring order right hand rule
-            - the exterior ring edges are enumerated counterclockwise.
-            - interior rings clockwise.
-          */
-          case 'MultiPolygon':
-            const polys: {
-              outer: L.Polygon;
-              inners: L.Polygon[];
-            }[][] = geom.coordinates.map(polygons => [
-              {
-                outer: L.polygon((polygons[0] as [number, number][]).map(
-                  ([lng, lat]: [number, number]) => [lat, lng]
-                ) as L.LatLngExpression[]),
-                inners: polygons
-                  .slice(1)
-                  .map(coords =>
-                    L.polygon((coords as [number, number][])
-                      .map(([lng, lat]: [number, number]) => [lat, lng])
-                      .reverse() as L.LatLngExpression[])
-                  )
-              }
-            ]);
+  addMarker(latLng: L.LatLng) {
+    this.newObsMarker = L.marker(latLng, {
+      icon: obsFormMarkerIcon,
+      draggable: true
+    }).addTo(this.map);
 
-            if (this.newObsMarker) {
-              result = polys.some(p =>
-                p.some(
-                  poly =>
-                    // tslint:disable-next-line: no-non-null-assertion
-                    markerInPolygon(this.newObsMarker!)(poly.outer) &&
-                    // tslint:disable-next-line: no-non-null-assertion
-                    !poly.inners.some(markerInPolygon(this.newObsMarker!))
-                )
-              );
-            }
-            break;
-
-          case 'Polygon':
-            const [outer, inners] = [
-              L.polygon((geom.coordinates[0] as [number, number][]).map(([lng, lat]) => [
-                lat,
-                lng
-              ]) as L.LatLngExpression[]),
-              geom.coordinates
+    this.newObsMarker.on('dragend', _e => {
+      const feature = this.input.features[0];
+      const geom = feature.geometry;
+      let result = null;
+      switch (geom.type) {
+        /*
+          polygon ring order right hand rule
+          - the exterior ring edges are enumerated counterclockwise.
+          - interior rings clockwise.
+        */
+        case 'MultiPolygon':
+          const polys: {
+            outer: L.Polygon;
+            inners: L.Polygon[];
+          }[][] = geom.coordinates.map(polygons => [
+            {
+              outer: L.polygon((polygons[0] as [number, number][]).map(
+                ([lng, lat]: [number, number]) => [lat, lng]
+              ) as L.LatLngExpression[]),
+              inners: polygons
                 .slice(1)
                 .map(coords =>
-                  L.polygon(((coords as [number, number][]).map(([lng, lat]) => [
-                    lat,
-                    lng
-                  ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
+                  L.polygon((coords as [number, number][])
+                    .map(([lng, lat]: [number, number]) => [lat, lng])
+                    .reverse() as L.LatLngExpression[])
                 )
-            ];
-            if (this.newObsMarker) {
-              result =
-                markerInPolygon(this.newObsMarker)(outer) &&
-                !inners.some(markerInPolygon(this.newObsMarker));
             }
-            break;
+          ]);
 
-          default:
-            alert(`${geom.type} has no handler`);
-        }
-        if (this.newObsMarker && result === false) {
-          // TODO: Remember onDragStart marker Position and restore it on invalidation
-          alert('Marker is not inside the program area');
-          this.output.emit({ coords: undefined }); // todo: patch form control value
-          this.map.removeLayer(this.newObsMarker);
-          this.newObsMarker = null;
-        }
-      });
-    }
+          if (this.newObsMarker) {
+            result = polys.some(p =>
+              p.some(
+                poly =>
+                  // tslint:disable-next-line: no-non-null-assertion
+                  markerInPolygon(this.newObsMarker!)(poly.outer) &&
+                  // tslint:disable-next-line: no-non-null-assertion
+                  !poly.inners.some(markerInPolygon(this.newObsMarker!))
+              )
+            );
+          }
+          break;
+
+        case 'Polygon':
+          const [outer, inners] = [
+            L.polygon((geom.coordinates[0] as [number, number][]).map(([lng, lat]) => [
+              lat,
+              lng
+            ]) as L.LatLngExpression[]),
+            geom.coordinates
+              .slice(1)
+              .map(coords =>
+                L.polygon(((coords as [number, number][]).map(([lng, lat]) => [
+                  lat,
+                  lng
+                ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
+              )
+          ];
+          if (this.newObsMarker) {
+            result =
+              markerInPolygon(this.newObsMarker)(outer) &&
+              !inners.some(markerInPolygon(this.newObsMarker));
+          }
+          break;
+
+        default:
+          alert(`${geom.type} has no handler`);
+      }
+      if (this.newObsMarker && result === false) {
+        // TODO: Remember onDragStart marker Position and restore it on invalidation
+        alert('Marker is not inside the program area');
+        this.output.emit({ coords: undefined }); // todo: patch form control value
+        this.map.removeLayer(this.newObsMarker);
+        this.newObsMarker = null;
+      }
+    });
   }
 }

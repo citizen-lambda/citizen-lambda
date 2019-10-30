@@ -17,6 +17,7 @@
             ? o.properties.media[0].thumb_url
             : 'assets/default_taxon.jpg'
         "
+        [alt]="o?.properties?.taxref?.nom_vern"
         loading="lazy"
       />
       <div class="infos">
@@ -34,7 +35,7 @@
           >
         </p>
       </div>
-      <div class="hide"><img src="assets/binoculars.png" /></div>
+      <div class="hide"><img src="assets/binoculars.png" alt="binoculars" /></div>
     </div>
   </cdk-virtual-scroll-viewport>
 </ng-container>

@@ -141,6 +141,7 @@
           class="col-lg-12"
         />
         <app-obs-form-map
+          [coords]="data.coords"
           [input]="data.program"
           (output)="onMapClick($event)"
           class="col-lg-12"

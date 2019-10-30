@@ -178,15 +178,12 @@ export class ObsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.obsFeaturesArray$.subscribe(o => this.filteredObservations$.next(o));
+    this.obsMap.click.subscribe((point: L.Point) => (this.surveyData.coords = point));
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-  }
-
-  onMapClicked(p: L.Point): void {
-    this.surveyData.coords = p;
   }
 
   onListToggle(): void {
