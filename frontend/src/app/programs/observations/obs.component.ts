@@ -1,10 +1,10 @@
 import {
   Component,
   ViewEncapsulation,
-  OnInit,
   OnDestroy,
   ViewChild,
-  HostListener
+  HostListener,
+  AfterViewInit
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, combineLatest, Subject, Observable, BehaviorSubject } from 'rxjs';
@@ -41,7 +41,7 @@ export const compose = <R>(fn1: (a: R) => R, ...fns: Array<(a: R) => R>) =>
   encapsulation: ViewEncapsulation.None,
   providers: [ProgramsResolve]
 })
-export class ObsComponent implements OnInit, OnDestroy {
+export class ObsComponent implements AfterViewInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   @ViewChild(ObsMapComponent)
   obsMap!: ObsMapComponent;
@@ -176,7 +176,7 @@ export class ObsComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.obsFeaturesArray$.subscribe(o => this.filteredObservations$.next(o));
     this.obsMap.click.subscribe((point: L.Point) => (this.surveyData.coords = point));
   }
