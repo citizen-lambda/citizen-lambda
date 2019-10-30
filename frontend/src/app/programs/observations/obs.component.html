@@ -27,7 +27,7 @@
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
           <option *ngFor="let s of surveySpecies" [ngValue]="s" i18n>
-            {{ s.taxref?.nom_vern }} (<i>{{ s.taxref?.nom_complet }}</i
+            {{ s?.taxref?.nom_vern }} (<i>{{ s?.taxref?.nom_complet }}</i
             >)
           </option>
         </select>

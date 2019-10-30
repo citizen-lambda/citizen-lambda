@@ -26,33 +26,31 @@ else:
 # Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
 
 
-def taxhub_rest_get_taxon_list(taxhub_list_id: int) -> Dict:
+def taxa_list(taxhub_list_id: int) -> Dict:
     # payload = {"existing": "true", "order": "asc", "orderby": "taxref.nom_complet"}
     # res = requests.get(
     #     f"{TAXHUB_API}biblistes/taxons/{taxhub_list_id}", params=payload, timeout=1
     # )
     # res.raise_for_status()
     # return res.json()
-    with open(
-        "/home/pat/citizen/external_modules/ListService/config/24.json", "r"
-    ) as f:
+    with open("/home/pat/citizen/external_modules/ListService/data/24.json", "r") as f:
         return dict(**json.loads(f.read()))
 
 
-def taxhub_rest_get_taxon(taxhub_id: int) -> Optional[Taxon]:
-    # if not taxhub_id:
+def taxref_get(cd_nom: int) -> Optional[Taxon]:
+    # if not cd_nom:
     #     raise ValueError("Null value for taxhub taxon id")
-    # res = requests.get(f"{TAXHUB_API}bibnoms/{taxhub_id}", timeout=1)
+    # res = requests.get(f"{TAXHUB_API}bibnoms/{cd_nom}", timeout=1)
     # res.raise_for_status()
     # return res.json()
-    return TAXA.get(taxhub_id) if TAXA is not None else None
+    return TAXA.get(cd_nom) if TAXA is not None else None
 
 
 # @lru_cache()
-def mkTaxonRepository(taxhub_list_id: int) -> List[Optional[Taxon]]:
-    taxa = taxhub_rest_get_taxon_list(taxhub_list_id)
+def mkTaxonRepository(taxalist_id: int) -> List[Optional[Taxon]]:
+    taxa = taxa_list(taxalist_id)
     taxon_ids = [item["id_nom"] for item in taxa.get("items", dict())]
-    return [taxhub_rest_get_taxon(taxon_id) for taxon_id in taxon_ids]
+    return [taxref_get(taxon_id) for taxon_id in taxon_ids]
 
 
 def get_specie_from_cd_nom(cd_nom):
