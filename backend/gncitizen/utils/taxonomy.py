@@ -3,27 +3,11 @@
 
 """A module to manage taxonomy"""
 
-from typing import Dict, List, Optional
-from functools import lru_cache
+from typing import Dict, List, Any
+import dataclasses
 from flask import current_app, json
 
-from gncitizen.core.taxonomy import TAXA
-from gncitizen.core.taxonomy.taxon import Taxon
-
-if current_app.config.get("API_TAXHUB") is None:
-    # from gncitizen.core.taxonomy.models import Taxref
-    ...
-else:
-    # import requests
-
-    TAXHUB_API = (
-        """Yeah"""
-        # current_app.config["API_TAXHUB"] + "/"
-        # if current_app.config["API_TAXHUB"][-1] != "/"
-        # else current_app.config["API_TAXHUB"]
-    )
-
-# Taxon = Dict[str, Union[str, Dict[str, str], List[Dict]]]
+logger = current_app.logger
 
 
 def taxa_list(taxhub_list_id: int) -> Dict:
@@ -37,20 +21,16 @@ def taxa_list(taxhub_list_id: int) -> Dict:
         return dict(**json.loads(f.read()))
 
 
-def taxref_get(cd_nom: int) -> Optional[Taxon]:
-    # if not cd_nom:
-    #     raise ValueError("Null value for taxhub taxon id")
-    # res = requests.get(f"{TAXHUB_API}bibnoms/{cd_nom}", timeout=1)
-    # res.raise_for_status()
-    # return res.json()
-    return TAXA.get(cd_nom) if TAXA is not None else None
-
-
 # @lru_cache()
-def mkTaxonRepository(taxalist_id: int) -> List[Optional[Taxon]]:
+# def mkTaxonRepository(taxalist_id: int) -> List[Optional[Taxon]]:
+def mkTaxonRepository(taxalist_id: int) -> List[Dict[str, Any]]:
+    from gncitizen.core.taxonomy import TAXA
+
     taxa = taxa_list(taxalist_id)
-    taxon_ids = [item["id_nom"] for item in taxa.get("items", dict())]
-    return [taxref_get(taxon_id) for taxon_id in taxon_ids]
+    taxon_ids = [item["cd_nom"] for item in taxa.get("items", dict())]
+    t = [dataclasses.asdict(TAXA.get(taxon_id)) for taxon_id in taxon_ids]
+    logger.debug(f"tx: {t}")
+    return t
 
 
 def get_specie_from_cd_nom(cd_nom):
@@ -77,4 +57,6 @@ def get_specie_from_cd_nom(cd_nom):
     # for k in official_taxa:
     #     taxref[k] = official_taxa[k]
     # return taxref
+    from gncitizen.core.taxonomy import TAXA
+
     return TAXA.get(cd_nom)
