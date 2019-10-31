@@ -158,6 +158,7 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
 
     @lru_cache(maxsize=MnhnTaxRefRest.CACHE_ITEMS)
     def get(self, ref: int, fetch_media=True) -> Optional[Taxon]:
+        # TODO: our own cache
         # def gen_f():
         #     memo = dict()
         #     def f(x):
@@ -172,14 +173,16 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
         if data:
             media: List[TaxonMedium] = []
             href = path_url(["_links", "media", "href"], data)
+            if not href and fetch_media:
+                ref_taxon_id = data.get("referenceId")
+                media = self.get_media(
+                    ref_taxon_id, f"{super().TAXA_URL}/{ref_taxon_id}/media"
+                )
             if href and fetch_media:
                 media = self.get_media(ref, href)
             data.update({"media": media})
-            r = Taxon(
-                *mapper(transformer, extractor, self.TAXON_ATTR, data)
-            )  # noqa: E501
+            r = Taxon(*mapper(transformer, extractor, self.TAXON_ATTR, data))
             r.media = [medium for medium in media]
-            # logger.debug(type(r.media[0]))
             return r
         return None
 
