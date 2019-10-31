@@ -110,17 +110,14 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   selectedMunicipality: any = null;
   selectedTaxon: TaxonomyListItem | null = null;
   selectedTaxonFilter = (obs: Feature[]): Feature[] =>
-    obs &&
-    this.selectedTaxon &&
-    this.selectedTaxon.taxref &&
-    Object.keys(this.selectedTaxon.taxref).length
+    obs && this.selectedTaxon
       ? obs.filter(
           o =>
             o &&
             o.properties &&
             Object.keys(o.properties).length &&
             // tslint:disable-next-line: no-non-null-assertion
-            o.properties.taxref.cd_ref === this.selectedTaxon!.taxref['cd_ref']
+            o.properties.taxref.cd_ref === this.selectedTaxon!.cd_ref
         )
       : obs;
   selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>
