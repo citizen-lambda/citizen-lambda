@@ -59,7 +59,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     taxa?: TaxonomyList;
   } = {};
   programID$ = this.route.params.pipe(map(params => parseInt(params['id'], 10)));
-  observations$ = new BehaviorSubject<FeatureCollection | undefined>(undefined);
+  observations$ = new BehaviorSubject<FeatureCollection | undefined>(this.observations);
   obsFeaturesArray$: Observable<Feature[]> = this.observations$.pipe(
     filter(collection => !!collection),
     pluck<FeatureCollection, Feature[]>('features'),
@@ -172,7 +172,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
       )
       .subscribe(observations => {
         this.observations = observations;
-        this.observations$.next(observations);
+        this.observations$.next(this.observations);
       });
   }
 

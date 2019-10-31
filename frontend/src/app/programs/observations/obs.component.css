@@ -148,7 +148,7 @@ section .observations {
 
 section.observations#observations {
   display: grid;
-  grid-template-columns: max-content min-content max-content;
+  grid-template-columns: auto min-content max-content;
   grid-template-rows: 1fr;
 }
 
