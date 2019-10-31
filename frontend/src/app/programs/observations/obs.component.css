@@ -17,10 +17,7 @@ section#program-content {
 }
 
 section#program-teaser {
-  height: calc(
-    100vh - var(--router-outlet-offset) - var(--section-margin-bottom) -
-    var(--fold)
-    );
+  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
 }
 
 section#program-content {
@@ -34,7 +31,7 @@ section#program-content > app-program-content {
 }
 
 section#program-teaser > app-program-teaser > figure {
-  height: calc( 100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold) );
+  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
   display: grid;
   grid-template-columns: 1fr 1fr auto 1fr;
   grid-template-rows: 2fr 1fr 1fr;
@@ -99,7 +96,7 @@ section#program-teaser > app-program-teaser > a.scroll img {
 section#program-content > app-program-content > article {
   background-color: var(--secondary-color);
   font-size: calc(80% + 1vw);
-  height: calc( 100vh - var(--router-outlet-offset) - var(--section-margin-bottom));
+  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom));
   overflow: auto;
   padding: 1.2em;
 }
@@ -107,7 +104,7 @@ section#program-content > app-program-content > article {
 section#program-content > app-program-content > a.btn-big {
   background-color: var(--secondary);
   border-radius: 0;
-  opacity: .8;
+  opacity: 0.8;
   padding: 10px 30px !important;
   position: absolute;
   right: 0px;
@@ -151,7 +148,7 @@ section .observations {
 
 section.observations#observations {
   display: grid;
-  grid-template-columns: 9fr auto auto;
+  grid-template-columns: max-content min-content max-content;
   grid-template-rows: 1fr;
 }
 
@@ -164,7 +161,7 @@ section.observations#observations {
 }
 
 #map {
-  grid-column-start: 10;
+  grid-column-start: 3;
   grid-row-start: 1;
   grid-row-end: 1;
 }
@@ -241,8 +238,8 @@ input:not(:checked) ~ #obslist {
   overflow: hidden;
   margin-bottom: 0px;
   justify-content: center;
-  grid-column-start: 8;
-  grid-column-end: 9;
+  grid-column-start: 2;
+  grid-column-end: 3;
 }
 
 .toggle i {
@@ -297,8 +294,7 @@ input:checked ~ .toggle i {
   height: calc(100vh - var(--router-outlet-offset));
   /* fixme: supplementary 80px & 55px ? */
   min-width: calc(
-    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px +
-      55px
+    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px + 55px
   );
 }
 
