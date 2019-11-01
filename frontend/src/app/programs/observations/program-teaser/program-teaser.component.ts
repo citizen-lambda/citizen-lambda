@@ -1,6 +1,5 @@
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, AfterViewInit, Input } from '@angular/core';
-import { AnchorNavigation } from 'src/app/core/models';
-import { Subject } from 'rxjs';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input } from '@angular/core';
+import { AnchorNavigation } from '../../../core/models';
 import { Program } from '../../programs.models';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -10,14 +9,10 @@ import { ActivatedRoute, Router } from '@angular/router';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProgramTeaserComponent extends AnchorNavigation  implements AfterViewInit {
-
+export class ProgramTeaserComponent extends AnchorNavigation {
   @Input() program!: Program;
 
-  constructor(
-    protected router: Router,
-    protected route: ActivatedRoute
-  ) {
+  constructor(protected router: Router, protected route: ActivatedRoute) {
     super(router, route);
   }
 }

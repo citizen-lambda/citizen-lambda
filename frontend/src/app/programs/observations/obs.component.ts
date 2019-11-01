@@ -30,7 +30,7 @@ import { ModalFlowService } from './modalflow/modalflow.service';
 import { Taxonomy, Taxon } from './observation.model';
 import { ObsMapComponent } from './map/map.component';
 import { ObsListComponent } from './list/list.component';
-import { TaxonomyService } from 'src/app/api/taxonomy.service';
+import { TaxonomyService } from '../../api/taxonomy.service';
 
 export const compose = <R>(fn1: (a: R) => R, ...fns: Array<(a: R) => R>) =>
   fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn1);
@@ -116,10 +116,9 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
           o =>
             o &&
             o.properties &&
-            Object.keys(o.properties).length && (
+            Object.keys(o.properties).length &&
             // tslint:disable-next-line: no-non-null-assertion
-              o.properties.cd_nom === parseInt(this.selectedTaxon!, 10)
-            )
+            o.properties.cd_nom === parseInt(this.selectedTaxon!, 10)
         )
       : obs;
   selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>

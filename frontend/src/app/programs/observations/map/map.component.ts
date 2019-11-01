@@ -167,10 +167,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   zoomAlertTimeout: any;
   layerControl!: L.Control.Layers;
 
-  constructor(
-    private injector: Injector,
-    private resolver: ComponentFactoryResolver
-  ) {}
+  constructor(private injector: Injector, private resolver: ComponentFactoryResolver) {}
 
   ngOnInit() {
     this.options = conf;
@@ -419,7 +416,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 import { AppConfig } from '../../../../conf/app.config';
 // import { Taxon } from '../../../api/taxonomy.service';
 import { Taxon } from '../observation.model';
-import { TaxonomyService } from 'src/app/api/taxonomy.service';
+import { TaxonomyService } from '../../../api/taxonomy.service';
 
 @Component({
   selector: 'app-marker-popup',
@@ -433,7 +430,7 @@ export class MarkerPopupComponent {
     image?: string;
     media?: any;
     observer?: { username: string };
-    municipality?: { name?: string, code?: string };
+    municipality?: { name?: string; code?: string };
     date: Date;
   };
 

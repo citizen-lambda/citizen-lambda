@@ -16,7 +16,7 @@ import { FeatureCollection, Feature } from 'geojson';
 import { Taxonomy, Taxon } from '../observation.model';
 import { IAppConfig } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
-import { TaxonomyService } from 'src/app/api/taxonomy.service';
+import { TaxonomyService } from '../../../api/taxonomy.service';
 
 type AppConfigObsList = Pick<IAppConfig, 'API_ENDPOINT'>;
 
@@ -36,7 +36,7 @@ export class ObsListComponent implements OnChanges {
   @Output() obsSelected: EventEmitter<Feature> = new EventEmitter();
   observations$: BehaviorSubject<Feature[] | null> = new BehaviorSubject<Feature[] | null>(null);
 
-  constructor(public taxonService: TaxonomyService) { }
+  constructor(public taxonService: TaxonomyService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.observations && changes.observations && changes.observations.currentValue) {
@@ -45,7 +45,7 @@ export class ObsListComponent implements OnChanges {
     if (this.taxonomy && changes.taxonomy && changes.taxonomy.currentValue) {
       // console.debug(this.taxonomy[60038]);
       // this.taxonService.getTaxon(60038).subscribe(t => console.debug(`taxon: ${t.nom_vern}`));
-      this.taxonService.taxa = {...this.taxonService.taxa, ...this.taxonomy}
+      this.taxonService.taxa = { ...this.taxonService.taxa, ...this.taxonomy };
     }
   }
 

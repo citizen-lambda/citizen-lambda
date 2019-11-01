@@ -1,6 +1,14 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  AfterViewInit,
+  OnDestroy,
+  Input
+} from '@angular/core';
 
-import { AnchorNavigation } from 'src/app/core/models';
+import { AnchorNavigation } from '../../../core/models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, fromEvent } from 'rxjs';
 import { throttleTime, map, filter, takeUntil } from 'rxjs/operators';
@@ -12,24 +20,22 @@ import { Program } from '../../programs.models';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProgramContentComponent extends AnchorNavigation  implements OnInit, AfterViewInit, OnDestroy {
-
+export class ProgramContentComponent extends AnchorNavigation
+  implements OnInit, AfterViewInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   @Input() program!: Program;
 
-  constructor(
-    protected router: Router,
-    protected route: ActivatedRoute
-  ) {
+  constructor(protected router: Router, protected route: ActivatedRoute) {
     super(router, route);
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     // todo: move to directive and make the <p> tag an <article>
-    const element: HTMLElement | null = document.querySelector('app-program-content .program-content > article');
+    const element: HTMLElement | null = document.querySelector(
+      'app-program-content .program-content > article'
+    );
     if (element) {
       const scroll$ = fromEvent(element, 'scroll').pipe(
         throttleTime(10),
