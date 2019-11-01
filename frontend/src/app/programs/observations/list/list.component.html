@@ -1,7 +1,7 @@
 <ng-container *ngIf="observations$ | async as obs; else loading; ">
   <cdk-virtual-scroll-viewport [itemSize]="84" id="list">
     <div *cdkVirtualFor="let o of obs; trackBy: trackByObs"
-    class="espece obs-{{ o?.properties?.id_observation }}"
+    class="species obs-{{ o?.properties?.id_observation }}"
     (click)="onSelected(o)"
     >
       <ng-container *ngIf="taxonService.getTaxon(o?.properties?.cd_nom) | async as taxon">

@@ -16,75 +16,8 @@ app-obs-list #list {
   }
 }
 
-app-obs-list #list .espece:not(:last-of-type) {
+app-obs-list #list .species:not(:last-of-type) {
   margin-bottom: 3px;
-}
-
-app-obs-list #list .espece {
-  background-color: var(--primary-color);
-  background-image: var(--obs-card-bg);
-  background-size: 100% 100%;
-  border: solid 2px;
-  border-color: var(--secondary-color);
-  display: flex;
-  max-height: calc(80px + 2 * 2px);
-  overflow: hidden;
-  position: relative;
-}
-
-app-obs-list #list .espece:hover {
-  cursor: pointer;
-  border-color: var(--primary);
-}
-
-app-obs-list .espece:hover .hide {
-  transform: translateX(0);
-}
-
-app-obs-list #list .espece img {
-  height: 80px;
-  min-width: 80px !important;
-  max-width: 80px !important;
-  object-fit: cover;
-}
-
-.hide {
-  align-items: center;
-  background-color: var(--primary);
-  color: var(--secondary-color);
-  display: flex;
-  height: auto;
-  padding: 0px 10px;
-  transform: translateX(100%);
-  transition: all 0.2s ease-in-out;
-}
-
-app-obs-list #list .espece .hide img {
-  height: auto !important;
-  max-width: 20px !important;
-  min-width: 20px !important;
-}
-
-app-obs-list #list .espece .infos {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 1em;
-  width: 100%;
-}
-
-app-obs-list #list .espece div b {
-  font-size: 1em;
-  margin-bottom: 0px;
-  font-weight: bolder;
-}
-
-app-obs-list #list .espece div p,
-app-obs-list #list .espece div span {
-  color: var(--primary);
-  font-style: italic;
-  margin-bottom: 0px;
-  font-size: small;
 }
 
 #obslist .toolbar {

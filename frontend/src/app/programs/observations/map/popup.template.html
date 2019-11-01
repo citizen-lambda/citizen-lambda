@@ -1,0 +1,35 @@
+<div class="species" *ngIf="taxonService.getTaxon(data?.cd_nom) | async as taxon">
+  <!-- mv to ng-template, refact with map popup, ngTemplateOutlet with implicit context -->
+  <!-- FIXME: hardcoded api media endpoint -->
+  <img
+    [src]="
+    data && data.images && !!data.images.length
+        ? AppConfig.API_ENDPOINT + '/media/' + data.images[0]
+        : data.image
+        ? data.image
+        : taxon?.media && !!taxon.media.length
+        ? taxon.media[0].thumb_url
+        : 'assets/default_taxon.jpg'
+    "
+    [alt]="taxon?.nom_vern"
+    loading="lazy"
+    width="80px"
+    height="80px"
+  />
+  <div class="infos">
+    <b i18n>{{ taxon?.nom_vern }}</b>
+    <p i18n>
+      Observé par
+      <span>{{
+        data?.observer?.username ? data.observer.username : 'Anonyme'
+      }}</span>
+    </p>
+    <p i18n *ngIf="data?.date || data?.municipality?.name">
+      <span *ngIf="data.date"> le {{ data.date }}</span>
+      <span *ngIf="data.municipality?.name">
+        à {{ data.municipality?.name }}
+      </span>
+    </p>
+  </div>
+  <div class="hide"><img src="assets/binoculars.png" alt="binoculars"/></div>
+</div>

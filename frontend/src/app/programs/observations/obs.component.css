@@ -388,44 +388,84 @@ input:checked ~ .toggle i {
 }
 
 app-marker-popup {
-  display: grid;
-  grid-template-columns: 83px minmax(178px, auto) 40px;
+  width: 100%;
+  display: block;
 }
 
-app-marker-popup > img {
-  width: 80px;
+/*  */
+/* TODO: species@list */
+/* .species:not(:last-of-type) {
+  margin-bottom: 3px;
+} */
+
+.species {
+  background-color: var(--primary-color);
+  background-image: var(--obs-card-bg);
+  background-size: 100% 100%;
+  border: solid 2px;
+  border-color: var(--secondary-color);
+  display: flex;
+  max-height: calc(80px + 2 * 2px);
+  overflow: hidden;
+  position: relative;
+}
+
+.species:hover {
+  cursor: pointer;
+  border-color: var(--primary);
+}
+
+.species:hover .hide {
+  transform: translateX(0);
+}
+
+.species img {
   height: 80px;
+  min-width: 80px !important;
+  max-width: 80px !important;
   object-fit: cover;
-  margin-right: 3px;
-  padding: 2px;
 }
 
-app-marker-popup > p {
-  font-size: 14px;
-  margin: auto !important;
+.hide {
+  align-items: center;
+  background-color: var(--primary);
+  color: var(--secondary-color);
+  display: flex;
+  height: auto;
+  padding: 0px 10px;
+  transform: translateX(100%);
+  transition: all 0.2s ease-in-out;
 }
 
-app-marker-popup > p > span {
+.species .hide img {
+  height: auto !important;
+  max-width: 20px !important;
+  min-width: 20px !important;
+}
+
+.species .infos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 1em;
+  width: 100%;
+}
+
+.species div b {
+  font-size: 1em;
+  margin-bottom: 0px;
+  font-weight: bolder;
+}
+
+.species div p,
+.species div span {
   color: var(--primary);
   font-style: italic;
-  font-size: 13px;
+  margin-bottom: 0px;
+  font-size: small;
 }
 
-app-marker-popup > div.icon img {
-  width: 25px;
-  height: 17px;
-}
-
-app-marker-popup > div.icon {
-  height: 80px;
-  width: 40px;
-  background: var(--primary);
-  color: var(--primary-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-}
+/*  */
 
 popup {
   display: flex;
@@ -846,7 +886,7 @@ form .d-inline-flex {
     --obs-cell-width: calc(80px + 1em + 18ch);
   }
 
-  #list .espece > .infos > p:last-of-type > span:last-of-type {
+  #list .species > .infos > p:last-of-type > span:last-of-type {
     display: none;
   }
 

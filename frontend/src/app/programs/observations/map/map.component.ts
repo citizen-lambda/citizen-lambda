@@ -167,7 +167,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
   zoomAlertTimeout: any;
   layerControl!: L.Control.Layers;
 
-  constructor(private injector: Injector, private resolver: ComponentFactoryResolver) {}
+  constructor(
+    private injector: Injector,
+    private resolver: ComponentFactoryResolver
+  ) {}
 
   ngOnInit() {
     this.options = conf;
@@ -416,34 +419,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
 import { AppConfig } from '../../../../conf/app.config';
 // import { Taxon } from '../../../api/taxonomy.service';
 import { Taxon } from '../observation.model';
+import { TaxonomyService } from 'src/app/api/taxonomy.service';
 
 @Component({
   selector: 'app-marker-popup',
-  template: `
-    <ng-container>
-      <img
-        [src]="
-          data.images && !!data.images.length
-            ? AppConfig.API_ENDPOINT + '/media/' + data.images[0]
-            : data.image
-            ? data.image
-            : data.media && !!data.media.length
-            ? data.media[0].thumb_url
-            : 'assets/default_taxon.jpg'
-        "
-      />
-      <p>
-        <b i18n>{{ data.taxref?.nom_vern }}</b> <br />
-        <span i18n>
-          Observé par
-          {{ data.observer && data.observer.username ? data.observer.username : 'Anonyme' }}
-          <br />
-          le {{ data.date }}
-        </span>
-      </p>
-      <div class="icon"><img src="assets/binoculars.png" /></div>
-    </ng-container>
-  `
+  templateUrl: 'popup.template.html'
 })
 export class MarkerPopupComponent {
   AppConfig = AppConfig;
@@ -452,9 +432,12 @@ export class MarkerPopupComponent {
     images?: string;
     image?: string;
     media?: any;
-    observer: { username: string };
+    observer?: { username: string };
+    municipality?: { name?: string, code?: string };
     date: Date;
   };
+
+  constructor(public taxonService: TaxonomyService) {}
 }
 
 // FIXME: i18n taxonData.taxref?.nom_vern_eng may be empty
