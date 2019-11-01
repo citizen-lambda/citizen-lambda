@@ -156,36 +156,34 @@ def login():
     User login
     ---
     tags:
-      - Authentication
+        - Authentication
     summary: Login
     consumes:
-      - application/json
+        - application/json
     produces:
-      - application/json
+        - application/json
     parameters:
-      - name: body
-        in: body
-        description: JSON parameters
-        required: true
-        schema:
-          required:
-            - username
-            - password
-          properties:
-            username:
-              type: string
-            password:
-              type: string
+        - name: body
+            in: body
+            description: JSON parameters
+            required: true
+            schema:
+            required:
+                - username
+                - password
+            properties:
+                username:
+                type: string
+                password:
+                type: string
     responses:
-      200:
-        description: user created
+        200:
+            description: user created
     """
     try:
         request_datas = dict(request.get_json())
-        print(request_datas)
         username = request_datas["username"]
         password = request_datas["password"]
-        print(username)
         current_user = UserModel.find_by_username(username)
         if not current_user:
             return (

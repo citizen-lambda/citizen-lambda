@@ -46,10 +46,10 @@ def register(app):
         ...
     """
 
-    @users.command("allusers")
-    @with_appcontext
-    def all_users():
-        print(json.dumps([UserModel.return_all()], indent=4))
+    # @users.command("allusers")
+    # @with_appcontext
+    # def all_users():
+    #     print(json.dumps([UserModel.return_all()], indent=4))
 
     @users.command("allObsForUser")
     @click.argument("username")

@@ -49,17 +49,17 @@ def setup_taxon_repo(
             # No surrogate repository could be found
             raise
 
-    if TAXA is not None:
-        _t: Optional[Taxon] = TAXA.get(61153)
-        if _t:
-            _m = [dataclasses.asdict(medium) for medium in _t.media]
-            print(f"test: {_t}")
-            print(f"test: {type(_t.media)}")
-            print(f"test: {_m}")
-        else:
-            print('NO TAXON')
-    else:
-        print('Empty TAXA repo')
+    # if TAXA is not None:
+    #     _t: Optional[Taxon] = TAXA.get(61153)
+    #     if _t:
+    #         _m = [dataclasses.asdict(medium) for medium in _t.media]
+    #         print(f"test: {_t}")
+    #         print(f"test: {type(_t.media)}")
+    #         print(f"test: {_m}")
+    #     else:
+    #         print('NO TAXON')
+    # else:
+    #     print('Empty TAXA repo')
 
 
 setup_default_repo = setup_taxon_repo
