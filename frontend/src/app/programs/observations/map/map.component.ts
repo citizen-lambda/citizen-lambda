@@ -321,7 +321,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     // tslint:disable-next-line: no-use-before-declare
     const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
     const component = factory.create(this.injector);
-    component.instance.data = { ...feature.properties } as TaxonomyListItem & {
+    component.instance.data = { ...feature.properties } as Taxon & {
       image?: string;
       observer: { username: string };
       date: Date;
@@ -414,8 +414,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
 }
 
 import { AppConfig } from '../../../../conf/app.config';
-// import { Taxon } from '../../../api/taxhub.service';
-import { TaxonomyListItem } from '../observation.model';
+// import { Taxon } from '../../../api/taxonomy.service';
+import { Taxon } from '../observation.model';
 
 @Component({
   selector: 'app-marker-popup',
@@ -448,7 +448,7 @@ import { TaxonomyListItem } from '../observation.model';
 export class MarkerPopupComponent {
   AppConfig = AppConfig;
   @Input()
-  data!: TaxonomyListItem & {
+  data!: Taxon & {
     images?: string;
     image?: string;
     media?: any;

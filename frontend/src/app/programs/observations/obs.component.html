@@ -26,8 +26,8 @@
           aria-label="Toutes espèces"
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
-          <option *ngFor="let s of surveySpecies" [ngValue]="s" i18n>
-            {{ s?.nom_vern }} (<i>{{ s?.nom_complet }}</i
+          <option *ngFor="let s of taxonomy | keyvalue" [ngValue]="s.key">
+            <span i18n>{{ s?.value?.nom_vern }}</span> (<i>{{ s?.value?.nom_complet }}</i
             >)
           </option>
         </select>
@@ -62,7 +62,7 @@
           type: 'FeatureCollection',
           features: filteredObservations$ | async
         }"
-        [taxa]="surveySpecies"
+        [taxonomy]="taxonomy"
         (obsSelected)="obsMapRef.showPopup($event)"
       ></app-obs-list>
     </div>
@@ -77,7 +77,7 @@
         [program]="programFeature"
       ></app-obs-map>
       <div class="btn-groups">
-        <app-modalflow [data]="surveyData"></app-modalflow>
+        <app-modalflow [data]="context"></app-modalflow>
       </div>
     </div>
   </section>

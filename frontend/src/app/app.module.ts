@@ -32,7 +32,7 @@ import { ProgramsComponent } from './programs/programs.component';
 import { SpeciesComponent } from './synthesis/species/species.component';
 import { GncService } from './api/gnc.service';
 import { GncProgramsService } from './api/gnc-programs.service';
-// import { TaxhubService } from './api/taxhub.service';
+import { TaxonomyService } from './api/taxonomy.service';
 import { ErrorHandler } from './api/error_handler';
 import { AboutComponent } from './about/about.component';
 import { AboutCustomComponent } from './about/custom/custom.component';

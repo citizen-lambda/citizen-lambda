@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { TaxhubService } from './taxhub.service';
+import { TaxonomyService } from './taxonomy.service';
 
-describe('TaxhubService', () => {
+describe('TaxonomyService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule]
@@ -11,7 +11,7 @@ describe('TaxhubService', () => {
   );
 
   it('should be created', () => {
-    const service: TaxhubService = TestBed.get(TaxhubService);
+    const service: TaxonomyService = TestBed.get(TaxonomyService);
     expect(service).toBeTruthy();
   });
 });

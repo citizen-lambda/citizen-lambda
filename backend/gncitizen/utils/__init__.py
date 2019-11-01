@@ -8,7 +8,6 @@ from typing import (
     Mapping,
     Any,
     Sequence,
-    List,
     Dict,
     Generic,
     Type,
@@ -113,6 +112,7 @@ def path_url(nodes: Sequence[str], mapping: Mapping[str, str]) -> str:
 
 
 class ReadRepoAdapter(Generic[T]):
+    name: str
     provides: str
 
     def get(self, *args: Any, **kwargs: Any) -> Optional[T]:
@@ -120,6 +120,7 @@ class ReadRepoAdapter(Generic[T]):
 
 
 class WriteRepoAdapter(Generic[T]):
+    name: str
     provides: str
 
     def upsert(self, item: T, payload: Any):
@@ -186,10 +187,10 @@ RepoAdapter = Union[ReadRepoAdapter[T], WriteRepoAdapter[T]]
 
 class AdapterCollection(Generic[T]):
     def __init__(self):
-        self._adapters: List[Type[RepoAdapter[T]]] = []
+        self._adapters: Dict[str, Type[RepoAdapter[T]]] = dict()
 
     def register(self, adapter: Type[RepoAdapter[T]]):
-        self._adapters.append(adapter)
+        self._adapters.update({adapter.name: adapter})
 
     def get(self):
         return self._adapters

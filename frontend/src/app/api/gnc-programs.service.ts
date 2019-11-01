@@ -8,7 +8,7 @@ import { FeatureCollection, Feature } from 'geojson';
 
 import { AppConfig } from '../../conf/app.config';
 import { Program } from '../programs/programs.models';
-import { TaxonomyList } from '../programs/observations/observation.model';
+import { Taxonomy } from '../programs/observations/observation.model';
 
 const PROGRAMS_KEY = makeStateKey('programs');
 
@@ -49,10 +49,10 @@ export const sorted = (property: string) => {
   providedIn: 'root',
   useFactory: (
     instance: GncProgramsService | null,
-    http: HttpClient,
+    client: HttpClient,
     state: TransferState,
     domSanitizer: DomSanitizer
-  ) => instance || new GncProgramsService(http, state, domSanitizer)
+  ) => instance || new GncProgramsService(client, state, domSanitizer)
 })
 export class GncProgramsService {
   private readonly URL = AppConfig.API_ENDPOINT;
@@ -60,7 +60,7 @@ export class GncProgramsService {
   programs$ = new Subject<Program[] | null>();
 
   constructor(
-    protected http: HttpClient,
+    protected client: HttpClient,
     private state: TransferState,
     protected domSanitizer: DomSanitizer
   ) {
@@ -70,7 +70,7 @@ export class GncProgramsService {
 
   getAllPrograms(): Observable<Program[] | null> {
     if (!this.programs || this.programs.length >= 1) {
-      return this.http.get<IGncFeatures>(`${this.URL}/programs`).pipe(
+      return this.client.get<IGncFeatures>(`${this.URL}/programs`).pipe(
         pluck('features'),
         map((features: IGncProgram[]) => features.map(feature => feature.properties)),
         map((programs: Program[]) =>
@@ -93,7 +93,7 @@ export class GncProgramsService {
   }
 
   getProgram(id: number): Observable<FeatureCollection> {
-    return this.http.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
+    return this.client.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
       catchError(
         this.handleError<FeatureCollection>(`getProgram id=${id}`, {
           type: 'FeatureCollection',
@@ -104,29 +104,27 @@ export class GncProgramsService {
   }
 
   getProgramObservations(id: number): Observable<FeatureCollection> {
-    return this.http
-      .get<FeatureCollection>(`${this.URL}/programs/${id}/observations`)
-      .pipe(
-        catchError(
-          this.handleError<FeatureCollection>(`getProgramObservations id=${id}`, {
-            type: 'FeatureCollection',
-            features: []
-          })
-        )
-      );
+    return this.client.get<FeatureCollection>(`${this.URL}/programs/${id}/observations`).pipe(
+      catchError(
+        this.handleError<FeatureCollection>(`getProgramObservations id=${id}`, {
+          type: 'FeatureCollection',
+          features: []
+        })
+      )
+    );
   }
 
-  getProgramTaxonomyList(program_id: number): Observable<TaxonomyList> {
+  getProgramTaxonomyList(program_id: number): Observable<Taxonomy> {
     return this.getAllPrograms().pipe(
       // tslint:disable-next-line: no-non-null-assertion
       map(programs => programs!.find(p => p.id_program === program_id)),
       mergeMap(program =>
-        this.http.get<TaxonomyList>(
+        this.client.get<Taxonomy>(
           // tslint:disable-next-line: no-non-null-assertion
           `${this.URL}/taxonomy/lists/${program!.taxonomy_list}/species`
         )
       ),
-      catchError(this.handleError<TaxonomyList>(`getProgramTaxonomyList`, {}))
+      catchError(this.handleError<Taxonomy>(`getProgramTaxonomyList`, {}))
     );
   }
 
@@ -140,19 +138,19 @@ export class GncProgramsService {
   }
 
   // public createProgram(program: Program): Observable<Program> {
-  //   return this.http
+  //   return this.client
   //     .post<Program>(`${this.URL}/programs`, program)
   //     .map(response => response.json() || []);
   // }
 
   // public updateProgram(program: Program): Observable<Program> {
-  // return this.http
+  // return this.client
   //   .put<Program>(`${this.URL}/programs/${program.id_program}`, program)
   //   .map(response => response.json() || []);
   // }
 
   // public deleteProgram(program: Program): Observable<Program> {
-  //   return this.http
+  //   return this.client
   //     .delete<Program>(`${this.URL}/programs/${program.id_program}`)
   //     .map(response => response.json() || []);
   // }

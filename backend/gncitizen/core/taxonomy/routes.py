@@ -139,5 +139,7 @@ def get_taxon_from_cd_nom(cd_nom):
                 description: Taxon data from Taxref
     """
     """Renvoie la fiche TaxRef de l'espèce d'après le cd_nom"""
+    from gncitizen.core.taxonomy.models import Taxref
+
     taxon = Taxref.query.filter_by(cd_nom=cd_nom).first()
     return taxon.as_dict(True)

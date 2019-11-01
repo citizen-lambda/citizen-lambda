@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import dataclasses
 import uuid
 from typing import Union, Tuple, Dict
 
@@ -32,10 +31,10 @@ from gncitizen.core.taxonomy.models import Taxref, TMedias
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
-from gncitizen.utils.geo import get_municipality_id_from_wkb  # , get_area_informations
+from gncitizen.utils.geo import get_municipality_id_from_wkb
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom, mkTaxonRepository
+from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
 
 
@@ -115,24 +114,11 @@ def generate_observation_geojson(id_observation):
             feature["properties"]["media"] = [medium.as_dict(True) for medium in media]
 
     else:
-        taxhub_list_id = (
-            ProgramsModel.query.filter_by(
-                id_program=observation.ObservationModel.id_program
-            )
-            .one()
-            .taxonomy_list
+        from gncitizen.core.taxonomy import TAXA
+
+        feature["properties"]["media"] = list(
+            TAXA.get(feature.properties.cd_nom)["media"]
         )
-        taxon_repository = mkTaxonRepository(taxhub_list_id)
-        try:
-            taxon = next(
-                taxon
-                for taxon in taxon_repository
-                if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-            )
-            feature["properties"]["taxref"] = taxon["taxref"]
-            feature["properties"]["media"] = taxon["media"]
-        except StopIteration:
-            pass
 
     features.append(feature)
     return features
@@ -466,12 +452,6 @@ def get_program_observations(
         logger.debug(str(observations))
         observations = observations.all()
 
-        # if current_app.config.get("API_TAXHUB") is not None:
-        #     taxhub_list_id = (
-        #         ProgramsModel.query.filter_by(id_program=program_id).one().taxonomy_list
-        #     )
-        #     taxon_repository = mkTaxonRepository(taxhub_list_id)
-
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
@@ -483,8 +463,8 @@ def get_program_observations(
             # Observer
             feature["properties"]["observer"] = {"username": observation.username}
 
-            # Observer submitted media
-            # WARN: media route, really!
+            # Observer submitted medium
+            # FIXME: media route, now!
             feature["properties"]["image"] = (
                 "/".join(
                     [
@@ -503,49 +483,13 @@ def get_program_observations(
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 
-            # TaxRef
-            # TODO: breakup dependency !
-            # if current_app.config.get("API_TAXHUB") is None:
-            #     taxref = Taxref.query.filter(
-            #         Taxref.cd_nom == observation.ObservationModel.cd_nom
-            #     ).first()
-            #     if taxref:
-            #         feature["properties"]["taxref"] = taxref.as_dict(True)
+            # from gncitizen.core.taxonomy import TAXA
 
-            #     media = TMedias.query.filter(
-            #         TMedias.cd_ref == observation.ObservationModel.cd_nom
-            #     ).all()
-            #     if media:
-            #         feature["properties"]["media"] = [
-            #             media.as_dict(True) for media in media
-            #         ]
+            # if TAXA is not None:
+            #     taxon = TAXA.get(feature["properties"]["cd_nom"])
+            #     feature["properties"].update(dataclasses.asdict(taxon))
             # else:
-            #     try:
-            #         taxon = next(
-            #             taxon
-            #             for taxon in taxon_repository
-            #             if taxon and taxon["cd_nom"] == feature["properties"]["cd_nom"]
-            #         )
-            #         feature["properties"]["taxref"] = taxon["taxref"]
-            #         feature["properties"]["media"] = taxon["media"]
-            #     except StopIteration:
-            #         pass
-            #     features.append(feature)
-            from gncitizen.core.taxonomy import TAXA
-
-            if TAXA is not None:
-                taxon = TAXA.get(feature["properties"]["cd_nom"])
-                # logger.debug(f"media {type(taxon.media)} {taxon.media}")
-                feature["properties"]["taxref"] = dataclasses.asdict(taxon)
-                feature["properties"]["media"] = [
-                    # FIXME: timeit taxon media tree graft
-                    #  dataclasses.asdict(medium) for medium in taxon.media
-                    medium
-                    for medium in feature["properties"]["taxref"]["media"]
-                ]
-                del feature["properties"]["taxref"]["media"]
-            else:
-                logger.warning(f"TAXA is None")
+            #     logger.warning(f"TAXA is None")
 
             features.append(feature)
 

@@ -27,9 +27,10 @@ import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
 import { GncProgramsService, sorted } from '../../api/gnc-programs.service';
 import { ModalFlowService } from './modalflow/modalflow.service';
-import { TaxonomyList, TaxonomyListItem } from './observation.model';
+import { Taxonomy, Taxon } from './observation.model';
 import { ObsMapComponent } from './map/map.component';
 import { ObsListComponent } from './list/list.component';
+import { TaxonomyService } from 'src/app/api/taxonomy.service';
 
 export const compose = <R>(fn1: (a: R) => R, ...fns: Array<(a: R) => R>) =>
   fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn1);
@@ -51,12 +52,12 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   programs: Program[] | undefined;
   programFeature: FeatureCollection | undefined;
   observations: FeatureCollection | undefined;
-  surveySpecies: TaxonomyList | undefined;
-  surveyData: {
+  taxonomy: Taxonomy | undefined;
+  context: {
     [name: string]: any;
     coords?: L.Point;
     program?: FeatureCollection;
-    taxa?: TaxonomyList;
+    taxa?: Taxonomy;
   } = {};
   programID$ = this.route.params.pipe(map(params => parseInt(params['id'], 10)));
   observations$ = new BehaviorSubject<FeatureCollection | undefined>(this.observations);
@@ -108,16 +109,17 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     share()
   );
   selectedMunicipality: any = null;
-  selectedTaxon: TaxonomyListItem | null = null;
+  selectedTaxon: string | null = null;
   selectedTaxonFilter = (obs: Feature[]): Feature[] =>
     obs && this.selectedTaxon
       ? obs.filter(
           o =>
             o &&
             o.properties &&
-            Object.keys(o.properties).length &&
+            Object.keys(o.properties).length && (
             // tslint:disable-next-line: no-non-null-assertion
-            o.properties.taxref.cd_ref === this.selectedTaxon!.cd_ref
+              o.properties.cd_nom === parseInt(this.selectedTaxon!, 10)
+            )
         )
       : obs;
   selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>
@@ -135,6 +137,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     protected router: Router,
     protected route: ActivatedRoute,
     private programService: GncProgramsService,
+    public taxonomyService: TaxonomyService,
     public flowService: ModalFlowService
   ) {
     combineLatest(this.programID$, this.route.data)
@@ -156,10 +159,10 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
       .subscribe(([taxa, program]) => {
         // console.debug(taxa, program);
         this.programFeature = program;
-        this.surveySpecies = taxa;
-        this.surveyData.taxa = taxa;
+        this.taxonomy = taxa;
+        this.context.taxa = taxa;
 
-        this.surveyData.program = program;
+        this.context.program = program;
       });
 
     this.programID$
@@ -175,7 +178,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.obsFeaturesArray$.subscribe(o => this.filteredObservations$.next(o));
-    this.obsMap.click.subscribe((point: L.Point) => (this.surveyData.coords = point));
+    this.obsMap.click.subscribe((point: L.Point) => (this.context.coords = point));
   }
 
   ngOnDestroy() {

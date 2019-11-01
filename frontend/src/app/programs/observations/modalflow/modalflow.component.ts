@@ -13,7 +13,7 @@ import { ModalFlowService } from './modalflow.service';
 import { IAppConfig } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
 import { FeatureCollection } from 'geojson';
-import { TaxonomyList } from '../observation.model';
+import { Taxonomy } from '../observation.model';
 
 type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
 
@@ -30,7 +30,7 @@ export class ModalFlowComponent {
   data!: {
     coords?: L.Point;
     program?: FeatureCollection;
-    taxa?: TaxonomyList;
+    taxa?: Taxonomy;
   };
   @ViewChild('content')
   content!: ElementRef;

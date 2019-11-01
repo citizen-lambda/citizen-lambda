@@ -1,4 +1,5 @@
 import { Feature, FeatureCollection } from 'geojson';
+import { SafeHtml } from '@angular/platform-browser';
 
 export interface PostObservationResponse extends FeatureCollection {
   message: string;
@@ -22,7 +23,7 @@ export type PostObservationResponsePayload = Feature & {
   };
 };
 
-export interface TaxonomyItemMedia {
+export interface TaxonMedium {
   cd_nom: number;
   cd_ref: number;
   id_type: string;
@@ -32,7 +33,8 @@ export interface TaxonomyItemMedia {
   titre: string;
   url: string;
 }
-export interface TaxonomyListItem {
+
+export interface Taxon {
   cd_nom: number;
   cd_ref: number;
   cd_sup: number;
@@ -44,9 +46,9 @@ export interface TaxonomyListItem {
   id_rang: string;
   id_statut: string;
   lb_auteur: string;
-  media: TaxonomyItemMedia[];
+  media: TaxonMedium[];
   nom_complet: string;
-  nom_complet_html: string;
+  nom_complet_html: SafeHtml;
   nom_valide: string;
   nom_vern: string;
   nom_vern_eng: string;
@@ -55,6 +57,6 @@ export interface TaxonomyListItem {
   regne: string;
 }
 
-export interface TaxonomyList {
-  [index: number]: TaxonomyListItem;
+export interface Taxonomy {
+  [key: string]: Taxon;
 }

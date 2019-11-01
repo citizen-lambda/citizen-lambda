@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { TaxhubService, Taxon } from '../../api/taxhub.service';
+import { TaxonomyService } from '../../api/taxonomy.service';
+import { Taxonomy, Taxon } from '../../programs/observations/observation.model';
+
 
 @Component({
   selector: 'app-species',
@@ -14,7 +16,7 @@ export class SpeciesComponent implements OnInit {
   specie_id: any;
   taxon!: Taxon;
 
-  constructor(private route: ActivatedRoute, public taxhub: TaxhubService) {
+  constructor(private route: ActivatedRoute, public taxonomy: TaxonomyService) {
     this.route.params.subscribe(params => {
       this.specie_id = params['id'];
     });
@@ -22,7 +24,7 @@ export class SpeciesComponent implements OnInit {
 
   ngOnInit() {
     console.log('PARAMS', this.specie_id);
-    this.taxhub.getTaxon(this.specie_id).subscribe(taxon => {
+    this.taxonomy.getTaxon(this.specie_id).subscribe(taxon => {
       this.taxon = taxon;
       console.debug('TAXON', taxon);
     });

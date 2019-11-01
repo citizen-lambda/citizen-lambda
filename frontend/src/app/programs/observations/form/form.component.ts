@@ -26,8 +26,8 @@ import { IAppConfig } from '../../../core/models';
 import {
   PostObservationResponse,
   PostObservationResponsePayload,
-  TaxonomyList,
-  TaxonomyListItem
+  Taxonomy,
+  Taxon
 } from '../observation.model';
 import { geometryValidator, ObsFormMapComponent } from './obs-form-map-component';
 
@@ -74,7 +74,7 @@ export class ObsFormComponent implements OnChanges {
     // [name: string]: any;
     coords?: L.Point;
     program?: FeatureCollection;
-    taxa?: TaxonomyList;
+    taxa?: Taxonomy;
   };
   @Output('newObservation') newObservation: EventEmitter<
     PostObservationResponsePayload
@@ -82,7 +82,7 @@ export class ObsFormComponent implements OnChanges {
   @ViewChild('formMap') formMap: ObsFormMapComponent | undefined;
   @ViewChild('photo') photo: ElementRef | undefined;
   program_id = 0;
-  taxa: TaxonomyListItem[] = [];
+  taxa: Taxon[] = [];
   species: { [name: string]: string }[] = [];
   taxaCount = 0;
   selectedTaxon: any;
@@ -142,25 +142,24 @@ export class ObsFormComponent implements OnChanges {
   inputAutoCompleteFormatter = (x: { name: string }) => x.name;
 
   inputAutoCompleteSetup() {
-    for (const taxon of Object.keys(this.taxa)) {
+    for (const taxon of this.taxa) {
       if (!!!taxon) {
         console.debug('no taxon for inputAutoCompleteSetup().');
         return;
       }
       let str = '';
-      const fields: { [name: string]: string } = {};
-      const t = this.taxa[taxon as any];
+      const fields: { [key: string]: string } = {};
       for (const field of this.taxonAutocompleteFields) {
-        if (t.taxref[field]) {
-          fields[field] = t.taxref[field];
-          str += ` \n${t.taxref[field]}`;
+        if (field in taxon) {
+          fields[field] = (taxon as any)[field] as string;
+          str += ` \n${(taxon as any)[field]}`;
         }
       }
       this.species.push({
         ...fields,
         name: str,
-        cd_nom: t.taxref.cd_nom,
-        icon: t.media.length ? t.media.url : 'assets/default_taxon.jpg'
+        cd_nom: taxon.cd_nom.toString(),
+        icon: !!taxon.media.length ? taxon.media[0].thumb_url : 'assets/default_taxon.jpg'
       });
     }
     this.autocomplete = 'isOn';
@@ -204,7 +203,7 @@ export class ObsFormComponent implements OnChanges {
     }
   }
 
-  onTaxonSelected(taxon: TaxonomyListItem | any): void {
+  onTaxonSelected(taxon: Taxon | any): void {
     console.debug(taxon);
     this.selectedTaxon = taxon;
     let patch = 0;
@@ -219,7 +218,7 @@ export class ObsFormComponent implements OnChanges {
     }
   }
 
-  isSelectedTaxon(taxon: TaxonomyListItem): boolean {
+  isSelectedTaxon(taxon: Taxon): boolean {
     return this.selectedTaxon === taxon;
   }
 

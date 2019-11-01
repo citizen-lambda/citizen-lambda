@@ -154,6 +154,7 @@ def extractor(data: Mapping) -> Callable:
 
 
 class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
+    name = module_name
     provides = "TaxRef"
 
     @lru_cache(maxsize=MnhnTaxRefRest.CACHE_ITEMS)

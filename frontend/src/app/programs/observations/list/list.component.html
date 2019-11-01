@@ -1,29 +1,31 @@
-<ng-container *ngIf="observations$ | async as obs; else loading">
+<ng-container *ngIf="observations$ | async as obs; else loading; ">
   <cdk-virtual-scroll-viewport [itemSize]="84" id="list">
-    <div
-      *cdkVirtualFor="let o of obs; trackBy: trackByObs"
-      class="espece obs-{{ o.properties.id_observation }}"
-      (click)="onSelected(o)"
+    <div *cdkVirtualFor="let o of obs; trackBy: trackByObs"
+    class="espece obs-{{ o?.properties?.id_observation }}"
+    (click)="onSelected(o)"
     >
-      <!-- mv to ng-template, refact with map popup, ngTemplateOutlet with implicit context -->
-      <!-- FIXME: hardcoded api media endpoint -->
-      <img
-        [src]="
-          o?.properties?.images && !!o.properties.images.length
-            ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
-            : o?.properties?.image
-            ? o.properties.image
-            : o?.properties?.media && !!o.properties.media.length
-            ? o.properties.media[0].thumb_url
-            : 'assets/default_taxon.jpg'
-        "
-        [alt]="o?.properties?.taxref?.nom_vern"
-        loading="lazy"
-      />
-      <div class="infos">
-        <b i18n>{{ o?.properties?.taxref?.nom_vern }}</b>
-        <p i18n>
-          Observé par
+      <ng-container *ngIf="taxonService.getTaxon(o?.properties?.cd_nom) | async as taxon">
+        <!-- mv to ng-template, refact with map popup, ngTemplateOutlet with implicit context -->
+        <!-- FIXME: hardcoded api media endpoint -->
+        <img
+          [src]="
+          o && o.properties && o.properties.images && !!o.properties.images.length
+              ? AppConfig.API_ENDPOINT + '/media/' + o.properties.images[0]
+              : o.properties.image
+              ? o.properties.image
+              : taxon?.media && !!taxon.media.length
+              ? taxon.media[0].thumb_url
+              : 'assets/default_taxon.jpg'
+          "
+          [alt]="taxon?.nom_vern"
+          loading="lazy"
+          width="80px"
+          height="80px"
+        />
+        <div class="infos">
+          <b i18n>{{ taxon?.nom_vern }}</b>
+          <p i18n>
+            Observé par
           <span>{{
             o.properties.observer?.username ? o.properties.observer.username : 'Anonyme'
           }}</span>
@@ -32,10 +34,11 @@
           <span *ngIf="o.properties.date"> le {{ o.properties.date }}</span>
           <span *ngIf="o.properties.municipality?.name">
             à {{ o.properties.municipality?.name }}</span
-          >
-        </p>
-      </div>
-      <div class="hide"><img src="assets/binoculars.png" alt="binoculars" /></div>
+            >
+          </p>
+        </div>
+        <div class="hide"><img src="assets/binoculars.png" alt="binoculars" /></div>
+      </ng-container>
     </div>
   </cdk-virtual-scroll-viewport>
 </ng-container>

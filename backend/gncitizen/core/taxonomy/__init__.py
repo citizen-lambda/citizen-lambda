@@ -23,13 +23,11 @@ def read_repo_factory(
     adapter_types = TAXA_READ_REPO_ADAPTERS.get()
     if not len(adapter_types) > 0:
         raise Exception("No registered adapter.")
-    elif adapter and adapter not in adapter_types:
-        raise Exception(f"Could not find adapter {adapter} in registry.")
+    elif adapter and adapter.name not in adapter_types:
+        raise Exception(f"Unregistered adapter {adapter.name}.")
     elif not adapter:
-        adapter = adapter_types[0]
-    read_repo_adapter: Type[ReadRepoAdapter] = adapter_types[
-        adapter_types.index(adapter)
-    ]
+        _adapter = adapter_types.get(list(adapter_types)[0])
+    read_repo_adapter: Type[ReadRepoAdapter] = adapter_types[_adapter.name]
     return ReadRepoProxy(read_repo_adapter())
 
 
