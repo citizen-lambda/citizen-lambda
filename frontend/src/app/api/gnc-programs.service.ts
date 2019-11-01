@@ -95,7 +95,7 @@ export class GncProgramsService {
   getProgram(id: number): Observable<FeatureCollection> {
     return this.client.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
       catchError(
-        this.handleError<FeatureCollection>(`getProgram id=${id}`, {
+        this.handleError<FeatureCollection>(`getProgram::${id}`, {
           type: 'FeatureCollection',
           features: []
         })
@@ -106,7 +106,7 @@ export class GncProgramsService {
   getProgramObservations(id: number): Observable<FeatureCollection> {
     return this.client.get<FeatureCollection>(`${this.URL}/programs/${id}/observations`).pipe(
       catchError(
-        this.handleError<FeatureCollection>(`getProgramObservations id=${id}`, {
+        this.handleError<FeatureCollection>(`getProgramObservations::${id}`, {
           type: 'FeatureCollection',
           features: []
         })
@@ -124,7 +124,7 @@ export class GncProgramsService {
           `${this.URL}/taxonomy/lists/${program!.taxonomy_list}/species`
         )
       ),
-      catchError(this.handleError<Taxonomy>(`getProgramTaxonomyList`, {}))
+      catchError(this.handleError<Taxonomy>(`getProgramTaxonomyList::${program_id}`, {}))
     );
   }
 

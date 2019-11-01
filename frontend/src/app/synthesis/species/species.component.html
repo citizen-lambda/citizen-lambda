@@ -3,14 +3,10 @@
     <div class="carousel-inner">
       <h2>{{ taxon?.nom_vern }}</h2>
       <div class="specie-img">
-        <img
-          class="d-block w-100"
-          src="assets/default_taxon.jpg"
-          alt="First picture"
-        />
+        <img class="d-block w-100" src="assets/default_taxon.jpg" alt="First picture" />
         <div class="carousel-text-container">
           <div class="carousel-text">
-            <h3 [innerHTML]="taxon?.nom_complet_html_sanitized"></h3>
+            <h3 [innerHTML]="taxon?.nom_complet_html"></h3>
             <ul>
               <li>{{ taxon?.classe }}</li>
               <li>{{ taxon?.famille }}</li>
@@ -20,7 +16,7 @@
               <li>{{ taxon?.group2_inpn }}</li>
               <li>{{ taxon?.regne }}</li>
             </ul>
-            <a target="_blank" [href]="taxon?.url" hreflang="fr" class="btn-big"
+            <a target="_blank" [href]="(taxon?.media)[0]?.thumb_url" hreflang="fr" class="btn-big"
               >Découvrir sur INPN</a
             >
           </div>

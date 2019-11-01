@@ -8,16 +8,16 @@ import { AppConfig } from '../../conf/app.config';
 
 import { Taxonomy, Taxon } from '../programs/observations/observation.model';
 
-export type UnsafeTaxon = Taxon & { nom_complet_html: string }
+export type UnsafeTaxon = Taxon & { nom_complet_html: string };
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaxonomyService {
   private readonly URL = AppConfig.API_ENDPOINT;
-  taxa: {[key: number]: Taxon} = {};
+  taxa: { [key: number]: Taxon } = {};
 
-  constructor(protected client: HttpClient, protected domSanitizer: DomSanitizer) { }
+  constructor(protected client: HttpClient, protected domSanitizer: DomSanitizer) {}
 
   getTaxon(cd_nom: number): Observable<Taxon> {
     if (this.taxa[cd_nom]) {
@@ -28,17 +28,18 @@ export class TaxonomyService {
         map(unsafeTaxon => {
           const safeTaxon = {
             ...unsafeTaxon,
-            ...{ nom_complet_html: this.domSanitizer.bypassSecurityTrustHtml(
-              unsafeTaxon.nom_complet_html
+            ...{
+              nom_complet_html: this.domSanitizer.bypassSecurityTrustHtml(
+                unsafeTaxon.nom_complet_html
               )
             }
           };
           console.debug(`getTaxon::${cd_nom} data is outsourced`);
-          this.taxa = {...this.taxa, ...{[safeTaxon.cd_nom]: safeTaxon}};
+          this.taxa = { ...this.taxa, ...{ [safeTaxon.cd_nom]: safeTaxon } };
           return safeTaxon;
-      }),
-      catchError(this.handleError<Taxon>(`getTaxon::{cd_nom}`, {} as Taxon))
-    );
+        }),
+        catchError(this.handleError<Taxon>(`getTaxon::{cd_nom}`, {} as Taxon))
+      );
     }
   }
 
