@@ -360,6 +360,6 @@ vim src/app/home/home.component.css
 ```css
 @media screen and (max-width: 1366px) {
   #programs-cards {
-    height: 2430px; /* totally arbitrary value */
+    height: 2430px; /* arbitrary value */
   }
 ```
