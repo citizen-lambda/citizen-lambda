@@ -1,0 +1,269 @@
+# Standalone install
+
+## prérequis
+
+- [x] j'ai commandé un nom de domaine,
+- [x] le service de résolution de nom de domaine (…chez le même fournisseur),
+- [x] mis à jour la zone DNS avec un enregistrement A pointant sur l'IP du VPS,
+- [x] finallement lié le VPS au domain via l'onglet <cite>DNS Secondaire</cite> 
+de l'interface d'administration du VPS.
+
+
+## prise en main
+
+```sh
+ssh root@vps-123
+```
+
+```sh
+lsb_release -a
+# No LSB modules are available.
+# Distributor ID: Debian
+# Description: Debian GNU/Linux 10 (buster)
+# Release: 10
+# Codename: buster
+
+adduser pat
+# Adding user `pat' …
+# Adding new group `pat' (1001) …
+# Adding new user `pat' (1001) with group `pat' …
+# Creating home directory `/home/pat' …
+# Copying files from `/etc/skel' …
+# New password: …
+# Retype new password: …
+# ...
+sudo usermod -a -G sudo pat
+# sudo apt update …
+```
+
+```sh
+ssh pat@vps-123
+```
+
+```sh
+sudo apt install postgresql postgresql-client postgis \
+  python3-pip python3-venv \
+  git \
+  apache2 letsencrypt supervisor gunicorn
+```
+
+<cite>it works !</cite> La familière <cite>Apache2 Debian Default Page</cite> 
+est disponible sur le FQDN dans le navigateur.
+
+## la ligne de commande
+
+### l'editeur
+
+```sh
+echo 'alias python="/usr/bin/python3"' >> ~/.bash_aliases
+echo 'export EDITOR="vim"' >> ~/.bashrc
+. ~/.bashrc
+git clone https://github.com/leafgarland/typescript-vim.git ~/.vim/pack/typescript/start/typescript-vim
+mkdir -p ~/.vim/syntax/
+wget https://github.com/hdima/python-syntax/raw/master/syntax/python.vim -O ~/.vim/syntax/python.vim
+```
+
+### `~/.ssh/config` et connnexion distante à la bdd de production
+
+Lors d'une connexion au shell distant, la mise en place d'un tunnel 
+relayant le port distant 5432 de la bdd au port local 5438 
+facilite l'exploitation de la bdd avec `PgAdmin` ou `psql` depuis l'hôte local.
+Voici l'enregistrement que contient mon propre `~/.ssh/config`:
+
+```conf
+Host citizendemo
+  Hostname citizendemo.patkap.tech
+  User pat
+  LocalForward 5438 localhost:5432
+```
+
+## le backend
+
+### la base de donnée
+
+```sh
+sudo -u postgres createuser -e -E -P citizen
+sudo -u postgres createdb -e -E UTF8 -O citizen citizendb
+sudo -u postgres psql citizendb  -c 'create extension postgis; create extension "uuid-ossp";'
+```
+
+#### restauration des polygones de communes
+
+🐛 des restes de dépendance à GeoNature qui doivent encore être éliminés.
+
+```sh
+# utilisation de la redirection locale via ssh:
+# c'est une commande à executer depuis son poste local
+/usr/bin/pg_restore --host "localhost" --port "5438" --username "citizen" --no-password --role "citizen" --dbname "citizendb" --verbose --schema "ref_geo" "/home/pat/ref_geo_dump.backup"
+```
+
+#### restauration de la taxonomie
+
+🐛 des restes de dépendance à TaxHub qui doivent encore être éliminés.
+
+```sh
+# utilisation de la redirection locale via ssh:
+# c'est une commande à executer depuis son poste local
+/usr/bin/pg_restore --host "localhost" --port "5438" --username "citizen" --no-password --role "citizen" --dbname "citizendb" --verbose --schema "ref_geo" "/home/pat/taxonomy_dump.backup"
+```
+
+### l'environnement
+
+```sh
+mkdir -p ~/.local/share/venv/citizen_prod
+python3 -m venv ~/.local/share/venv/citizen_prod
+source ~/.local/share/venv/citizen_prod/bin/activate
+# (citizen_prod) pat@vps-123:~$
+python3 -m pip install wheel
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash
+# logout et re-login
+# pat@vps-123:~$
+source ~/.local/share/venv/citizen_prod/bin/activate
+# (citizen_prod) pat@vps-123:~$
+nvm install --lts
+nvm use --lts
+# …
+# Now using node v12.13.0 (npm v6.12.0)
+# Creating default alias: default -> lts/* (-> v12.13.0)
+```
+
+### le dépôt du code source
+
+```sh
+git clone https://github.com/patkap/GeoNature-citizen.git citizen
+cd ~/citizen
+git config user.email "patkap@users.noreply.github.com"
+git config user.name "patkap"
+```
+
+### un premier démarrage en mode verbeux du backend
+
+```sh
+cd ~/citizen/backend
+python3 -m pip install -r requirements.txt
+vim ~/citizen/config/default_config.toml
+# … éditer à souhait
+mkdir ~/citizen/media
+# un premier démarrage en mode très verbeux
+export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; export FLASK_APP=wsgi; python3 -m flask run --host=0.0.0.0
+```
+
+## le frontend
+
+### les dépendances
+
+```sh
+nvm use --lts
+cd ~/citizen/frontend
+npm install -g @angular/cli@v6-lts
+# …
+# + @angular/cli@6.2.9
+# added 330 packages from 220 contributors in 19.287s
+npm install
+# … après une longue compilation de `libsass` qui échoue
+# added 1287 packages from 1263 contributors and audited 55306 packages in 169.776s
+# found 3 vulnerabilities (2 low, 1 high)
+#   run `npm audit fix` to fix them, or `npm audit` for details
+npm audit fix
+# …
+# added 131 packages from 35 contributors, removed 127 packages, updated 46 packages and moved 3 packages in 29.306s
+# fixed 1 of 3 vulnerabilities in 55306 scanned packages
+#   2 package updates for 2 vulnerabilities involved breaking changes
+#   (use `npm audit fix --force` to install breaking changes; or refer to `npm audit` for steps to fix these manually)
+npm audit
+# … ok c'est tolérable en attendant notre montée en version Angular8
+```
+
+```diff
+--- frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts.old 2019-03-07 08:47:03.475859400 +0100
++++ frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts     2019-03-07 08:47:23.460562933 +0100
+@@ -38,6 +38,7 @@
+            onLocationOutsideMapBounds?: any;
+            showPopup?: boolean;
+            strings?: any;
++          getLocationBounds?: Function;
+            locateOptions?: L.LocateOptions;
+        }
+    }
+```
+
+### la configuration du frontend
+
+```sh
+vim ~/citizen/frontend/src/conf/app.config.ts
+vim ~/citizen/frontend/src/conf/map.config.ts
+vim ~/citizen/frontend/angular.json
+touch ~/citizen/frontend/src/custom/custom.css
+```
+
+### un premier démarrage du frontend en mode très verbeux
+
+```sh
+npm run start -- --host=0.0.0.0
+# Schema validation failed with the following errors:
+#   Data path ".builders['app-shell']" should have required property 'class'.
+# …
+npm uninstall @angular-devkit/build-angular
+npm install @angular-devkit/build-angular@0.12.4
+npm run start -- --host=0.0.0.0 --disableHostCheck
+```
+
+c'est le moment d'aller vérifier 
+dans le navigateur que l'application se charge depuis 
+`http://citizendemo.patkap.tech:4200/home`
+de s'enregister, et de mettre à jour le champs booléen 
+`gnc_core`.`t_users`.`admin` dans la bdd.
+
+### le déploiement
+```sh
+sudo a2enmod proxy_http
+sudo systemctl restart apache2
+```
+
+```sh
+sudoedit /etc/apache2/sites-available/citizen.conf
+```
+
+```conf
+# Configuration GeoNature-citizen
+<VirtualHost *:80>
+    ServerAdmin patkap@no-reply.github.com
+    ServerName patkap.tech
+    ServerAlias citizendemo.patkap.tech
+    DocumentRoot /home/pat/citizen/frontend/dist/browser
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+# Alias /citizen /home/pat/citizen/frontend/dist/browser
+
+<Directory /home/pat/citizen/frontend/dist/browser>
+  Require all granted
+  AllowOverride All
+
+  <IfModule mod_rewrite.c>
+    Options -MultiViews
+
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+      RewriteRule ".*" "index.html" [QSA,L]
+  </IfModule>
+
+</Directory>
+<Location /api>
+  ProxyPass http://127.0.0.1:5002/api
+  ProxyPassReverse  http://127.0.0.1:5002/api
+</Location>
+```
+
+```sh
+sudo a2dissite 000-default.conf
+sudo apache2ctl configtest
+# Syntax OK
+sudo systemctl restart apache2
+sudo systemctl status apache2.service
+```
+
+http://citizendemo.patkap.tech/fr/
+http://citizendemo.patkap.tech/en/

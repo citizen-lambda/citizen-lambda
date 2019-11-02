@@ -157,7 +157,7 @@ Un mode ``développement``, avec un rendu côté client:
 
 .. code:: sh
 
-    ng run start
+    npm run start
 
 Et un mode ``production``, multilingue, avec rendu serveur (ssr) optimisé pour le SEO et les robots d'indexation:
 
