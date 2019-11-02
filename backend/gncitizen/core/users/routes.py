@@ -39,40 +39,40 @@ def registration():
     User registration
     ---
     tags:
-      - Authentication
+        - Authentication
     summary: register user
     consumes:
-      - application/json
+        - application/json
     produces:
-      - application/json
+        - application/json
     parameters:
-      - name: body
-        in: body
-        description: JSON parameters
-        required: true
-        schema:
-          required:
-            - name
-            - surname
-            - username
-            - email
-            - password
-          properties:
-            name:
-              type: string
-            surname:
-              type: string
-            username:
-              type: string
-              example: user1
-            email:
-              type: string
-            password:
-              type: string
-              example: user1
+        - name: body
+            in: body
+            description: JSON parameters
+            required: true
+            schema:
+            required:
+                - name
+                - surname
+                - username
+                - email
+                - password
+            properties:
+                name:
+                type: string
+                surname:
+                type: string
+                username:
+                type: string
+                example: user1
+                email:
+                type: string
+                password:
+                type: string
+                example: user1
     responses:
-      200:
-        description: user created
+        200:
+            description: user created
     """
     try:
         request_datas = dict(request.get_json())
@@ -220,27 +220,27 @@ def logout():
     User logout
     ---
     tags:
-      - Authentication
+        - Authentication
     summary: Logout
     consumes:
-      - application/json
+        - application/json
     produces:
-      - application/json
+        - application/json
     parameters:
-      - name: authorization
-        in: authorization
-        description: JSON parameter
-        required: true
-        schema:
-          required:
-            - authorization
-          properties:
-            authorization:
-              type: string
-              example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eSI6ImZjbG9pdHJlIiwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTMyMjA4Nzk0LCJqdGkiOiI5YmQ5OGEwNC1lMTYyLTQwNWMtODg4Zi03YzlhMTAwNTE2ODAiLCJuYmYiOjE1MzIyMDc4OTQsImlhdCI6MTUzMjIwNzg5NH0.oZKoybFIt4mIPF6LrC2cKXHP8o32vAEcet0xVjpCptE
+        - name: authorization
+            in: authorization
+            description: JSON parameter
+            required: true
+            schema:
+            required:
+                - authorization
+            properties:
+                authorization:
+                type: string
+                example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eSI6ImZjbG9pdHJlIiwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTMyMjA4Nzk0LCJqdGkiOiI5YmQ5OGEwNC1lMTYyLTQwNWMtODg4Zi03YzlhMTAwNTE2ODAiLCJuYmYiOjE1MzIyMDc4OTQsImlhdCI6MTUzMjIwNzg5NH0.oZKoybFIt4mIPF6LrC2cKXHP8o32vAEcet0xVjpCptE
     responses:
-      200:
-        description: user disconnected
+        200:
+            description: user disconnected
 
     """
     jti = get_raw_jwt()["jti"]
