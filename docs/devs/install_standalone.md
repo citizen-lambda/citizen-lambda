@@ -305,9 +305,6 @@ sudo systemctl restart apache2
 sudo systemctl status apache2.service
 ```
 
-http://citizendemo.patkap.tech/fr/
-http://citizendemo.patkap.tech/en/
-
 ### serveur http de production
 
 ```sh
