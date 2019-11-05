@@ -73,7 +73,7 @@ app-home div.container-fluid {
 
 @media screen and (max-width: 1366px) {
   #programs-cards {
-    height: 1430px; /* totally arbitrary hand picked value */
+    height: 2430px; /* totally arbitrary hand picked value */
   }
 
   #programs-cards .card:nth-child(3n + 1) {
@@ -100,7 +100,7 @@ app-home div.container-fluid {
 
 @media screen and (min-width: 1366px) {
   #programs-cards {
-    height: 1080px; /* totally arbitrary hand picked value */
+    height: 1800px; /* totally arbitrary hand picked value */
   }
 
   #programs-cards .card:nth-child(4n + 1) {
