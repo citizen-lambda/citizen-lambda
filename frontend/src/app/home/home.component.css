@@ -65,6 +65,11 @@ app-home div.container-fluid {
   height = n rows * largest item in height
 */
 
+:root {
+  --section-programs_height_min1366: 2100px;
+  --section-programs_height_max1366: 2660px;
+}
+
 #programs-cards {
   display: flex;
   flex-flow: column wrap;
@@ -73,7 +78,7 @@ app-home div.container-fluid {
 
 @media screen and (max-width: 1366px) {
   #programs-cards {
-    height: 2430px; /* totally arbitrary hand picked value */
+    height: var(--section-programs_height_max1366);
   }
 
   #programs-cards .card:nth-child(3n + 1) {
@@ -100,7 +105,7 @@ app-home div.container-fluid {
 
 @media screen and (min-width: 1366px) {
   #programs-cards {
-    height: 1800px; /* totally arbitrary hand picked value */
+    height: var(--section-programs_height_min1366);
   }
 
   #programs-cards .card:nth-child(4n + 1) {
