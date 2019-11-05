@@ -197,6 +197,11 @@ vim ~/citizen/frontend/angular.json
 touch ~/citizen/frontend/src/custom/custom.css
 ```
 
+```toml
+URL_APPLICATION = 'http://citizendemo.patkap.tech:4200/'
+API_ENDPOINT = 'http://citizendemo.patkap.tech:5002/api'
+```
+
 ### un premier démarrage du frontend en mode très verbeux
 
 ```sh
@@ -351,7 +356,19 @@ vim ../config/default_config.toml
 npm run ng -- build --prod --aot --optimization --build-optimizer --vendor-chunk --common-chunk --extract-licenses --extract-css
 ```
 
+```toml
+URL_APPLICATION = 'https://citizendemo.patkap.tech'
+API_ENDPOINT = 'https://citizendemo.patkap.tech/api'
+```
+
+```sh
+git update-index --assume-unchanged config/default_config.toml
+git update-index --assume-unchanged frontend/src/conf/app.config.ts
+```
+
 …
+
+🐛
 
 ```sh
 vim src/app/home/home.component.css
