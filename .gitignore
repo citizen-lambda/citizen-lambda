@@ -257,4 +257,3 @@ frontend/src/custom/custom.css
 frontend/ssl
 external_modules/*/data/*
 !external_modules/*/data/INSTALL.txt
-frontend/src/conf/app.config.ts
