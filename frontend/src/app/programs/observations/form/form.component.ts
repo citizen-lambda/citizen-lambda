@@ -9,7 +9,8 @@ import {
   Inject,
   LOCALE_ID,
   SimpleChanges,
-  OnChanges
+  OnChanges,
+  AfterViewInit
 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
@@ -65,7 +66,7 @@ type AppConfigObsForm = Pick<IAppConfig, 'API_ENDPOINT'>;
   styleUrls: ['./form.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ObsFormComponent implements OnChanges {
+export class ObsFormComponent implements OnChanges, AfterViewInit {
   MAP_CONFIG = MAP_CONFIG;
   readonly AppConfig: AppConfigObsForm = AppConfig;
   private readonly URL = this.AppConfig.API_ENDPOINT;
@@ -200,6 +201,12 @@ export class ObsFormComponent implements OnChanges {
       if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
         this.inputAutoCompleteSetup();
       }
+    }
+  }
+
+  ngAfterViewInit() {
+    if (this.data && this.data.coords) {
+      this.obsForm.patchValue({ geometry: this.data.coords });
     }
   }
 
