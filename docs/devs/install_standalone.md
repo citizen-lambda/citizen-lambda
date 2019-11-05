@@ -43,8 +43,9 @@ ssh pat@vps-123
 ```sh
 sudo apt install postgresql postgresql-client postgis \
   python3-pip python3-venv \
+  supervisor \
   git \
-  apache2 letsencrypt supervisor gunicorn
+  apache2 letsencrypt
 ```
 
 <cite>it works !</cite> La familière <cite>Apache2 Debian Default Page</cite> 
@@ -181,7 +182,7 @@ npm audit
             onLocationOutsideMapBounds?: any;
             showPopup?: boolean;
             strings?: any;
-+          getLocationBounds?: Function;
+ +          getLocationBounds?: Function;
             locateOptions?: L.LocateOptions;
         }
     }
@@ -214,7 +215,23 @@ dans le navigateur que l'application se charge depuis
 de s'enregister, et de mettre à jour le champs booléen 
 `gnc_core`.`t_users`.`admin` dans la bdd.
 
-### le déploiement
+## le déploiement
+
+```sh
+npm run build --prod
+npm run build:i18n-ssr
+# > frontend@0.0.0 compile:server /home/pat/citizen/frontend
+# > webpack --config webpack.server.config.js --progress --colors
+# > frontend@0.0.0 compile:server /home/pat/citizen/frontend
+# > webpack --config webpack.server.config.js --progress --colors
+# …
+# TypeError: Cannot read property 'getEntryByPath' of undefined
+npm install typescript"@2.9.1"
+npm run build:i18n-ssr
+# ou alternativement
+npm run ng -- build --prod --aot --optimization --build-optimizer --vendor-chunk --common-chunk --extract-licenses --extract-css
+```
+
 ```sh
 sudo a2enmod proxy_http
 sudo systemctl restart apache2
@@ -225,33 +242,56 @@ sudoedit /etc/apache2/sites-available/citizen.conf
 ```
 
 ```conf
-# Configuration GeoNature-citizen
+# citizen
 <VirtualHost *:80>
+  ServerName patkap.tech
+
+  RewriteEngine on
+  RewriteCond %{HTTPS} !on
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+</VirtualHost>
+
+<VirtualHost *:443>
     ServerAdmin patkap@no-reply.github.com
     ServerName patkap.tech
     ServerAlias citizendemo.patkap.tech
-    DocumentRoot /home/pat/citizen/frontend/dist/browser
+    DocumentRoot /home/pat/citizen/frontend/dist/browser/
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
+    SSLEngine on
+    SSLProxyEngine on
+    SSLCertificateFile /etc/letsencrypt/live/citizendemo.patkap.tech/cert.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/citizendemo.patkap.tech/privkey.pem
+    SSLCertificateChainFile /etc/letsencrypt/live/citizendemo.patkap.tech/chain.pem
+    SSLProtocol all -SSLv2 -SSLv3
+    SSLHonorCipherOrder on
+    SSLCompression off
+    SSLOptions +StrictRequire
+    SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </VirtualHost>
 
 # Alias /citizen /home/pat/citizen/frontend/dist/browser
 
-<Directory /home/pat/citizen/frontend/dist/browser>
+<Directory /home/pat/citizen/frontend/dist/browser/>
   Require all granted
   AllowOverride All
 
-  <IfModule mod_rewrite.c>
-    Options -MultiViews
+  Options -MultiViews
 
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-      RewriteRule ".*" "index.html" [QSA,L]
-  </IfModule>
+  RewriteEngine On
+  # If an existing asset or directory is requested go to it as it is
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
+  RewriteRule ^ - [L]
 
+  # If the requested resource doesn't exist, use index.html
+  RewriteRule ^ /index.html
 </Directory>
+
 <Location /api>
+  Header set Access-Control-Allow-Origin "*"
   ProxyPass http://127.0.0.1:5002/api
   ProxyPassReverse  http://127.0.0.1:5002/api
 </Location>
@@ -265,5 +305,61 @@ sudo systemctl restart apache2
 sudo systemctl status apache2.service
 ```
 
-http://citizendemo.patkap.tech/fr/
-http://citizendemo.patkap.tech/en/
+### serveur http de production
+
+```sh
+python3 -m pip install gunicorn
+$EDITOR ~/citizen/backend/start_gunicorn.sh
+```
+
+### gestionnaire de processus
+
+```sh
+sudoedit /etc/supervisor/conf.d/citizen.conf
+```
+
+```conf
+[program:citizen]
+command = /home/pat/citizen/backend/start_gunicorn.sh
+autostart=true
+autorestart=true
+stdout_logfile = /var/log/supervisor/citizen.log
+redirect_stderr = true
+```
+
+```sh
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl avail
+sudo supervisorctl restart
+# tail /var/log/supervisor/citizen.log
+```
+
+### https et http2
+
+```sh
+sudo certbot certonly --webroot --webroot-path /var/www/html -d citizendemo.patkap.tech
+sudo a2enmod ssl
+sudo a2enmod http2
+sudoedit /etc/apache2/sites-available/citizen.conf
+sudo apachectl -t
+# sudo tail -f /var/log/apache2/error.log
+sudo systemctl restart apache2
+vim src/conf/app.config.ts
+sudo supervisorctl restart citizen
+vim ../config/default_config.toml
+npm run ng -- build --prod --aot --optimization --build-optimizer --vendor-chunk --common-chunk --extract-licenses --extract-css
+```
+
+…
+
+```sh
+vim src/app/home/home.component.css
+```
+
+```css
+@media screen and (max-width: 1366px) {
+  #programs-cards {
+    height: 2430px; /* arbitrary value */
+  }
+```
