@@ -74,6 +74,13 @@ section#program-teaser > app-program-teaser > figure > p {
   padding: 1.6em;
 }
 
+@media screen and (max-width: 700px) {
+  section#program-teaser > app-program-teaser > figure > p {
+    grid-row-start: 2;
+    grid-row: span 3;
+  }
+}
+
 section#program-teaser > app-program-teaser > a.scroll {
   position: absolute;
   bottom: 0px;

@@ -15,8 +15,8 @@
       <!-- TAXON SELECT -->
       <div *ngIf="taxaCount < taxonSelectInputThreshold" class="d-inline-flex toolbar">
         <select formControlName="cd_nom" class="form-control rounded-0">
-          <option *ngFor="let s of taxa" [value]="s.taxref.cd_nom">
-            {{ s.nom?.nom_francais }} (<i>{{ s.taxref.nom_complet }}</i
+          <option *ngFor="let s of taxa" [value]="s?.cd_nom">
+            {{ s?.nom_vern }} (<i>{{ s?.nom_complet }}</i
             >)
           </option>
         </select>
@@ -32,11 +32,11 @@
         <div *ngFor="let s of taxa">
           <div class="obs-img" [class.selected]="isSelectedTaxon(s)">
             <img
-              [src]="!!s.media ? s.media?.url : 'assets/default_taxon.jpg'"
-              [alt]="s.nom?.nom_francais"
+              [src]="!!s?.media ? s.media.thumb_url : 'assets/default_taxon.jpg'"
+              [alt]="s?.nom_vern"
               (click)="onTaxonSelected(s)"
             />
-            <span>{{ s.nom?.nom_francais }}</span>
+            <span>{{ s?.nom_vern }}</span>
           </div>
         </div>
       </div>
@@ -160,6 +160,6 @@
         <em>Cliquez sur la carte pour renseigner le lieu précis de votre observation</em>
       </p>
     </div>
-    <p class="ng-invalid pl-1 ml-1">Champs manquants</p>
+    <!-- <p class="ng-invalid pl-1 ml-1">Champs manquants</p> -->
   </div>
 </form>
