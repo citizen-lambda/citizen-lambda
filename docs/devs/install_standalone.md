@@ -369,19 +369,21 @@ git update-index --assume-unchanged frontend/src/conf/app.config.ts
 ### brotli
 
 ```sh
-sudo a2enmod brotli  # sudo apt install brotli mandatory ?
+sudo apt install brotli
+for i in ~/citizen/frontend/dist/browser/*.{css,js}; do brotli $i; done
 sudoedit /etc/apache2/sites-available/citizen.conf
+sudo a2enmod brotli
 ```
 
 ```diff
---- citizen.conf.orig 2019-11-07 06:57:22.646056873 +0100
-+++ citizen.conf      2019-11-07 06:57:00.053816878 +0100
-@@ -27,6 +27,13 @@
+--- citizen.conf.orig  2019-11-07 06:57:22.646056873 +0100
++++ /etc/apache2/sites-available/citizen.conf  2019-11-07 09:57:22.368054082 +0100
+@@ -27,8 +27,25 @@
      SSLOptions +StrictRequire
      SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
      Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 +
-+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json image/svg+xml application/xml+rss application/x-font-ttf application/vnd.ms-fontobject image/x-icon
++    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json application/ld+json image/svg+xml application/xml+rss application/x-font-ttf application/vnd.ms-fontobject image/x-icon
 +    SetEnvIfNoCase Request_URI \
 +        \.(gif|jpe?g|png|swf|woff|woff2) no-brotli dont-vary
 +
@@ -389,7 +391,31 @@ sudoedit /etc/apache2/sites-available/citizen.conf
 +    Header append Vary User-Agent env=!dont-vary
  </VirtualHost>
 
++<Files *.js.br>
++  AddType "application/javascript" .br
++  AddEncoding br .br
++</Files>
++
++<Files *.css.br>
++  AddType "text/css" .br
++  AddEncoding br .br
++</Files>
++
  <Directory /home/pat/citizen/frontend/dist/browser/>
+   Require all granted
+   AllowOverride All
+@@ -36,6 +53,11 @@
+   Options -MultiViews
+
+   RewriteEngine On
++
++  RewriteCond %{HTTP:Accept-Encoding} br
++  RewriteCond %{REQUEST_FILENAME}.br -f
++  RewriteRule ^(.*)$ $1.br [L]
++
+   # If an existing asset or directory is requested go to it as it is
+   RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
+   RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
 ```
 
 …
