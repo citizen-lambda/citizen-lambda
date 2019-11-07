@@ -115,8 +115,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
-    console.debug({ layers: [conf.DEFAULT_BASE_MAP()] }, this.options.center);
-    console.debug(this.options);
+    console.debug({ layers: [conf.DEFAULT_BASE_MAP()] }, this.options);
     // tslint:disable-next-line: no-non-null-assertion
     this.map = L.map(this.mapRef!.nativeElement, { ...this.options });
     this.map.whenReady(() => this.onMapReady());
@@ -124,8 +123,6 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.input && changes.input.currentValue) {
-      console.debug(changes, this.input);
-
       if (this.input.features && this.map) {
         this.loadProgramArea(this.input);
       }

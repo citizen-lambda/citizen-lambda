@@ -50,7 +50,6 @@ export class ObsListComponent implements OnChanges {
   }
 
   onSelected(feature: any): void {
-    console.debug(feature);
     this.obsSelected.emit(feature);
   }
 

@@ -34,7 +34,7 @@ export class TaxonomyService {
               )
             }
           };
-          console.debug(`getTaxon::${cd_nom} data is outsourced`);
+          // console.debug(`getTaxon::${cd_nom} data is outsourced`);
           this.taxa = { ...this.taxa, ...{ [safeTaxon.cd_nom]: safeTaxon } };
           return safeTaxon;
         }),

@@ -16,14 +16,13 @@
 
     <div class="side-bar" id="obslist">
       <div class="toolbar">
-        <!-- FIXME: I18n labels for taxon filters -->
         <select
           #inputSpecies
           class="form-control rounded-0"
           id="inputSpecies"
           [(ngModel)]="selectedTaxon"
           (ngModelChange)="onFilterChange()"
-          aria-label="Toutes espèces"
+          aria-label-i18n="Toutes espèces"
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
           <option *ngFor="let s of taxonomy | keyvalue" [ngValue]="s.key">
@@ -40,7 +39,7 @@
           class="form-control rounded-0 col-lg-6"
           [(ngModel)]="selectedMunicipality"
           (ngModelChange)="onFilterChange()"
-          aria-label="Toutes communes"
+          aria-label-i18n="Toutes communes"
         >
           <option [ngValue]="null" i18n>Toutes communes</option>
           <option *ngFor="let t of municipalities$ | async" [ngValue]="t">{{
@@ -75,6 +74,7 @@
           features: filteredObservations$ | async
         }"
         [program]="programFeature"
+        [taxonomy]="taxonomy"
       ></app-obs-map>
       <div class="btn-groups">
         <app-modalflow [data]="context"></app-modalflow>

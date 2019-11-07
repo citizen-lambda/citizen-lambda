@@ -149,6 +149,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input()
   observations!: FeatureCollection;
   @Input()
+  taxonomy!: Taxonomy;
+  @Input()
   program!: FeatureCollection;
   @Output() click: EventEmitter<L.Point> = new EventEmitter();
   options: any;
@@ -171,10 +173,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.options = conf;
-    console.debug({
-      layers: [this.options.DEFAULT_BASE_MAP()],
-      gestureHandling: true
-    });
     this.observationMap = L.map(this.map.nativeElement, {
       layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay
       gestureHandling: true
@@ -183,7 +181,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // console.debug(changes);
     if (this.observationMap && changes.program && changes.program.currentValue) {
       this.loadProgramArea();
     }
@@ -347,9 +344,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
       visibleParent = this.observationLayer.getVisibleParent(marker.marker);
     }
     if (!visibleParent && this.observationLayer && marker) {
-      console.debug(event);
       this.observationMap.flyTo(marker.marker.getLatLng(), 16);
-      // this.observationMap.panTo(marker.marker.getLatLng());
+      // TODO: runtime@prefers-reduced-motion: this.observationMap.panTo(marker.marker.getLatLng());
       visibleParent = marker.marker;
     }
     if (visibleParent) {
@@ -415,7 +411,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
 import { AppConfig } from '../../../../conf/app.config';
 // import { Taxon } from '../../../api/taxonomy.service';
-import { Taxon } from '../observation.model';
+import { Taxon, Taxonomy } from '../observation.model';
 import { TaxonomyService } from '../../../api/taxonomy.service';
 
 @Component({
@@ -437,4 +433,4 @@ export class MarkerPopupComponent {
   constructor(public taxonService: TaxonomyService) {}
 }
 
-// FIXME: i18n taxonData.taxref?.nom_vern_eng may be empty
+// FIXME: i18n taxon.nom_vern_eng may be empty

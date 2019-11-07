@@ -68,7 +68,7 @@ export class AuthInterceptor implements HttpInterceptor {
     } else {
       return this.token$.pipe(
         filter((token: string | null) => !!token),
-        switchMap((token: string) => next.handle(this.addToken(request, token))),
+        switchMap((token: string) => next.handle(this.addToken(request, token)))
       );
     }
   }
@@ -99,7 +99,7 @@ export class AuthInterceptor implements HttpInterceptor {
       // tslint:disable-next-line: no-non-null-assertion
       this.auth.getAccessToken()!
     );
-    console.debug(`secs to exp: ${secondsToExpiration}`);
+    // console.debug(`secs to exp: ${secondsToExpiration}`);
     if (secondsToExpiration && secondsToExpiration <= 120.0) {
       return this.handle401(request, next);
     }
