@@ -3,7 +3,7 @@
   <!-- FIXME: hardcoded api media endpoint -->
   <img
     [src]="
-      data && data.images && !!data.images.length
+    data && data.images && !!data.images.length
         ? AppConfig.API_ENDPOINT + '/media/' + data.images[0]
         : data.image
         ? data.image
@@ -20,12 +20,16 @@
     <b i18n>{{ taxon?.nom_vern }}</b>
     <p i18n>
       Observé par
-      <span>{{ data?.observer?.username ? data.observer.username : 'Anonyme' }}</span>
+      <span>{{
+        data?.observer?.username ? data.observer.username : 'Anonyme'
+      }}</span>
     </p>
     <p i18n *ngIf="data?.date || data?.municipality?.name">
       <span *ngIf="data.date"> le {{ data.date }}</span>
-      <span *ngIf="data.municipality?.name"> à {{ data.municipality?.name }} </span>
+      <span *ngIf="data.municipality?.name">
+        à {{ data.municipality?.name }}
+      </span>
     </p>
   </div>
-  <div class="hide"><img src="assets/binoculars.png" alt="binoculars" /></div>
+  <div class="hide"><img src="assets/binoculars.png" alt="binoculars"/></div>
 </div>

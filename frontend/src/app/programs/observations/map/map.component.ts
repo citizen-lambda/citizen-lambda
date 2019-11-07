@@ -332,7 +332,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   showPopup(obs: Feature, event: L.LeafletEvent): void {
-    console.debug(`${obs}, ${event}`);
     this.obsOnFocus = obs;
     const marker = this.featureMarkers.find(
       m =>
@@ -348,6 +347,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       visibleParent = this.observationLayer.getVisibleParent(marker.marker);
     }
     if (!visibleParent && this.observationLayer && marker) {
+      console.debug(event);
       this.observationMap.flyTo(marker.marker.getLatLng(), 16);
       // this.observationMap.panTo(marker.marker.getLatLng());
       visibleParent = marker.marker;
@@ -409,7 +409,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
   @HostListener('document:NewObservationEvent', ['$event'])
   newObservationEventHandler(e: CustomEvent): void {
-    console.debug(e);
     e.stopPropagation();
   }
 }
@@ -438,4 +437,4 @@ export class MarkerPopupComponent {
   constructor(public taxonService: TaxonomyService) {}
 }
 
-// FIXME: i18n taxon?.nom_vern_eng may be empty
+// FIXME: i18n taxonData.taxref?.nom_vern_eng may be empty
