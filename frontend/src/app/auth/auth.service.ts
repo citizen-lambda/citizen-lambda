@@ -29,11 +29,11 @@ export class AuthService {
   );
   timeoutID: any = null;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private client: HttpClient, private router: Router) {}
 
   login(user: LoggingUser): Observable<LoginPayload> {
     const url = `${AppConfig.API_ENDPOINT}/login`;
-    return this.http.post<LoginPayload>(url, user, { headers: this.headers }).pipe(
+    return this.client.post<LoginPayload>(url, user, { headers: this.headers }).pipe(
       map(u => {
         if (u && u.refresh_token) {
           localStorage.setItem('refresh_token', u.refresh_token);
@@ -53,12 +53,12 @@ export class AuthService {
 
   register(user: RegisteringUser): Observable<any> {
     const url = `${AppConfig.API_ENDPOINT}/registration`;
-    return this.http.post(url, user, { headers: this.headers });
+    return this.client.post(url, user, { headers: this.headers });
   }
 
   logout(): Promise<any> {
     const url = `${AppConfig.API_ENDPOINT}/logout`;
-    return this.http
+    return this.client
       .post<LogoutPayload>(url, { headers: this.headers })
       .pipe(
         map(payload => {
@@ -82,21 +82,21 @@ export class AuthService {
 
   ensureAuthorized(): Observable<UserInfo> {
     const url = `${AppConfig.API_ENDPOINT}/user/info`;
-    return this.http.get<UserInfo>(url, { headers: this.headers });
+    return this.client.get<UserInfo>(url, { headers: this.headers });
   }
 
   performTokenRefresh(): Observable<TokenRefresh> {
     const url = `${AppConfig.API_ENDPOINT}/token_refresh`;
     const refresh_token = this.getRefreshToken();
     const headers = this.headers.set('Authorization', `Bearer ${refresh_token}`);
-    return this.http.post<TokenRefresh>(url, '', {
+    return this.client.post<TokenRefresh>(url, '', {
       headers: headers
     });
   }
 
   selfDeleteAccount(_access_token: string): Promise<any> {
     const url = `${AppConfig.API_ENDPOINT}/user/delete`;
-    return this.http.delete(url, { headers: this.headers }).toPromise();
+    return this.client.delete(url, { headers: this.headers }).toPromise();
   }
 
   isLoggedIn(): Observable<boolean> {

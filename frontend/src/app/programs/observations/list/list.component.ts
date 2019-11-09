@@ -9,7 +9,7 @@ import {
   ViewEncapsulation
   // HostListener
 } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { FeatureCollection, Feature } from 'geojson';
 

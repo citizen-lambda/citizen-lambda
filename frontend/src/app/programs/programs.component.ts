@@ -13,7 +13,7 @@ import { ProgramsResolve } from '../programs/programs-resolve.service';
   templateUrl: './programs.component.html',
   styleUrls: ['./programs.component.css'],
   encapsulation: ViewEncapsulation.None,
-  providers: [ProgramsResolve]
+  providers: [ ProgramsResolve ]
 })
 export class ProgramsComponent {
   programs$ = new Subject<Program[] | null>();
