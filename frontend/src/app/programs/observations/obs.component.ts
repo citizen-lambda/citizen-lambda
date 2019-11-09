@@ -32,8 +32,8 @@ import { ObsMapComponent } from './map/map.component';
 import { ObsListComponent } from './list/list.component';
 import { TaxonomyService } from '../../api/taxonomy.service';
 
-export const compose = <R>(fn1: (a: R) => R, ...fns: Array<(a: R) => R>) =>
-  fns.reduce((prevFn, nextFn) => value => prevFn(nextFn(value)), fn1);
+export const compose = <R>(...fns: Array<(a: R) => R>) => (arg: R) =>
+  fns.reduce((prevFn, nextFn) => prevFn.then(nextFn), Promise.resolve(arg));
 
 @Component({
   selector: 'app-observations',
@@ -210,8 +210,8 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         )
         // tap(console.debug)
       )
-      .subscribe(observations => {
-        this.filteredObservations$.next(observations);
+      .subscribe(async observations => {
+        this.filteredObservations$.next(await observations);
       });
   }
 }
