@@ -1,5 +1,9 @@
 @import '../../../base.css';
 
+:root {
+  --step: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold))
+}
+
 app-observations div.container-fluid {
   padding-left: 0;
   padding-right: 0;
@@ -17,11 +21,11 @@ section#program-content {
 }
 
 section#program-teaser {
-  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
+  max-height: var(--step);
 }
 
 section#program-content {
-  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom));
+  max-height: var(--step);
 }
 
 section#program-teaser > app-program-teaser,
@@ -31,7 +35,7 @@ section#program-content > app-program-content {
 }
 
 section#program-teaser > app-program-teaser > figure {
-  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
+  max-height: var(--step);
   display: grid;
   grid-template-columns: 1fr 1fr auto 1fr;
   grid-template-rows: 2fr 1fr 1fr;
@@ -96,7 +100,7 @@ section#program-teaser > app-program-teaser > a.scroll img {
 section#program-content > app-program-content > article {
   background-color: var(--secondary-color);
   font-size: calc(80% + 1vw);
-  height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom));
+  height: var(--step);
   overflow: auto;
   padding: 1.2em;
 }
@@ -108,7 +112,7 @@ section#program-content > app-program-content > a.btn-big {
   padding: 10px 30px !important;
   position: absolute;
   right: 0px;
-  top: calc(2 * (100vh - var(--router-outlet-offset) - var(--section-margin-bottom)) - var(--fold));
+  top: calc(2 * var(--step) - 3em);
   transform: translateX(-50%);
 }
 
