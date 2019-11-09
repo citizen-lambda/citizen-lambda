@@ -60,7 +60,7 @@ export const conf = {
       subdomains: baseLayer['subdomains'] || '',
       maxZoom: baseLayer['maxZoom'],
       bounds: <[number, number][]>baseLayer['bounds']
-    });
+    }) as any;
     return acc;
   }, {}),
   DEFAULT_BASE_MAP: () => {
