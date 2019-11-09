@@ -50,12 +50,12 @@ export interface IAppConfig {
 
 // TODO: mv anchorNavigation to directive.
 export abstract class AnchorNavigation implements AfterViewInit {
-  fragment$ = new BehaviorSubject<string | null>(null);
+  fragment$ = new BehaviorSubject<string>('');
 
   constructor(protected router: Router, protected route: ActivatedRoute) {
     combineLatest(
       this.route.fragment.pipe(
-        filter(fragment => fragment !== null),
+        filter(fragment => !!fragment),
         map(fragment => fragment),
         take(1)
       ),
@@ -74,14 +74,14 @@ export abstract class AnchorNavigation implements AfterViewInit {
 
   jumpTo(fragment: string, delay: number = 200) {
     const anchor = document.getElementById(fragment);
-    const offset = parseInt(
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--narrow-topbar-height')
-        .replace('px', '')
-        .trim(),
-      10
-    );
     if (anchor) {
+      const offset = parseInt(
+        getComputedStyle(document.documentElement)
+          .getPropertyValue('--narrow-topbar-height')
+          .replace('px', '')
+          .trim(),
+        10
+      );
       setTimeout(() => {
         window.scrollTo({
           top: anchor.getBoundingClientRect().top + window.pageYOffset - offset,
@@ -94,7 +94,7 @@ export abstract class AnchorNavigation implements AfterViewInit {
   // abstract AfterViewInit(): void;
 
   ngAfterViewInit() {
-    // this.fragment$.subscribe((fragment: string) => this.jumpTo(fragment));
+    this.fragment$.pipe(take(1)).subscribe((fragment: string) => this.jumpTo(fragment));
   }
 
   @HostListener('window:scroll', ['$event'])
