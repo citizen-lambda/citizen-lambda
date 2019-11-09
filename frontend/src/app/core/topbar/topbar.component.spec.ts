@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { BrowserTransferStateModule } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
@@ -12,7 +12,7 @@ describe('TopbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule, BrowserTransferStateModule],
       providers: [AuthService],
       declarations: [TopbarComponent]
     })
@@ -20,7 +20,6 @@ describe('TopbarComponent', () => {
       .then(() => {
         fixture = TestBed.createComponent(TopbarComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
       });
   }));
 

@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BrowserTransferStateModule } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NgbModule, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -15,8 +16,18 @@ describe('ProgramsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgbModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [GncService, GncProgramsService, NgbModal],
+      imports: [
+        BrowserTransferStateModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        NgbModule,
+      ],
+      providers: [
+        NgbModal,
+        NgbActiveModal,
+        GncService,
+        GncProgramsService,
+      ],
       declarations: [ProgramsComponent]
     }).compileComponents();
   }));

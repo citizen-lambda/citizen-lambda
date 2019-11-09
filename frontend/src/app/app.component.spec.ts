@@ -1,6 +1,11 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { BrowserTransferStateModule } from '@angular/platform-browser';
+
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 
 import { AppConfig } from '../conf/app.config';
 import { AppComponent } from './app.component';
@@ -16,7 +21,14 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       providers: [AuthService],
       declarations: [AppComponent, TopbarComponent, SidebarComponent, FooterComponent],
-      imports: [RouterTestingModule, HttpClientTestingModule]
+      imports: [
+        BrowserTransferStateModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
+        LoadingBarHttpClientModule,
+        LoadingBarRouterModule,
+        LoadingBarModule
+      ]
     }).compileComponents();
   }));
 
@@ -32,10 +44,9 @@ describe('AppComponent', () => {
     expect(app.title).toEqual(AppConfig.appName);
   });
 
-  it('should render title in an anchor tag', () => {
+  it('should render an home anchor', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('header nav a').textContent).toContain(AppConfig.appName);
+    expect(compiled.querySelector('header > app-topbar')).toBeTruthy();
   });
 });

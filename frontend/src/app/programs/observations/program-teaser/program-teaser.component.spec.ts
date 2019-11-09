@@ -1,5 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { AnchorNavigation } from '../../../core/models';
 import { ProgramTeaserComponent } from './program-teaser.component';
 
 describe('ProgramTeaserComponent', () => {
@@ -8,7 +12,13 @@ describe('ProgramTeaserComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProgramTeaserComponent ]
+      imports: [
+        RouterTestingModule,
+        NgbTooltipModule
+      ],
+      declarations: [
+        ProgramTeaserComponent,
+      ]
     })
     .compileComponents();
   }));
