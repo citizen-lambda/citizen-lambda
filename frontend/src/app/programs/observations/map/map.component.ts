@@ -59,7 +59,7 @@ export const conf = {
       attribution: baseLayer['attribution'],
       subdomains: baseLayer['subdomains'] || '',
       maxZoom: baseLayer['maxZoom'],
-      bounds: <[number, number][]>baseLayer['bounds']
+      // bounds?: <[number, number][]>baseLayer['bounds']
     }) as any;
     return acc;
   }, {}),
