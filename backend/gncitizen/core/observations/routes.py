@@ -448,7 +448,7 @@ def get_program_observations(
             .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         )
 
-        observations = observations.order_by(ObservationModel.timestamp_create.desc())
+        observations = observations.order_by(ObservationModel.date.desc())
         logger.debug(str(observations))
         observations = observations.all()
 
