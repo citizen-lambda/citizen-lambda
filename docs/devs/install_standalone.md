@@ -63,6 +63,9 @@ git clone https://github.com/editorconfig/editorconfig-vim.git ~/.vim/pack/edito
 git clone https://github.com/leafgarland/typescript-vim.git ~/.vim/pack/typescript/start/typescript-vim
 mkdir -p ~/.vim/syntax/ && \
   wget https://github.com/hdima/python-syntax/raw/master/syntax/python.vim -O ~/.vim/syntax/python.vim
+# curl http… -o ~/.vim/pack/…
+mkdir -p ~/.vim/pack/python/start/black/plugin && \
+  wget https://raw.githubusercontent.com/psf/black/master/plugin/black.vim -0 ~/.vim/pack/python/start/black/plugin/black.vim
 ```
 
 ### `~/.ssh/config` et connnexion distante à la bdd de production
