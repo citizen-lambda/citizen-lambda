@@ -361,11 +361,6 @@ URL_APPLICATION = 'https://citizendemo.patkap.tech'
 API_ENDPOINT = 'https://citizendemo.patkap.tech/api'
 ```
 
-```sh
-git update-index --assume-unchanged config/default_config.toml
-git update-index --assume-unchanged frontend/src/conf/app.config.ts
-```
-
 ### brotli
 
 ```sh
