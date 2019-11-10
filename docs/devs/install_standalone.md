@@ -142,7 +142,7 @@ git config user.name "patkap"
 ```sh
 cd ~/citizen/backend
 python3 -m pip install -r requirements.txt
-vim ~/citizen/config/default_config.toml
+$EDITOR ~/citizen/config/default_config.toml
 # … éditer à souhait
 mkdir ~/citizen/media
 # un premier démarrage en mode très verbeux
@@ -191,9 +191,9 @@ npm audit
 ### la configuration du frontend
 
 ```sh
-vim ~/citizen/frontend/src/conf/app.config.ts
-vim ~/citizen/frontend/src/conf/map.config.ts
-vim ~/citizen/frontend/angular.json
+$EDITOR ~/citizen/frontend/src/conf/app.config.ts
+$EDITOR ~/citizen/frontend/src/conf/map.config.ts
+$EDITOR ~/citizen/frontend/angular.json
 touch ~/citizen/frontend/src/custom/custom.css
 ```
 
@@ -350,9 +350,9 @@ sudoedit /etc/apache2/sites-available/citizen.conf
 sudo apachectl -t
 # sudo tail -f /var/log/apache2/error.log
 sudo systemctl restart apache2
-vim src/conf/app.config.ts
+$EDITOR src/conf/app.config.ts
 sudo supervisorctl restart citizen
-vim ../config/default_config.toml
+$EDITOR ../config/default_config.toml
 npm run ng -- build --prod --aot --optimization --build-optimizer --vendor-chunk --common-chunk --extract-licenses --extract-css
 ```
 
@@ -365,6 +365,7 @@ API_ENDPOINT = 'https://citizendemo.patkap.tech/api'
 
 ```sh
 sudo apt install brotli
+# TODO: automate optional postbuild brotli packing
 for i in ~/citizen/frontend/dist/browser/*.{css,js}; do brotli $i; done
 sudoedit /etc/apache2/sites-available/citizen.conf
 sudo a2enmod brotli
@@ -378,7 +379,7 @@ sudo a2enmod brotli
      SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
      Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 +
-+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json application/ld+json image/svg+xml application/xml+rss image/x-icon
++    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json application/ld+json image/svg+xml application/xml+rss application/x-font-ttf application/vnd.ms-fontobject image/x-icon
 +    SetEnvIfNoCase Request_URI \
 +        \.(gif|jpe?g|png|swf|woff|woff2) no-brotli dont-vary
 +
@@ -411,6 +412,15 @@ sudo a2enmod brotli
    # If an existing asset or directory is requested go to it as it is
    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
+@@ -46,7 +68,7 @@
+ </Directory>
+
+ <Location /api>
+-  Header set Access-Control-Allow-Origin "*"
++  Header set Access-Control-Allow-Origin "https://citizendemo.patkap.tech"
+   ProxyPass http://127.0.0.1:5002/api
+   ProxyPassReverse  http://127.0.0.1:5002/api
+ </Location>
 ```
 
 …
@@ -418,7 +428,7 @@ sudo a2enmod brotli
 🐛
 
 ```sh
-vim src/app/home/home.component.css
+$EDITOR src/app/home/home.component.css
 ```
 
 ```css
