@@ -59,9 +59,10 @@ est disponible sur le FQDN dans le navigateur.
 echo 'alias python="/usr/bin/python3"' >> ~/.bash_aliases
 echo 'export EDITOR="vim"' >> ~/.bashrc
 . ~/.bashrc
+git clone https://github.com/editorconfig/editorconfig-vim.git ~/.vim/pack/editorconfig/editorconfig-vim
 git clone https://github.com/leafgarland/typescript-vim.git ~/.vim/pack/typescript/start/typescript-vim
-mkdir -p ~/.vim/syntax/
-wget https://github.com/hdima/python-syntax/raw/master/syntax/python.vim -O ~/.vim/syntax/python.vim
+mkdir -p ~/.vim/syntax/ && \
+  wget https://github.com/hdima/python-syntax/raw/master/syntax/python.vim -O ~/.vim/syntax/python.vim
 ```
 
 ### `~/.ssh/config` et connnexion distante à la bdd de production
