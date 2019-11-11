@@ -44,11 +44,11 @@ section#program-teaser > app-program-teaser > figure {
 }
 
 section#program-teaser > app-program-teaser > figure > img {
-  height: auto;
   grid-column-start: 1;
   grid-column-end: 5;
   grid-row-start: 1;
   grid-row-end: 4;
+  height: 100%;
   object-fit: cover;
   width: 100%;
 }
