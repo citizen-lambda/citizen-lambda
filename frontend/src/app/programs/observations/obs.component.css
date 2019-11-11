@@ -35,7 +35,7 @@ section#program-content > app-program-content {
 }
 
 section#program-teaser > app-program-teaser > figure {
-  max-height: var(--step);
+  height: var(--step);
   display: grid;
   grid-template-columns: 1fr 1fr auto 1fr;
   grid-template-rows: 2fr 1fr 1fr;
