@@ -387,8 +387,8 @@ input:checked ~ .toggle i {
   justify-content: space-between;
   margin: 0;
   min-width: 300px !important;
-  min-height: 80px !important;
-  max-height: 80px !important;
+  min-height: 82px !important;
+  max-height: 82px !important;
 }
 
 app-marker-popup {
@@ -412,6 +412,12 @@ app-marker-popup {
   max-height: calc(80px + 2 * 2px);
   overflow: hidden;
   position: relative;
+}
+
+app-marker-popup .species {
+  min-width: max-content;
+  /* .leaflet-popup-content-wrapper, .leaflet-popup-tip */
+  color: var(--color);
 }
 
 .species:hover {
@@ -453,12 +459,17 @@ app-marker-popup {
   justify-content: center;
   padding-left: 1em;
   width: 100%;
+  /* .leaflet-popup-content */
+  line-height: 1.5 !important;
+  /* .leaflet-container */
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" !important;
+  font-size: 1rem !important;
 }
 
 .species div b {
   font-size: 1em;
-  margin-bottom: 0px;
   font-weight: bolder;
+  margin-bottom: 0px;
 }
 
 .species div p,
@@ -466,7 +477,12 @@ app-marker-popup {
   color: var(--primary);
   font-style: italic;
   margin-bottom: 0px;
-  font-size: small;
+}
+
+.species div p {
+  /* .leaflet-container .leaflet-popup-content  */
+  margin-top: 0px;
+  font-weight: 400;
 }
 
 /*  */
