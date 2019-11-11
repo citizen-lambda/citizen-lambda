@@ -95,7 +95,7 @@ app-topbar #nav-menu.collapsed {
     flex-direction: column;
     align-items: flex-end;
     max-height: calc(100vh - var(--router-outlet-offset));
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   app-topbar .btn-group,

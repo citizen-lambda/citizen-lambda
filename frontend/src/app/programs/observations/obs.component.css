@@ -504,7 +504,7 @@ a.leaflet-control-layers-toggle {
 .leaflet-control-layers-base,
 .leaflet-control-layers-overlays {
   max-height: 12em;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 0.4em;
 }
 
