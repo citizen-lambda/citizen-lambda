@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from warnings import warn
 from typing import (
     Iterable,
     Optional,
@@ -14,6 +15,9 @@ from typing import (
 )
 from functools import reduce
 from urllib.parse import urlparse
+import json
+
+import requests
 
 
 K = TypeVar("K", str, int)
@@ -89,7 +93,7 @@ def _path(mapping: Mapping[K, V]) -> Callable:
     return path_val
 
 
-# TODO: pick
+# TODO: pick + strategy
 
 
 def path_str(nodes: Sequence[str], mapping: Mapping[str, V]) -> str:
@@ -127,8 +131,10 @@ class WriteRepoAdapter(Generic[T]):
         ...
 
 
-class ReadRepoProxy(Generic[T]):
-    def __init__(self, read_adapter: ReadRepoAdapter[T]):
+class ReadRepository(Generic[T]):
+    read_adapter: Union[ReadRepoAdapter[T], Any]
+
+    def __init__(self, read_adapter: ReadRepoAdapter[T], *args, **kwargs):
         self.read_adapter = read_adapter
 
     def get(self, ref: Any) -> Optional[T]:
@@ -139,46 +145,22 @@ class ReadRepoProxy(Generic[T]):
     #     ...
 
 
-class ReadRepository(Generic[T]):
-    read_repo: Union[ReadRepoProxy[T], Any]
+class WriteRepository(Generic[T]):
+    write_adapter: Union[WriteRepoAdapter[T], Any]
 
-    def __init__(self, repo, *args, **kwargs):
-        self.read_repo = repo
-
-    def get(self, ref: Any) -> Optional[T]:
-        return self.read_repo.get(ref)
-
-    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
-    #     todo: merge with accessor
-    #     ...
-
-
-class WriteRepoProxy(Generic[T]):
-    def __init__(self, write_adapter):
+    def __init__(self, write_adapter: WriteRepoAdapter[T], *args, **kwargs):
         self.write_adapter = write_adapter
 
     def upsert(self, item: T, payload: Any):
-        self.write_adapter.upsert(item, payload)
-
-
-class WriteRepository(Generic[T]):
-    _repo: Union[WriteRepoProxy[T], Any]
-
-    def __init__(self, *args, **kwargs):
-        ...
-
-    def upsert(self, item: T, payload: Any):
-        ...
-
-    # def resolve(self, prop: str, match: Any) -> Iterable[T]:
-    #     todo: merge with accessor
-    #     ...
+        return self.write_adapter.upsert(item, payload)
 
 
 class RWRepository(ReadRepository, WriteRepository, Generic[T]):
-    def __init__(self, read_repo: ReadRepoProxy[T], write_repo: WriteRepoProxy[T]):
-        self.read_repo = read_repo
-        self.write_repo = write_repo
+    def __init__(
+        self, read_adapter: ReadRepoAdapter[T], write_adapter: WriteRepoAdapter[T]
+    ):
+        self.read_adapter = read_adapter
+        self.write_adapter = write_adapter
 
 
 Repository = Union[ReadRepository[T], WriteRepository[T], RWRepository[T]]
@@ -194,6 +176,25 @@ class AdapterCollection(Generic[T]):
 
     def get(self):
         return self._adapters
+
+
+class HttpProxy:
+    # TODO: handle eventual post & auth
+    def call(
+        self, link: str, defaultvalue: Optional[V] = None
+    ) -> Union[Optional[Mapping[Any, Any]], Optional[V]]:
+        url = parsed_url(link)
+        r = requests.get(url)
+        try:
+            r.raise_for_status()
+            return r.json()
+        except (
+            requests.exceptions.HTTPError,
+            json.decoder.JSONDecodeError,
+            ValueError,
+        ) as e:
+            warn(str(e))
+            return defaultvalue
 
 
 if __name__ == "__main__":

@@ -1,12 +1,10 @@
-import requests
+from typing import Optional, Sequence, List, Dict, Mapping, Callable
 from dataclasses import fields
-import json
 from functools import lru_cache
-from typing import Optional, Sequence, List, Dict, Mapping, Callable, Union, overload
-from warnings import warn
+
 from flask import current_app
 
-from gncitizen.utils import path_str, parsed_url, path_url, mapper, ReadRepoAdapter, V
+from gncitizen.utils import path_str, path_url, mapper, ReadRepoAdapter, HttpProxy
 from gncitizen.core.taxonomy import TAXA_READ_REPO_ADAPTERS, setup_default_repo
 from gncitizen.core.taxonomy.taxon import Taxon, TaxonMedium
 
@@ -157,19 +155,12 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
     name = module_name
     provides = "TaxRef"
 
+    def __init__(self):
+        self.api = HttpProxy()
+
     @lru_cache(maxsize=MnhnTaxRefRest.CACHE_ITEMS)
     def get(self, ref: int, fetch_media=True) -> Optional[Taxon]:
-        # TODO: our own cache
-        # def gen_f():
-        #     memo = dict()
-        #     def f(x):
-        #         try:
-        #             return memo[x]
-        #         except KeyError:
-        #             memo[x] = x + 3
-        #     return f
-        # f = gen_f()
-        # f(123)
+        # TODO: make our own cache
         data = self.get_info(ref)
         if data:
             media: List[TaxonMedium] = []
@@ -181,7 +172,7 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
                 )
             if href and fetch_media:
                 media = self.get_media(ref, href)
-            data.update({"media": media})
+            # data.update({"media": media})
             r = Taxon(*mapper(transformer, extractor, self.TAXON_ATTR, data))
             r.media = [medium for medium in media]
             return r
@@ -190,11 +181,11 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
     def get_info(self, ref: int) -> Optional[Dict]:
         logger.info(ref)
         # assert url == f"{super().TAXA_URL}/{ref}"
-        return self.api_call(f"{super().TAXA_URL}/{ref}", None)
+        return self.api.call(f"{super().TAXA_URL}/{ref}", None)
 
     def get_media(self, ref, link) -> List[TaxonMedium]:
         # assert link == f"{super().TAXA_URL}/{ref}/media"
-        data: Mapping = self.api_call(link, dict())
+        data: Mapping = self.api.call(link, dict())
         if data and "_embedded" in data and "media" in data["_embedded"]:
             media = data["_embedded"]["media"]
             return [
@@ -206,30 +197,6 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
 
     # def resolve(self, prop: str, value: Any) -> Iterable[T]:
     #     ...
-
-    @overload
-    def api_call(self, link: str) -> Optional[Dict]:
-        ...
-
-    @overload  # noqa: F811
-    def api_call(self, link: str, defaultvalue: V) -> Union[Dict, V]:
-        ...
-
-    def api_call(  # noqa: F811
-        self, link: str, defaultvalue: Optional[V] = None
-    ) -> Union[Dict, V]:
-        url = parsed_url(link)
-        r = requests.get(url)
-        try:
-            r.raise_for_status()
-            return r.json()
-        except (
-            requests.exceptions.HTTPError,
-            json.decoder.JSONDecodeError,
-            ValueError,
-        ) as e:
-            warn(str(e))
-            return defaultvalue
 
 
 TAXA_READ_REPO_ADAPTERS.register(MnhnTaxRefRestAdapter)
