@@ -50,7 +50,8 @@ section#program-teaser > app-program-teaser > figure > img {
   grid-row-end: 4;
   height: 100%;
   object-fit: cover;
-  width: 100%;
+  min-width: 100%;
+  width: auto;
 }
 
 section#program-teaser > app-program-teaser > figure figcaption {
