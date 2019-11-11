@@ -939,37 +939,31 @@
         <target><x id="INTERPOLATION" equiv-text="{{ taxon?.nom_vern }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/map/popup.template.html</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">23</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/list/list.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="96e79961417449f851fe07ab74057e778a4455e1" datatype="html">
+      <trans-unit id="9d3aa05b2ca584b9601f96a2d16a694f4252b49c" datatype="html">
         <source>
       Observé par
-      <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
-        data?.observer?.username ? data.observer.username : &apos;Anonyme&apos;
-      }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+      <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : &apos;Anonyme&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </source>
         <target>
       Observé par
-      <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
-        data?.observer?.username ? data.observer.username : &apos;Anonyme&apos;
-      }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+      <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : &apos;Anonyme&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/map/popup.template.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ffbf05fe8acacd9814ebdc7834b0de71c42b18e0" datatype="html">
+      <trans-unit id="fbf36f26607f09b91539fc9c546cb19df0311342" datatype="html">
         <source>
       <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> le <x id="INTERPOLATION" equiv-text="{{ data.date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
-      <x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span&gt;"/>
-        à <x id="INTERPOLATION_1" equiv-text="{{ data.municipality?.name }}"/>
-      <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+      <x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span&gt;"/> à <x id="INTERPOLATION_1" equiv-text="{{ data.municipality?.name }}"/> <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </source>
         <target>
       <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> le <x id="INTERPOLATION" equiv-text="{{ data.date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
@@ -979,7 +973,7 @@
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/map/popup.template.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="356f3534b1377df44980b4ecb4724fc9cac49bf4" datatype="html">
@@ -1209,7 +1203,7 @@
         <target>Toutes espèces</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="660e5e40f31636702d2788997332d7716a50dcd5" datatype="html">
@@ -1217,7 +1211,7 @@
         <target><x id="INTERPOLATION" equiv-text="{{ s?.value?.nom_vern }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d9ec159fb51a28ab5ed26394a718910086471ca" datatype="html">
@@ -1225,7 +1219,7 @@
         <target>Toutes communes</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
-          <context context-type="linenumber">45</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7841a798609197a4a0eec2c511b9bcb2f600372f" datatype="html">
@@ -1238,7 +1232,7 @@
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">52</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c76e8994c14ff241879a1e2e121b005737ddae03" datatype="html">
@@ -1248,7 +1242,7 @@
           trouvées !} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/programs/observations/obs.component.html</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">53</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4b58516f5143cfac1bbdbdbb9af702bdad95ceb8" datatype="html">
