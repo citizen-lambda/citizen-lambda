@@ -26,7 +26,7 @@
       <span>{{ data?.observer?.username ? data.observer.username : 'Anonyme' }}</span>
     </p>
     <p i18n *ngIf="data?.date || data?.municipality?.name">
-      <span *ngIf="data.date"> le {{ data.date }}</span>
+      <span *ngIf="data.date"> le {{ data.date | date }}</span>
       <span *ngIf="data.municipality?.name"> à {{ data.municipality?.name }} </span>
     </p>
   </div>
