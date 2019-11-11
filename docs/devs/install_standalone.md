@@ -92,9 +92,9 @@ sudo -u postgres createdb -e -E UTF8 -O citizen citizendb
 sudo -u postgres psql citizendb  -c 'create extension postgis; create extension "uuid-ossp";'
 ```
 
-#### restauration des polygones de communes
+#### 🐛 dépendances à GeoNature et TaxHub qui restent à isoler
 
-🐛 des restes de dépendance à GeoNature qui doivent encore être éliminés.
+##### restauration des polygones de communes
 
 ```sh
 # utilisation de la redirection locale via ssh:
@@ -102,9 +102,7 @@ sudo -u postgres psql citizendb  -c 'create extension postgis; create extension 
 /usr/bin/pg_restore --host "localhost" --port "5438" --username "citizen" --no-password --role "citizen" --dbname "citizendb" --verbose --schema "ref_geo" "/home/pat/ref_geo_dump.backup"
 ```
 
-#### restauration de la taxonomie
-
-🐛 des restes de dépendance à TaxHub qui doivent encore être éliminés.
+##### restauration de la taxonomie
 
 ```sh
 # utilisation de la redirection locale via ssh:
@@ -141,7 +139,7 @@ git config user.email "patkap@users.noreply.github.com"
 git config user.name "patkap"
 ```
 
-### un premier démarrage en mode verbeux du backend
+### un premier démarrage du backend en mode verbeux
 
 ```sh
 cd ~/citizen/backend
@@ -149,7 +147,6 @@ python3 -m pip install -r requirements.txt
 $EDITOR ~/citizen/config/default_config.toml
 # … éditer à souhait
 mkdir ~/citizen/media
-# un premier démarrage en mode très verbeux
 export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; export FLASK_APP=wsgi; python3 -m flask run --host=0.0.0.0
 ```
 
