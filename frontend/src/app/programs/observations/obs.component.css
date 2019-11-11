@@ -386,7 +386,7 @@ input:checked ~ .toggle i {
   align-items: center;
   justify-content: space-between;
   margin: 0;
-  min-width: 300px !important;
+  min-width: fit-content !important;
   min-height: 82px !important;
   max-height: 82px !important;
 }
