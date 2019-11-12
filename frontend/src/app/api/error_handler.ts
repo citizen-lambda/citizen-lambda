@@ -16,8 +16,13 @@ export class ErrorHandler {
           // Unavailable
           errorMessage = `UnavailableError: ${error.status} - ${error.message}`;
       } else if (error.status !== 0) {
-        // client-side
-        errorMessage = `${error.status} - ${error.message}`;
+        if (error.error && error.error.message) {
+          // api or network-side
+          errorMessage = `${error.error.message}`;
+        } else {
+          // client-side
+          errorMessage = `${error.status} - ${error.message}`;
+        }
       } else {
         errorMessage = JSON.stringify(error);
       }

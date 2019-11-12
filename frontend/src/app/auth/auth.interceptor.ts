@@ -75,7 +75,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   async handle400(error: HttpErrorResponse): Promise<any> {
     console.error(
-      `[400 handler] "${error.message}"`,
+      `[400 handler] "${error.error.message || error.message}"`,
       `${error instanceof HttpErrorResponse}`,
       error
     );
