@@ -22,7 +22,7 @@
           id="inputSpecies"
           [(ngModel)]="selectedTaxon"
           (ngModelChange)="onFilterChange()"
-          aria-label-i18n="Toutes espèces"
+          i18n-aria-label="Toutes espèces"
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
           <option *ngFor="let s of taxonomy | keyvalue" [ngValue]="s.key">
@@ -39,7 +39,7 @@
           class="form-control rounded-0 col-lg-6"
           [(ngModel)]="selectedMunicipality"
           (ngModelChange)="onFilterChange()"
-          aria-label-i18n="Toutes communes"
+          i18n-aria-label="Toutes communes"
         >
           <option [ngValue]="null" i18n>Toutes communes</option>
           <option *ngFor="let t of municipalities$ | async" [ngValue]="t">{{
