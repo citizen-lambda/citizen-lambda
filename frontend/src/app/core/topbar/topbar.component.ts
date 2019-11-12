@@ -70,7 +70,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
 
   programs() {
     this.modalRef = this.modalService.open(ProgramsComponent, {
-      size: 'lg',
+      size: 'xl',
       centered: true
     });
   }

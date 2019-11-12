@@ -14,8 +14,12 @@ import { CommittedComponent } from './steps/committed/committed.component';
 import { CongratsComponent } from './steps/congrats/congrats.component';
 import { RewardComponent } from './steps/reward/reward.component';
 
+export interface NgbModalOptions {
+  size?: 'sm' | 'lg' | 'xl';
+}
+
 export const MODAL_DEFAULTS: NgbModalOptions = {
-  size: 'lg',
+  size: 'xl',
   centered: true
 };
 
