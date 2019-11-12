@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation, Inject, LOCALE_ID } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Meta, SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { Meta } from '@angular/platform-browser';
 
 import { AppConfig } from '../../conf/app.config';
-import { IAppConfig, AnchorNavigation } from '../core/models';
+import { IAppConfig } from '../core/models';
 import { Program } from '../programs/programs.models';
 import { ProgramsResolve } from '../programs/programs-resolve.service';
 

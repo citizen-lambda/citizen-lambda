@@ -41,7 +41,8 @@ describe('ObsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({id: 123})
+            params: of({id: 123}),
+            fragment: of('programs')
           }
         }
       ],

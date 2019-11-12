@@ -54,9 +54,7 @@ export abstract class AnchorNavigation implements AfterViewInit {
 
   constructor(protected router: Router, protected route: ActivatedRoute) {
     combineLatest(
-      this.route.fragment.pipe(
-        filter(fragment => !!fragment),
-        map(fragment => fragment),
+      route.fragment.pipe(
         take(1)
       ),
       this.router.events.pipe(

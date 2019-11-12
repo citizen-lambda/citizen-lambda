@@ -120,6 +120,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
             // tslint:disable-next-line: no-non-null-assertion
             o.properties.cd_nom === parseInt(this.selectedTaxon!, 10)
         )
+      // tslint:disable-next-line: semicolon
       : obs;
   selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>
     obs && this.selectedMunicipality
@@ -130,11 +131,12 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
             Object.keys(o.properties) &&
             o.properties.municipality.code === this.selectedMunicipality.code
         )
+      // tslint:disable-next-line: semicolon
       : obs;
 
   constructor(
     protected router: Router,
-    protected route: ActivatedRoute,
+    private route: ActivatedRoute,
     private programService: GncProgramsService,
     public taxonomyService: TaxonomyService,
     public flowService: ModalFlowService

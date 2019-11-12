@@ -14,6 +14,10 @@ import { Program } from '../../programs/programs.models';
 import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ActivatedRoute } from '@angular/router';
 
+export interface NgbModalOptions {
+  size?: 'sm' | 'lg' | 'xl';
+}
+
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
@@ -27,7 +31,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   modalRef!: NgbModalRef;
   programs$ = new Subject<Program[] | null>();
   // FIXME: isAdmin$ topbar updates
-  isAdmin$ = new BehaviorSubject<boolean | null>(null);
+  isAdmin$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private route: ActivatedRoute,

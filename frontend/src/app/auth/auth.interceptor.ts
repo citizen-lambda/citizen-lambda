@@ -91,6 +91,7 @@ export class AuthInterceptor implements HttpInterceptor {
           request.url.includes('login'))) ||
       !request.url.match(AppConfig.API_ENDPOINT)
     ) {
+      // QUESTION: 3rd party request(cookie!) logging ?
       return next.handle(request);
     }
 
@@ -120,12 +121,12 @@ export class AuthInterceptor implements HttpInterceptor {
                   return this.handle401(request, next);
                 default:
                   /*
-              When the flask backend is in debug mode ,
-              no cors header is returned upon error so
-              error.status=0, error.statusText="Unknown Error"
-              and error.message="Http failure response for (unknown url): 0 Unknown Error".
-              See comment in backend/server.py below flask_cors init.
-              */
+                  When the flask backend is in debug mode ,
+                  no cors header is returned upon error so
+                  error.status=0, error.statusText="Unknown Error" and
+                  error.message="Http failure response for (unknown url): 0 Unknown Error".
+                  See comment in backend/server.py below flask_cors init.
+                  */
                   if (error.status !== 0) {
                     this.errorHandler.handleError(error);
                   }

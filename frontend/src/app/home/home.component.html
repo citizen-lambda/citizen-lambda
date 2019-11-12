@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <app-greeter></app-greeter>
   <!-- LES PROGRAMMES -->
-  <section id="programs" class="row" *ngIf="programs.length > 1">
+  <section id="programs" class="row" *ngIf="programs?.length > 1">
     <div id="programs-cards">
       <div class="card" *ngFor="let p of programs">
         <div class="card-content">

@@ -3,7 +3,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { IAppConfig } from './core/models';
 import { AppConfig } from '../conf/app.config';
 
-type AppConfigApp = Pick<IAppConfig, 'FRONTEND'>;
+type AppConfigApp = Pick<IAppConfig, 'FRONTEND' | 'appName'>;
 
 @Component({
   selector: 'app-root',
@@ -12,6 +12,6 @@ type AppConfigApp = Pick<IAppConfig, 'FRONTEND'>;
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  title = 'GeoNature-citizen';
   public AppConfig: AppConfigApp = AppConfig;
+  title = this.AppConfig.appName;
 }
