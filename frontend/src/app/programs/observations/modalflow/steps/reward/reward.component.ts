@@ -18,10 +18,12 @@ export interface BadgeState {
   loading: boolean;
 }
 
-const difference = (state: BadgeState) =>
-  map((badges: Badge[]) => {
-    const oldBadges: Badge[] = state.badges;
+function differenceWith<T>(leftItems: T[], rightItems: T[], comparator: Function) {
+  return rightItems.filter(a => leftItems.findIndex(b => comparator(rightItems, leftItems)) === -1);
+}
 
+const getNewBadges = (oldBadges: Badge[]) =>
+  map((badges: Badge[]) => {
     if (!oldBadges || (oldBadges.length === 0 && badges && !!badges.length)) {
       return { badges, changes: [] };
     }
@@ -30,13 +32,13 @@ const difference = (state: BadgeState) =>
       return { badges: [], changes: [] };
     }
 
-    function badgeListComparer(otherArray: Badge[]) {
-      return (current: Badge) => otherArray.filter(other => other.alt === current.alt).length === 0;
-    }
+    const onlyInNewState = differenceWith<Badge>(
+      oldBadges,
+      badges,
+      (a: Badge, b: Badge) => a.alt === b.alt
+    );
 
-    const onlyInNewState: Badge[] = badges.filter(badgeListComparer(oldBadges));
-
-    return { badges, changes: onlyInNewState };
+    return { badges, changes: onlyInNewState } as Partial<BadgeState>;
   });
 
 let _state: BadgeState = {
@@ -82,10 +84,10 @@ export class BadgeFacade {
               .pipe(
                 pluck('badges'),
                 // FIXME: untested
-                difference(_state),
+                getNewBadges(_state.badges),
                 tap(x => {
                   const { badges, changes } = x;
-                  if (changes && !!changes.length) {
+                  if (changes && !!changes.length && !!badges) {
                     this.updateState({
                       ..._state,
                       badges: badges,

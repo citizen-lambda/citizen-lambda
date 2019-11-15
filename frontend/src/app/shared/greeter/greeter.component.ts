@@ -3,7 +3,8 @@ import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { AppConfig } from '../../../conf/app.config';
-import { IAppConfig, AnchorNavigation } from '../../core/models';
+import { IAppConfig } from '../../core/models';
+import { AnchorNavigation } from '../../helpers/anav';
 
 type AppConfigGreeter = Pick<IAppConfig, 'platform_intro' | 'platform_greeter' | 'platform_participate'>;
 

@@ -9,6 +9,7 @@ import { FeatureCollection, Feature } from 'geojson';
 import { AppConfig } from '../../conf/app.config';
 import { Program } from '../programs/programs.models';
 import { Taxonomy } from '../programs/observations/observation.model';
+import { sorted } from '../helpers/sorted';
 
 const PROGRAMS_KEY = makeStateKey('programs');
 
@@ -20,24 +21,6 @@ export interface IGncFeatures extends FeatureCollection {
   features: IGncProgram[];
   count: number;
 }
-
-export const sorted = (property: string) => {
-  if (!property) {
-    return undefined;
-  }
-  let sortOrder = 1;
-
-  if (property[0] === '-') {
-    sortOrder = -1;
-    property = property.substr(1);
-  }
-
-  return (a: { [property: string]: any }, b: { [property: string]: any }) => {
-    return sortOrder === -1
-      ? b[property].localeCompare(a[property])
-      : a[property].localeCompare(b[property]);
-  };
-};
 
 @Injectable({
   deps: [
@@ -95,7 +78,7 @@ export class GncProgramsService {
   getProgram(id: number): Observable<FeatureCollection> {
     return this.client.get<FeatureCollection>(`${this.URL}/programs/${id}`).pipe(
       catchError(
-        this.handleError<FeatureCollection>(`getProgram::${id}`, {
+        this.handleError<FeatureCollection>(`getProgram::[${id}]`, {
           type: 'FeatureCollection',
           features: []
         })
@@ -106,7 +89,7 @@ export class GncProgramsService {
   getProgramObservations(id: number): Observable<FeatureCollection> {
     return this.client.get<FeatureCollection>(`${this.URL}/programs/${id}/observations`).pipe(
       catchError(
-        this.handleError<FeatureCollection>(`getProgramObservations::${id}`, {
+        this.handleError<FeatureCollection>(`getProgramObservations::[${id}]`, {
           type: 'FeatureCollection',
           features: []
         })
@@ -124,7 +107,7 @@ export class GncProgramsService {
           `${this.URL}/taxonomy/lists/${program!.taxonomy_list}/species`
         )
       ),
-      catchError(this.handleError<Taxonomy>(`getProgramTaxonomyList::${program_id}`, {}))
+      catchError(this.handleError<Taxonomy>(`getProgramTaxonomyList::[${program_id}]`, {}))
     );
   }
 

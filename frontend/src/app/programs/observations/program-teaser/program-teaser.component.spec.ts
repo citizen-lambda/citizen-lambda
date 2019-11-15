@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AnchorNavigation } from '../../../core/models';
+import { AnchorNavigation } from '../../../helpers/anav';
 import { ProgramTeaserComponent } from './program-teaser.component';
 
 describe('ProgramTeaserComponent', () => {

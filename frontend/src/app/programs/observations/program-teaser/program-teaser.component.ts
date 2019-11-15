@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input } from '@angular/core';
-import { AnchorNavigation } from '../../../core/models';
+import { AnchorNavigation } from '../../../helpers/anav';
 import { Program } from '../../programs.models';
 import { ActivatedRoute, Router } from '@angular/router';
 

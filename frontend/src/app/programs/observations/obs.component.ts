@@ -25,12 +25,13 @@ import * as L from 'leaflet';
 
 import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
-import { GncProgramsService, sorted } from '../../api/gnc-programs.service';
+import { GncProgramsService } from '../../api/gnc-programs.service';
 import { ModalFlowService } from './modalflow/modalflow.service';
 import { Taxonomy, Taxon } from './observation.model';
 import { TaxonomyService } from '../../api/taxonomy.service';
 import { ObsMapComponent } from './map/map.component';
 import { ObsListComponent } from './list/list.component';
+import { sorted } from '../../helpers/sorted';
 
 export const compose = <R>(...fns: Array<(a: R) => R>) => (arg: R) =>
   fns.reduce((prevFn, nextFn) => prevFn.then(nextFn), Promise.resolve(arg));

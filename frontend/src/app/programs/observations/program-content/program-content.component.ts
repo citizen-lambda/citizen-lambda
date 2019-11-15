@@ -8,7 +8,7 @@ import {
   Input
 } from '@angular/core';
 
-import { AnchorNavigation } from '../../../core/models';
+import { AnchorNavigation } from '../../../helpers/anav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, fromEvent } from 'rxjs';
 import { throttleTime, map, filter, takeUntil } from 'rxjs/operators';
