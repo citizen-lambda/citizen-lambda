@@ -57,7 +57,7 @@ def save_upload_files(
     :returns: a filename list
     :rtype: list
 
-    """
+    """  # noqa: E501
     files = []
     try:
         i = 0
@@ -79,7 +79,9 @@ def save_upload_files(
                         )
                     )
                     ext = filename.rsplit(".", 1)[1].lower()
-                    timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+                    timestamp = datetime.datetime.now(
+                        tz=datetime.timezone.utc
+                    ).strftime("%Y%m%d_%H%M%S")
                     filename = "{}_{}_{}_{}.{}".format(
                         prefix, str(cdnom), i, timestamp, ext
                     )

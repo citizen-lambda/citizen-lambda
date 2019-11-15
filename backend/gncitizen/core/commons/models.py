@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
@@ -18,15 +18,17 @@ class TimestampMixinModel(object):
 
     @declared_attr
     def timestamp_create(cls):
-        return db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+        return db.Column(
+            db.DateTime, nullable=False, default=datetime.now(tz=timezone.utc)
+        )
 
     @declared_attr
     def timestamp_update(cls):
         return db.Column(
             db.DateTime,
             nullable=True,
-            default=datetime.utcnow,
-            onupdate=datetime.utcnow,
+            default=datetime.now(tz=timezone.utc),
+            onupdate=datetime.now(tz=timezone.utc),
         )
 
 
@@ -58,23 +60,14 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))
     module = db.Column(
-        db.Integer,
-        ForeignKey(ModulesModel.id_module),
-        nullable=False,
-        default=1,
+        db.Integer, ForeignKey(ModulesModel.id_module), nullable=False, default=1
     )
-    taxonomy_list = db.Column(
-        db.Integer, ForeignKey(BibListes.id_liste), nullable=True
-    )
-    is_active = db.Column(
-        db.Boolean(), server_default=expression.true(), default=True
-    )
+    taxonomy_list = db.Column(db.Integer, ForeignKey(BibListes.id_liste), nullable=True)
+    is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
     geom = db.Column(Geometry("GEOMETRY", 4326))
 
     def get_geofeature(self, recursif=True, columns=None):
-        return self.as_geofeature(
-            "geom", "id_program", recursif, columns=columns
-        )
+        return self.as_geofeature("geom", "id_program", recursif, columns=columns)
 
 
 @serializable
