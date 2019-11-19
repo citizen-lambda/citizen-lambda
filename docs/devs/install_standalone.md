@@ -429,7 +429,7 @@ sudo a2enmod brotli
 🐛
 
 ```sh
-$EDITOR src/custom/custom.css
+$EDITOR ~/citizen/frontend/src/app/home/home.component.css
 ```
 
 ```css
