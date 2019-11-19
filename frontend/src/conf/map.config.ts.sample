@@ -4,7 +4,7 @@ export const MAP_CONFIG = {
     {
       name: 'Images Aériennes(sources diverses et libres)',
       maxZoom: 20,
-      layer: '//wms.openstreetmap.fr/tms/1.0.0/tous_fr/{z}/{x}/{y}',
+      layer: 'http://wms.openstreetmap.fr/tms/1.0.0/tous_fr/{z}/{x}/{y}',
       subdomains: '',
       attribution:
         // tslint:disable-next-line: max-line-length
