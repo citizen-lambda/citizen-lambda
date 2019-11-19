@@ -11,7 +11,7 @@
   --narrow-topbar-height: 65px;
   --router-outlet-margin-top: var(--tall-topbar-height);
   --router-outlet-offset: var(--router-outlet-margin-top);
-  --fold: 45px;
+  --fold: 12vh;
   --footer-height: 30px;
   --obs-list-toolbar-height: 62px;
   /* pic width + min line length in char unit */

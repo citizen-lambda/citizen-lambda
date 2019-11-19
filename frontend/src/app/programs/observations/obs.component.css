@@ -18,20 +18,14 @@ app-observations div.container-fluid {
 section#program-teaser,
 section#program-content {
   margin-bottom: var(--section-margin-bottom);
-}
-
-section#program-teaser {
-  max-height: var(--step);
-}
-
-section#program-content {
-  max-height: var(--step);
+  height: var(--step);
 }
 
 section#program-teaser > app-program-teaser,
 section#program-content > app-program-content {
   background-color: var(--primary-color);
   width: 100%;
+  align-self: center;
 }
 
 section#program-teaser > app-program-teaser > figure {
@@ -81,7 +75,7 @@ section#program-teaser > app-program-teaser > figure > p {
 
 section#program-teaser > app-program-teaser > a.scroll {
   position: absolute;
-  bottom: 0px;
+  bottom: calc(var(--fold) - 40px);
   background-color: transparent !important;
   color: var(--primary-color);
   font-size: 14px;
@@ -98,13 +92,17 @@ section#program-teaser > app-program-teaser > a.scroll img {
   width: 15px;
 }
 
-section#program-content > app-program-content > article {
-  background-color: var(--secondary-color);
-  font-size: calc(80% + 1vw);
-  height: var(--step);
-  overflow: auto;
-  padding: 1.2em;
-}
+/* section#program-content > app-program-content > article { */
+  section#program-content {
+    background-color: var(--secondary-color);
+  }
+
+  section#program-content > app-program-content > article {
+    font-size: calc(80% + 1vw);
+    overflow: auto;
+    padding: 1.2em;
+    max-height: var(--step);
+  }
 
 section#program-content > app-program-content > a.btn-big {
   background-color: var(--secondary);
