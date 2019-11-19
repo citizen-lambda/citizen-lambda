@@ -1,4 +1,5 @@
 import { Injectable, ElementRef } from '@angular/core';
+import { PlatformLocation } from '@angular/common';
 
 import {
   NgbModal,
@@ -29,7 +30,13 @@ export const MODAL_DEFAULTS: NgbModalOptions = {
 export class ModalFlowService implements FlowService {
   modalRef!: NgbModalRef;
 
-  constructor(private modalService: NgbModal) {}
+  constructor(private location: PlatformLocation, private modalService: NgbModal) {
+    location.onPopState(event => {
+      if (this.modalRef !== undefined) {
+          this.modalRef.close('HISTORYBACK');
+      }
+});
+  }
 
   open(content: ElementRef<any>, options: NgbModalOptions = {}) {
     this.modalRef = this.modalService.open(content, {

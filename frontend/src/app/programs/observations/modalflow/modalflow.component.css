@@ -4,6 +4,30 @@ app-modalflow  {
     right: 20px;
 }
 
+.modal-header {
+  background: var(--secondary);
+  background: var(--modal-header-bg-moz);
+  background: var(--modal-header-bg-webkit);
+  background: var(--modal-header-bg-linear);
+  border-radius: 0px;
+  align-items: center;
+  max-height: 61px;
+}
+
+.modal-header h4 {
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 auto;
+}
+
+.modal-header button {
+  margin: 0 !important;
+}
+
+.modal-body {
+  border-radius: 0px;
+}
+
 @media screen and (max-width: 450px){
     app-modalflow  {
         right: 0px;
