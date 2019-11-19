@@ -429,12 +429,12 @@ sudo a2enmod brotli
 🐛
 
 ```sh
-$EDITOR src/app/home/home.component.css
+$EDITOR src/custom/custom.css
 ```
 
 ```css
-@media screen and (max-width: 1366px) {
-  #programs-cards {
-    height: 2430px; /* arbitrary value */
-  }
+:root {
+  --section-programs_height_min1366: 1100px !important;
+  --section-programs_height_max1366: 1100px !important;
+}
 ```
