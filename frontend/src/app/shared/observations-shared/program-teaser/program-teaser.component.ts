@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input } from '@angular/core';
 import { AnchorNavigation } from '../../../helpers/anav';
-import { Program } from '../../programs.models';
+import { Program } from '../../../programs/programs.models';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

@@ -19,7 +19,7 @@ import { debounceTime, map, distinctUntilChanged } from 'rxjs/operators';
 
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { FeatureCollection } from 'geojson';
-import L from 'leaflet';
+import * as L from 'leaflet';
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { AppConfig } from '../../../../conf/app.config';
@@ -29,7 +29,7 @@ import {
   PostObservationResponsePayload,
   Taxonomy,
   Taxon
-} from '../observation.model';
+} from '../../../programs/observations/observation.model';
 import { geometryValidator, ObsFormMapComponent } from './obs-form-map-component';
 
 export function ngbDateMaxIsToday(): ValidatorFn {

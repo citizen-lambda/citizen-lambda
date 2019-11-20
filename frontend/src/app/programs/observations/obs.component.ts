@@ -26,22 +26,20 @@ import * as L from 'leaflet';
 import { Program } from '../programs.models';
 import { ProgramsResolve } from '../../programs/programs-resolve.service';
 import { GncProgramsService } from '../../api/gnc-programs.service';
-import { ModalFlowService } from './modalflow/modalflow.service';
-import { Taxonomy, Taxon } from './observation.model';
 import { TaxonomyService } from '../../api/taxonomy.service';
-import { ObsMapComponent } from './map/map.component';
-import { ObsListComponent } from './list/list.component';
+import { Taxonomy, Taxon } from './observation.model';
 import { sorted } from '../../helpers/sorted';
-
-export const compose = <R>(...fns: Array<(a: R) => R>) => (arg: R) =>
-  fns.reduce((prevFn, nextFn) => prevFn.then(nextFn), Promise.resolve(arg));
+import { composeAsync } from '../../helpers/compose';
+import { ObsMapComponent } from '../../shared/observations-shared/map/map.component';
+import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
+import { ModalFlowService } from '../../shared/observations-shared/modalflow/modalflow.service';
 
 @Component({
   selector: 'app-observations',
   templateUrl: './obs.component.html',
   styleUrls: ['./obs.component.css', '../../home/home.component.css'],
   encapsulation: ViewEncapsulation.None,
-  providers: [ProgramsResolve]
+  providers: [ProgramsResolve, ModalFlowService]
 })
 export class ObsComponent implements AfterViewInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
@@ -69,7 +67,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     takeUntil(this.unsubscribe$),
     shareReplay()
   );
-  filteredObservations$ = new BehaviorSubject<Feature[] | null>(null);
+  filteredObservations$ = new BehaviorSubject<Feature[]>([]);
   municipalities$ = this.obsFeaturesArray$.pipe(
     map((items: Feature[]) => {
       const result = items.reduce(
@@ -121,8 +119,8 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
             // tslint:disable-next-line: no-non-null-assertion
             o.properties.cd_nom === parseInt(this.selectedTaxon!, 10)
         )
-      // tslint:disable-next-line: semicolon
-      : obs;
+      : // tslint:disable-next-line: semicolon
+        obs;
   selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>
     obs && this.selectedMunicipality
       ? obs.filter(
@@ -132,8 +130,8 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
             Object.keys(o.properties) &&
             o.properties.municipality.code === this.selectedMunicipality.code
         )
-      // tslint:disable-next-line: semicolon
-      : obs;
+      : // tslint:disable-next-line: semicolon
+        obs;
 
   constructor(
     protected router: Router,
@@ -206,10 +204,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
       .pipe(
         take(1),
         map(observations =>
-          compose(
-            this.selectedTaxonFilter,
-            this.selectedMunicipalityFilter
-          )(observations)
+          composeAsync(this.selectedTaxonFilter, this.selectedMunicipalityFilter)(observations)
         )
         // tap(console.debug)
       )

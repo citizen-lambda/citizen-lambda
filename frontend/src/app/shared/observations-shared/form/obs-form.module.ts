@@ -18,6 +18,6 @@ import { ObsFormMapComponent } from './obs-form-map-component';
     FormsModule,
     ReactiveFormsModule
   ],
-  entryComponents: [ObsFormComponent, ObsFormMapComponent]
+  entryComponents: [ObsFormComponent, ObsFormMapComponent],
 })
 export class ObsFormModule {}

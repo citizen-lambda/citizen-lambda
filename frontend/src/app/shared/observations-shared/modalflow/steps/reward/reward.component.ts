@@ -184,7 +184,9 @@ export class RewardComponent implements IFlowComponent {
   }
 
   close(d: string) {
-    this.data.service.close(d);
+    if (this.data){
+      this.data.service.close(d);
+    }
   }
 
   clicked(d: string) {
