@@ -7,7 +7,7 @@ Installer l'environnement virtuel python
 ########################################
 
 La création de l'environnement virtuel python3 nécessite ``virtualenv``
-ou ``pyenv`` ou tout autre outil équivalent (ex: pyenv):
+ou ``pyenv`` ou tout autre outil équivalent (ex: pipenv):
 
 .. code-block:: bash
 
