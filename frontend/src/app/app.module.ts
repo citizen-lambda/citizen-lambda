@@ -21,7 +21,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { LogoutComponent } from './auth/logout/logout.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { FooterComponent } from './core/footer/footer.component';
-// import { SidebarComponent } from './core/sidebar/sidebar.component';
+import { SidebarComponent } from './core/sidebar/sidebar.component';
 import { TopbarComponent } from './core/topbar/topbar.component';
 import { SpeciesComponent } from './synthesis/species/species.component';
 import { GncService } from './api/gnc.service';
@@ -63,7 +63,7 @@ declare module '@ng-bootstrap/ng-bootstrap' {
   ],
   declarations: [
     AppComponent,
-    // SidebarComponent,
+    SidebarComponent,
     FooterComponent,
     TopbarComponent,
     LoginComponent,
@@ -73,6 +73,12 @@ declare module '@ng-bootstrap/ng-bootstrap' {
     AboutComponent,
     AboutCustomComponent,
     AboutFixedComponent,
+  ],
+  entryComponents: [
+    LoginComponent,
+    LogoutComponent,
+    RegisterComponent,
+    SidebarComponent,
   ],
   providers: [
     AuthService,
@@ -87,14 +93,7 @@ declare module '@ng-bootstrap/ng-bootstrap' {
     },
     { provide: LOCALE_ID, useValue: 'fr' }
   ],
-  bootstrap: [AppComponent],
-  entryComponents: [
-    LoginComponent,
-    LogoutComponent,
-    RegisterComponent,
-  ],
-  exports: [
-  ]
+  bootstrap: [AppComponent]
 })
 export class AppModule {
   constructor(@Inject(LOCALE_ID) localeId: string) {

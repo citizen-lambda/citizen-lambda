@@ -73,7 +73,8 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     RewardComponent,
     ObsMapComponent,
     ObsListComponent,
-    MarkerPopupComponent
+    MarkerPopupComponent,
+    ScrollingModule,
   ]
 })
 export class ObservationsSharedModule {}

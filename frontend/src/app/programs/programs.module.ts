@@ -5,7 +5,7 @@ import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ProgramsRoutingModule } from './programs-routing.module';
 import { ProgramsComponent } from './programs.component';
-// import { DescModalComponent } from './desc-modal/desc-modal.component';
+import { DescModalComponent } from './desc-modal/desc-modal.component';
 
 @NgModule({
   imports: [
@@ -18,11 +18,11 @@ import { ProgramsComponent } from './programs.component';
   ],
   declarations: [
     ProgramsComponent,
-    // DescModalComponent
+    DescModalComponent
   ],
   entryComponents: [
     ProgramsComponent,
-    // DescModalComponent
+    DescModalComponent
   ],
   exports: [
   ]
