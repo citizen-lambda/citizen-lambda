@@ -7,8 +7,8 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError, switchMap, finalize, filter, tap, mergeMap } from 'rxjs/operators';
-import { Observable, throwError, BehaviorSubject, from } from 'rxjs';
+import { catchError, switchMap, finalize, filter, mergeMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, from, of } from 'rxjs';
 
 import { AppConfig } from '../../conf/app.config';
 import { AuthService } from './auth.service';
@@ -111,7 +111,9 @@ export class AuthInterceptor implements HttpInterceptor {
         .handle(this.addToken(request, this.auth.getAccessToken()!))
         .pipe(
           catchError((error: HttpErrorResponse) => {
-            if (!(error.error instanceof ErrorEvent)) {
+            if (error.error instanceof ProgressEvent) {
+              this.errorHandler.handleError(error);
+            } else if (!(error.error instanceof ErrorEvent)) {
               // api call failure response
               switch (error.status) {
                 case 400:
@@ -133,7 +135,8 @@ export class AuthInterceptor implements HttpInterceptor {
               }
             }
             console.error(error);
-            return throwError(error);
+            // return from(this.router.navigateByUrl('/404'));
+            return of(error);
           })
         )
     );

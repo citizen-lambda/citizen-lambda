@@ -25,10 +25,9 @@ export class UniqueProgramGuard implements CanActivate, CanActivateChild {
     // console.warn("UniqueProgramGuard::getAllPrograms");
 
     return this.programService.getAllPrograms().pipe(
-      map((p: Program[]) => {
-        const count = p ? p.length : 0;
-        const programs = p ? p : undefined;
-        if (count === 1) {
+      map((programs: Program[]) => {
+        const count = programs ? programs.length : 0;
+        if (!!programs && count === 1) {
           this.router.navigate([
             'programs',
             // tslint:disable-next-line: no-non-null-assertion

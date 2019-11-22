@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
-import { take, mergeMap, catchError } from 'rxjs/operators';
+import { mergeMap, catchError } from 'rxjs/operators';
 
 import { GncProgramsService } from '../api/gnc-programs.service';
 import { Program } from './programs.models';
@@ -19,11 +19,7 @@ export class ProgramsResolve implements Resolve<Program[]> {
     console.warn('resolve::getAllPrograms');
 
     return this.programService.getAllPrograms().pipe(
-      catchError(error => {
-        console.error(error);
-        window.alert(error);
-        return EMPTY;
-      }),
+      catchError(_error => EMPTY),
       mergeMap((programs: Program[]) => (programs ? of(programs) : EMPTY))
     );
   }

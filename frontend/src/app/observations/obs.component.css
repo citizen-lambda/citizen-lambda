@@ -1,4 +1,4 @@
-@import '../../../base.css';
+@import '../../base.css';
 
 :root {
   --step: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold))

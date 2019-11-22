@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, throwError, BehaviorSubject } from 'rxjs';
 import { tap, map, catchError, filter } from 'rxjs/operators';
 
@@ -9,14 +10,10 @@ import { AuthService } from './../../auth/auth.service';
 import { LoginComponent } from '../../auth/login/login.component';
 import { LogoutComponent } from '../../auth/logout/logout.component';
 import { RegisterComponent } from '../../auth/register/register.component';
-import { ProgramsComponent } from '../../programs/programs.component';
 import { Program } from '../../programs/programs.models';
 import { GncProgramsService } from '../../api/gnc-programs.service';
-import { ActivatedRoute } from '@angular/router';
+import { ProgramsComponent } from '../../programs/programs.component';
 
-export interface NgbModalOptions {
-  size?: 'sm' | 'lg' | 'xl';
-}
 
 @Component({
   selector: 'app-topbar',

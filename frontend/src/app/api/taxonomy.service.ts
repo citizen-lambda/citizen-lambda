@@ -6,7 +6,7 @@ import { Observable, of, from } from 'rxjs';
 
 import { AppConfig } from '../../conf/app.config';
 
-import { Taxonomy, Taxon } from '../programs/observations/observation.model';
+import { Taxonomy, Taxon } from '../observations/observation.model';
 
 export type UnsafeTaxon = Taxon & { nom_complet_html: string };
 

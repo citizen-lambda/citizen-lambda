@@ -411,7 +411,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
 import { AppConfig } from '../../../../conf/app.config';
 // import { Taxon } from '../../../api/taxonomy.service';
-import { Taxon, Taxonomy } from '../../../programs/observations/observation.model';
+import { Taxon, Taxonomy } from '../../../observations/observation.model';
 import { TaxonomyService } from '../../../api/taxonomy.service';
 
 @Component({

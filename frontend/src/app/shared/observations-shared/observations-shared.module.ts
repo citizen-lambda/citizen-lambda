@@ -17,7 +17,6 @@ import { ModalFlowService } from './modalflow/modalflow.service';
 import { FlowDirective } from './modalflow/flow/flow.directive';
 import { FlowComponent } from './modalflow/flow/flow.component';
 import { FlowService } from './modalflow/flow/flow.service';
-import { IFlowComponent } from './modalflow/flow/flow';
 import { ModalFlowComponent } from './modalflow/modalflow.component';
 import { OnboardComponent } from './modalflow/steps/onboard/onboard.component';
 import { CommittedComponent } from './modalflow/steps/committed/committed.component';
@@ -64,7 +63,6 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     ProgramContentComponent,
     FlowDirective,
     FlowComponent,
-    // IFlowComponent,
     ModalFlowComponent,
     ObsFormModule,
     ObsMapComponent,

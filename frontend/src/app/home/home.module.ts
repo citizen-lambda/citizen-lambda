@@ -11,8 +11,8 @@ import { HomeCustomComponent } from './custom/custom.component';
 @NgModule({
   imports: [
     CommonModule,
-    HomeRoutingModule,
-    GreeterModule
+    GreeterModule,
+    HomeRoutingModule
   ],
   declarations: [HomeComponent, HomeCustomComponent]
 })

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { TaxonomyService } from '../../api/taxonomy.service';
-import { Taxonomy, Taxon } from '../../programs/observations/observation.model';
+import { Taxonomy, Taxon } from '../../observations/observation.model';
 
 
 @Component({

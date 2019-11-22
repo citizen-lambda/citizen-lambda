@@ -8,7 +8,7 @@ import { FeatureCollection, Feature } from 'geojson';
 
 import { AppConfig } from '../../conf/app.config';
 import { Program } from '../programs/programs.models';
-import { Taxonomy } from '../programs/observations/observation.model';
+import { Taxonomy } from '../observations/observation.model';
 import { sorted } from '../helpers/sorted';
 
 const PROGRAMS_KEY = makeStateKey('programs');
@@ -68,7 +68,7 @@ export class GncProgramsService {
           this.state.set(PROGRAMS_KEY, programs as Program[]);
           this.programs$.next(programs);
         }),
-        catchError(this.handleError<Program[]>('getAllPrograms', []))
+        // catchError(this.handleError<Program[]>('getAllPrograms', []))
       );
     } else {
       return this.programs$;

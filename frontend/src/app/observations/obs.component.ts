@@ -23,21 +23,21 @@ import {
 import { FeatureCollection, Feature } from 'geojson';
 import * as L from 'leaflet';
 
-import { Program } from '../programs.models';
-import { ProgramsResolve } from '../../programs/programs-resolve.service';
-import { GncProgramsService } from '../../api/gnc-programs.service';
-import { TaxonomyService } from '../../api/taxonomy.service';
+import { Program } from '../programs/programs.models';
+import { ProgramsResolve } from '../programs/programs-resolve.service';
+import { GncProgramsService } from '../api/gnc-programs.service';
+import { TaxonomyService } from '../api/taxonomy.service';
 import { Taxonomy, Taxon } from './observation.model';
-import { sorted } from '../../helpers/sorted';
-import { composeAsync } from '../../helpers/compose';
-import { ObsMapComponent } from '../../shared/observations-shared/map/map.component';
-import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
-import { ModalFlowService } from '../../shared/observations-shared/modalflow/modalflow.service';
+import { sorted } from '../helpers/sorted';
+import { composeAsync } from '../helpers/compose';
+import { ObsMapComponent } from '../shared/observations-shared/map/map.component';
+import { ObsListComponent } from '../shared/observations-shared/list/list.component';
+import { ModalFlowService } from '../shared/observations-shared/modalflow/modalflow.service';
 
 @Component({
   selector: 'app-observations',
   templateUrl: './obs.component.html',
-  styleUrls: ['./obs.component.css', '../../home/home.component.css'],
+  styleUrls: ['./obs.component.css', '../home/home.component.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [ProgramsResolve, ModalFlowService]
 })

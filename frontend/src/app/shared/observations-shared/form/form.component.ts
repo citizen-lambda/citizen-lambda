@@ -29,7 +29,7 @@ import {
   PostObservationResponsePayload,
   Taxonomy,
   Taxon
-} from '../../../programs/observations/observation.model';
+} from '../../../observations/observation.model';
 import { geometryValidator, ObsFormMapComponent } from './obs-form-map-component';
 
 export function ngbDateMaxIsToday(): ValidatorFn {

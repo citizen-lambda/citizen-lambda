@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
 
-import { UniqueProgramGuard } from './default-program.guard';
+import { UniqueProgramGuard } from './unique-program.guard';
 
 describe('UniqueProgramGuard', () => {
   beforeEach(() => {

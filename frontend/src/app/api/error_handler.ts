@@ -24,7 +24,11 @@ export class ErrorHandler {
           errorMessage = `${error.status} - ${error.message}`;
         }
       } else {
-        errorMessage = JSON.stringify(error);
+        if (error.error instanceof ProgressEvent) {
+          errorMessage = 'Backend is unreachable.';
+        } else {
+          errorMessage = JSON.stringify(error);
+        }
       }
     } else {
       console.debug('errorHandler: !ErrorEvent !HttpErrorResponse');

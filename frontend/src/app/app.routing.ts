@@ -2,18 +2,11 @@ import { AboutComponent } from './about/about.component';
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ProgramsComponent } from './programs/programs.component';
-import { ProgramsResolve } from './programs/programs-resolve.service';
-import { UniqueProgramGuard } from './programs/default-program.guard';
-import { SpeciesComponent } from './synthesis/species/species.component';
 import { AuthGuard } from './auth/auth.guard';
+import { UniqueProgramGuard } from './programs/unique-program.guard';
+import { SpeciesComponent } from './synthesis/species/species.component';
 
 const appRoutes: Routes = [
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
   {
     path: 'home',
     loadChildren: './home/home.module#HomeModule',
@@ -32,16 +25,15 @@ const appRoutes: Routes = [
   },
   {
     path: 'programs',
-    component: ProgramsComponent,
-    resolve: { programs: ProgramsResolve }
-  },
-  {
-    path: 'programs/:id/observations',
-    // loadChildren: () => import('./programs/observations/observations.module').then(m => m.ObservationsModule),
-    loadChildren: './programs/observations/observations.module#ObservationsModule',
-    resolve: { programs: ProgramsResolve }
+    // loadChildren: () => import('./programs/programs.module').then(m => m.ProgramsModule),
+    loadChildren: './programs/programs.module#ProgramsModule',
   },
   { path: 'synthesis/species/:id', component: SpeciesComponent },
+  {
+    path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  },
   { path: '**', loadChildren: './page-not-found/page-not-found.module#PageNotFoundModule' }
 ];
 
