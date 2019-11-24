@@ -13,10 +13,11 @@ import { BehaviorSubject } from 'rxjs';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { Taxonomy, Taxon } from '../../../observations/observation.model';
+import { Taxonomy } from '../../../features/observations/Taxonomy';
+import { Taxon } from '../../../features/observations/Taxon';
 import { IAppConfig } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
-import { TaxonomyService } from '../../../api/taxonomy.service';
+import { TaxonomyService } from '../../../services/taxonomy.service';
 
 type AppConfigObsList = Pick<IAppConfig, 'API_ENDPOINT'>;
 

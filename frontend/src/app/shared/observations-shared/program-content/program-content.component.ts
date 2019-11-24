@@ -12,7 +12,7 @@ import { AnchorNavigation } from '../../../helpers/anav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, fromEvent } from 'rxjs';
 import { throttleTime, map, filter, takeUntil } from 'rxjs/operators';
-import { Program } from '../../../programs/programs.models';
+import { Program } from '../../../features/programs/programs.models';
 
 @Component({
   selector: 'app-program-content',

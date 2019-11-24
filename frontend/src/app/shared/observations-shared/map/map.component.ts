@@ -58,7 +58,7 @@ export const conf = {
     acc[baseLayer['name'].toString()] = L.tileLayer(baseLayer['layer'], {
       attribution: baseLayer['attribution'],
       subdomains: baseLayer['subdomains'] || '',
-      maxZoom: baseLayer['maxZoom'],
+      maxZoom: baseLayer['maxZoom']
       // bounds?: <[number, number][]>baseLayer['bounds']
     }) as any;
     return acc;
@@ -273,9 +273,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
           this.layerControl.removeLayer(this.heatLayer);
           this.observationMap.removeLayer(this.heatLayer);
         }
-        this.heatLayer = L.heatLayer(this.featureMarkers.map(item => item.marker.getLatLng()), {
-          minOpacity: 0.5
-        });
+        this.heatLayer = L.heatLayer(
+          this.featureMarkers.map(item => item.marker.getLatLng()),
+          {
+            minOpacity: 0.5
+          }
+        );
         this.layerControl.addOverlay(this.heatLayer, 'heatmap');
       });
     }
@@ -410,9 +413,9 @@ export class ObsMapComponent implements OnInit, OnChanges {
 }
 
 import { AppConfig } from '../../../../conf/app.config';
-// import { Taxon } from '../../../api/taxonomy.service';
-import { Taxon, Taxonomy } from '../../../observations/observation.model';
-import { TaxonomyService } from '../../../api/taxonomy.service';
+import { Taxonomy } from '../../../features/observations/Taxonomy';
+import { Taxon } from '../../../features/observations/Taxon';
+import { TaxonomyService } from '../../../services/taxonomy.service';
 
 @Component({
   selector: 'app-marker-popup',

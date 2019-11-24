@@ -12,30 +12,28 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 
-import { ProgramsModule } from './programs/programs.module';
+import { ProgramsModule } from './features/programs/programs.module';
 import { AppComponent } from './app.component';
 import { routing } from './app.routing';
-import { AuthService } from './auth/auth.service';
-import { AuthInterceptor } from './auth/auth.interceptor';
-import { LoginComponent } from './auth/login/login.component';
-import { LogoutComponent } from './auth/logout/logout.component';
-import { RegisterComponent } from './auth/register/register.component';
-import { FooterComponent } from './core/footer/footer.component';
-import { SidebarComponent } from './core/sidebar/sidebar.component';
-import { TopbarComponent } from './core/topbar/topbar.component';
-import { SpeciesComponent } from './synthesis/species/species.component';
-import { GncService } from './api/gnc.service';
-import { GncProgramsService } from './api/gnc-programs.service';
-import { ProgramsResolve } from './programs/programs-resolve.service';
-// import { TaxonomyService } from './api/taxonomy.service';
-import { ErrorHandler } from './api/error_handler';
-import { AboutComponent } from './about/about.component';
-import { AboutCustomComponent } from './about/custom/custom.component';
-import { AboutFixedComponent } from './about/fixed/fixed.component';
+import { AuthService } from './services/auth.service';
+import { AuthInterceptor } from './services/auth.interceptor';
+import { LoginComponent } from './components/login/login.component';
+import { LogoutComponent } from './components/logout/logout.component';
+import { RegisterComponent } from './components/register/register.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { TopbarComponent } from './components/topbar/topbar.component';
+import { SpeciesComponent } from './components/species/species.component';
+import { GncService } from './services/gnc.service';
+import { GncProgramsService } from './features/programs/gnc-programs.service';
+import { ProgramsResolve } from './features/programs/programs-resolve.service';
+import { TaxonomyService } from './services/taxonomy.service';
+import { ErrorHandler } from './services/error_handler';
+import { AboutComponent } from './components/about/about.component';
+import { AboutCustomComponent } from './components/about/custom/custom.component';
+import { AboutFixedComponent } from './components/about/fixed/fixed.component';
 
 import { AppConfig } from '../conf/app.config';
-
-
 
 // fixed with next ng-bootstrap version, remove after upgrade
 // TODO: ngbModule augmentation: test whether we need to patch node_modules
@@ -72,18 +70,14 @@ declare module '@ng-bootstrap/ng-bootstrap' {
     SpeciesComponent,
     AboutComponent,
     AboutCustomComponent,
-    AboutFixedComponent,
+    AboutFixedComponent
   ],
-  entryComponents: [
-    LoginComponent,
-    LogoutComponent,
-    RegisterComponent,
-    SidebarComponent,
-  ],
+  entryComponents: [LoginComponent, LogoutComponent, RegisterComponent, SidebarComponent],
   providers: [
     AuthService,
     GncService,
     GncProgramsService,
+    TaxonomyService,
     ErrorHandler,
     ProgramsResolve,
     {

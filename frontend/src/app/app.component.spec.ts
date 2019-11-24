@@ -9,10 +9,10 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 
 import { AppConfig } from '../conf/app.config';
 import { AppComponent } from './app.component';
-import { TopbarComponent } from './core/topbar/topbar.component';
-import { AuthService } from './auth/auth.service';
-import { SidebarComponent } from './core/sidebar/sidebar.component';
-import { FooterComponent } from './core/footer/footer.component';
+import { TopbarComponent } from './components/topbar/topbar.component';
+import { AuthService } from './services/auth.service';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 // class MockRouter { public navigate() {}; }
 

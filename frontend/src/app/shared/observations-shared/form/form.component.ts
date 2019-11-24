@@ -26,10 +26,10 @@ import { AppConfig } from '../../../../conf/app.config';
 import { IAppConfig } from '../../../core/models';
 import {
   PostObservationResponse,
-  PostObservationResponsePayload,
-  Taxonomy,
-  Taxon
-} from '../../../observations/observation.model';
+  PostObservationResponsePayload
+} from '../../../features/observations/observation.model';
+import { Taxonomy } from '../../../features/observations/Taxonomy';
+import { Taxon } from '../../../features/observations/Taxon';
 import { geometryValidator, ObsFormMapComponent } from './obs-form-map-component';
 
 export function ngbDateMaxIsToday(): ValidatorFn {

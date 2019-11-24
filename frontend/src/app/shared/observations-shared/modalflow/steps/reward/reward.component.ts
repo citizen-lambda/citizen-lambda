@@ -5,7 +5,7 @@ import { tap, catchError, map, distinctUntilChanged, share, pluck, filter } from
 
 import { AppConfig } from '../../../../../../conf/app.config';
 import { IFlowComponent } from '../../flow/flow';
-import { AuthService } from '../../../../../auth/auth.service';
+import { AuthService } from '../../../../../services/auth.service';
 
 export interface Badge {
   img: string;

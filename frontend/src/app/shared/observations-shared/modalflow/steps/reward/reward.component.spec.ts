@@ -4,7 +4,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AuthService } from '../../../../../auth/auth.service';
+import { AuthService } from '../../../../../services/auth.service';
 import { RewardComponent } from './reward.component';
 
 describe('RewardComponent', () => {

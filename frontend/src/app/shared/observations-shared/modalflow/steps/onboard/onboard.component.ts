@@ -4,9 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { IFlowComponent } from '../../flow/flow';
-import { RegisterComponent } from '../../../../../auth/register/register.component';
-import { LoginComponent } from '../../../../../auth/login/login.component';
-import { AuthService } from '../../../../../auth/auth.service';
+import { RegisterComponent } from '../../../../../components/register/register.component';
+import { LoginComponent } from '../../../../../components/login/login.component';
+import { AuthService } from '../../../../../services/auth.service';
 
 @Component({
   templateUrl: './onboard.component.html',
