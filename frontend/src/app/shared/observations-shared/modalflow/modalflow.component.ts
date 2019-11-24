@@ -13,7 +13,7 @@ import { ModalFlowService } from './modalflow.service';
 import { IAppConfig } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
 import { FeatureCollection } from 'geojson';
-import { Taxonomy } from '../../../features/observations/Taxonomy';
+import { Taxonomy } from '../../../core/models';
 
 type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
 

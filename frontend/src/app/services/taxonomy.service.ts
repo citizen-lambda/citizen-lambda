@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { map, catchError, tap } from 'rxjs/operators';
-import { Observable, of, from } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
+import { map, catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 import { AppConfig } from '../../conf/app.config';
 
-import { Taxonomy } from "../features/observations/Taxonomy";
-import { Taxon } from "../features/observations/Taxon";
+import { Taxon } from '../core/models';
 
 export type UnsafeTaxon = Taxon & { nom_complet_html: string };
 

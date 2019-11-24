@@ -2,8 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { TaxonomyService } from '../../services/taxonomy.service';
-import { Taxonomy } from '../../features/observations/Taxonomy';
-import { Taxon } from '../../features/observations/Taxon';
+import { Taxonomy, Taxon } from '../../core/models';
 
 @Component({
   selector: 'app-species',

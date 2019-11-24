@@ -13,8 +13,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { Taxonomy } from '../../../features/observations/Taxonomy';
-import { Taxon } from '../../../features/observations/Taxon';
+import { Taxonomy } from '../../../core/models';
 import { IAppConfig } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
 import { TaxonomyService } from '../../../services/taxonomy.service';
