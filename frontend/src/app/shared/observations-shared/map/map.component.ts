@@ -24,6 +24,8 @@ import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
+import { Taxonomy, Taxon } from 'src/app/core/models';
+import { MarkerPopupComponent } from './MarkerPopupComponent';
 
 declare module 'leaflet' {
   interface MapOptions {
@@ -287,13 +289,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
   layerOptions() {
     this.featureMarkers = [];
     const observationLayerOptions: L.GeoJSONOptions = {
-      onEachFeature: (feature, layer) => {
-        const popupContent = this.getPopupContent(feature);
-        layer.bindPopup(popupContent);
-      },
+      // onEachFeature: (feature, layer) => {
+      // },
       pointToLayer: (feature, latlng): L.Marker => {
         const marker: L.Marker<any> = L.marker(latlng, {
           icon: conf.MARKER_ICON_OBS()
+        });
+        marker.on('click', e => {
+          this.showPopup(feature, e);
         });
         this.featureMarkers.push({
           // TODO: simplify marker collection refs handling
@@ -322,8 +325,15 @@ export class ObsMapComponent implements OnInit, OnChanges {
     const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
     const component = factory.create(this.injector);
     component.instance.data = { ...feature.properties } as Taxon & {
-      image?: string;
-      observer: { username: string };
+      // images?: string;
+      // image?: string;
+      // media?: any;
+      comment?: string;
+      observer?: { username: string };
+      municipality?: {
+        name?: string;
+        code?: string;
+      };
       date: Date;
     };
     component.changeDetectorRef.detectChanges();
@@ -332,6 +342,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   showPopup(obs: Feature, event: L.LeafletEvent): void {
+    // console.debug(event.sourceTarget.feature.properties);
     this.obsOnFocus = obs;
     const marker = this.featureMarkers.find(
       m =>
@@ -341,6 +352,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           m.feature.properties.id_observation === obs.properties.id_observation) ||
         false
     );
+    // console.debug(obs, marker, event);
     let visibleParent: L.Marker | null = null;
 
     if (this.observationLayer && marker) {
@@ -411,28 +423,3 @@ export class ObsMapComponent implements OnInit, OnChanges {
     e.stopPropagation();
   }
 }
-
-import { AppConfig } from '../../../../conf/app.config';
-import { Taxonomy, Taxon } from '../../../core/models';
-import { TaxonomyService } from '../../../services/taxonomy.service';
-
-@Component({
-  selector: 'app-marker-popup',
-  templateUrl: 'popup.template.html'
-})
-export class MarkerPopupComponent {
-  AppConfig = AppConfig;
-  @Input()
-  data!: Taxon & {
-    images?: string;
-    image?: string;
-    media?: any;
-    observer?: { username: string };
-    municipality?: { name?: string; code?: string };
-    date: Date;
-  };
-
-  constructor(public taxonService: TaxonomyService) {}
-}
-
-// FIXME: i18n taxon.nom_vern_eng may be empty
