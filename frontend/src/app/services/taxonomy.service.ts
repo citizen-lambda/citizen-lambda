@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, shareReplay } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 import { AppConfig } from '../../conf/app.config';
@@ -38,7 +38,8 @@ export class TaxonomyService {
           this.taxa = { ...this.taxa, ...{ [safeTaxon.cd_nom]: safeTaxon } };
           return safeTaxon;
         }),
-        catchError(this.handleError<Taxon>(`getTaxon::{cd_nom}`, {} as Taxon))
+        catchError(this.handleError<Taxon>(`getTaxon::{cd_nom}`, {} as Taxon)),
+        shareReplay(1)
       );
     }
   }
