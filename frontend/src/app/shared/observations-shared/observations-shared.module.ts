@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -40,7 +40,6 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     ObsMapComponent,
     MarkerPopupComponent
   ],
-  providers: [FlowService, ModalFlowService],
   entryComponents: [
     ProgramTeaserComponent,
     ProgramContentComponent,
@@ -73,4 +72,11 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     ScrollingModule
   ]
 })
-export class ObservationsSharedModule {}
+export class ObservationsSharedModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: ObservationsSharedModule,
+      providers: [FlowService, ModalFlowService]
+    };
+  }
+}

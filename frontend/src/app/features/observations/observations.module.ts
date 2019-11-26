@@ -9,18 +9,14 @@ import { GreeterModule } from '../../shared/greeter/greeter.module';
 import { ObservationsSharedModule } from '../../shared/observations-shared/observations-shared.module';
 import { ObsComponent } from './obs.component';
 
-
-
 @NgModule({
   imports: [
     CommonModule,
     NgbModule,
     ObservationsRoutingModule,
-    ObservationsSharedModule,
+    ObservationsSharedModule.forRoot(),
     GreeterModule
   ],
-  declarations: [
-    ObsComponent
-  ]
+  declarations: [ObsComponent]
 })
 export class ObservationsModule {}
