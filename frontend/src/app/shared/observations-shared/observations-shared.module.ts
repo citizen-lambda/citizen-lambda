@@ -13,7 +13,7 @@ import { ProgramContentComponent } from './program-content/program-content.compo
 import { ProgramTeaserComponent } from './program-teaser/program-teaser.component';
 import { ObsListComponent } from './list/list.component';
 import { ObsMapComponent } from './map/map.component';
-import { MarkerPopupComponent } from './map/MarkerPopupComponent';
+import { MarkerPopupComponent } from './map/marker-popup.component';
 import { ModalFlowService } from './modalflow/modalflow.service';
 import { FlowDirective } from './modalflow/flow/flow.directive';
 import { FlowComponent } from './modalflow/flow/flow.component';

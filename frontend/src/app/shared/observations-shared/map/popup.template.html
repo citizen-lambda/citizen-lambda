@@ -1,9 +1,6 @@
 <ng-container *ngTemplateOutlet="taxonomy"></ng-container>
 <ng-template #taxonomy>
   <div class="species" *ngIf="taxon else loading">
-    <!--
-      mv to ng-template, refactor with map popup, ngTemplateOutlet with implicit context
-    -->
     <!-- FIXME: hardcoded api media endpoint -->
     <img
       [src]="
