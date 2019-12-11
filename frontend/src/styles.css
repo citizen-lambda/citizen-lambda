@@ -363,10 +363,22 @@ ul {
   list-style-type: none;
 }
 
-a,
 button,
 *:focus {
   color: var(--primary-color);
+} 
+
+a {
+  color: var(--primary);
+} 
+
+a:visited {
+  color: var(--dark-primary);
+} 
+
+a,
+button,
+*:focus {
   box-shadow: none !important;
   cursor: pointer;
   outline: none;
