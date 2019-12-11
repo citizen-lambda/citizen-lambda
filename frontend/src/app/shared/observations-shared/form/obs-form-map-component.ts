@@ -83,7 +83,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
   @Output() output: EventEmitter<{
     coords?: L.Point;
   }> = new EventEmitter();
-  @ViewChild('obsFormMap' /*, { static: true }*/) mapRef!: ElementRef;
+  @ViewChild('obsFormMap', { static: true }) mapRef!: ElementRef;
   map!: L.Map;
   options: L.MapOptions = {
     layers: [
@@ -256,15 +256,20 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
             inners: L.Polygon[];
           }[][] = geom.coordinates.map(polygons => [
             {
-              outer: L.polygon((polygons[0] as [number, number][]).map(
-                ([lng, lat]: [number, number]) => [lat, lng]
-              ) as L.LatLngExpression[]),
+              outer: L.polygon(
+                (polygons[0] as [number, number][]).map(([lng, lat]: [number, number]) => [
+                  lat,
+                  lng
+                ]) as L.LatLngExpression[]
+              ),
               inners: polygons
                 .slice(1)
                 .map(coords =>
-                  L.polygon((coords as [number, number][])
-                    .map(([lng, lat]: [number, number]) => [lat, lng])
-                    .reverse() as L.LatLngExpression[])
+                  L.polygon(
+                    (coords as [number, number][])
+                      .map(([lng, lat]: [number, number]) => [lat, lng])
+                      .reverse() as L.LatLngExpression[]
+                  )
                 )
             }
           ]);
@@ -284,17 +289,21 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
 
         case 'Polygon':
           const [outer, inners] = [
-            L.polygon((geom.coordinates[0] as [number, number][]).map(([lng, lat]) => [
-              lat,
-              lng
-            ]) as L.LatLngExpression[]),
+            L.polygon(
+              (geom.coordinates[0] as [number, number][]).map(([lng, lat]) => [
+                lat,
+                lng
+              ]) as L.LatLngExpression[]
+            ),
             geom.coordinates
               .slice(1)
               .map(coords =>
-                L.polygon(((coords as [number, number][]).map(([lng, lat]) => [
-                  lat,
-                  lng
-                ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
+                L.polygon(
+                  ((coords as [number, number][]).map(([lng, lat]) => [
+                    lat,
+                    lng
+                  ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[]
+                )
               )
           ];
           if (this.newObsMarker) {

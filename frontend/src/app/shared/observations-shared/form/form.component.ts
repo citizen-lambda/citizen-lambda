@@ -76,11 +76,9 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     program?: FeatureCollection;
     taxa?: Taxonomy;
   };
-  @Output('newObservation') newObservation: EventEmitter<
-    PostObservationResponsePayload
-  > = new EventEmitter();
-  @ViewChild('formMap') formMap: ObsFormMapComponent | undefined;
-  @ViewChild('photo') photo: ElementRef | undefined;
+  @Output() newObservation: EventEmitter<PostObservationResponsePayload> = new EventEmitter();
+  @ViewChild('formMap', { static: false }) formMap: ObsFormMapComponent | undefined;
+  @ViewChild('photo', { static: false }) photo: ElementRef | undefined;
   program_id = 0;
   taxa: Taxon[] = [];
   species: { [name: string]: string }[] = [];

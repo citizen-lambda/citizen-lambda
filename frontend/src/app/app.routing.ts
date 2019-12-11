@@ -9,24 +9,24 @@ import { SpeciesComponent } from './components/species/species.component';
 const appRoutes: Routes = [
   {
     path: 'home',
-    loadChildren: './features/home/home.module#HomeModule',
+    loadChildren: () => import('./features/home/home.module').then(m => m.HomeModule),
     canActivate: [UniqueProgramGuard]
   },
   { path: 'about', component: AboutComponent },
   {
     path: 'mydashboard',
-    loadChildren: './features/user-dashboard/user-dashboard.module#UserDashboardModule',
+    loadChildren: () => import('./features/user-dashboard/user-dashboard.module').then(m => m.UserDashboardModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'api/admin',
-    loadChildren: './features/admin/admin.module#AdminModule',
+    loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'programs',
     // loadChildren: () => import('./programs/programs.module').then(m => m.ProgramsModule),
-    loadChildren: './features/programs/programs.module#ProgramsModule'
+    loadChildren: () => import('./features/programs/programs.module').then(m => m.ProgramsModule)
   },
   { path: 'taxon/:id', component: SpeciesComponent },
   {
@@ -34,7 +34,7 @@ const appRoutes: Routes = [
     redirectTo: '/home',
     pathMatch: 'full'
   },
-  { path: '**', loadChildren: './shared/page-not-found/page-not-found.module#PageNotFoundModule' }
+  { path: '**', loadChildren: () => import('./shared/page-not-found/page-not-found.module').then(m => m.PageNotFoundModule) }
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {

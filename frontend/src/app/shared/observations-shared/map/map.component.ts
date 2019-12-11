@@ -147,7 +147,7 @@ export const conf = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObsMapComponent implements OnInit, OnChanges {
-  @ViewChild('map') map!: ElementRef;
+  @ViewChild('map', { static: false }) map!: ElementRef;
   @Input()
   observations!: FeatureCollection;
   @Input()

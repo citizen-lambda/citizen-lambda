@@ -32,8 +32,7 @@ export class ModalFlowComponent {
     program?: FeatureCollection;
     taxa?: Taxonomy;
   };
-  @ViewChild('content')
-  content!: ElementRef;
+  @ViewChild('content', { static: false }) content!: ElementRef;
   flowitems: FlowItem[] = [];
   timeout: any;
 

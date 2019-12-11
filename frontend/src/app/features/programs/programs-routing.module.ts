@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: 'programs/:id/observations',
     // loadChildren: () => import('./programs/observations/observations.module').then(m => m.ObservationsModule),
-    loadChildren: '../observations/observations.module#ObservationsModule',
+    loadChildren: () => import('../observations/observations.module').then(m => m.ObservationsModule),
     resolve: { programs: ProgramsResolve }
   },
 ];

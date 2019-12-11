@@ -43,10 +43,8 @@ import { ModalFlowService } from '../../shared/observations-shared/modalflow/mod
 })
 export class ObsComponent implements AfterViewInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
-  @ViewChild(ObsMapComponent)
-  obsMap!: ObsMapComponent;
-  @ViewChild(ObsListComponent)
-  obsList!: ObsListComponent;
+  @ViewChild(ObsMapComponent, { static: false }) obsMap!: ObsMapComponent;
+  @ViewChild(ObsListComponent, { static: false }) obsList!: ObsListComponent;
   program: Program | undefined;
   programs: Program[] | undefined;
   programFeature: FeatureCollection | undefined;

@@ -11,8 +11,7 @@ import { ObsFormComponent } from '../../../form/form.component';
   encapsulation: ViewEncapsulation.None
 })
 export class CommittedComponent implements IFlowComponent {
-  @ViewChild(ObsFormComponent)
-  form!: ObsFormComponent;
+  @ViewChild(ObsFormComponent, { static: false }) form!: ObsFormComponent;
   @Input() data: any;
   newData: any = {};
 

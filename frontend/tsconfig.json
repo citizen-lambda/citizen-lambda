@@ -1,6 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "importHelpers": true,
     "paths": {
       "@nguniversal/*": ["./modules/*"]
     },
@@ -21,7 +22,7 @@
     "strictNullChecks": true,
     "strict": true,
     "noEmitOnError": true,
-    "target": "es5",
+    "target": "es2015",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"]
   }
