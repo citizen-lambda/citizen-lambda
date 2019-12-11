@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 // WARNING: cdk-virtual-scroll-viewport rx scheduler calls requestAnimationFrame
 // our ssr will log the resulting error, fixed in 8.2.0
 // see https://github.com/angular/components/commit/4ff1c95ae7e7901ac6b954ad4813db8d71aa5224
-import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { ObsFormModule } from './form/obs-form.module';
 
@@ -73,7 +73,7 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
   ]
 })
 export class ObservationsSharedModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<ObservationsSharedModule> {
     return {
       ngModule: ObservationsSharedModule,
       providers: [FlowService, ModalFlowService]

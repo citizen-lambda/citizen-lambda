@@ -4,6 +4,12 @@
   "newProjectRoot": "projects",
   "projects": {
     "frontend": {
+      "i18n": {
+        "locales": {
+          "fr": "src/locale/messages.fr.xlf",
+          "en": "src/locale/messages.en.xlf"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,6 +19,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -64,10 +71,23 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             },
             "fr": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+            "localize": [
+              "fr"
+            ],
               "optimization": true,
               "outputHashing": "all",
               "outputPath": "dist/browser/fr/",
@@ -84,13 +104,18 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "baseHref": "/fr/",
-              "i18nFile": "src/locale/messages.fr.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "fr",
               "i18nMissingTranslation": "error"
             },
             "en": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+            "localize": [
+              "en"
+            ],
               "optimization": true,
               "outputHashing": "all",
               "outputPath": "dist/browser/en/",
@@ -107,10 +132,6 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "baseHref": "/en/",
-              "i18nFile": "src/locale/messages.en.xlf",
-              "i18nFormat": "xlf",
-              "i18nLocale": "en",
               "i18nMissingTranslation": "error"
             }
           }
@@ -172,7 +193,8 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ]
-            }
+            ,              "optimization": true
+}
           }
         }
       }

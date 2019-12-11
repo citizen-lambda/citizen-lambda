@@ -147,13 +147,10 @@ export const conf = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObsMapComponent implements OnInit, OnChanges {
-  @ViewChild('map', { static: false }) map!: ElementRef;
-  @Input()
-  observations!: FeatureCollection;
-  @Input()
-  taxonomy!: Taxonomy;
-  @Input()
-  program!: FeatureCollection;
+  @ViewChild('map', { static: true }) map!: ElementRef;
+  @Input() observations!: FeatureCollection;
+  @Input() taxonomy!: Taxonomy;
+  @Input() program!: FeatureCollection;
   @Output() click: EventEmitter<L.Point> = new EventEmitter();
   options: any;
   observationMap!: L.Map;

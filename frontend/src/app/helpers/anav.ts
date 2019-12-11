@@ -1,10 +1,11 @@
-import { AfterViewInit, HostListener } from '@angular/core';
+import { AfterViewInit, HostListener, Directive } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, take, filter } from 'rxjs/operators';
 
 
 // TODO: mv anchorNavigation to directive.
+@Directive()
 export abstract class AnchorNavigation implements AfterViewInit {
   fragment$ = new BehaviorSubject<string>('');
 

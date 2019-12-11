@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Data } from '@angular/router';
 import { Observable, Subject, throwError, BehaviorSubject } from 'rxjs';
 import { tap, map, catchError, filter } from 'rxjs/operators';
 
@@ -13,7 +13,6 @@ import { RegisterComponent } from '../register/register.component';
 import { Program } from '../../features/programs/programs.models';
 import { GncProgramsService } from '../../features/programs/gnc-programs.service';
 import { ProgramsComponent } from '../../features/programs/programs.component';
-
 
 @Component({
   selector: 'app-topbar',
@@ -117,7 +116,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
 
     this.route.data
       .pipe(
-        tap((data: { programs: Program[] }) => {
+        tap((data: Data) => {
           if (data && data.programs) {
             this.programs$.next(data.programs);
           } else {

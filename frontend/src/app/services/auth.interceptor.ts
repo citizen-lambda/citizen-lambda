@@ -18,7 +18,7 @@ import { ErrorHandler } from './error_handler';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   refreshing = false;
-  token$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  token$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   constructor(
     public errorHandler: ErrorHandler,
@@ -42,7 +42,7 @@ export class AuthInterceptor implements HttpInterceptor {
     // error.error.msg === "Token has expired";
     if (!this.refreshing) {
       this.refreshing = true;
-      this.token$.next(null);
+      this.token$.next('');
 
       return this.auth.performTokenRefresh().pipe(
         mergeMap((data: TokenRefresh) => {
@@ -67,7 +67,7 @@ export class AuthInterceptor implements HttpInterceptor {
       );
     } else {
       return this.token$.pipe(
-        filter((token: string | null) => !!token),
+        filter(token => !!token),
         switchMap((token: string) => next.handle(this.addToken(request, token)))
       );
     }

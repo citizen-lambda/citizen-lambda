@@ -18,9 +18,8 @@ export class ProgramsResolve implements Resolve<Program[]> {
   ): Observable<Program[]> | Observable<never> {
     console.warn('resolve::getAllPrograms');
 
-    return this.programService.getAllPrograms().pipe(
-      catchError(_error => EMPTY),
-      mergeMap((programs: Program[]) => (programs ? of(programs) : EMPTY))
-    );
+    return this.programService
+      .getAllPrograms()
+      .pipe(mergeMap((programs: Program[] | null) => (programs ? of(programs) : of([]))));
   }
 }

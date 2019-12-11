@@ -46,8 +46,8 @@ export class LoginComponent {
     this.auth
       .login(this.user)
       .pipe(
-        map((user: LoggedUser) => {
-          const message = user.message;
+        map((user: Partial<LoggedUser>) => {
+          const message = user.message || '';
           this._success.subscribe(msg => (this.successMessage = msg));
           this._success.pipe(debounceTime(1800)).subscribe(() => {
             this.activeModal.close();

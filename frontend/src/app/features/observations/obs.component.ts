@@ -47,8 +47,8 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   @ViewChild(ObsListComponent, { static: false }) obsList!: ObsListComponent;
   program: Program | undefined;
   programs: Program[] | undefined;
-  programFeature: FeatureCollection | undefined;
-  observations: FeatureCollection | undefined;
+  programFeature = {} as FeatureCollection;
+  observations = {} as FeatureCollection;
   taxonomy: Taxonomy | undefined;
   context: {
     [name: string]: any;
@@ -57,7 +57,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     taxa?: Taxonomy;
   } = {};
   programID$ = this.route.params.pipe(map(params => parseInt(params['id'], 10)));
-  observations$ = new BehaviorSubject<FeatureCollection | undefined>(this.observations);
+  observations$ = new BehaviorSubject<FeatureCollection>(this.observations);
   obsFeaturesArray$: Observable<Feature[]> = this.observations$.pipe(
     filter(collection => !!collection),
     pluck<FeatureCollection, Feature[]>('features'),
