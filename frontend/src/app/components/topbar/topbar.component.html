@@ -1,10 +1,5 @@
 <nav class="navbar navbar-light navbar-expand-md fixed-top">
-  <a
-    class="navbar-brand"
-    routerLink="home"
-    routerLinkActive="active"
-    aria-label="Citizenλ Home"
-  >
+  <a class="navbar-brand" routerLink="home" routerLinkActive="active" aria-label="Citizenλ Home">
     <img
       src="assets/logo.png"
       class="d-inline-block align-top"
@@ -24,34 +19,20 @@
     <i class="fa fa-bars"></i>
   </button>
 
-  <div
-    class="navbar-collapse align-top"
-    [class.collapse]="collapsed"
-    id="nav-menu"
-  >
+  <div class="navbar-collapse align-top" [class.collapse]="collapsed" id="nav-menu">
     <ul class="btn-group">
       <li>
-        <a
-          routerLink="home"
-          routerLinkActive="active"
-          class="btn my-2 my-sm-0 rounded-0"
-          i18n
+        <a routerLink="home" routerLinkActive="active" class="btn my-2 my-sm-0 rounded-0" i18n
           >Accueil</a
         >
       </li>
       <ng-container *ngIf="programs$ | async as $programs">
         <li *ngIf="$programs?.length > 1">
-          <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n
-            >Les programmes</a
-          >
+          <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n>Les programmes</a>
         </li>
       </ng-container>
       <li *ngIf="isAdmin$ | async">
-        <a
-          routerLink="/api/admin"
-          routerLinkActive="active"
-          class="btn my-2 my-sm-0 rounded-0"
-          i18n
+        <a routerLink="/api/admin" routerLinkActive="active" class="btn my-2 my-sm-0 rounded-0" i18n
           >Admin</a
         >
       </li>
@@ -85,14 +66,11 @@
       </li>
       -->
       <li>
-        <a
-          routerLink="/about"
-          routerLinkActive="active"
-          class="btn my-2 my-sm-0 rounded-0"
-          i18n
+        <a routerLink="/about" routerLinkActive="active" class="btn my-2 my-sm-0 rounded-0" i18n
           >A Propos</a
         >
       </li>
+      <!--
       <li>
         <a
           target="_blank"
@@ -103,6 +81,7 @@
           >CGU</a
         >
       </li>
+      -->
       <!--
       <li>
         <a
@@ -116,9 +95,7 @@
       -->
     </ul>
     <ul class="btn-group" id="auth" role="group" aria-label="auth">
-      <ng-container
-        *ngIf="isLoggedIn$() | async; then connected; else disconnected"
-      >
+      <ng-container *ngIf="isLoggedIn$() | async; then connected; else disconnected">
       </ng-container>
       <ng-template #connected>
         <li>
