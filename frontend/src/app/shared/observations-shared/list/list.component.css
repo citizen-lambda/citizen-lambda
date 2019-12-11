@@ -4,6 +4,12 @@ app-obs-list #list {
   padding: 3px 0px 3px 0px;
 }
 
+@media screen and (max-width: 570px) {
+  app-obs-list {
+    max-width: 80vw;
+  }
+}
+
 @media screen and (min-width: 568px) {
   app-obs-list #list {
     height: var(--obs-list-height);
