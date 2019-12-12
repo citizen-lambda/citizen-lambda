@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { NgbModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -15,12 +15,7 @@ describe('ObsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        ScrollingModule
-      ],
+      imports: [NgbModule, HttpClientTestingModule, RouterTestingModule, ScrollingModule],
       providers: [NgbModal],
       declarations: [ObsListComponent]
     }).compileComponents();

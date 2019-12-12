@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { of } from 'rxjs';
 
 import { NgbModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -34,14 +34,14 @@ describe('ObsComponent', () => {
         ReactiveFormsModule,
         ScrollingModule,
         NgbModule,
-        GreeterModule,
+        GreeterModule
       ],
       providers: [
         NgbModal,
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({id: 123}),
+            params: of({ id: 123 }),
             fragment: of('programs')
           }
         }
@@ -55,7 +55,7 @@ describe('ObsComponent', () => {
         ObsMapComponent,
         ModalFlowComponent,
         ObsFormMapComponent,
-        FlowComponent,
+        FlowComponent
       ]
     }).compileComponents();
   }));

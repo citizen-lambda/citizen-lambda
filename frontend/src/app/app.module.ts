@@ -3,8 +3,6 @@ import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-bro
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -34,15 +32,6 @@ import { AboutCustomComponent } from './components/about/custom/custom.component
 import { AboutFixedComponent } from './components/about/fixed/fixed.component';
 
 import { AppConfig } from '../conf/app.config';
-
-// fixed with next ng-bootstrap version, remove after upgrade
-// TODO: ngbModule augmentation: test whether we need to patch node_modules
-declare module '@ng-bootstrap/ng-bootstrap' {
-  export interface NgbModalOptions {
-    size?: 'sm' | 'lg' | 'xl';
-    centered?: boolean;
-  }
-}
 
 @NgModule({
   imports: [
@@ -84,27 +73,12 @@ declare module '@ng-bootstrap/ng-bootstrap' {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    },
-    { provide: LOCALE_ID, useValue: 'fr' }
+    }
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
   constructor(@Inject(LOCALE_ID) localeId: string) {
-    this.localeInitializer(localeId).then(() => {
-      console.info(`Locale: ${localeId}.`);
-    });
-  }
-
-  async localeInitializer(localeId: string): Promise<any> {
-    try {
-      const module = await import(
-        /* webpackInclude: /(fr|en)\.js$/ */
-        `@angular/common/locales/${localeId}.js`
-      );
-      return registerLocaleData(module.default);
-    } catch {
-      registerLocaleData(localeFr, 'fr');
-    }
+    console.info(`Locale: ${localeId}.`);
   }
 }

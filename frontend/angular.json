@@ -85,18 +85,15 @@
                   "maximumWarning": "6kb"
                 }
               ],
-            "localize": [
-              "fr"
-            ],
+              "localize": ["fr"],
               "optimization": true,
               "outputHashing": "all",
-              "outputPath": "dist/browser/fr/",
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "buildOptimizer": true,
               "fileReplacements": [
                 {
@@ -113,18 +110,15 @@
                   "maximumWarning": "6kb"
                 }
               ],
-            "localize": [
-              "en"
-            ],
+              "localize": ["en"],
               "optimization": true,
               "outputHashing": "all",
-              "outputPath": "dist/browser/en/",
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "buildOptimizer": true,
               "fileReplacements": [
                 {
@@ -192,9 +186,9 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ]
-            ,              "optimization": true
-}
+              ],
+              "optimization": true
+            }
           }
         }
       }

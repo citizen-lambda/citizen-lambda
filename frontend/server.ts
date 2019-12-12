@@ -23,9 +23,7 @@ const DEFAULT_LOCALE = 'fr';
 const MockBrowser = require('mock-browser').mocks.MockBrowser;
 const mock = new MockBrowser();
 const domino = require('domino');
-const template = readFileSync(
-  join(DIST_FOLDER, DEFAULT_LOCALE, 'index.html')
-).toString();
+const template = readFileSync(join(DIST_FOLDER, DEFAULT_LOCALE, 'index.html')).toString();
 const win = domino.createWindow(template);
 win.Object = Object;
 win.Math = Math;
@@ -43,10 +41,7 @@ win.screen = { deviceXDPI: 1 };
 (global as any)['L'] = require('leaflet');
 
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
-const {
-  AppServerModuleNgFactory,
-  LAZY_MODULE_MAP
-} = require('./dist/server/main');
+const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('./dist/server/main');
 
 // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
 app.engine(
@@ -76,9 +71,7 @@ app.get('*', (req: any, res: any) => {
   const matches = req.url.match(/^\/([a-z]{2}(?:-[A-Z]{2})?)\//);
   // check if the requested url has a correct format '/locale' and matches any of the supportedLocales
   const locale =
-    matches && supportedLocales.indexOf(matches[1]) !== -1
-      ? matches[1]
-      : DEFAULT_LOCALE;
+    matches && supportedLocales.indexOf(matches[1]) !== -1 ? matches[1] : DEFAULT_LOCALE;
 
   let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   if (ip.substr(0, 7) === '::ffff:') {
@@ -87,7 +80,7 @@ app.get('*', (req: any, res: any) => {
   // res.render("index", { req });
   res.render(`${locale}/index`, {
     req: req,
-    url: req.url.replace(`/${locale}/`, '/'),
+    // url: req.url.replace(`/${locale}/`, '/'),
     providers: [
       { provide: 'language', useFactory: () => locale, deps: [] },
       { provide: 'ip', useFactory: () => ip, deps: [] }

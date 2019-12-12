@@ -6,9 +6,8 @@
     "baseUrl": "."
   },
   "angularCompilerOptions": {
-    "entryModule": "app/app.server.module#AppServerModule"
+    "entryModule": "app/app.server.module#AppServerModule",
+    "enableIvy": false
   },
-  "files": [
-    "main.server.ts"
-  ]
+  "files": ["main.server.ts"]
 }
