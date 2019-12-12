@@ -7,7 +7,7 @@ app-home div.container-fluid {
 }
 
 #welcome {
-  background: url(/assets/background.jpg) no-repeat;
+  background: url(/en/assets/background.jpg) no-repeat;
   background-size: cover;
   position: relative;
 }
