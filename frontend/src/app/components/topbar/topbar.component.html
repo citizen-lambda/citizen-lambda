@@ -93,6 +93,12 @@
         >
       </li>
       -->
+      <ng-template ngFor let-lang [ngForOf]="languages">
+        <li *ngIf="lang.code !== localeId">
+          <a class="btn my-2 my-sm-0 rounded-0" href="/{{ lang.code }}/">{{ lang.label }}</a>
+        </li>
+        <li *ngIf="lang.code === localeId">{{ lang.label }}</li>
+      </ng-template>
     </ul>
     <ul class="btn-group" id="auth" role="group" aria-label="auth">
       <ng-container *ngIf="isLoggedIn$() | async; then connected; else disconnected">

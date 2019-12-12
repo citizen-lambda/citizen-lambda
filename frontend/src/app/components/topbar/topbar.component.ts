@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  AfterViewInit,
+  LOCALE_ID,
+  Inject
+} from '@angular/core';
 import { ActivatedRoute, Data } from '@angular/router';
 import { Observable, Subject, throwError, BehaviorSubject } from 'rxjs';
 import { tap, map, catchError, filter } from 'rxjs/operators';
@@ -28,8 +35,13 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   programs$ = new Subject<Program[] | null>();
   // FIXME: isAdmin$ topbar updates
   isAdmin$ = new BehaviorSubject<boolean>(false);
+  languages = [
+    { code: 'en', label: 'English' },
+    { code: 'fr', label: 'Français' }
+  ];
 
   constructor(
+    @Inject(LOCALE_ID) public localeId: string,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     private auth: AuthService,
