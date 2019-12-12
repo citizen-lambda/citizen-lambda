@@ -224,18 +224,7 @@ de s'enregister, et de mettre à jour le champs booléen
 ## le déploiement
 
 ```sh
-npm run build --prod
-npm run build:i18n-ssr
-# > frontend@0.0.0 compile:server /home/pat/citizen/frontend
-# > webpack --config webpack.server.config.js --progress --colors
-# > frontend@0.0.0 compile:server /home/pat/citizen/frontend
-# > webpack --config webpack.server.config.js --progress --colors
-# …
-# TypeError: Cannot read property 'getEntryByPath' of undefined
-npm install typescript"@2.9.1"
-npm run build:i18n-ssr
-# ou alternativement
-npm run ng -- build --prod --aot --optimization --build-optimizer --vendor-chunk --common-chunk --extract-licenses --extract-css
+npm run build:i18n
 ```
 
 ```sh
@@ -422,6 +411,95 @@ sudo a2enmod brotli
    ProxyPass http://127.0.0.1:5002/api
    ProxyPassReverse  http://127.0.0.1:5002/api
  </Location>
+```
+
+```conf
+# Configuration GeoNature-citizen
+# Alias / /home/pat/citizen/frontend/dist/browser
+<VirtualHost *:80>
+  ServerName patkap.tech
+
+  RewriteEngine on
+  RewriteCond %{HTTPS} !on
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerAdmin patkap@no-reply.github.com
+    ServerName patkap.tech
+    ServerAlias citizendemo.patkap.tech
+    DocumentRoot /home/pat/citizen/frontend/dist/browser/
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    SSLEngine on
+    SSLProxyEngine on
+    SSLCertificateFile /etc/letsencrypt/live/citizendemo.patkap.tech/cert.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/citizendemo.patkap.tech/privkey.pem
+    SSLCertificateChainFile /etc/letsencrypt/live/citizendemo.patkap.tech/chain.pem
+    SSLProtocol all -SSLv2 -SSLv3
+    SSLHonorCipherOrder on
+    SSLCompression off
+    SSLOptions +StrictRequire
+    SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json application/ld+json image/svg+xml application/xml+rss application/x-font-ttf application/vnd.ms-fontobject image/x-icon
+    SetEnvIfNoCase Request_URI \
+        \.(gif|jpe?g|png|swf|woff|woff2) no-brotli dont-vary
+
+    #Make sure proxies don't deliver the wrong content
+    Header append Vary User-Agent env=!dont-vary
+</VirtualHost>
+
+<Files *.js.br>
+  AddType "application/javascript" .br
+  AddEncoding br .br
+</Files>
+
+<Files *.css.br>
+  AddType "text/css" .br
+  AddEncoding br .br
+</Files>
+
+<Directory /home/pat/citizen/frontend/dist/browser/>
+  Require all granted
+  AllowOverride All
+
+  Options -MultiViews
+
+  RewriteEngine On
+
+  RewriteBase /
+  
+  RewriteCond %{HTTP:Accept-Encoding} br
+  RewriteCond %{REQUEST_FILENAME}.br -f
+  RewriteRule ^(.*)$ $1.br [L]
+
+  # If an existing asset or directory is requested go to it as it is
+  #RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
+  #RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
+  #RewriteRule ^ - [L]
+
+  # If the requested resource doesn't exist, use index.html
+  #RewriteRule ^ /index.html
+  
+  RewriteRule ^../index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule (..) $1/index.html [L]
+  RewriteCond %{HTTP:Accept-Language} ^fr [NC]
+  RewriteRule ^$ /fr/ [R]
+  RewriteCond %{HTTP:Accept-Language} !^fr [NC]
+  RewriteRule ^$ /en/ [R]
+
+</Directory>
+
+<Location /api>
+  Header set Access-Control-Allow-Origin "https://citizendemo.patkap.tech"
+  ProxyPass http://127.0.0.1:5002/api
+  ProxyPassReverse  http://127.0.0.1:5002/api
+</Location>
 ```
 
 …
