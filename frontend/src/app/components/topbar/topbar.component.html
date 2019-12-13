@@ -20,87 +20,84 @@
   </button>
 
   <div class="navbar-collapse align-top" [class.collapse]="collapsed" id="nav-menu">
-    <ul class="btn-group">
-      <li>
-        <a routerLink="home" routerLinkActive="active" class="btn my-2 my-sm-0 rounded-0" i18n
+    <ul class="btn-group navbar-nav">
+      <li class="nav-item">
+        <a
+          routerLink="home"
+          routerLinkActive="active"
+          class="nav-link"
+          data-toggle="collapsed"
+          data-target=".navbar-collapse"
+          i18n
           >Accueil</a
         >
       </li>
       <ng-container *ngIf="programs$ | async as $programs">
-        <li *ngIf="$programs?.length > 1">
-          <a class="btn my-2 my-sm-0 rounded-0" (click)="programs()" i18n>Les programmes</a>
+        <li *ngIf="$programs?.length > 1" class="nav-item">
+          <a
+            class="nav-link"
+            (click)="programs()"
+            data-toggle="collapsed"
+            data-target=".navbar-collapse"
+            i18n
+            >Les programmes</a
+          >
         </li>
       </ng-container>
-      <li *ngIf="isAdmin$ | async">
-        <a routerLink="/api/admin" routerLinkActive="active" class="btn my-2 my-sm-0 rounded-0" i18n
+      <li *ngIf="isAdmin$ | async" class="nav-item">
+        <a
+          routerLink="/api/admin"
+          routerLinkActive="active"
+          class="nav-link"
+          data-toggle="collapsed"
+          data-target=".navbar-collapse"
+          i18n
           >Admin</a
         >
       </li>
-      <!--
-      <li>
+      <li class="nav-item">
         <a
-          routerLink="#"
+          routerLink="about"
           routerLinkActive="active"
-          class="btn my-2 my-sm-0 rounded-0"
+          class="nav-link"
+          data-toggle="collapsed"
+          data-target=".navbar-collapse"
           i18n
-          >Dynamic1</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="#"
-          routerLinkActive="active"
-          class="btn my-2 my-sm-0 rounded-0"
-          i18n
-          >Dynamic2</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="#"
-          routerLinkActive="active"
-          class="btn my-2 my-sm-0 rounded-0"
-          i18n
-          >Dynamic3</a
-        >
-      </li>
-      -->
-      <li>
-        <a routerLink="/about" routerLinkActive="active" class="btn my-2 my-sm-0 rounded-0" i18n
           >A Propos</a
         >
       </li>
-      <!--
-      <li>
-        <a
-          target="_blank"
-          routerLink="assets/cgu.pdf"
-          routerLinkActive="active"
-          class="btn my-2 my-sm-0 rounded-0"
-          i18n
-          >CGU</a
+      <li class="nav-item" ngbDropdown>
+        <ng-container *ngFor="let lang of languages">
+          <a
+            *ngIf="lang.code === localeId"
+            class="nav-link"
+            style="cursor: pointer"
+            ngbDropdownToggle
+            id="navbarDropdown2"
+            role="button"
+            data-toggle="collapsed"
+            data-target=".navbar-collapse"
+            >{{ lang.label }}</a
+          >
+        </ng-container>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="navbarDropdown2"
+          class="dropdown-menu dropdown-menu-right"
         >
+          <ng-template ngFor let-lang [ngForOf]="languages">
+            <a
+              *ngIf="lang.code !== localeId"
+              ngbDropdownItem
+              href="/{{ lang.code }}/"
+              class="nav-link"
+              data-toggle="collapsed"
+              data-target=".navbar-collapse"
+              >{{ lang.label }}</a
+            >
+          </ng-template>
+        </div>
       </li>
-      -->
-      <!--
-      <li>
-        <a
-          routerLink="#"
-          routerLinkActive="active"
-          class="btn my-2 my-sm-0 rounded-0"
-          i18n
-          >Nos données personnelles</a
-        >
-      </li>
-      -->
-    </ul>
-    <ul class="btn-group" id="lang" role="group" aria-label="language">
-      <ng-template ngFor let-lang [ngForOf]="languages">
-        <li *ngIf="lang.code !== localeId">
-          <a class="btn my-2 my-sm-0 rounded-0" href="/{{ lang.code }}/">{{ lang.label }}</a>
-        </li>
-        <li *ngIf="lang.code === localeId">{{ lang.label }}</li>
-      </ng-template>
     </ul>
     <ul class="btn-group" id="auth" role="group" aria-label="auth">
       <ng-container *ngIf="isLoggedIn$() | async; then connected; else disconnected">
@@ -113,24 +110,44 @@
             ngbTooltip="Mon tableau de bord"
             routerLink="mydashboard"
             routerLinkActive="active"
+            data-toggle="collapsed"
+            data-target=".navbar-collapse"
           >
             <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ username }}
           </a>
         </li>
         <li>
-          <a class="my-2 my-sm-0" (click)="logout()" i18n>
+          <a
+            class="my-2 my-sm-0"
+            (click)="logout()"
+            data-toggle="collapsed"
+            data-target=".navbar-collapse"
+            i18n
+          >
             <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
           </a>
         </li>
       </ng-template>
       <ng-template #disconnected>
         <li>
-          <a class="btn my-2 my-sm-0 rounded-0" (click)="login()" i18n>
+          <a
+            class="btn my-2 my-sm-0 rounded-0"
+            (click)="login()"
+            data-toggle="collapsed"
+            data-target=".navbar-collapse"
+            i18n
+          >
             Se connecter
           </a>
         </li>
         <li>
-          <a class="btn my-2 my-sm-0 rounded-0" (click)="register()" i18n>
+          <a
+            class="btn my-2 my-sm-0 rounded-0"
+            (click)="register()"
+            data-toggle="collapsed"
+            data-target=".navbar-collapse"
+            i18n
+          >
             S'inscrire
           </a>
         </li>

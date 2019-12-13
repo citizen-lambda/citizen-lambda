@@ -25,7 +25,7 @@ app-topbar .navbar-expand-md .navbar-collapse {
   justify-content: space-between;
 }
 
-app-topbar .navbar-collapse.collapsed.show {
+app-topbar .navbar-collapse.collapse.show {
   background-color: var(--primary-color);
 }
 
@@ -82,13 +82,13 @@ app-topbar #nav-menu #auth li:first-child a {
   font-weight: bold;
 }
 
-app-topbar #nav-menu.collapsed {
+app-topbar #nav-menu.collapse {
   transition-property: all;
   transition-property: transform;
   transition-duration: 0.2s;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   app-topbar #nav-menu {
     background-color: var(--primary-color);
     color: var(--color);
