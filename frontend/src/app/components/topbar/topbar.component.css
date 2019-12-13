@@ -29,7 +29,7 @@ app-topbar .navbar-collapse.collapsed.show {
   background-color: var(--primary-color);
 }
 
-app-topbar #nav-menu ul.btn-group:first-child {
+app-topbar #nav-menu ul.btn-group:not(last-child) {
   flex-wrap: wrap;
   margin-bottom: 0;
 }

@@ -32,7 +32,7 @@
         <div *ngFor="let s of taxa">
           <div class="obs-img" [class.selected]="isSelectedTaxon(s)">
             <img
-              [src]="!!s?.media ? s.media.thumb_url : 'assets/default_taxon.jpg'"
+              [src]="!!s?.media ? s.media[0].thumb_url : 'assets/default_taxon.jpg'"
               [alt]="s?.nom_vern"
               (click)="onTaxonSelected(s)"
             />

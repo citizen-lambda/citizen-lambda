@@ -93,6 +93,8 @@
         >
       </li>
       -->
+    </ul>
+    <ul class="btn-group" id="lang" role="group" aria-label="language">
       <ng-template ngFor let-lang [ngForOf]="languages">
         <li *ngIf="lang.code !== localeId">
           <a class="btn my-2 my-sm-0 rounded-0" href="/{{ lang.code }}/">{{ lang.label }}</a>
