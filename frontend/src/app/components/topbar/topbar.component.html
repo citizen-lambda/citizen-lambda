@@ -1,4 +1,4 @@
-<nav class="navbar navbar-light navbar-expand-md fixed-top">
+<nav class="navbar navbar-default navbar-expand-md fixed-top" role="navigation">
   <a class="navbar-brand" routerLink="home" routerLinkActive="active" aria-label="Citizenλ Home">
     <img
       src="assets/logo.png"
@@ -20,7 +20,7 @@
   </button>
 
   <div class="navbar-collapse align-top" [class.collapse]="collapsed" id="nav-menu">
-    <ul class="btn-group navbar-nav">
+    <ul class="nav navbar-nav navbar-center mx-auto">
       <li class="nav-item">
         <a
           routerLink="home"
@@ -66,6 +66,8 @@
           >A Propos</a
         >
       </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
       <li class="nav-item" ngbDropdown>
         <ng-container *ngFor="let lang of languages">
           <a

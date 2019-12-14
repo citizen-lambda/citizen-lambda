@@ -34,7 +34,8 @@ app-topbar #nav-menu ul.btn-group:not(last-child) {
   margin-bottom: 0;
 }
 
-app-topbar #nav-menu ul.btn-group li a {
+app-topbar #nav-menu #auth li:not(first-child) a,
+app-topbar #nav-menu .nav-link {
   color: #666565;
   font-size: 14px;
   padding: 6px 10px;
@@ -43,16 +44,20 @@ app-topbar #nav-menu ul.btn-group li a {
   transition: all 0.1s ease-in-out;
 }
 
-app-topbar #nav-menu ul.btn-group li a:hover {
+app-topbar .nav-link:visited {
+  color: var(--color);
+}
+
+app-topbar #nav-menu .nav-link:hover,
+app-topbar #nav-menu .nav-link.active {
   font-weight: bold;
 }
 
-app-topbar #nav-menu ul.btn-group li a.active {
+app-topbar #nav-menu .nav-link.active {
   color: var(--primary);
-  font-weight: bold;
 }
 
-app-topbar #nav-menu ul.btn-group li a.active:before {
+app-topbar #nav-menu .nav-link.active:before {
   content: '■ ';
   color: var(--primary);
 }
@@ -88,7 +93,7 @@ app-topbar #nav-menu.collapse {
   transition-duration: 0.2s;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
   app-topbar #nav-menu {
     background-color: var(--primary-color);
     color: var(--color);
