@@ -11,7 +11,7 @@ app-observations div.container-fluid {
 }
 
 #welcome {
-  background: url(/en/assets/background.jpg) no-repeat;
+  background: url(/fr/assets/background.jpg) no-repeat;
   background-size: cover;
 }
 
@@ -314,7 +314,7 @@ input:checked ~ .toggle i {
 }
 
 .marker-cluster {
-  background-image: url(/en/assets/marker2.svg);
+  background-image: url(/fr/assets/marker2.svg);
 }
 
 .marker-cluster span {

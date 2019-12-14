@@ -667,7 +667,7 @@
         <target>My dashboard</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">110</context>
+          <context context-type="linenumber">112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="be4cfcbda3bea4569f42503c87720831222d47ab" datatype="html">
@@ -679,7 +679,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">126</context>
+          <context context-type="linenumber">128</context>
         </context-group>
       </trans-unit>
       <trans-unit id="903c311baddc63adc12cd0848ffcc65fcd4b9967" datatype="html">
@@ -691,7 +691,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">139</context>
+          <context context-type="linenumber">141</context>
         </context-group>
       </trans-unit>
       <trans-unit id="095c77818c8bba667004ed88330ea8ea99349ece" datatype="html">
@@ -703,7 +703,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">150</context>
+          <context context-type="linenumber">152</context>
         </context-group>
       </trans-unit>
       <trans-unit id="63bd025dd4b92e75d1b0c96a4b922140e81267d7" datatype="html">
@@ -882,11 +882,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/greeter/greeter.component.html</context>
-          <context context-type="linenumber">11</context>
+          <context context-type="linenumber">5</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/greeter/greeter.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">6</context>
         </context-group>
         <note priority="1" from="description">Scrollez pour en voir plus !</note>
       </trans-unit>

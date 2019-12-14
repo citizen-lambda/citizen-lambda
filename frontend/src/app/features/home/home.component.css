@@ -7,14 +7,16 @@ app-home div.container-fluid {
 }
 
 #welcome {
-  background: url(/en/assets/background.jpg) no-repeat;
+  display: grid !important;
+  grid-template-rows: min-content max-content min-content;
+  background: url(/fr/assets/background.jpg) no-repeat;
   background-size: cover;
   position: relative;
 }
 
 #welcome > h1 {
   padding-left: 50%;
-  font-size: 60px;
+  font-size: 4.25em;
 }
 
 #welcome > p {
