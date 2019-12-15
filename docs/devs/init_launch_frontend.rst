@@ -41,7 +41,7 @@ Paramètres de cartographie:
 
 Surcharge du rendu CSS:
 ***********************
-``frontend/src/custom.css``
+``frontend/src/custom/custom.css``
 
 Image par défaut pour les taxons sans image:
 ********************************************
