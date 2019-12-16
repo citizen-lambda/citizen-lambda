@@ -90,6 +90,8 @@ Host citizendemo
 sudo -u postgres createuser -e -E -P citizen
 sudo -u postgres createdb -e -E UTF8 -O citizen citizendb
 sudo -u postgres psql citizendb  -c 'create extension postgis; create extension "uuid-ossp";'
+# sudo apt install postgresql-12-postgis-3
+# sudo -u postgres psql citizendb  -c 'CREATE EXTENSION postgis; CREATE EXTENSION postgis_raster; CREATE EXTENSION "uuid-ossp";'
 ```
 
 #### 🐛 dépendances à GeoNature et TaxHub qui restent à isoler
