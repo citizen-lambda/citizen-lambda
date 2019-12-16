@@ -1,40 +1,21 @@
-<h1>A Propos</h1>
-<p>Patrick J.R. Kappeler est un développeur logiciel certifié par l’état
-(code RNCP 5927), spécialiste du langage Python et de son utilisation
-dans le cadre du développement d’applications web.</p>
-
-<p>Cette démonstration est basée sur un développement en open source et une mise à disposition
-dont Patrick a eu la responsabilité, au sein d’une entreprise privée, entre
-janvier et juin 2019.</p>
-
-<p>Il s’agit d’une application client/serveur interactive,
-intégrant différentes technologies de sécurisation des échanges
-d’informations, d’exploitation et de maintenance de base de données
-et d’interfaces utilisateurs pertinentes et conviviales.</p>
-
-<p>Cette application est actuellement en production dans plusieurs
-organismes de protection de l’environnement qui, en collaboration
-avec Patrick, avaient exprimé des besoins fonctionnels à mettre à
-disposition dans un environnement de temps réel, dont la couverture
-s’étendrait au territoire national en y incluant les DOM-TOM.</p>
-
 <h2>La démonstration – structure et scénario</h2>
 
-<p>Différents programmes de campagne de collecte d’informations
-à caractère écologique sont proposés, sur la base de la sélection d’un
-périmètre géographique spécifique.</p>
+Différents programmes de campagne de collecte d’informations à caractère écologique sont proposés, sur la base de la sélection d’un périmètre géographique spécifique.
+Le programme ayant été sélectionné, l’intervenant peut ajouter et documenter une observation d’espèce particulière qu’il aura réalisée.
+La documentation de cette observation consiste à:
+<ol><li>décrire l’observation, en y joignant le cas éventuel, une photo.</li>
+    <li>localiser très précisément sur la carte satellite présentée le lieu de l’observation.</li></ol>
+L’ensemble des informations ainsi collectées sera conservé dans la base de données de l’application serveur.
+L'application est ludifiée/gamifiée: des badges sont attribuées lorsque la soumission d'une nouvelle observation dépasse des seuils définis en configuration.
 
-<p>Le programme ayant été sélectionné, l’intervenant peut ajouter et
-documenter une observation d’espèce particulière qu’il aura réalisée.</p>
+<p>Cette démonstration est basée sur un développement en open source de l'application <a href="https://github.com/PnX-SI/GeoNature-citizen">GeoNature-citizen</a>, un outil du projet <a href="https://geonature.fr/">GeoNature</a> destiné à l'inventaire participatif. Il s’agit d’une application client/serveur interactive, intégrant différentes technologies de sécurisation des échanges d’informations, d’exploitation et de maintenance de base de données et d’interfaces utilisateurs pertinentes et conviviales.</p>
+<p>Le projet GeoNature-citizen est né de la collaboration des Parcs Nationaux du Mercantour et de Camargue, de la LPO Rhône-Alpes et de l'agence Natural Solutions. L'application est actuellement en production dans plusieurs organismes de protection de l’environnement.</p>
 
-<p>La documentation de cette observation consiste à:</p>
-<ol>
-    <li>décrire l’observation, en y joignant le cas éventuel, une ou plusieurs
-        photos.</li>
+<p>Une refonte architecturale globale a été réalisée (frontend et backend) pour la démo, exploitant la robustesse de la base de code, visant une complexité réduite et la promotion de la réutilisation du code.
+Le processus de développement a impliqué la modularisation et la re-factorisation de la base de code complète, la mise à niveau du frontend vers la dernière version Angular (actuellement rc9), l'amélioration des performances de traitement et de rendu grace a une arborescence des éléments du DOM moins profonde, une maintenance et une personnalisation plus aisées du CSS (travail en cours sur un système de conception).
+De bien meilleures performances sont ainsi et maintenant obtenues, atteignant la limite théorique de la bibliothèque Leaflet-MarkerCluster de 50 000 points dans des conditions interactives acceptables par le client. </p>
 
-    <li>localiser très précisément sur la carte satellite présentée le lieu de
-        l’observation.</li>
-</ol>
+<p>Cette nouvelle architecture et les résultats obtenus découlent de la décision d'utiliser des modules par fonctionnalité, dont le chargement est effectué a la demande, intégrant services et composants, apportant ainsi l'avantage des capacités d'hydratation incrémentielle à l'application.</p>
 
-<p>L’ensemble des informations ainsi collectées sera conservé dans la base de
-données de l’application serveur.</p>
+<p>Le backend (python / flask + sqlalchemy + postgis + postgresql) a été lui aussi modularisé, rendu installable sans dépendance tierce a TaxHub: en incorporant le référentiel de taxonomie standard français TaxRef (avec des médias de secours fournis via l'API REST du MNHN), la gestion des listes de taxonomie (définies par programme / jeu / défi) sous forme de modules activables, une installation "autonome" documentée.</p>
+
