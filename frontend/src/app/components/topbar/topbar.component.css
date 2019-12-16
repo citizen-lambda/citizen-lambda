@@ -53,7 +53,8 @@ app-topbar #nav-menu .nav-link.active {
   font-weight: bold;
 }
 
-app-topbar #nav-menu .nav-link.active {
+app-topbar #nav-menu .nav-link.active,
+button.navbar-toggler {
   color: var(--primary);
 }
 

@@ -4,6 +4,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
@@ -41,6 +43,7 @@ import { AppConfig } from '../conf/app.config';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    FontAwesomeModule,
     NgbModule,
     LoadingBarHttpClientModule,
     LoadingBarRouterModule,
