@@ -94,7 +94,7 @@ app-topbar #nav-menu.collapse {
   transition-duration: 0.2s;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767.98px) {
   app-topbar #nav-menu {
     background-color: var(--primary-color);
     color: var(--color);
