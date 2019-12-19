@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Inject, LOCALE_ID } from '@angular/core';
 
 @Component({
   selector: 'app-about-custom',
@@ -7,7 +7,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 export class AboutCustomComponent implements OnInit {
-  constructor() {}
+  constructor(@Inject(LOCALE_ID) public localeId: string) {}
 
   ngOnInit() {}
 }

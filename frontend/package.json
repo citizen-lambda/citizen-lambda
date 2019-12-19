@@ -10,7 +10,7 @@
     "e2e": "ng e2e",
     "xi18n": "for l in fr en; do ng xi18n --output-path locale --out-file _messages.${l}.xlf --i18n-locale ${l}; done",
     "build:i18n": "ng --prod --aot --optimization --vendor-chunk --common-chunk --extract-licenses --extract-css --localize build",
-    "brotli": "for f in ~/citizen/frontend/dist/browser/*/*.{css,js}; do brotli ${f}; done",
+    "brotli": "for f in $(ls ~/citizen/frontend/dist/browser/*/*.{css,js}); do brotli ${f}; done",
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
   },
   "private": true,
