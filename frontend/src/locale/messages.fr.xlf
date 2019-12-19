@@ -784,12 +784,12 @@
           <context context-type="linenumber">72</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="795e2656ad62ca76c3398619f693621e5e94ef5f" datatype="html">
-        <source>Date de l&apos;observation</source>
-        <target>Date de l&apos;observation</target>
+      <trans-unit id="939b6fbe6d6d5466bd7555cfb73169c5279d259f" datatype="html">
+        <source>Date d&apos;observation</source>
+        <target>Date d&apos;observation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d7f155db07c7c362fcf9b6f98bbabf8c9815fca0" datatype="html">
@@ -805,7 +805,7 @@
         <target>Dénombrement</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dd2a11ebc737589080ed400dacc33a8c8c84728b" datatype="html">
@@ -813,7 +813,7 @@
         <target>Nombre</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">96</context>
+          <context context-type="linenumber">95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="688190149c303fc5438d194a57d73b2b16943b6f" datatype="html">
@@ -821,7 +821,7 @@
         <target>Commentaire</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">107</context>
+          <context context-type="linenumber">106</context>
         </context-group>
       </trans-unit>
       <trans-unit id="91d25744e097aa7d2be6eb1c90e85bda45d50624" datatype="html">
@@ -829,7 +829,7 @@
         <target>Votre commentaire</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">110</context>
+          <context context-type="linenumber">109</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bfa14a6744dd1c8bc159dfca1cb286f4c7ea8fc6" datatype="html">
@@ -837,7 +837,7 @@
         <target><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Ajouter une photo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">119</context>
+          <context context-type="linenumber">118</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1ca6b9fd976db3087d536ed5c02e83d4eb791a56" datatype="html">
@@ -845,7 +845,7 @@
         <target>Où avez-vous observé cette espèce ?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">133</context>
+          <context context-type="linenumber">132</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dc67b08c999905bfad44810acabbaa2c59d43061" datatype="html">
@@ -859,7 +859,15 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">152</context>
+          <context context-type="linenumber">151</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3fae57f442e8152a796290a2b8edc6c52c0c5f8f" datatype="html">
+        <source>Cliquez sur la carte pour renseigner le lieu précis de votre observation</source>
+        <target>Cliquez sur la carte pour renseigner le lieu précis de votre observation</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
+          <context context-type="linenumber">159</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4b58516f5143cfac1bbdbdbb9af702bdad95ceb8" datatype="html">
