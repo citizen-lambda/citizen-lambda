@@ -3,7 +3,9 @@ import {
   Input,
   ViewEncapsulation,
   ChangeDetectionStrategy,
-  OnInit
+  OnInit,
+  Inject,
+  LOCALE_ID
 } from '@angular/core';
 import { AppConfig } from '../../../../conf/app.config';
 import { Taxon } from '../../../core/models';
@@ -37,10 +39,10 @@ export class MarkerPopupComponent implements OnInit {
   @Input() data!: TaxonData;
   taxon = {} as TaxonData & Taxon;
 
-  constructor(public taxonService: TaxonomyService) {}
+  constructor(@Inject(LOCALE_ID) public localeId: string, public taxonService: TaxonomyService) {}
 
   ngOnInit() {
-    console.debug('init');
+    console.debug(`init ${this.localeId}`);
     of(this.data)
       // .pipe(filter(data => !!data))
       .subscribe(data => {

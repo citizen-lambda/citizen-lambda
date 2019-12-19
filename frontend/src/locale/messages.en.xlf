@@ -706,18 +706,6 @@
           <context context-type="linenumber">152</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="63bd025dd4b92e75d1b0c96a4b922140e81267d7" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ taxon?.nom_vern }}"/></source>
-        <target><x id="INTERPOLATION" equiv-text="{{ taxon?.nom_vern_eng }}"/></target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
-          <context context-type="linenumber">21</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/shared/observations-shared/list/list.component.html</context>
-          <context context-type="linenumber">27</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="bb8974b10ff0b4a2047373716dbab559628c551f" datatype="html">
         <source>
         Observé par

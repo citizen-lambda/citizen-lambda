@@ -6,7 +6,9 @@ import {
   OnChanges,
   SimpleChanges,
   ChangeDetectionStrategy,
-  ViewEncapsulation
+  ViewEncapsulation,
+  Inject,
+  LOCALE_ID
   // HostListener
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
@@ -36,7 +38,7 @@ export class ObsListComponent implements OnChanges {
   @Output() obsSelected: EventEmitter<Feature> = new EventEmitter();
   observations$: BehaviorSubject<Feature[] | null> = new BehaviorSubject<Feature[] | null>(null);
 
-  constructor(public taxonService: TaxonomyService) {}
+  constructor(@Inject(LOCALE_ID) public localeId: string, public taxonService: TaxonomyService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.observations && changes.observations && changes.observations.currentValue) {

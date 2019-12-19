@@ -4,7 +4,7 @@
     <!-- FIXME: hardcoded api media endpoint -->
     <img
       [src]="
-    data && data.images && !!data.images.length
+    data && !!data.images && !!data.images?.length
         ? AppConfig.API_ENDPOINT + '/media/' + data.images[0]
         : data.image
         ? data.image
@@ -12,13 +12,13 @@
         ? taxon.media[0].thumb_url
         : 'assets/default_taxon.jpg'
         "
-      [alt]="taxon?.nom_vern"
+      [alt]="localeId.startsWith('fr') ? taxon?.nom_vern : taxon?.nom_vern_eng"
       loading="lazy"
       width="80px"
       height="80px"
     />
     <div class="infos">
-      <b i18n>{{ taxon?.nom_vern }}</b>
+      <b>{{ localeId.startsWith('fr') ? taxon?.nom_vern : taxon?.nom_vern_eng }}</b>
       <p i18n>
         Observé par
         <span>{{ data?.observer?.username ? data.observer.username : 'Anonyme' }}</span>
