@@ -69,7 +69,7 @@ app-home div.container-fluid {
 
 :root {
   --section-programs_height_min1366: 2600px;
-  --section-programs_height_max1366: 2660px;
+  --section-programs_height_max1366: 2800px;
 }
 
 #programs-cards {
