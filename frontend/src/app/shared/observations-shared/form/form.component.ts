@@ -112,14 +112,12 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
   hasZoomAlert: boolean | undefined;
   zoomAlertTimeout: any;
 
-  disabledDates() {
-    return (date: NgbDate, _current: { month: number }) => {
+  // these functions have to stay anonymous.
+  disabledDates = (date: NgbDate, _current: { month: number }) => {
       const date_impl = new Date(date.year, date.month - 1, date.day);
       return date_impl > this.today;
-    };
-  }
+    }
 
-  // this function has to stay anonymous.
   inputAutoCompleteSearch = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),

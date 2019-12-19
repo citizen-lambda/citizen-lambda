@@ -72,11 +72,11 @@
       <h5 i18n>Informations complémentaires</h5>
       <div class="row">
         <div class="form-group col-lg-6">
-          <div class="input-group">
-            <label for="date" i18n>Date de l'observation</label>
+            <label for="date" i18n>Date d'observation</label>
+            <!-- type="date" is redondant with ngbDatepicker directive -->
             <input
+              type="text"
               formControlName="date"
-              type="date"
               class="form-control rounded-0"
               i18n-placeholder
               placeholder="jj/mm/aaaa"
@@ -85,7 +85,6 @@
               [markDisabled]="disabledDates"
               (click)="d.toggle()"
             />
-          </div>
         </div>
         <div class="form-group col-lg-6">
           <label for="counting" i18n>Dénombrement</label>
