@@ -18,13 +18,13 @@
               ? taxon.media[0].thumb_url
               : 'assets/default_taxon.jpg'
           "
-          [alt]="localeId.startsWith('fr') ? taxon?.nom_vern : taxon?.nom_vern_eng"
+          [alt]="localeId.startsWith('en') && taxon?.nom_vern_eng ? taxon?.nom_vern_eng : taxon?.nom_vern"
           loading="lazy"
           width="80px"
           height="80px"
         />
         <div class="infos">
-          <b>{{ localeId.startsWith('fr') ? taxon?.nom_vern : taxon?.nom_vern_eng }}</b>
+          <b>{{ localeId.startsWith('en') && taxon?.nom_vern_eng ? taxon?.nom_vern_eng : taxon?.nom_vern }}</b>
           <p i18n>
             Observé par
             <span>{{
