@@ -21,7 +21,7 @@
       <b>{{ localeId.startsWith('en') && taxon?.nom_vern_eng ? taxon?.nom_vern_eng : taxon?.nom_vern }}</b>
       <p i18n>
         Observé par
-        <span>{{ data?.observer?.username ? data.observer.username : 'Anonyme' }}</span>
+        <span>{{ data?.observer?.username ? data.observer.username : localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous' }}</span>
       </p>
       <p i18n *ngIf="data?.date || data?.municipality?.name">
         <span *ngIf="data.date"> le {{ data.date | date }}</span>

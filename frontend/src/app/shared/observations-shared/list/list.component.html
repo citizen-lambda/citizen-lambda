@@ -28,7 +28,7 @@
           <p i18n>
             Observé par
             <span>{{
-              o.properties.observer?.username ? o.properties.observer.username : 'Anonyme'
+              o.properties.observer?.username ? o.properties.observer.username : localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous'
             }}</span>
           </p>
           <p i18n *ngIf="o.properties.date || o.properties.municipality?.name">
