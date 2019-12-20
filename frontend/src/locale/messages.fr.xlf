@@ -706,14 +706,14 @@
           <context context-type="linenumber">152</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="bb8974b10ff0b4a2047373716dbab559628c551f" datatype="html">
+      <trans-unit id="eb1bc10241a71a26fa25feca160c97ab7cdeb9cc" datatype="html">
         <source>
         Observé par
-        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : &apos;Anonyme&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : localeId.startsWith(&apos;fr&apos;) ? &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </source>
         <target>
         Observé par
-        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : &apos;Anonyme&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : localeId.startsWith(&apos;fr&apos;) ? &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
@@ -1008,17 +1008,17 @@
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="71d0e9f84ca06cc9a43d7bdc804f0537940137de" datatype="html">
+      <trans-unit id="95cfb3f6f3b9c94bf1a87479fa6cd4ff3847f386" datatype="html">
         <source>
             Observé par
             <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
-              o.properties.observer?.username ? o.properties.observer.username : &apos;Anonyme&apos;
+              o.properties.observer?.username ? o.properties.observer.username : localeId.startsWith(&apos;fr&apos;) ? &apos;Anonyme&apos; : &apos;Anonymous&apos;
             }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
           </source>
         <target>
             Observé par
             <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
-              o.properties.observer?.username ? o.properties.observer.username : &apos;Anonyme&apos;
+              o.properties.observer?.username ? o.properties.observer.username : localeId.startsWith(&apos;fr&apos;) ? &apos;Anonyme&apos; : &apos;Anonymous&apos;
             }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
           </target>
         <context-group purpose="location">
