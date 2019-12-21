@@ -819,9 +819,15 @@
           <context context-type="linenumber">109</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="bfa14a6744dd1c8bc159dfca1cb286f4c7ea8fc6" datatype="html">
-        <source><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Ajouter une photo</source>
-        <target><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Submit a picture</target>
+      <trans-unit id="4e55bd550d8ec1a1a0b5a4ece886901ead4f3f86" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{
+            !!(photoFilename$ | async)?.length
+              ? (photoFilename$ | async)?.length &gt; 24 ? (photoFilename$ | async | slice:0:24) + &apos;…&apos; : (photoFilename$ | async) : &apos;Ajouter une photo&apos;
+          }}"/></source>
+        <target><x id="INTERPOLATION" equiv-text="{{
+            !!(photoFilename$ | async)?.length
+              ? (photoFilename$ | async)?.length &gt; 24 ? (photoFilename$ | async | slice:0:24) + &apos;…&apos; : (photoFilename$ | async) : &apos;Ajouter une photo&apos;
+          }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
           <context context-type="linenumber">118</context>
@@ -832,7 +838,7 @@
         <target>Where did you observe this species?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">132</context>
+          <context context-type="linenumber">148</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dc67b08c999905bfad44810acabbaa2c59d43061" datatype="html">
@@ -846,7 +852,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">151</context>
+          <context context-type="linenumber">167</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3fae57f442e8152a796290a2b8edc6c52c0c5f8f" datatype="html">
@@ -854,7 +860,7 @@
         <target>Click on the map to fill in the precise location of your observation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">159</context>
+          <context context-type="linenumber">175</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4b58516f5143cfac1bbdbdbb9af702bdad95ceb8" datatype="html">
