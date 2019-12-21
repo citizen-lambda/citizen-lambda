@@ -356,8 +356,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
       visibleParent = this.observationLayer.getVisibleParent(marker.marker);
     }
     if (!visibleParent && this.observationLayer && marker) {
-      this.observationMap.flyTo(marker.marker.getLatLng(), 16);
-      // TODO: runtime@prefers-reduced-motion: this.observationMap.panTo(marker.marker.getLatLng());
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        this.observationMap.panTo(marker.marker.getLatLng());
+      } else {
+        this.observationMap.flyTo(marker.marker.getLatLng(), 16);
+      }
       visibleParent = marker.marker;
     }
     if (visibleParent) {
