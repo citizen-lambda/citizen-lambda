@@ -98,10 +98,17 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       //       'pk.eyJ1IjoicGF0a2FwIiwiYSI6ImNqeHpvNWV1MDA0bmozbHBobmhjbWsxODQifQ.jgXkucvmL5kgacz3LwQ4UA'
       //   }
       // )
-      L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
-        maxZoom: 20,
-        attribution: '&copy; <a href="http://maps.stamen.com">Stamen</a>'
+      // {
+      L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution:
+          // tslint:disable-next-line: max-line-length
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
       })
+      // L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+      //   maxZoom: 20,
+      //   attribution: '&copy; <a href="http://maps.stamen.com">Stamen</a>'
+      // })
     ],
     zoom: 10,
     center: L.latLng({ lat: 44.6041984880559, lng: 4.305528958557883 }),
