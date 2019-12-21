@@ -12,14 +12,16 @@ import {
   OnChanges,
   AfterViewInit
 } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged } from 'rxjs/operators';
 
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { FeatureCollection } from 'geojson';
 import * as L from 'leaflet';
+import EXIF from 'exif-js';
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { AppConfig } from '../../../../conf/app.config';
@@ -30,6 +32,7 @@ import {
 } from '../../../features/observations/observation.model';
 import { Taxonomy, Taxon } from '../../../core/models';
 import { geometryValidator, ObsFormMapComponent } from './obs-form-map-component';
+
 
 export function ngbDateMaxIsToday(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -104,6 +107,8 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     ]),
     id_program: new FormControl(this.program_id)
   });
+  photoFilename$ = new BehaviorSubject<string>('');
+  imageBlobURL: SafeUrl = '';
   taxonAutocompleteFields = AppConfig.taxonAutocompleteFields;
   taxonSelectInputThreshold = AppConfig.taxonSelectInputThreshold;
   taxonAutocompleteInputThreshold = AppConfig.taxonAutocompleteInputThreshold;
@@ -114,9 +119,9 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
 
   // these functions have to stay anonymous.
   disabledDates = (date: NgbDate, _current: { month: number }) => {
-      const date_impl = new Date(date.year, date.month - 1, date.day);
-      return date_impl > this.today;
-    }
+    const date_impl = new Date(date.year, date.month - 1, date.day);
+    return date_impl > this.today;
+  }
 
   inputAutoCompleteSearch = (text$: Observable<string>) =>
     text$.pipe(
@@ -161,7 +166,11 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     this.autocomplete = 'isOn';
   }
 
-  constructor(@Inject(LOCALE_ID) readonly localeId: string, private client: HttpClient) {}
+  constructor(
+    @Inject(LOCALE_ID) readonly localeId: string,
+    private sanitizer: DomSanitizer,
+    private client: HttpClient
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.data && changes.data.currentValue && this.data) {
@@ -183,14 +192,14 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
         // error TS2531: Object is possibly 'null'.
         // tslint:disable-next-line: no-non-null-assertion
         this.program_id = this.data.program.features[0].properties!.id_program;
-        console.debug('program_id:', this.program_id);
+        // console.debug('program_id:', this.program_id);
       }
 
       if (this.data.taxa) {
         this.taxa = Object.values(this.data.taxa);
-        console.debug('taxa:', Object.values(this.data.taxa));
+        // console.debug('taxa:', Object.values(this.data.taxa));
         this.taxaCount = this.taxa.length;
-        console.debug('taxaCount:', this.taxaCount);
+        // console.debug('taxaCount:', this.taxaCount);
       }
 
       if (this.taxaCount >= this.taxonAutocompleteInputThreshold) {
@@ -217,6 +226,32 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     }
     if (!!patch) {
       this.obsForm.controls['cd_nom'].patchValue(taxon.taxref['cd_nom']);
+    }
+  }
+
+  async onPhotoUpdate() {
+    if (this.photo) {
+      const files: FileList = this.photo.nativeElement.files;
+      if (!!files.length) {
+        this.photoFilename$.next(files[0].name);
+
+        const file: Blob = files[0];
+        this.imageBlobURL = this.sanitizer.bypassSecurityTrustResourceUrl(
+          window.URL.createObjectURL(files[0])
+          );
+
+        const reader = new FileReader();
+        reader.addEventListener('load', event => {
+          try {
+            const exifData = EXIF.readFromBinaryFile(reader.result);
+            if (exifData.latitude && exifData.longitude) {
+              console.debug('gps:', exifData.latitude, exifData.longitude);
+            }
+          } catch (error) {
+            console.debug('No EXIF data', error);
+          }
+        });
+      }
     }
   }
 

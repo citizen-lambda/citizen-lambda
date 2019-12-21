@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ObsFormComponent } from './form.component';
 import { ObsFormMapComponent } from './obs-form-map-component';
 
+
 @NgModule({
   declarations: [ObsFormMapComponent, ObsFormComponent],
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgbModule],
