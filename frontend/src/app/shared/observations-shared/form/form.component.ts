@@ -273,8 +273,11 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
   }
 
   onMapClick(e: any) {
-    if (e && e.coords) {
+    if (!!e.coords) {
       this.obsForm.patchValue({ geometry: e.coords });
+    }
+    if (e.coords === undefined) {
+      this.obsForm.patchValue({ geometry: undefined });
     }
   }
 

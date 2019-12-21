@@ -228,7 +228,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
 
   programAreaClickHandler(event: L.LeafletEvent) {
     if (this.newObsMarker) {
-      this.output.emit({ coords: undefined }); // todo: patch form control value
+      this.output.emit({ coords: undefined });
       this.map.removeLayer(this.newObsMarker);
     }
     const zoomCondition = this.checkZoomHandler();
@@ -326,7 +326,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       if (this.newObsMarker && result === false) {
         // TODO: Remember onDragStart marker Position and restore it on invalidation
         alert('Marker is not inside the program area');
-        this.output.emit({ coords: undefined }); // todo: patch form control value
+        this.output.emit({ coords: undefined });
         this.map.removeLayer(this.newObsMarker);
         this.newObsMarker = null;
       }
