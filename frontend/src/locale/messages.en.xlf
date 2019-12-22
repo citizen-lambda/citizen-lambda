@@ -819,38 +819,45 @@
           <context context-type="linenumber">109</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="41a3061f51c1fcb300235cb5662419426641ec8d" datatype="html">
+
+      <trans-unit id="db8f1dadf81da28bb63f29c07dc8799bdce08d0b" datatype="html">
         <source><x id="INTERPOLATION" equiv-text="{{
                 !!(photoFilename$ | async)?.length
-                  ? (photoFilename$ | async)?.length &gt; 24
-                    ? (photoFilename$ | async | slice: 0:24) + &apos;…&apos;
+                  ? (photoFilename$ | async)?.length &gt; 18
+                    ? (photoFilename$ | async | slice: 0:18) + &apos;…&apos;
                     : (photoFilename$ | async)
-                  : &apos;Ajouter une photo&apos;
+                  : &apos;Ajouter la photo&apos;
               }}"/>
               <x id="TAG_INPUT" ctype="x-input" equiv-text="&lt;input/&gt;"/>
+              <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/>
               <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container&gt;"/>
                 <x id="TAG_IMG" ctype="image" equiv-text="&lt;img/&gt;"/>
               <x id="CLOSE_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;/ng-container&gt;"/>
-              <x id="START_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;ng-template&gt;"/><x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/>
-                  <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/><x id="CLOSE_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;/ng-template&gt;"/>
+              <x id="START_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;ng-template&gt;"/>
+                  <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>
+              <x id="CLOSE_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;/ng-template&gt;"/>
+            <x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/>
             </source>
         <target><x id="INTERPOLATION" equiv-text="{{
                 !!(photoFilename$ | async)?.length
-                  ? (photoFilename$ | async)?.length &gt; 24
-                    ? (photoFilename$ | async | slice: 0:24) + &apos;…&apos;
+                  ? (photoFilename$ | async)?.length &gt; 18
+                    ? (photoFilename$ | async | slice: 0:18) + &apos;…&apos;
                     : (photoFilename$ | async)
-                  : &apos;Add the photo&apos;
+                  : &apos;Add the picture&apos;
               }}"/>
               <x id="TAG_INPUT" ctype="x-input" equiv-text="&lt;input/&gt;"/>
+              <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/>
               <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container&gt;"/>
                 <x id="TAG_IMG" ctype="image" equiv-text="&lt;img/&gt;"/>
               <x id="CLOSE_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;/ng-container&gt;"/>
-              <x id="START_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;ng-template&gt;"/><x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/>
-                  <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/><x id="CLOSE_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;/ng-template&gt;"/>
+              <x id="START_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;ng-template&gt;"/>
+                  <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>
+              <x id="CLOSE_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;/ng-template&gt;"/>
+            <x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/>
             </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">120</context>
+          <context context-type="linenumber">119</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1ca6b9fd976db3087d536ed5c02e83d4eb791a56" datatype="html">
@@ -858,7 +865,7 @@
         <target>Where did you observe this species?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">155</context>
+          <context context-type="linenumber">153</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dc67b08c999905bfad44810acabbaa2c59d43061" datatype="html">
@@ -872,7 +879,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">174</context>
+          <context context-type="linenumber">172</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3fae57f442e8152a796290a2b8edc6c52c0c5f8f" datatype="html">
@@ -880,7 +887,7 @@
         <target>Click on the map to fill in the precise location of your observation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">182</context>
+          <context context-type="linenumber">180</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4b58516f5143cfac1bbdbdbb9af702bdad95ceb8" datatype="html">
