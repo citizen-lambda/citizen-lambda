@@ -10,8 +10,7 @@ import {
 import { AppConfig } from '../../../../conf/app.config';
 import { Taxon } from '../../../core/models';
 import { TaxonomyService } from '../../../services/taxonomy.service';
-import { of } from 'rxjs';
-// import { filter } from 'rxjs/operators';
+import { of, BehaviorSubject } from 'rxjs';
 
 interface TaxonData {
   cd_nom: number;
@@ -37,20 +36,16 @@ interface TaxonData {
 export class MarkerPopupComponent implements OnInit {
   AppConfig = AppConfig;
   @Input() data!: TaxonData;
-  taxon = {} as TaxonData & Taxon;
+  taxon$ = new BehaviorSubject<TaxonData & Taxon | undefined>(undefined);
 
   constructor(@Inject(LOCALE_ID) public localeId: string, public taxonService: TaxonomyService) {}
 
   ngOnInit() {
-    console.debug(`init ${this.localeId}`);
     of(this.data)
-      // .pipe(filter(data => !!data))
       .subscribe(data => {
-        // console.debug(data);
         if (!!data && data.cd_nom) {
           this.taxonService.getTaxon(data.cd_nom).subscribe(t => {
-            // console.debug({ ...t, ...data });
-            this.taxon = { ...t, ...data };
+            this.taxon$.next({ ...t, ...data });
           });
         }
       });

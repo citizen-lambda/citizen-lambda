@@ -14,7 +14,7 @@
   <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
     Votre observation a bien été ajoutée !
   </h6>
-  <p i18n>{{ obs.taxref?.nom_vern }}</p>
+  <p>{{ (!localeId.startsWith('fr') && !!obs?.taxref?.nom_vern_eng) ? obs?.taxref?.nom_vern_eng : obs?.taxref?.nom_vern ? obs?.taxref?.nom_vern : obs?.taxref?.nom_valide }}</p>
   <span i18n
     >Observé par {{ username || "Anonyme" }} <br />
     le {{ obs.date }}</span

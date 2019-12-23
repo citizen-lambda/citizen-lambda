@@ -992,14 +992,6 @@
         <note priority="1" from="description">Votre observation a bien été ajoutée !</note>
         <note priority="1" from="meaning">Congrats</note>
       </trans-unit>
-      <trans-unit id="a71b80f1ccd88cf680a77e22033bb8b27f486850" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ obs.taxref?.nom_vern }}"/></source>
-        <target><x id="INTERPOLATION" equiv-text="{{ obs.taxref?.nom_vern_eng }}"/></target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/congrats/congrats.component.html</context>
-          <context context-type="linenumber">17</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="a424d8f02a3a93b974ee57fff8052aeec291440e" datatype="html">
         <source>Observé par <x id="INTERPOLATION" equiv-text="{{ username || &quot;Anonyme&quot; }}"/> <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
     le <x id="INTERPOLATION_1" equiv-text="{{ obs.date }}"/></source>
@@ -1084,14 +1076,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
           <context context-type="linenumber">25</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="660e5e40f31636702d2788997332d7716a50dcd5" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{ s?.value?.nom_vern }}"/></source>
-        <target><x id="INTERPOLATION" equiv-text="{{ s?.value?.nom_vern_eng }}"/></target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d9ec159fb51a28ab5ed26394a718910086471ca" datatype="html">

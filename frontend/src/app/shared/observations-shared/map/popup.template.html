@@ -1,6 +1,6 @@
 <ng-container *ngTemplateOutlet="taxonomy"></ng-container>
 <ng-template #taxonomy>
-  <div class="species" *ngIf="taxon else loading">
+  <div class="species" *ngIf="taxon$ | async as taxon else loading">
     <!-- FIXME: hardcoded api media endpoint -->
     <img
       [src]="
@@ -8,17 +8,17 @@
         ? AppConfig.API_ENDPOINT + '/media/' + data.images[0]
         : data.image
         ? data.image
-        : taxon?.media && !!taxon.media.length
-        ? taxon.media[0].thumb_url
+        : taxon?.media && !!taxon?.media.length
+        ? taxon?.media[0].thumb_url
         : 'assets/default_taxon.jpg'
         "
-      [alt]="(!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon.nom_vern : taxon.nom_valide"
+      [alt]="(!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon?.nom_vern : taxon?.nom_valide"
       loading="lazy"
       width="80px"
       height="80px"
     />
     <div class="infos">
-      <b>{{ (!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon.nom_vern : taxon.nom_valide }}</b>
+      <b>{{ (!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon?.nom_vern : taxon?.nom_valide }}</b>
       <p i18n>
         Observé par
         <span>{{ data?.observer?.username ? data.observer.username : localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous' }}</span>

@@ -26,7 +26,7 @@
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
           <option *ngFor="let s of taxonomy | keyvalue" [ngValue]="s.key">
-            <span i18n>{{ s?.value?.nom_vern }}</span> (<i>{{ s?.value?.nom_complet }}</i
+            <span>{{ (!localeId.startsWith('fr') && !!s?.value?.nom_vern_eng) ? s?.value?.nom_vern_eng : s?.value?.nom_vern ? s?.value?.nom_vern : s?.value?.nom_valide }}</span> (<i>{{ s?.value?.nom_complet }}</i
             >)
           </option>
         </select>

@@ -4,7 +4,9 @@ import {
   OnDestroy,
   ViewChild,
   HostListener,
-  AfterViewInit
+  AfterViewInit,
+  Inject,
+  LOCALE_ID
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, combineLatest, Subject, Observable, BehaviorSubject } from 'rxjs';
@@ -132,13 +134,14 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         obs;
 
   constructor(
+    @Inject(LOCALE_ID) public localeId: string,
     protected router: Router,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     public taxonomyService: TaxonomyService,
     public flowService: ModalFlowService
   ) {
-    combineLatest(this.programID$, this.route.data)
+    combineLatest([this.programID$, this.route.data])
       .pipe(
         map(([id, data]) => {
           this.programs = data.programs;
@@ -157,7 +160,9 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
       .subscribe(([taxa, program]) => {
         // console.debug(taxa, program);
         this.programFeature = program;
-        this.taxonomy = taxa;
+        this.taxonomy = taxa;  /*.sort(sorted(
+          !localeId.startsWith('fr') ? 'nom_vern_eng' : 'nom_vern' ? 'nom_vern' : 'nom_valide'
+        ))*/
         this.context.taxa = taxa;
 
         this.context.program = program;

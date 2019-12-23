@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, ViewEncapsulation, OnDestroy, OnInit, Inject, LOCALE_ID } from '@angular/core';
 
 import { IFlowComponent } from '../../flow/flow';
 import { AppConfig } from '../../../../../../conf/app.config';
@@ -16,6 +16,8 @@ export class CongratsComponent implements IFlowComponent, OnInit, OnDestroy {
   username = 'anonyme';
   obs: any;
   AppConfig = AppConfig;
+
+  constructor(@Inject(LOCALE_ID) public localeId: string) {}
 
   ngOnDestroy(): void {
     if (this.timeout) {
