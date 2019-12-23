@@ -115,13 +115,12 @@
         </div>
 
         <div class="form-group col-lg-6">
-            <label for="photo" i18n
-              >{{
+            <label for="photo">{{
                 !!(photoFilename$ | async)?.length
                   ? (photoFilename$ | async)?.length > 18
                     ? (photoFilename$ | async | slice: 0:18) + '…'
                     : (photoFilename$ | async)
-                  : 'Ajouter la photo'
+                  : localeId.startsWith('fr') ? 'Ajouter la photo' : 'Add the picture'
               }}
               <input
                 #photo
