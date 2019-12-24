@@ -8,6 +8,7 @@
       <ng-container *ngIf="taxonService.getTaxon(o?.properties?.cd_nom) | async as taxon">
         <!-- mv to ng-template, refact with map popup, ngTemplateOutlet with implicit context -->
         <!-- FIXME: hardcoded api media endpoint -->
+        <!-- TODO: mv to controller method -->
         <img
           [src]="
             o && o.properties && o.properties.images && !!o.properties.images.length
@@ -18,19 +19,37 @@
               ? taxon.media[0].thumb_url
               : 'assets/default_taxon.jpg'
           "
-          [alt]="(!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon?.nom_vern : taxon?.nom_valide"
+          [alt]="
+            !localeId.startsWith('fr') && !!taxon?.nom_vern_eng
+              ? taxon?.nom_vern_eng
+              : taxon?.nom_vern
+              ? taxon?.nom_vern
+              : taxon?.nom_valide
+          "
           loading="lazy"
           width="80px"
           height="80px"
         />
         <div class="infos">
-        <b>{{ (!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon?.nom_vern : taxon?.nom_valide }}</b>
+          <!-- TODO: mv to controller method -->
+          <b>{{
+            !localeId.startsWith('fr') && !!taxon?.nom_vern_eng
+            ? taxon?.nom_vern_eng
+            : taxon?.nom_vern
+            ? taxon?.nom_vern
+            : taxon?.nom_valide
+          }}</b>
           <p i18n>
             Observé par
             <span>{{
-              o.properties.observer?.username ? o.properties.observer.username : localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous'
+              o.properties.observer?.username
+              ? o.properties.observer.username
+              : localeId.startsWith('fr')
+              ? 'Anonyme'
+              : 'Anonymous'
             }}</span>
           </p>
+          <!-- TODO: mv to controller method -->
           <p i18n *ngIf="o.properties.date || o.properties.municipality?.name">
             <span *ngIf="o.properties.date"> le {{ o.properties.date | date }}</span>
             <span *ngIf="o.properties.municipality?.name">
@@ -43,4 +62,5 @@
     </div>
   </cdk-virtual-scroll-viewport>
 </ng-container>
-<ng-template #loading>Loading ... </ng-template>
+<!-- TODO: withLoadingPipe -->
+<ng-template #loading>Loading …</ng-template>
