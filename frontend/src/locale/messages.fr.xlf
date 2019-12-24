@@ -1032,22 +1032,30 @@
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="95cfb3f6f3b9c94bf1a87479fa6cd4ff3847f386" datatype="html">
+      <trans-unit id="95252feb321211d4062c95e368dc14c8406e39fe" datatype="html">
         <source>
             Observé par
             <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
-              o.properties.observer?.username ? o.properties.observer.username : localeId.startsWith(&apos;fr&apos;) ? &apos;Anonyme&apos; : &apos;Anonymous&apos;
+              o.properties.observer?.username
+              ? o.properties.observer.username
+              : localeId.startsWith(&apos;fr&apos;)
+              ? &apos;Anonyme&apos;
+              : &apos;Anonymous&apos;
             }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
           </source>
         <target>
             Observé par
             <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
-              o.properties.observer?.username ? o.properties.observer.username : localeId.startsWith(&apos;fr&apos;) ? &apos;Anonyme&apos; : &apos;Anonymous&apos;
+              o.properties.observer?.username
+              ? o.properties.observer.username
+              : localeId.startsWith(&apos;fr&apos;)
+              ? &apos;Anonyme&apos;
+              : &apos;Anonymous&apos;
             }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/list/list.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="20c5b1edf9355d042fffbe3003aa99b59f6737d2" datatype="html">
@@ -1063,7 +1071,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/list/list.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">53</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e0212155de52e79fd3927a7a0cd0b3e64c4d2e2e" datatype="html">
