@@ -24,8 +24,9 @@ section#program-content {
 section#program-teaser > app-program-teaser,
 section#program-content > app-program-content {
   background-color: var(--primary-color);
+  display: flex;
+  height: 100%;
   width: 100%;
-  align-self: center;
 }
 
 section#program-teaser > app-program-teaser > figure {
@@ -92,17 +93,18 @@ section#program-teaser > app-program-teaser > a.scroll img {
   width: 15px;
 }
 
-/* section#program-content > app-program-content > article { */
-  section#program-content {
-    background-color: var(--secondary-color);
-  }
+section#program-content {
+  background-color: var(--secondary-color);
+}
 
-  section#program-content > app-program-content > article {
-    font-size: calc(80% + 1vw);
-    overflow: auto;
-    padding: 1.2em;
-    max-height: var(--step);
-  }
+section#program-content > app-program-content > article {
+  font-size: calc(80% + 1vw);
+  overflow: auto;
+  padding: 1.2em;
+  max-height: var(--step);
+  align-self: center;
+  margin:auto;
+}
 
 section#program-content > app-program-content > a.btn-big {
   background-color: var(--secondary);
