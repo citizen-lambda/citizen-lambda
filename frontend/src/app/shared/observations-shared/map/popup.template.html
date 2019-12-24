@@ -2,6 +2,7 @@
 <ng-template #taxonomy>
   <div class="species" *ngIf="taxon$ | async as taxon else loading">
     <!-- FIXME: hardcoded api media endpoint -->
+    <!-- TODO: mv complex template expressions to controller method -->
     <img
       [src]="
     data && !!data.images && !!data.images?.length
@@ -28,9 +29,9 @@
         <span *ngIf="data.municipality?.name"> à {{ data.municipality?.name }} </span>
       </p>
     </div>
-    <div class="hide"><img src="assets/binoculars.png" alt="binoculars" /></div>
+    <div class="hide"><i class="fa fa-search" style="font-size: 20px;"></i></div>
   </div>
 </ng-template>
 <ng-template #loading>
-  <div>Loading …</div>
+  <div><i class="fa fa-spinner"></i>Loading … </div>
 </ng-template>
