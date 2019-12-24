@@ -36,6 +36,7 @@ section#program-teaser > app-program-teaser > figure {
   grid-template-rows: 2fr 1fr 1fr;
   margin: 0 0 0;
   overflow: hidden;
+  width: inherit;
 }
 
 section#program-teaser > app-program-teaser > figure > img {
