@@ -9,7 +9,7 @@ import {
   LOCALE_ID
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, combineLatest, Subject, Observable, BehaviorSubject } from 'rxjs';
+import { zip, forkJoin, combineLatest, Subject, Observable, BehaviorSubject } from 'rxjs';
 import {
   map,
   flatMap,
@@ -19,7 +19,7 @@ import {
   shareReplay,
   share,
   take,
-  switchMap
+  switchMap,
 } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
@@ -29,8 +29,9 @@ import { Program } from '../programs/programs.models';
 import { ProgramsResolve } from '../programs/programs-resolve.service';
 import { GncProgramsService } from '../programs/gnc-programs.service';
 import { TaxonomyService } from '../../services/taxonomy.service';
-import { Taxonomy } from '../../core/models';
+import { Taxonomy, Taxon } from '../../core/models';
 import { sorted } from '../../helpers/sorted';
+// import { groupBy } from '../../helpers/groupby';
 import { composeAsync } from '../../helpers/compose';
 import { ObsMapComponent } from '../../shared/observations-shared/map/map.component';
 import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
@@ -68,6 +69,22 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     shareReplay()
   );
   filteredObservations$ = new BehaviorSubject<Feature[]>([]);
+  taxonomy$ = new Subject<Taxon[]>();
+  sampledTaxonomy$ = this.obsFeaturesArray$.pipe(
+    map(items => {
+      return Array.from(
+        // tslint:disable-next-line: no-non-null-assertion
+        new Map(items.map(item => [`${item.properties!.cd_nom}`, item])).values()
+      ).reduce((acc: Observable<Taxon>[], item: Feature) => {
+        return [
+          ...acc,
+          // tslint:disable-next-line: no-non-null-assertion
+          this.taxonomyService.getTaxon(item.properties!.cd_nom)
+        ];
+      }, []);
+    }),
+    flatMap(items => zip(...items)),
+  );
   municipalities$ = this.obsFeaturesArray$.pipe(
     map((items: Feature[]) => {
       const result = items.reduce(
@@ -160,7 +177,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
       .subscribe(([taxa, program]) => {
         // console.debug(taxa, program);
         this.programFeature = program;
-        this.taxonomy = taxa;  /*.sort(sorted(
+        this.taxonomy = taxa; /*.sort(sorted(
           !localeId.startsWith('fr') ? 'nom_vern_eng' : 'nom_vern' ? 'nom_vern' : 'nom_valide'
         ))*/
         this.context.taxa = taxa;
@@ -182,6 +199,25 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.obsFeaturesArray$.subscribe(o => this.filteredObservations$.next(o));
     this.obsMap.click.subscribe((point: L.Point) => (this.context.coords = point));
+    this.sampledTaxonomy$.subscribe(
+      taxa => {
+        this.taxonomy$.next(
+          // groupBy(
+            taxa.sort(
+              sorted(
+                !this.localeId.startsWith('fr')
+                  ? 'nom_vern_eng'
+                  : 'nom_vern'
+                  ? 'nom_vern'
+                  : 'nom_valide'
+              )
+            )
+            // , 'classe')
+        );
+      },
+      error => console.error(error),
+      () => console.debug('complete')
+    );
   }
 
   ngOnDestroy() {

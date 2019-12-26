@@ -25,7 +25,7 @@
           i18n-aria-label aria-label="Toutes espèces"
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
-          <option *ngFor="let s of taxonomy | keyvalue" [ngValue]="s.key">
+          <option *ngFor="let s of taxonomy$ | async | keyvalue" [ngValue]="s.value.cd_nom">
             <span>{{ (!localeId.startsWith('fr') && !!s?.value?.nom_vern_eng) ? s?.value?.nom_vern_eng : s?.value?.nom_vern ? s?.value?.nom_vern : s?.value?.nom_valide }}</span> (<i>{{ s?.value?.nom_complet }}</i
             >)
           </option>

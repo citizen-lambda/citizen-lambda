@@ -1,5 +1,5 @@
-<ng-container *ngTemplateOutlet="taxonomy"></ng-container>
-<ng-template #taxonomy>
+<ng-container *ngTemplateOutlet="wwwwcard"></ng-container>
+<ng-template #wwwwcard>
   <div class="species" *ngIf="taxon$ | async as taxon; else loading">
     <!-- FIXME: hardcoded api media endpoint -->
     <!-- TODO: mv complex template expressions to controller method -->
@@ -19,10 +19,16 @@
       height="80px"
     />
     <div class="infos">
-      <b>{{ (!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon?.nom_vern : taxon?.nom_valide }}</b>
+      <b
+        >{{ (!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng :
+        taxon?.nom_vern ? taxon?.nom_vern : taxon?.nom_valide }}</b
+      >
       <p i18n>
         Observé par
-        <span>{{ data?.observer?.username ? data.observer.username : localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous' }}</span>
+        <span
+          >{{ data?.observer?.username ? data.observer.username : localeId.startsWith('fr') ?
+          'Anonyme' : 'Anonymous' }}</span
+        >
       </p>
       <p i18n *ngIf="data?.date || data?.municipality?.name">
         <span *ngIf="data.date"> le {{ data.date | date }}</span>
@@ -33,5 +39,5 @@
   </div>
 </ng-template>
 <ng-template #loading>
-  <div><i class="fa fa-spinner fa-spin"></i>Loading … </div>
+  <div><i class="fa fa-spinner fa-spin"></i>Loading …</div>
 </ng-template>
