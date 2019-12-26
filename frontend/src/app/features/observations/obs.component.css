@@ -114,7 +114,7 @@ section#program-content > app-program-content > a.btn-big {
   padding: 10px 30px !important;
   position: absolute;
   right: 0px;
-  top: calc(2 * var(--step) - 3em);
+  top: calc(2 * var(--step));
   transform: translateX(-50%);
 }
 

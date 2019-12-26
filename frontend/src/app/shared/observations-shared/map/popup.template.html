@@ -1,6 +1,6 @@
 <ng-container *ngTemplateOutlet="taxonomy"></ng-container>
 <ng-template #taxonomy>
-  <div class="species" *ngIf="taxon$ | async as taxon else loading">
+  <div class="species" *ngIf="taxon$ | async as taxon; else loading">
     <!-- FIXME: hardcoded api media endpoint -->
     <!-- TODO: mv complex template expressions to controller method -->
     <img

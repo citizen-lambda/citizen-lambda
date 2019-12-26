@@ -55,7 +55,7 @@ export const ZoomViewer = L.Control.extend({
 
 export const conf = {
   MAP_ID: 'obsMap',
-  GEOLOCATION_HIGH_ACCURACY: false, // todo: geolocation accuracy should be tunable at runtime
+  GEOLOCATION_HIGH_ACCURACY: false, // TODO: geolocation accuracy should be tunable at runtime
   BASE_LAYERS: MAP_CONFIG['BASEMAPS'].reduce((acc: { [name: string]: L.TileLayer }, baseLayer) => {
     acc[baseLayer['name'].toString()] = L.tileLayer(baseLayer['layer'], {
       attribution: baseLayer['attribution'],
@@ -364,10 +364,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
       visibleParent = marker.marker;
     }
     if (visibleParent) {
-      L.popup()
-        .setLatLng(visibleParent.getLatLng())
-        .setContent(this.getPopupContent(obs))
-        .openOn(this.observationMap);
+      this.observationMap.openPopup(
+        this.getPopupContent(obs),
+        visibleParent.getLatLng()
+      );
     }
   }
 
