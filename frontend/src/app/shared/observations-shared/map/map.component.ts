@@ -153,6 +153,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input() program!: FeatureCollection;
   @Output() click: EventEmitter<L.Point> = new EventEmitter();
   options: any;
+  layerControl!: L.Control.Layers;
   observationMap!: L.Map;
   programArea: L.GeoJSON | null = null;
   programMaxBounds!: L.LatLngBounds;
@@ -164,9 +165,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     marker: L.Marker<any>;
   }[] = [];
   obsOnFocus: Feature | null = null;
-  shouldOpenAnotherPopup = false;
   zoomAlertTimeout: any;
-  layerControl!: L.Control.Layers;
 
   constructor(private injector: Injector, private resolver: ComponentFactoryResolver) {}
 
@@ -227,7 +226,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
     zv.addTo(this.observationMap);
     zv.setPosition(this.options.CONTROL_ZOOMVIEW_POSITION);
 
-    this.observationMap.on('popupclose', event => this.onPopupClose(event));
   }
 
   loadProgramArea(canSubmit = true): void {
@@ -286,8 +284,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   layerOptions() {
     this.featureMarkers = [];
     const observationLayerOptions: L.GeoJSONOptions = {
-      // onEachFeature: (feature, layer) => {
-      // },
+      // onEachFeature: (feature, layer) => {},
       pointToLayer: (feature, latlng): L.Marker => {
         const marker: L.Marker<any> = L.marker(latlng, {
           icon: conf.MARKER_ICON_OBS()
@@ -303,16 +300,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
         return marker;
       }
     };
-
-    if (this.observationLayer) {
-      // TODO: Add to requirements/docs Leaflet animations must be be enabled.
-      this.observationLayer.on('animationend', _e => {
-        if (this.obsOnFocus) {
-          this.shouldOpenAnotherPopup = true;
-          this.observationMap.closePopup();
-        }
-      });
-    }
 
     return observationLayerOptions;
   }
@@ -368,15 +355,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
         this.getPopupContent(obs),
         visibleParent.getLatLng()
       );
-    }
-  }
-
-  onPopupClose(event: L.LeafletEvent): void {
-    if (this.shouldOpenAnotherPopup && this.obsOnFocus) {
-      this.showPopup(this.obsOnFocus, event);
-    } else {
-      this.obsOnFocus = null;
-      this.shouldOpenAnotherPopup = false;
     }
   }
 
