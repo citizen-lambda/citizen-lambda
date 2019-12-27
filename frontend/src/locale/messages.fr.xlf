@@ -266,9 +266,9 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="51f0caa9f3ef998e67c55afe205ab2becf944e09" datatype="html">
-        <source><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Démo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>GeoNature-citizen<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
-        <target><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Démo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>GeoNature-citizen<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></target>
+      <trans-unit id="f333a21c2673b35ed2c4a8e8a7229c1c0c3d173a" datatype="html">
+        <source><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Démo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>GeoNature-citizen <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <target><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Démo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>GeoNature-citizen <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/footer/footer.component.html</context>
           <context context-type="linenumber">3</context>
@@ -706,18 +706,20 @@
           <context context-type="linenumber">152</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="eb1bc10241a71a26fa25feca160c97ab7cdeb9cc" datatype="html">
+      <trans-unit id="00ea814a3ff5e483e2cdf30773a1629d6961cf3b" datatype="html">
         <source>
         Observé par
-        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : localeId.startsWith(&apos;fr&apos;) ? &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : localeId.startsWith(&apos;fr&apos;) ?
+          &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </source>
         <target>
         Observé par
-        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : localeId.startsWith(&apos;fr&apos;) ? &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : localeId.startsWith(&apos;fr&apos;) ?
+          &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4264e7c4583ed5eec4fa7916bc901a9204ece5a0" datatype="html">
@@ -731,7 +733,7 @@
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="37bffdf00ec09441168b52d6e0888a2e076aa2a4" datatype="html">
