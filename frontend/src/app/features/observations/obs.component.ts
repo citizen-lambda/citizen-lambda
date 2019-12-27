@@ -201,19 +201,17 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     this.obsMap.click.subscribe((point: L.Point) => (this.context.coords = point));
     this.sampledTaxonomy$.subscribe(
       taxa => {
-        this.taxonomy$.next(
-          // groupBy(
-            taxa.sort(
-              sorted(
-                !this.localeId.startsWith('fr')
-                  ? 'nom_vern_eng'
-                  : 'nom_vern'
-                  ? 'nom_vern'
-                  : 'nom_valide'
-              )
+        const r = // groupBy(
+          taxa.sort(
+            sorted(
+              this.localeId.startsWith('fr')
+                ? 'nom_vern'
+                : 'nom_vern_eng'
             )
-            // , 'classe')
-        );
+          );
+          // , 'classe')
+          console.debug(r);
+        this.taxonomy$.next(r);
       },
       error => console.error(error),
       () => console.debug('complete')
