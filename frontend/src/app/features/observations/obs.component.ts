@@ -39,9 +39,14 @@ import { ModalFlowService } from '../../shared/observations-shared/modalflow/mod
 
 // TODO: merge with AppConfig … config management
 export const ObsConfig = {
-  FEATURE_OPTGROUP: 'classe',
+  FEATURES: {
+    taxonomy: {
+      GROUP: (localeId: string): string => {
+        return localeId.startsWith('fr') ? 'group2_inpn' : 'classe';
+      }
+    }
+  }
 };
-
 
 @Component({
   selector: 'app-observations',
@@ -209,8 +214,8 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     this.sampledTaxonomy$.subscribe(
       taxa => {
         let r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
-        if (!!this.ObsConfig.FEATURE_OPTGROUP) {
-          r = groupBy(r, this.ObsConfig.FEATURE_OPTGROUP);
+        if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
+          r = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
         }
         // console.debug(r);
         this.taxonomy$.next(r);

@@ -25,8 +25,8 @@
           i18n-aria-label
           aria-label="Toutes espèces"
         >
-          <ng-container *ngIf="!ObsConfig.FEATURE_OPTGROUP; else optgroupmenu">
-            <option [ngValue]="null" i18n>Toutes espèces</option>
+          <option [ngValue]="null" i18n>Toutes espèces</option>
+          <ng-container *ngIf="!ObsConfig.FEATURES.taxonomy.GROUP; else optgroupmenu">
             <option *ngFor="let s of taxonomy$ | async | keyvalue" [ngValue]="s.value.cd_nom">
               <span>{{
                 !localeId.startsWith('fr') && !!s?.value?.nom_vern_eng
@@ -41,7 +41,6 @@
           </ng-container>
 
           <ng-template #optgroupmenu>
-            <option [ngValue]="null" i18n>Toutes espèces</option>
             <optgroup *ngFor="let t of taxonomy$ | async | keyvalue" [label]="t.key">
               <option *ngFor="let s of t.value | keyvalue" [ngValue]="s.value.cd_nom">
                 <span>{{
