@@ -26,10 +26,11 @@ La discussion de préfiguration du projet est [ici](https://github.com/PnX-SI/Ge
 ### Backend (API)
 
 - Python 3.7+
-  - Flask (moteur de l'API)
-  - Marshmallow
-  - flask-jwt-extended (pour l'authentification)
-  - requests (pour l'utilisation d'API externes comme les portails faune-xxx.org)
+- Flask 1.1.1
+- Flask-Admin
+- Flask-Cors
+- Flask-JWT-Extended
+- Flask-SQLAlchemy
 - PostgreSQL / Postgis 2.4+
 
 ### Frontend
