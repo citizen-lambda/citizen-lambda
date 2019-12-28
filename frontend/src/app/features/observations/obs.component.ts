@@ -19,7 +19,7 @@ import {
   shareReplay,
   share,
   take,
-  switchMap,
+  switchMap
 } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
@@ -31,11 +31,17 @@ import { GncProgramsService } from '../programs/gnc-programs.service';
 import { TaxonomyService } from '../../services/taxonomy.service';
 import { Taxonomy, Taxon } from '../../core/models';
 import { sorted } from '../../helpers/sorted';
-// import { groupBy } from '../../helpers/groupby';
+import { groupBy } from '../../helpers/groupby';
 import { composeAsync } from '../../helpers/compose';
 import { ObsMapComponent } from '../../shared/observations-shared/map/map.component';
 import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
 import { ModalFlowService } from '../../shared/observations-shared/modalflow/modalflow.service';
+
+// TODO: merge with AppConfig … config management
+export const ObsConfig = {
+  FEATURE_OPTGROUP: 'classe',
+};
+
 
 @Component({
   selector: 'app-observations',
@@ -45,6 +51,7 @@ import { ModalFlowService } from '../../shared/observations-shared/modalflow/mod
   providers: [ProgramsResolve, ModalFlowService]
 })
 export class ObsComponent implements AfterViewInit, OnDestroy {
+  ObsConfig = ObsConfig;
   private unsubscribe$ = new Subject<void>();
   @ViewChild(ObsMapComponent, { static: false }) obsMap!: ObsMapComponent;
   @ViewChild(ObsListComponent, { static: false }) obsList!: ObsListComponent;
@@ -83,7 +90,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         ];
       }, []);
     }),
-    flatMap(items => zip(...items)),
+    flatMap(items => zip(...items))
   );
   municipalities$ = this.obsFeaturesArray$.pipe(
     map((items: Feature[]) => {
@@ -201,20 +208,14 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     this.obsMap.click.subscribe((point: L.Point) => (this.context.coords = point));
     this.sampledTaxonomy$.subscribe(
       taxa => {
-        const r = // groupBy(
-          taxa.sort(
-            sorted(
-              this.localeId.startsWith('fr')
-                ? 'nom_vern'
-                : 'nom_vern_eng'
-            )
-          );
-          // , 'classe')
-          console.debug(r);
+        let r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
+        if (!!this.ObsConfig.FEATURE_OPTGROUP) {
+          r = groupBy(r, this.ObsConfig.FEATURE_OPTGROUP);
+        }
+        // console.debug(r);
         this.taxonomy$.next(r);
       },
-      error => console.error(error),
-      () => console.debug('complete')
+      error => console.error(error)
     );
   }
 

@@ -22,13 +22,40 @@
           id="inputSpecies"
           [(ngModel)]="selectedTaxon"
           (ngModelChange)="onFilterChange()"
-          i18n-aria-label aria-label="Toutes espèces"
+          i18n-aria-label
+          aria-label="Toutes espèces"
         >
-          <option [ngValue]="null" i18n>Toutes espèces</option>
-          <option *ngFor="let s of taxonomy$ | async | keyvalue" [ngValue]="s.value.cd_nom">
-            <span>{{ (!localeId.startsWith('fr') && !!s?.value?.nom_vern_eng) ? s?.value?.nom_vern_eng : s?.value?.nom_vern ? s?.value?.nom_vern : s?.value?.nom_valide }}</span> (<i>{{ s?.value?.nom_complet }}</i
-            >)
-          </option>
+          <ng-container *ngIf="!ObsConfig.FEATURE_OPTGROUP; else optgroupmenu">
+            <option [ngValue]="null" i18n>Toutes espèces</option>
+            <option *ngFor="let s of taxonomy$ | async | keyvalue" [ngValue]="s.value.cd_nom">
+              <span>{{
+                !localeId.startsWith('fr') && !!s?.value?.nom_vern_eng
+                  ? s?.value?.nom_vern_eng
+                  : s?.value?.nom_vern
+                  ? s?.value?.nom_vern
+                  : s?.value?.nom_valide
+              }}</span>
+              (<i>{{ s?.value?.nom_complet }}</i
+              >)
+            </option>
+          </ng-container>
+
+          <ng-template #optgroupmenu>
+            <option [ngValue]="null" i18n>Toutes espèces</option>
+            <optgroup *ngFor="let t of taxonomy$ | async | keyvalue" [label]="t.key">
+              <option *ngFor="let s of t.value | keyvalue" [ngValue]="s.value.cd_nom">
+                <span>{{
+                  !localeId.startsWith('fr') && !!s?.value?.nom_vern_eng
+                    ? s?.value?.nom_vern_eng
+                    : s?.value?.nom_vern
+                    ? s?.value?.nom_vern
+                    : s?.value?.nom_valide
+                }}</span>
+                (<i>{{ s?.value?.nom_complet }}</i
+                >)
+              </option>
+            </optgroup>
+          </ng-template>
         </select>
 
         <select
@@ -39,7 +66,8 @@
           class="form-control rounded-0 col-lg-6"
           [(ngModel)]="selectedMunicipality"
           (ngModelChange)="onFilterChange()"
-          i18n-aria-label aria-label="Toutes communes"
+          i18n-aria-label
+          aria-label="Toutes communes"
         >
           <option [ngValue]="null" i18n>Toutes communes</option>
           <option *ngFor="let t of municipalities$ | async" [ngValue]="t">{{
