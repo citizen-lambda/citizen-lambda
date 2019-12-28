@@ -42,7 +42,7 @@ export const ObsConfig = {
   FEATURES: {
     taxonomy: {
       GROUP: (localeId: string): string => {
-        return localeId.startsWith('fr') ? 'group2_inpn' : 'classe';
+        return localeId.startsWith('fr') ? 'group2_inpn' : 'classe' ? 'classe' : 'group2_inpn';
       }
     }
   }
@@ -217,7 +217,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
           r = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
         }
-        // console.debug(r);
+        console.debug(r);
         this.taxonomy$.next(r);
       },
       error => console.error(error)
