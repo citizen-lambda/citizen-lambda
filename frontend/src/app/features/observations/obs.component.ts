@@ -42,7 +42,7 @@ export const ObsConfig = {
   FEATURES: {
     taxonomy: {
       GROUP: (localeId: string): string => {
-        return localeId.startsWith('fr') ? 'group2_inpn' : 'classe' ? 'classe' : 'group2_inpn';
+        return localeId.startsWith('fr') ? 'group2_inpn' : 'classe';
       }
     }
   }
