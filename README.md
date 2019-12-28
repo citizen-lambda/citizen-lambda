@@ -25,19 +25,19 @@ La discussion de préfiguration du projet est [ici](https://github.com/PnX-SI/Ge
 
 ### Backend (API)
 
-- Python 3.5
+- Python 3.7+
   - Flask (moteur de l'API)
   - Marshmallow
   - flask-jwt-extended (pour l'authentification)
   - requests (pour l'utilisation d'API externes comme les portails faune-xxx.org)
-- PostgreSQL 10 / Postgis 2.4
+- PostgreSQL / Postgis 2.4+
 
 ### Frontend
 
-- NodeJS 8
-- Angular 6
-- Leaflet
-- Bootstrap 41
+- NodeJS LTS
+- Angular rc9
+- Leaflet @latest
+- Bootstrap 4 / ng-bootstrap 5.1.4
 
 ## L'origine du projet
 
