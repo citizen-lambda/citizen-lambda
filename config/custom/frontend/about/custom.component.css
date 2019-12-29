@@ -1,0 +1,8 @@
+h2 {
+  padding-top: 1em;
+  font-size: 1.8em;
+}
+
+.container app-about-custom {
+  font-size: calc(80% + 1vw);
+}
