@@ -12,7 +12,7 @@ describe('GncProgramsService', () => {
   );
 
   it('should be created', () => {
-    const service: GncProgramsService = TestBed.get(GncProgramsService);
+    const service: GncProgramsService = TestBed.inject(GncProgramsService);
     expect(service).toBeTruthy();
   });
 });

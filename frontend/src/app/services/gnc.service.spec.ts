@@ -6,7 +6,7 @@ describe('GncService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: GncService = TestBed.get(GncService);
+    const service: GncService = TestBed.inject(GncService);
     expect(service).toBeTruthy();
   });
 });

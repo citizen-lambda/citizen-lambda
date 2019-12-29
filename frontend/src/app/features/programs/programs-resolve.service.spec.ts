@@ -12,7 +12,7 @@ describe('ProgramsResolve', () => {
     ]}));
 
   it('should be created', () => {
-    const service: ProgramsResolve = TestBed.get(ProgramsResolve);
+    const service: ProgramsResolve = TestBed.inject(ProgramsResolve);
     expect(service).toBeTruthy();
   });
 });

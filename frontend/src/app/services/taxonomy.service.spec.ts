@@ -11,7 +11,7 @@ describe('TaxonomyService', () => {
   );
 
   it('should be created', () => {
-    const service: TaxonomyService = TestBed.get(TaxonomyService);
+    const service: TaxonomyService = TestBed.inject(TaxonomyService);
     expect(service).toBeTruthy();
   });
 });
