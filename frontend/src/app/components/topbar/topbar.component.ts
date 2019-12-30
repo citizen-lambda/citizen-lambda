@@ -6,7 +6,9 @@ import {
   LOCALE_ID,
   Inject
 } from '@angular/core';
-import { ActivatedRoute, Data } from '@angular/router';
+import { ActivatedRoute, Data, Router, NavigationEnd } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { Observable, Subject, throwError, BehaviorSubject } from 'rxjs';
 import { tap, map, catchError, filter } from 'rxjs/operators';
 
@@ -25,7 +27,27 @@ import { ProgramsComponent } from '../../features/programs/programs.component';
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  animations: [
+    trigger('collapse', [
+      state(
+        'open',
+        style({
+          opacity: '1'
+        })
+      ),
+      state(
+        'closed',
+        style({
+          opacity: '0',
+          display: 'none'
+        })
+      ),
+      transition('closed => open', animate('400ms ease-in')),
+      transition('open => closed', animate('100ms ease-out'))
+    ])
+  ],
+  providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }]
 })
 export class TopbarComponent implements OnInit, AfterViewInit {
   title: string = AppConfig.appName;
@@ -35,13 +57,17 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   programs$ = new Subject<Program[] | null>();
   // FIXME: isAdmin$ topbar updates
   isAdmin$ = new BehaviorSubject<boolean>(false);
+  // TODO: mv locales array declaration to AppConfig
   languages = [
     { code: 'en', label: 'English' },
     { code: 'fr', label: 'Français' }
   ];
+  location = '';
+  base_href = '';
 
   constructor(
     @Inject(LOCALE_ID) public localeId: string,
+    private router: Router,
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     private auth: AuthService,
@@ -60,6 +86,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   }
 
   login() {
+    this.collapsed = true;
     this.modalRef = this.modalService.open(LoginComponent, {
       size: 'lg',
       centered: true
@@ -67,6 +94,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   }
 
   register() {
+    this.collapsed = true;
     this.modalRef = this.modalService.open(RegisterComponent, {
       size: 'lg',
       centered: true
@@ -74,6 +102,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   }
 
   logout() {
+    this.collapsed = true;
     this.modalRef = this.modalService.open(LogoutComponent, {
       size: 'lg',
       centered: true
@@ -81,13 +110,20 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   }
 
   programs() {
+    this.collapsed = true;
     this.modalRef = this.modalService.open(ProgramsComponent, {
       size: 'xl',
       centered: true
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // tslint:disable-next-line: no-non-null-assertion
+    this.base_href = document.getElementsByTagName('base').item(0)!.href;
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
+      this.location = (event as NavigationEnd).url;
+    });
+  }
 
   ngAfterViewInit(): void {
     const access_token = localStorage.getItem('access_token');
@@ -126,20 +162,15 @@ export class TopbarComponent implements OnInit, AfterViewInit {
       )
       .subscribe();
 
-    this.route.data
-      .pipe(
-        tap((data: Data) => {
-          if (data && data.programs) {
-            this.programs$.next(data.programs);
-          } else {
-            this.programService.getAllPrograms().subscribe(programs => {
-              this.programs$.next(programs);
-            });
-          }
-        }),
-        catchError(error => throwError(error))
-      )
-      .subscribe();
+    this.route.data.pipe(catchError(error => throwError(error))).subscribe((data: Data) => {
+      if (data && data.programs) {
+        this.programs$.next(data.programs);
+      } else {
+        this.programService.getAllPrograms().subscribe(programs => {
+          this.programs$.next(programs);
+        });
+      }
+    });
   }
 
   close(d: string) {

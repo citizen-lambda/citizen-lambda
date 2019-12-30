@@ -2,19 +2,14 @@ app-obs-list #list {
   background-color: var(--secondary-color);
   overflow: auto;
   padding: 3px 0px 3px 0px;
+  height: var(--obs-list-height);
 }
 
-@media screen and (max-width: 570px) {
-  app-obs-list {
-    max-width: 80vw;
-  }
-}
-
-@media screen and (min-width: 568px) {
+/* @media screen and (min-width: 568px) {
   app-obs-list #list {
     height: var(--obs-list-height);
   }
-}
+} */
 
 @media screen and (max-width: 640px) {
   .span:last {

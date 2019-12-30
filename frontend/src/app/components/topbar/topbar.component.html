@@ -1,9 +1,15 @@
 <nav class="navbar navbar-default navbar-expand-md fixed-top" role="navigation">
-  <a class="navbar-brand" routerLink="home" routerLinkActive="active" aria-label="Citizenλ Home">
+  <a
+    class="navbar-brand"
+    routerLink="home"
+    routerLinkActive="active"
+    aria-label="Citizenλ Home"
+    (click)="collapsed = true"
+  >
     <img
       src="assets/logo.png"
       class="d-inline-block align-top"
-      alt="Citizen lambda logo: lambda greek letter"
+      alt="Citizen lambda logo"
     />
   </a>
   <button
@@ -16,7 +22,7 @@
     aria-label="Toggle navigation"
     (click)="collapsed = !collapsed"
   >
-  <span class="navbar-toggler-icon"><i class="fa fa-bars"></i></span>
+    <span class="navbar-toggler-icon"><i class="fa fa-bars"></i></span>
   </button>
 
   <div class="navbar-collapse align-top" [class.collapse]="collapsed" id="nav-menu">
@@ -26,8 +32,7 @@
           routerLink="home"
           routerLinkActive="active"
           class="nav-link"
-          data-toggle="collapsed"
-          data-target=".navbar-collapse"
+          (click)="collapsed = !collapsed"
           i18n
           >Accueil</a
         >
@@ -37,8 +42,6 @@
           <a
             class="nav-link"
             (click)="programs()"
-            data-toggle="collapsed"
-            data-target=".navbar-collapse"
             i18n
             >Les programmes</a
           >
@@ -49,8 +52,7 @@
           routerLink="/api/admin"
           routerLinkActive="active"
           class="nav-link"
-          data-toggle="collapsed"
-          data-target=".navbar-collapse"
+          (click)="collapsed = !collapsed"
           i18n
           >Admin</a
         >
@@ -60,8 +62,7 @@
           routerLink="about"
           routerLinkActive="active"
           class="nav-link"
-          data-toggle="collapsed"
-          data-target=".navbar-collapse"
+          (click)="collapsed = !collapsed"
           i18n
           >A Propos</a
         >
@@ -75,26 +76,24 @@
             class="nav-link"
             style="cursor: pointer"
             ngbDropdownToggle
-            id="navbarDropdown2"
+            id="cultureDropDown"
             role="button"
-            data-toggle="collapsed"
-            data-target=".navbar-collapse"
+            (click)="collapsed = !collapsed"
             >{{ lang.label }}</a
           >
         </ng-container>
         <div
           ngbDropdownMenu
-          aria-labelledby="navbarDropdown2"
+          aria-labelledby="cultureDropDown"
           class="dropdown-menu dropdown-menu-right"
         >
           <ng-template ngFor let-lang [ngForOf]="languages">
             <a
               *ngIf="lang.code !== localeId"
               ngbDropdownItem
-              href="/{{ lang.code }}/"
+              [href]="base_href.replace('/' + localeId + '/', '/' + lang.code) + location"
               class="nav-link"
-              data-toggle="collapsed"
-              data-target=".navbar-collapse"
+              (click)="collapsed = !collapsed"
               >{{ lang.label }}</a
             >
           </ng-template>
@@ -112,8 +111,7 @@
             ngbTooltip="Mon tableau de bord"
             routerLink="mydashboard"
             routerLinkActive="active"
-            data-toggle="collapsed"
-            data-target=".navbar-collapse"
+            (click)="collapsed = !collapsed"
           >
             <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ username }}
           </a>
@@ -122,8 +120,6 @@
           <a
             class="my-2 my-sm-0"
             (click)="logout()"
-            data-toggle="collapsed"
-            data-target=".navbar-collapse"
             i18n
           >
             <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
@@ -135,8 +131,6 @@
           <a
             class="btn my-2 my-sm-0 rounded-0"
             (click)="login()"
-            data-toggle="collapsed"
-            data-target=".navbar-collapse"
             i18n
           >
             Se connecter
@@ -146,8 +140,6 @@
           <a
             class="btn my-2 my-sm-0 rounded-0"
             (click)="register()"
-            data-toggle="collapsed"
-            data-target=".navbar-collapse"
             i18n
           >
             S'inscrire

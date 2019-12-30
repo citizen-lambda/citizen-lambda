@@ -154,7 +154,7 @@ section .observations {
 
 section.observations#observations {
   display: grid;
-  grid-template-columns: auto min-content max-content;
+  grid-template-columns: minmax(min-content, 80vw) min-content max-content;
   grid-template-rows: 1fr;
 }
 
@@ -173,9 +173,9 @@ section.observations#observations {
 }
 
 @media screen and (max-width: 568px) {
-  .toggle {
+  /* .toggle {
     display: none !important;
-  }
+  } */
 
   /* #map,
   app-obs-map #obsMap,
@@ -282,6 +282,18 @@ input:checked ~ .toggle i {
   padding: 10px 30px;
   z-index: 999;
   color: var(--secondary-color);
+}
+
+@media screen and (max-width: 991px) {
+  .observations #map .btn-group button,
+  .observations #map .btn-group app-modalflow button {
+    border-radius: 50% !important;
+    padding: 10px 15px !important;
+  }
+
+  /* .observations #map .btn-group button span,
+  .observations #map .btn-group app-modalflow button span {
+  } */
 }
 
 .observations #map .btn-group button:hover {
@@ -445,7 +457,7 @@ app-marker-popup .species {
   display: flex;
   height: auto;
   padding: 0px 10px;
-  transform: translateX(100%);
+  transform: translateX(calc(100% + 2px));
   transition: all 0.2s ease-in-out;
 }
 
@@ -460,6 +472,7 @@ app-marker-popup .species {
   flex-direction: column;
   justify-content: center;
   padding-left: 1em;
+  padding-right: 1em;
   width: 100%;
   /* .leaflet-popup-content */
   line-height: 1.5 !important;

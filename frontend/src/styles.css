@@ -366,15 +366,15 @@ ul {
 button,
 *:focus {
   color: var(--primary-color);
-} 
+}
 
 a {
   color: var(--primary);
-} 
+}
 
 a:visited {
   color: var(--dark-primary);
-} 
+}
 
 a,
 button,
@@ -418,7 +418,7 @@ select:focus {
 
 @media screen and (max-width: 1024px) {
   .btn-big {
-    padding: 10px 20px;
+    padding: 10px 20px !important;
   }
 }
 
