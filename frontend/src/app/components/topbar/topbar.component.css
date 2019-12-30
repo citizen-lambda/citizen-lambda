@@ -64,15 +64,20 @@ app-topbar #nav-menu .nav-link.active:before {
 }
 
 app-topbar #nav-menu ul#auth.btn-group {
+  flex-direction: column;
   margin: 0;
   padding: 0;
-  flex-direction: column;
+  position: relative;
 }
 
-app-topbar #nav-menu ul#auth.btn-group li {
-  border-left: solid 1px;
-  border-color: var(--primary);
-  margin-left: 50px;
+app-topbar #nav-menu ul#auth.btn-group:before {
+  content: '';
+  width: 1px;
+  top: 2px;
+  height: var(--narrow-topbar-height);
+  background: var(--primary);
+  position: absolute;
+  left: -1px;
 }
 
 app-topbar #nav-menu div.btn-group li a {
@@ -88,11 +93,11 @@ app-topbar #nav-menu #auth li:first-child a {
   font-weight: bold;
 }
 
-app-topbar #nav-menu.collapse {
+/* app-topbar #nav-menu.collapse {
   transition-property: all;
   transition-property: transform;
   transition-duration: 0.2s;
-}
+} */
 
 @media screen and (max-width: 767.98px) {
   app-topbar #nav-menu {
