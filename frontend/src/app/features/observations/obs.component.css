@@ -321,6 +321,38 @@ input:checked ~ .toggle i {
   }
 }
 
+@media screen and (max-width: 492px) {
+  #obsMap {
+    min-width: calc(
+    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 1px - 80px + 55px
+  );
+  }
+}
+
+@media screen and (max-width: 425px) {
+  #obsMap {
+    min-width: calc(
+    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 1px + 55px
+  );
+  }
+}
+
+@media screen and (max-width: 375px) {
+  #obsMap {
+    min-width: calc(
+    100vw - var(--list-toggler-width) - 80px - 36ch - 1px + 55px
+  );
+  }
+}
+
+@media screen and (max-width: 320px) {
+  #obsMap {
+    min-width: calc(
+    100vw - var(--list-toggler-width) - 80px - 36ch + 75px
+  );
+  }
+}
+
 @media screen and (max-width: 991px) {
   .btn-group .btn-big {
     opacity: 1 !important;
