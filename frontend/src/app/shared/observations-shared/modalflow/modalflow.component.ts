@@ -5,17 +5,18 @@ import {
   ElementRef,
   ViewEncapsulation,
   Inject,
-  LOCALE_ID
+  LOCALE_ID,
+  TemplateRef
 } from '@angular/core';
+
+import { FeatureCollection } from 'geojson';
 
 import { FlowItem } from './flow/flow-item';
 import { ModalFlowService } from './modalflow.service';
-import { IAppConfig } from '../../../core/models';
+import { IAppConfig, Taxonomy } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
-import { FeatureCollection } from 'geojson';
-import { Taxonomy } from '../../../core/models';
 
-type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
+// type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
 
 @Component({
   selector: 'app-modalflow',
@@ -24,26 +25,24 @@ type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent {
-  readonly appConfig: AppConfigModalFlow = AppConfig;
-  program_add_an_observation: string;
+  // readonly appConfig: AppConfigModalFlow = AppConfig;
   @Input()
   data!: {
     coords?: L.Point;
     program?: FeatureCollection;
     taxa?: Taxonomy;
   };
-  @ViewChild('content', { static: false }) content!: ElementRef;
+  @Input()
+  triggerTemplate!: TemplateRef<HTMLElement>;
+  @ViewChild('content', { static: false })
+  content!: ElementRef;
   flowitems: FlowItem[] = [];
   timeout: any;
 
-  constructor(@Inject(LOCALE_ID) readonly localeId: string, public flowService: ModalFlowService) {
-    this.program_add_an_observation = (this.appConfig.program_add_an_observation as {
-      [name: string]: string;
-    })[localeId];
-  }
+  constructor(@Inject(LOCALE_ID) readonly localeId: string, public flowService: ModalFlowService) {}
 
   clicked() {
-    console.debug('before getFlowitems:', this.data);
+    // console.debug('before getFlowitems:', this.data);
     this.flowitems = this.flowService.getFlowItems({ ...this.data });
     this.flowService.open(this.content);
   }

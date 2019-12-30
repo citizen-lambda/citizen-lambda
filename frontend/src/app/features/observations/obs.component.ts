@@ -25,17 +25,20 @@ import {
 import { FeatureCollection, Feature } from 'geojson';
 import * as L from 'leaflet';
 
+import { AppConfig } from '../../../conf/app.config';
 import { Program } from '../programs/programs.models';
 import { ProgramsResolve } from '../programs/programs-resolve.service';
 import { GncProgramsService } from '../programs/gnc-programs.service';
 import { TaxonomyService } from '../../services/taxonomy.service';
-import { Taxonomy, Taxon } from '../../core/models';
+import { Taxonomy, Taxon, IAppConfig } from '../../core/models';
 import { sorted } from '../../helpers/sorted';
 import { groupBy } from '../../helpers/groupby';
 import { composeAsync } from '../../helpers/compose';
 import { ObsMapComponent } from '../../shared/observations-shared/map/map.component';
 import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
 import { ModalFlowService } from '../../shared/observations-shared/modalflow/modalflow.service';
+
+type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
 
 // TODO: merge with AppConfig … config management
 export const ObsConfig = {
@@ -57,6 +60,10 @@ export const ObsConfig = {
 })
 export class ObsComponent implements AfterViewInit, OnDestroy {
   ObsConfig = ObsConfig;
+  readonly appConfig: AppConfigModalFlow = AppConfig;
+  AddAnObservationLabel = (this.appConfig.program_add_an_observation as { [name: string]: string })[
+    this.localeId
+  ];
   private unsubscribe$ = new Subject<void>();
   @ViewChild(ObsMapComponent, { static: false }) obsMap!: ObsMapComponent;
   @ViewChild(ObsListComponent, { static: false }) obsList!: ObsListComponent;
@@ -217,7 +224,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
           r = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
         }
-        console.debug(r);
+        // console.debug(r);
         this.taxonomy$.next(r);
       },
       error => console.error(error)

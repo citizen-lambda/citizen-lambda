@@ -104,7 +104,15 @@
         [taxonomy]="taxonomy"
       ></app-obs-map>
       <div class="btn-groups">
-        <app-modalflow [data]="context"></app-modalflow>
+        <div class="btn-group">
+          <app-modalflow [data]="context"
+            ><span class="d-md-block d-sm-block d-xs-block d-lg-none d-xl-none">＋</span>
+            <span class="d-sm-none d-md-none d-lg-block d-xl-block">{{
+              AddAnObservationLabel
+            }}</span>
+          </app-modalflow>
+          <!-- <button class="btn-big">Réaliser un programme</button> -->
+        </div>
       </div>
     </div>
   </section>
