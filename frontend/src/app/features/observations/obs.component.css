@@ -271,12 +271,11 @@ input:checked ~ .toggle i {
 
 .observations #map .btn-group {
   position: absolute;
-  top: calc(2 * (100vh - var(--section-margin-bottom) - var(--router-outlet-offset) - var(--fold)));
   right: 0px;
 }
 
 .observations #map .btn-group button,
-.observations #map .btn-group app-modalflow button {
+.observations #map .btn-group app-modalflow {
   margin-left: 20px;
   opacity: 0.8;
   padding: 10px 30px;
