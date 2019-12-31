@@ -11,7 +11,7 @@ app-observations div.container-fluid {
 }
 
 #welcome {
-  background: url(/fr/assets/background.jpg) no-repeat;
+  background: url(../../../assets/background.jpg) no-repeat;
   background-size: cover;
 }
 
@@ -172,27 +172,6 @@ section.observations#observations {
   grid-row-end: 1;
 }
 
-@media screen and (max-width: 568px) {
-  /* .toggle {
-    display: none !important;
-  } */
-
-  /* #map,
-  app-obs-map #obsMap,
-  #obslist,
-  app-obs-list #list {
-    flex-basis: auto;
-    width: 100vw;
-    height: 50vh;
-  } */
-
-  /* .map {
-    height: auto;
-    position: relative !important;
-    left: 0% !important;
-  } */
-}
-
 /* OBS LIST DISPLAY TOGGLING */
 
 input#slide-sidebar[type='checkbox'] {
@@ -203,7 +182,7 @@ input:checked ~ #obslist {
   display: none !important;
 }
 
-input:checked ~ #map app-obs-map #obsMap {
+input:checked ~ #map app-obs-map #cartogram {
   /* 10px scrollbar width ? */
   width: calc(100vw - var(--list-toggler-width) - 10px);
   grid-column-start: 2;
@@ -217,25 +196,21 @@ input:checked ~ label.toggle {
 }
 
 input:not(:checked) ~ #obslist {
-  width: fit-content;
+  min-width: fit-content;
 }
+
+/* @media screen and (max-width: 768px) {
+  input:not(:checked) ~ #obslist {
+    width: min-content;
+  }
+} */
 
 .map {
-  -moz-transition: left 0.5s ease;
   transition: left 0.5s ease;
-}
-
-/* fixme: target accuracy */
-.toolbar select {
-  width: 50%;
 }
 
 .toggle {
   z-index: 2;
-  /* position: absolute;
-  top: 0;
-  bottom: 0;
-  left: calc(var(--obs-list-width) + var(--list-toggler-width) + 1px); */
   background-color: var(--primary);
   width: var(--list-toggler-width);
   display: flex;
@@ -289,10 +264,6 @@ input:checked ~ .toggle i {
     border-radius: 50% !important;
     padding: 10px 15px !important;
   }
-
-  /* .observations #map .btn-group button span,
-  .observations #map .btn-group app-modalflow button span {
-  } */
 }
 
 .observations #map .btn-group button:hover {
@@ -307,22 +278,22 @@ input:checked ~ .toggle i {
   background-color: var(--primary);
 }
 
-#obsMap {
+#cartogram {
   height: calc(100vh - var(--router-outlet-offset));
-  /* fixme: supplementary 80px & 55px ? */
+  /* supplementary 80px & 55px ? */
   min-width: calc(
     100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px + 55px
   );
 }
 
 @media screen and (max-width: 768px) {
-  #obsMap {
+  #cartogram {
     margin: 0;
   }
 }
 
 @media screen and (max-width: 492px) {
-  #obsMap {
+  #cartogram {
     min-width: calc(
     100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 1px - 80px + 55px
   );
@@ -330,7 +301,7 @@ input:checked ~ .toggle i {
 }
 
 @media screen and (max-width: 425px) {
-  #obsMap {
+  #cartogram {
     min-width: calc(
     100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 1px + 55px
   );
@@ -338,7 +309,7 @@ input:checked ~ .toggle i {
 }
 
 @media screen and (max-width: 375px) {
-  #obsMap {
+  #cartogram {
     min-width: calc(
     100vw - var(--list-toggler-width) - 80px - 36ch - 1px + 55px
   );
@@ -346,7 +317,7 @@ input:checked ~ .toggle i {
 }
 
 @media screen and (max-width: 320px) {
-  #obsMap {
+  #cartogram {
     min-width: calc(
     100vw - var(--list-toggler-width) - 80px - 36ch + 75px
   );
@@ -360,7 +331,7 @@ input:checked ~ .toggle i {
 }
 
 .marker-cluster {
-  background-image: url(/fr/assets/marker2.svg);
+  background-image: url(../../../assets/marker2.svg);
 }
 
 .marker-cluster span {
@@ -440,12 +411,6 @@ app-marker-popup {
   width: 100%;
   display: block;
 }
-
-/*  */
-/* TODO: species@list */
-/* .species:not(:last-of-type) {
-  margin-bottom: 3px;
-} */
 
 .species {
   background-color: var(--primary-color);
@@ -680,7 +645,7 @@ app-observations span.input-group-text {
   margin: 0;
 }
 
-.half #obsMap {
+.half #cartogram {
   height: 228px;
   overflow: hidden;
 }
@@ -688,11 +653,6 @@ app-observations span.input-group-text {
 form .d-inline-flex {
   width: 100%;
 }
-
-/* .add-obs .col-lg-8 {
-  margin: 0 auto;
-  margin-bottom: 20px;
-} */
 
 .add-obs .form-group .form-group {
   margin-bottom: 0;
@@ -941,10 +901,6 @@ form .d-inline-flex {
   .leaflet-touch .leaflet-control-attribution {
     display: none;
   }
-
-  .observation-zoom-statement-warning::after {
-    max-height: 40vh;
-  }
 }
 
 @media screen and (max-width: 640px) {
@@ -960,7 +916,7 @@ form .d-inline-flex {
     right: 0px;
   }
 
-  app-obs-map #obsMap {
+  app-obs-map #cartogram {
     width: 100%;
   }
 }

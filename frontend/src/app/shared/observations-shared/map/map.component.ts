@@ -54,7 +54,7 @@ export const ZoomViewer = L.Control.extend({
 });
 
 export const conf = {
-  MAP_ID: 'obsMap',
+  MAP_ID: 'cartogram',
   GEOLOCATION_HIGH_ACCURACY: false, // TODO: geolocation accuracy should be tunable at runtime
   BASE_LAYERS: MAP_CONFIG['BASEMAPS'].reduce((acc: { [name: string]: L.TileLayer }, baseLayer) => {
     acc[baseLayer['name'].toString()] = L.tileLayer(baseLayer['layer'], {

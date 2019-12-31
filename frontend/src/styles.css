@@ -2,8 +2,8 @@
 
 @font-face {
   font-display: auto;
-  font-family: "Satisfy";
-  src: url("assets/Satisfy-Regular.ttf") format("truetype");
+  font-family: 'Satisfy';
+  src: url('assets/Satisfy-Regular.ttf') format('truetype');
 }
 
 :root {
@@ -16,9 +16,7 @@
   --obs-list-toolbar-height: 62px;
   /* pic width + min line length in char unit */
   --obs-cell-width: calc(80px + 1em + 28ch);
-  --obs-list-width: calc(
-    var(--obs-cell-width) + var(--list-toggler-width) + 1px
-  );
+  --obs-list-width: calc(var(--obs-cell-width) + var(--list-toggler-width) + 1px);
   --obs-list-height: calc(
     100vh - var(--router-outlet-offset) - var(--obs-list-toolbar-height) - 2px
   );
@@ -86,7 +84,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
 
 .loading-text {
@@ -330,7 +328,7 @@ app-footer .container {
 
 button,
 .btn {
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
 
 .btn-big {
@@ -444,4 +442,17 @@ select:focus {
   height: 10px;
   margin: 5px;
   cursor: pointer;
+}
+
+/* FIREFOX FIX OF UGLY SELECT BOXES
+  kudos https://github.com/twbs/bootstrap/issues/16201#issuecomment-498358474
+ */
+@supports (-moz-appearance: none) {
+  select {
+    -moz-appearance: none !important;
+    background: transparent
+      url('data:image/gif;base64,R0lGODlhBgAGAKEDAFVVVX9/f9TU1CgmNyH5BAEKAAMALAAAAAAGAAYAAAIODA4hCDKWxlhNvmCnGwUAOw==')
+      right center no-repeat !important;
+    background-position: calc(100% - 5px) center !important;
+  }
 }

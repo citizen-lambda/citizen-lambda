@@ -9,7 +9,7 @@ app-home div.container-fluid {
 #welcome {
   display: grid !important;
   grid-template-rows: min-content max-content min-content;
-  background: url(/fr/assets/background.jpg) no-repeat;
+  background: url(../../../assets/background.jpg) no-repeat;
   background-size: cover;
   position: relative;
 }

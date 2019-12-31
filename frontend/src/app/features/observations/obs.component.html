@@ -27,7 +27,7 @@
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
           <ng-container *ngIf="!ObsConfig.FEATURES.taxonomy.GROUP; else optgroupmenu">
-            <option *ngFor="let s of taxonomy$ | async | keyvalue" [ngValue]="s.value.cd_nom">
+            <option *ngFor="let s of sampledTaxonomy$ | async | keyvalue" [ngValue]="s.value.cd_nom">
               <span>{{
                 !localeId.startsWith('fr') && !!s?.value?.nom_vern_eng
                   ? s?.value?.nom_vern_eng
@@ -41,7 +41,7 @@
           </ng-container>
 
           <ng-template #optgroupmenu>
-            <optgroup *ngFor="let t of taxonomy$ | async | keyvalue" [label]="t.key">
+            <optgroup *ngFor="let t of sampledTaxonomy$ | async | keyvalue" [label]="t.key">
               <option *ngFor="let s of t.value | keyvalue" [ngValue]="s.value.cd_nom">
                 <span>{{
                   !localeId.startsWith('fr') && !!s?.value?.nom_vern_eng
@@ -88,20 +88,20 @@
           type: 'FeatureCollection',
           features: filteredObservations$ | async
         }"
-        [taxonomy]="taxonomy"
-        (obsSelected)="obsMapRef.showPopup($event)"
+        [taxonomy]="context.taxa"
+        (obsSelected)="cartogramRef.showPopup($event)"
       ></app-obs-list>
     </div>
 
     <div class="map" id="map">
       <app-obs-map
-        #obsMapRef
+        #cartogramRef
         [observations]="{
           type: 'FeatureCollection',
           features: filteredObservations$ | async
         }"
-        [program]="programFeature"
-        [taxonomy]="taxonomy"
+        [program]="context.program"
+        [taxonomy]="context.taxa"
       ></app-obs-map>
       <div class="btn-groups">
         <div class="btn-group">

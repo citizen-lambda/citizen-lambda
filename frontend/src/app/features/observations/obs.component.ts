@@ -65,13 +65,10 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     this.localeId
   ];
   private unsubscribe$ = new Subject<void>();
-  @ViewChild(ObsMapComponent, { static: false }) obsMap!: ObsMapComponent;
+  @ViewChild(ObsMapComponent, { static: false }) cartogram!: ObsMapComponent;
   @ViewChild(ObsListComponent, { static: false }) obsList!: ObsListComponent;
   program: Program | undefined;
   programs: Program[] | undefined;
-  programFeature = {} as FeatureCollection;
-  observations = {} as FeatureCollection;
-  taxonomy: Taxonomy | undefined;
   context: {
     [name: string]: any;
     coords?: L.Point;
@@ -79,8 +76,8 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     taxa?: Taxonomy;
   } = {};
   programID$ = this.route.params.pipe(map(params => parseInt(params['id'], 10)));
-  observations$ = new BehaviorSubject<FeatureCollection>(this.observations);
-  obsFeaturesArray$: Observable<Feature[]> = this.observations$.pipe(
+  observations$ = new BehaviorSubject<FeatureCollection>({} as FeatureCollection);
+  features$ = this.observations$.pipe(
     filter(collection => !!collection),
     pluck<FeatureCollection, Feature[]>('features'),
     filter(o => !!o),
@@ -89,7 +86,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   );
   filteredObservations$ = new BehaviorSubject<Feature[]>([]);
   taxonomy$ = new Subject<Taxon[]>();
-  sampledTaxonomy$ = this.obsFeaturesArray$.pipe(
+  sampledTaxonomy$ = this.features$.pipe(
     map(items => {
       return Array.from(
         // tslint:disable-next-line: no-non-null-assertion
@@ -102,9 +99,16 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         ];
       }, []);
     }),
-    flatMap(items => zip(...items))
+    flatMap(items => zip(...items)),
+    map(taxa => {
+      let r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
+      if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
+        r = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
+      }
+      return r;
+    })
   );
-  municipalities$ = this.obsFeaturesArray$.pipe(
+  municipalities$ = this.features$.pipe(
     map((items: Feature[]) => {
       const result = items.reduce(
         (
@@ -194,13 +198,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(([taxa, program]) => {
-        // console.debug(taxa, program);
-        this.programFeature = program;
-        this.taxonomy = taxa; /*.sort(sorted(
-          !localeId.startsWith('fr') ? 'nom_vern_eng' : 'nom_vern' ? 'nom_vern' : 'nom_valide'
-        ))*/
         this.context.taxa = taxa;
-
         this.context.program = program;
       });
 
@@ -210,25 +208,23 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         switchMap(id => this.programService.getProgramObservations(id))
       )
       .subscribe(observations => {
-        this.observations = observations;
-        this.observations$.next(this.observations);
+        this.observations$.next(observations);
       });
   }
 
   ngAfterViewInit() {
-    this.obsFeaturesArray$.subscribe(o => this.filteredObservations$.next(o));
-    this.obsMap.click.subscribe((point: L.Point) => (this.context.coords = point));
-    this.sampledTaxonomy$.subscribe(
-      taxa => {
-        let r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
-        if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
-          r = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
-        }
-        // console.debug(r);
-        this.taxonomy$.next(r);
-      },
-      error => console.error(error)
-    );
+    this.features$.subscribe(o => this.filteredObservations$.next(o));
+    this.cartogram.click.subscribe((point: L.Point) => (this.context.coords = point));
+    // this.sampledTaxonomy$.subscribe(
+    //   taxa => {
+    //     let r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
+    //     if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
+    //       r = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
+    //     }
+    //     this.taxonomy$.next(r);
+    //   },
+    //   error => console.error(error)
+    // );
   }
 
   ngOnDestroy() {
@@ -237,20 +233,19 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   }
 
   onListToggle(): void {
-    this.obsMap.observationMap.invalidateSize();
+    this.cartogram.observationMap.invalidateSize();
   }
 
   @HostListener('document:NewObservationEvent', ['$event'])
   newObservationEventHandler(e: CustomEvent): void {
     e.stopPropagation();
-    if (this.observations) {
-      this.observations.features = [e.detail as Feature, ...this.observations.features];
-      this.observations$.next(this.observations);
-    }
+    const observations = {} as FeatureCollection;
+    observations.features = [e.detail as Feature, ...observations.features];
+    this.observations$.next(observations);
   }
 
   onFilterChange(): void {
-    this.obsFeaturesArray$
+    this.features$
       .pipe(
         take(1),
         map(observations =>
