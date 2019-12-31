@@ -99,7 +99,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
       //   }
       // )
       // {
-      L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution:
           // tslint:disable-next-line: max-line-length
