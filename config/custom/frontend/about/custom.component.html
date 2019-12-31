@@ -109,26 +109,25 @@
 <ng-template #en>
   <h2>The demonstration - structure and scenario</h2>
 
-  Different ecological information campaign campaigns are offered, based on the
+  A choice of different ecological information campaigns is offered, based on the
   selection of a specific geographic perimeter.<br />
-  Once the program has been selected, the operator can add and document a
-  specific observation that he has made. The documentation of this observation
+  Once the campaign has been selected, the contributor can add and document a
+  specific observation that he, or she, has made. Documenting this observation
   consists of:
   <ol>
-    <li>describe the sighting, including a possible case, a photo.</li>
+    <li>describing the observation itself, including whenever possible a photo.</li>
     <li>
-      locate the location of the observation very precisely on the satellite map
-      presented.
+      locating the place of the observation very precisely on the displayed satellite map.
     </li>
   </ol>
 
   <p>
-    All the information thus collected will be stored in the database of the
+    All the collected information will be stored into the database of the
     server application. It is an interactive client / server application,
-    integrating different technologies for securing information exchange,
-    operating and maintaining databases and relevant and user-friendly user
-    interfaces. The application is gamified: badges are assigned when the
-    submission of a new observation exceeds the thresholds defined in
+    integrating different technologies for securing the exchange of information,
+    to operate and to maintain databases and to provide relevant and user-friendly user
+    interfaces. The application is gamified: badges are attributed when the
+    submission of a new observation comes in excess of thresholds defined in
     configuration.
   </p>
 
@@ -139,8 +138,7 @@
     >
     application, a tool of the
     <a href="https://geonature.fr/" target="_blank">GeoNature</a> project,
-    intended for participatory inventory. The GeoNature-citizen project was born
-    out of the collaboration of the
+    intended for participatory inventory. The GeoNature-citizen project emerge from the collaboration of the
     <a href="https://obs.mercantour-parcnational.fr/" target="_blank"
       >Mercantour</a
     >
@@ -154,46 +152,46 @@
     <a href="https://www.natural-solutions.eu/" target="_blank"
       >Natural Solutions</a
     >
-    agency. The application is currently in production in several environmental
+    agency. The application is currently in production at several environmental
     protection organizations.
   </p>
 
   <p>
-    A global architectural overhaul was carried out (frontend and backend) for
-    the demo, exploiting the robustness of the code base, aiming for reduced
+    A global architectural redesign was carried out (frontend and backend) for
+    implementing the demo, exploiting the robustness of the code base, aiming at reducing
     complexity and promoting the reuse of the code. The development process
     involved modularization and re-factorization of the complete code base,
-    upgrading the frontend to the latest Angular version (currently rc9),
-    improving processing and rendering performance thanks to a shallower DOM
-    tree, easier maintenance and customization of CSS (work in progress on a
+    upgrading the frontend to the latest Angular version (currently 9-RC),
+    improving processing and rendering performance through to a shallower DOM
+    tree, making the maintenance and customization of CSS easier (work in progress on a
     design system).
   </p>
 
   <p>
-    Much better performances are thus and now obtained, reaching the theoretical
+    Much better performances are thus obtained, reaching the theoretical
     limit of the
     <a href="https://github.com/Leaflet/Leaflet.markercluster" target="_blank"
       >Leaflet-MarkerCluster</a
     >
-    library of 50,000 points in interactive conditions acceptable to the client.
+    library of 50,000 points with interactive conditions still fully acceptable to the client.
   </p>
   <p>
     This new architecture and the results obtained stem from the decision to use
-    modules by functionality, the loading of which is carried out on demand,
+    modules by functionality, performing on demand loading and
     integrating services and components, thus bringing the advantage of the
     incremental hydration capacities to the application.
   </p>
 
   <p>
     The backend (python / flask + sqlalchemy + postgis + postgresql) has also
-    been modularized, made installable without third-party dependence on
-    <a href="https://github.com/PnX-SI/TaxHub" target="_blank">TaxHub</a>: by
+    been modularized and made installable without third-party dependence on
+    <a href="https://github.com/PnX-SI/TaxHub" target="_blank">TaxHub</a> by
     incorporating the French standard taxonomy repository TaxRef (with backup
     media provided via the
     <a href="https://taxref.mnhn.fr/taxref-web/api/doc" target="_blank"
       >MNHN REST API</a
     >), management of taxonomy lists (defined by program / game / challenge) in
-    the form of activatable modules, a documented "autonomous" installation.
+    the form of activatable modules and a documented "autonomous" installation.
   </p>
 
   <p>
