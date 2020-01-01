@@ -1,4 +1,3 @@
-<ng-container *ngTemplateOutlet="wwwwcard"></ng-container>
 <ng-template #wwwwcard>
   <div class="species" *ngIf="taxon$ | async as taxon; else loading">
     <!-- FIXME: hardcoded api media endpoint -->
@@ -41,3 +40,5 @@
 <ng-template #loading>
   <div><i class="fa fa-spinner fa-spin"></i>Loading …</div>
 </ng-template>
+
+<ng-container *ngTemplateOutlet="popupTemplate? popupTemplate : wwwwcard"></ng-container>

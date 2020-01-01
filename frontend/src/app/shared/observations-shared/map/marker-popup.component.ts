@@ -5,7 +5,8 @@ import {
   ChangeDetectionStrategy,
   OnInit,
   Inject,
-  LOCALE_ID
+  LOCALE_ID,
+  TemplateRef
 } from '@angular/core';
 import { AppConfig } from '../../../../conf/app.config';
 import { Taxon } from '../../../core/models';
@@ -58,6 +59,7 @@ interface TaxonData {
 export class MarkerPopupComponent implements OnInit {
   AppConfig = AppConfig;
   @Input() data!: TaxonData;
+  @Input() popupTemplate!: TemplateRef<HTMLElement>;
   taxon$ = new BehaviorSubject<TaxonData & Taxon | undefined>(undefined);
 
   constructor(@Inject(LOCALE_ID) public localeId: string, public taxonService: TaxonomyService) {}

@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule, Inject } from '@angular/core';
+import { LOCALE_ID, NgModule, Inject, ApplicationRef, DoBootstrap } from '@angular/core';
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -64,7 +64,7 @@ import { AppConfig } from '../conf/app.config';
     AboutCustomComponent,
     AboutFixedComponent
   ],
-  entryComponents: [LoginComponent, LogoutComponent, RegisterComponent, SidebarComponent],
+  entryComponents: [AppComponent, LoginComponent, LogoutComponent, RegisterComponent, SidebarComponent],
   providers: [
     AuthService,
     GncService,
@@ -80,8 +80,12 @@ import { AppConfig } from '../conf/app.config';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
+export class AppModule  implements DoBootstrap {
   constructor(@Inject(LOCALE_ID) localeId: string) {
     console.info(`Locale: ${localeId}.`);
+  }
+
+  public ngDoBootstrap(app: ApplicationRef): void {
+    app.bootstrap(AppComponent);
   }
 }

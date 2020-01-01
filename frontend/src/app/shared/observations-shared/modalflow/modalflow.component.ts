@@ -13,10 +13,8 @@ import { FeatureCollection } from 'geojson';
 
 import { FlowItem } from './flow/flow-item';
 import { ModalFlowService } from './modalflow.service';
-import { IAppConfig, Taxonomy } from '../../../core/models';
-import { AppConfig } from '../../../../conf/app.config';
+import { Taxonomy } from '../../../core/models';
 
-// type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
 
 @Component({
   selector: 'app-modalflow',
@@ -25,7 +23,6 @@ import { AppConfig } from '../../../../conf/app.config';
   encapsulation: ViewEncapsulation.None
 })
 export class ModalFlowComponent {
-  // readonly appConfig: AppConfigModalFlow = AppConfig;
   @Input()
   data!: {
     coords?: L.Point;

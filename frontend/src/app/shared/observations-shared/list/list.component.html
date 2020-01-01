@@ -34,19 +34,19 @@
           <!-- TODO: mv to controller method -->
           <b>{{
             !localeId.startsWith('fr') && !!taxon?.nom_vern_eng
-            ? taxon?.nom_vern_eng
-            : taxon?.nom_vern
-            ? taxon?.nom_vern
-            : taxon?.nom_valide
+              ? taxon?.nom_vern_eng
+              : taxon?.nom_vern
+              ? taxon?.nom_vern
+              : taxon?.nom_valide
           }}</b>
           <p i18n>
             Observé par
             <span>{{
               o.properties.observer?.username
-              ? o.properties.observer.username
-              : localeId.startsWith('fr')
-              ? 'Anonyme'
-              : 'Anonymous'
+                ? o.properties.observer.username
+                : localeId.startsWith('fr')
+                ? 'Anonyme'
+                : 'Anonymous'
             }}</span>
           </p>
           <!-- TODO: mv to controller method -->
@@ -63,4 +63,6 @@
   </cdk-virtual-scroll-viewport>
 </ng-container>
 <!-- TODO: withLoadingPipe -->
-<ng-template #loading>Loading …</ng-template>
+<ng-template #loading>
+  <div><i class="fa fa-spinner fa-spin"></i>Loading …</div>
+</ng-template>
