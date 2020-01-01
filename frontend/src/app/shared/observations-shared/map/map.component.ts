@@ -31,6 +31,11 @@ declare module 'leaflet' {
   interface MapOptions {
     gestureHandling?: boolean;
   }
+  namespace Control {
+    interface LocateOptions {
+      getLocationBounds?: Function;
+    }
+  }
 }
 
 export const ZoomViewer = L.Control.extend({

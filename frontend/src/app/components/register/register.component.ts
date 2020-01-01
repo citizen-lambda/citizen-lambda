@@ -1,14 +1,16 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subject, throwError } from 'rxjs';
 import { debounceTime, catchError, map } from 'rxjs/operators';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { RegisteringUser, LoggedUser } from '../../core/models';
-import { AuthService } from '../../services/auth.service';
+import { RegisteringUser, LoggedUser, IAppConfig } from '../../core/models';
 import { AppConfig } from '../../../conf/app.config';
-import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
+
+type AppConfigRegister = Pick<IAppConfig, 'termsOfUse'>;
 
 @Component({
   selector: 'app-register',
@@ -16,7 +18,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  readonly AppConfig = AppConfig;
+  readonly AppConfig: AppConfigRegister = AppConfig;
+  localizedTermsOfUseLink = (this.AppConfig.termsOfUse as { [lang: string]: string })[
+    this.localeId
+  ];
   user: RegisteringUser = {};
   private _error = new Subject<string | null>();
   private _success = new Subject<string | null>();
