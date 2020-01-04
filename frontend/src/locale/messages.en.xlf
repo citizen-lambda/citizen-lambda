@@ -266,9 +266,11 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="f333a21c2673b35ed2c4a8e8a7229c1c0c3d173a" datatype="html">
-        <source><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Démo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>GeoNature-citizen <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
-        <target><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>GeoNature-citizen <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> <x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Demo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/></target>
+      <trans-unit id="442b0d77c52edd20f731d7781e0dc3fe8c833a26" datatype="html">
+        <source><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Démo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>citizenλ <x id="START_SMALL_TEXT" ctype="x-small" equiv-text="&lt;small&gt;"/><x id="INTERPOLATION" equiv-text="{{lambdaVersion}}"/><x id="CLOSE_SMALL_TEXT" ctype="x-small" equiv-text="&lt;/small&gt;"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+  </source>
+        <target><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>citizenλ <x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>demo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_SMALL_TEXT" ctype="x-small" equiv-text="&lt;small&gt;"/><x id="INTERPOLATION" equiv-text="{{lambdaVersion}}"/><x id="CLOSE_SMALL_TEXT" ctype="x-small" equiv-text="&lt;/small&gt;"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+  </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/footer/footer.component.html</context>
           <context context-type="linenumber">3</context>
@@ -635,7 +637,7 @@
         <target>Home</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="46b2bd5add5ff29876db4ca3eb3b1bcdad798254" datatype="html">
@@ -643,7 +645,7 @@
         <target>Programs</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="408cb6073e60c5d966296a3207fc596adca75e01" datatype="html">
@@ -651,7 +653,7 @@
         <target>Admin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">57</context>
         </context-group>
       </trans-unit>
       <trans-unit id="87503e5fb4821b88835697b038edda66df5046a7" datatype="html">
@@ -659,7 +661,7 @@
         <target>About</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6c33375431cc1a1fcd8eb8aa96c88c648d1ce901" datatype="html">
@@ -667,7 +669,7 @@
         <target>My dashboard</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">112</context>
+          <context context-type="linenumber">110</context>
         </context-group>
       </trans-unit>
       <trans-unit id="be4cfcbda3bea4569f42503c87720831222d47ab" datatype="html">
@@ -679,7 +681,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">128</context>
+          <context context-type="linenumber">123</context>
         </context-group>
       </trans-unit>
       <trans-unit id="903c311baddc63adc12cd0848ffcc65fcd4b9967" datatype="html">
@@ -691,7 +693,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">141</context>
+          <context context-type="linenumber">134</context>
         </context-group>
       </trans-unit>
       <trans-unit id="095c77818c8bba667004ed88330ea8ea99349ece" datatype="html">
@@ -703,23 +705,23 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">152</context>
+          <context context-type="linenumber">143</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="00ea814a3ff5e483e2cdf30773a1629d6961cf3b" datatype="html">
+      <trans-unit id="8308561df639778af3504cfe502ebda6686fae6f" datatype="html">
         <source>
         Observé par
-        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : localeId.startsWith(&apos;fr&apos;) ?
+        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data?.observer?.username : localeId.startsWith(&apos;fr&apos;) ?
           &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </source>
-        <target>
+      <target>
         Observed by
-        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data.observer.username : localeId.startsWith(&apos;fr&apos;) ?
+        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data?.observer?.username : localeId.startsWith(&apos;fr&apos;) ?
           &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4264e7c4583ed5eec4fa7916bc901a9204ece5a0" datatype="html">
@@ -733,7 +735,71 @@
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="afe161386fbc9ef12224be073036605bb46f6ea1" datatype="html">
+        <source>Dénombrement: <x id="INTERPOLATION" equiv-text="{{ data.count }}"/></source>
+        <target>Count: <x id="INTERPOLATION" equiv-text="{{ data.count }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bd398c10833f932759bc8281d9d416bf7077d58c" datatype="html">
+        <source>Phylum: <x id="INTERPOLATION" equiv-text="{{ taxon?.phylum }}"/></source>
+        <target>Phylum: <x id="INTERPOLATION" equiv-text="{{ taxon?.phylum }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="88acf54af075f7cf0bd03e5d7d99042239631199" datatype="html">
+        <source>Classe: <x id="INTERPOLATION" equiv-text="{{ taxon?.classe }}"/></source>
+        <target>Class: <x id="INTERPOLATION" equiv-text="{{ taxon?.classe }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">92</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="67ae7d32287d6a844eb3d9a2a815530593a980a8" datatype="html">
+        <source>Ordre: <x id="INTERPOLATION" equiv-text="{{ taxon?.ordre }}"/></source>
+        <target>Order: <x id="INTERPOLATION" equiv-text="{{ taxon?.ordre }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="04626fc2752fde9751e103ba694a2e053c6a770c" datatype="html">
+        <source>Famille: <x id="INTERPOLATION" equiv-text="{{ taxon?.famille }}"/></source>
+        <target>Family: <x id="INTERPOLATION" equiv-text="{{ taxon?.famille }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0e1dbf499db480741caaffc77aa913a3bbe4fafe" datatype="html">
+        <source>Découvrir sur INPN:</source>
+        <target>Discover on INPN:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">116</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bfef06b4428b02426923cd5213a49b0dde30ca56" datatype="html">
+        <source>le taxon</source>
+        <target>the species</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">123</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bf2eb757ad3d674c958bbc043e5f64592898fd9b" datatype="html">
+        <source>le taxon de référence</source>
+        <target>the reference taxon</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="37bffdf00ec09441168b52d6e0888a2e076aa2a4" datatype="html">
@@ -819,47 +885,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
           <context context-type="linenumber">109</context>
-        </context-group>
-      </trans-unit>
-
-      <trans-unit id="db8f1dadf81da28bb63f29c07dc8799bdce08d0b" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="{{
-                !!(photoFilename$ | async)?.length
-                  ? (photoFilename$ | async)?.length &gt; 18
-                    ? (photoFilename$ | async | slice: 0:18) + &apos;…&apos;
-                    : (photoFilename$ | async)
-                  : &apos;Ajouter la photo&apos;
-              }}"/>
-              <x id="TAG_INPUT" ctype="x-input" equiv-text="&lt;input/&gt;"/>
-              <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/>
-              <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container&gt;"/>
-                <x id="TAG_IMG" ctype="image" equiv-text="&lt;img/&gt;"/>
-              <x id="CLOSE_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;/ng-container&gt;"/>
-              <x id="START_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;ng-template&gt;"/>
-                  <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>
-              <x id="CLOSE_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;/ng-template&gt;"/>
-            <x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/>
-            </source>
-        <target><x id="INTERPOLATION" equiv-text="{{
-                !!(photoFilename$ | async)?.length
-                  ? (photoFilename$ | async)?.length &gt; 18
-                    ? (photoFilename$ | async | slice: 0:18) + &apos;…&apos;
-                    : (photoFilename$ | async)
-                  : &apos;Add the picture&apos;
-              }}"/>
-              <x id="TAG_INPUT" ctype="x-input" equiv-text="&lt;input/&gt;"/>
-              <x id="START_TAG_DIV" ctype="x-div" equiv-text="&lt;div&gt;"/>
-              <x id="START_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;ng-container&gt;"/>
-                <x id="TAG_IMG" ctype="image" equiv-text="&lt;img/&gt;"/>
-              <x id="CLOSE_TAG_NG-CONTAINER" ctype="x-ng-container" equiv-text="&lt;/ng-container&gt;"/>
-              <x id="START_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;ng-template&gt;"/>
-                  <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>
-              <x id="CLOSE_TAG_NG-TEMPLATE" ctype="x-ng-template" equiv-text="&lt;/ng-template&gt;"/>
-            <x id="CLOSE_TAG_DIV" ctype="x-div" equiv-text="&lt;/div&gt;"/>
-            </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
-          <context context-type="linenumber">119</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1ca6b9fd976db3087d536ed5c02e83d4eb791a56" datatype="html">
@@ -1034,7 +1059,7 @@
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="95252feb321211d4062c95e368dc14c8406e39fe" datatype="html">
+      <trans-unit id="c4ab9060a89f735768448dea64222ec390a09cbd" datatype="html">
         <source>
             Observé par
             <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
@@ -1085,7 +1110,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">28</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
@@ -1097,23 +1122,23 @@
         <target>All municipalities</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">71</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">69</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7841a798609197a4a0eec2c511b9bcb2f600372f" datatype="html">
+      <trans-unit id="b0e042a6c3648a56e90c50c46556c879b774c67c" datatype="html">
         <source>
-          <x id="INTERPOLATION" equiv-text="{{ (filteredObservations$ | async)?.length }}"/> <x id="ICU" equiv-text="{ +(filteredObservations$ | async)?.length, plural, =0 {...} =1 {...} other {...}}"/>
+          <x id="INTERPOLATION" equiv-text="{{ (filteredObservations$ | async)?.length | number }}"/> <x id="ICU" equiv-text="{ +(filteredObservations$ | async)?.length, plural, =0 {...} =1 {...} other {...}}"/>
         </source>
         <target>
-          <x id="INTERPOLATION" equiv-text="{{ (filteredObservations$ | async)?.length }}"/> <x id="ICU" equiv-text="{ +(filteredObservations$ | async)?.length, plural, =0 {...} =1 {...} other {...}}"/>
+          <x id="INTERPOLATION" equiv-text="{{ (filteredObservations$ | async)?.length | number }}"/> <x id="ICU" equiv-text="{ +(filteredObservations$ | async)?.length, plural, =0 {...} =1 {...} other {...}}"/>
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">80</context>
+          <context context-type="linenumber">79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c76e8994c14ff241879a1e2e121b005737ddae03" datatype="html">
@@ -1123,7 +1148,7 @@
           found !} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">81</context>
+          <context context-type="linenumber">80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ee62171bb5bf618165113912714b8adf22e656b0" datatype="html">

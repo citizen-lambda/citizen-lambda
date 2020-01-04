@@ -62,7 +62,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null"
+    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = ''"
       >{{ errorMessage }}
     </ngb-alert>
     <form

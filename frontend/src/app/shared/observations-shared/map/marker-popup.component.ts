@@ -13,12 +13,14 @@ import { Taxon } from '../../../core/models';
 import { TaxonomyService } from '../../../services/taxonomy.service';
 import { of, BehaviorSubject } from 'rxjs';
 
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 interface TaxonData {
   cd_nom: number;
   images?: string;
   image?: string;
   media?: any;
+  comment?: string;
   observer?: {
     username: string;
   };
@@ -27,6 +29,7 @@ interface TaxonData {
     code?: string;
   };
   date: Date;
+  count: Number;
 }
 
 
@@ -61,8 +64,14 @@ export class MarkerPopupComponent implements OnInit {
   @Input() data!: TaxonData;
   @Input() popupTemplate!: TemplateRef<HTMLElement>;
   taxon$ = new BehaviorSubject<TaxonData & Taxon | undefined>(undefined);
+  closeResult = '';
 
-  constructor(@Inject(LOCALE_ID) public localeId: string, public taxonService: TaxonomyService) {}
+
+  constructor(
+    @Inject(LOCALE_ID) public localeId: string,
+    public taxonService: TaxonomyService,
+    private modalService: NgbModal
+  ) {}
 
   ngOnInit() {
     of(this.data)
@@ -73,5 +82,23 @@ export class MarkerPopupComponent implements OnInit {
           });
         }
       });
+  }
+
+  open(content: any) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-obs-details'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
   }
 }

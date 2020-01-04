@@ -18,6 +18,9 @@ type AppConfigHome = Pick<IAppConfig, 'platform_participate'>;
 })
 export class HomeComponent {
   readonly appConfig: AppConfigHome = AppConfig;
+  LabelPlatformEngage = (this.appConfig.platform_participate as { [lang: string]: string })[
+    this.localeId
+  ];
   programs: Program[] = [];
 
   constructor(

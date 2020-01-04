@@ -294,8 +294,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
         const marker: L.Marker<any> = L.marker(latlng, {
           icon: conf.MARKER_ICON_OBS()
         });
-        marker.on('click', e => {
-          this.showPopup(feature, e);
+        marker.on('click', _ => {
+          this.showPopup(feature);
         });
         this.featureMarkers.push({
           // TODO: simplify marker collection refs handling
@@ -324,13 +324,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
         code?: string;
       };
       date: Date;
+      count: Number;
     };
     component.changeDetectorRef.detectChanges();
     const popupContent = component.location.nativeElement;
     return popupContent;
   }
 
-  showPopup(obs: Feature, event: L.LeafletEvent): void {
+  showPopup(obs: Feature): void {
     // console.debug(event.sourceTarget.feature.properties);
     this.obsOnFocus = obs;
     const marker = this.featureMarkers.find(

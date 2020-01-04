@@ -49,6 +49,14 @@ type Partial<T> = {
   [P in keyof T]?: T[P];
 };
 
+// TODO: mv auth to feature module
+// export abstract class AuthProvider {
+//   public abstract loggedIn: boolean;
+//   public abstract redirectUrl: string;
+//   public abstract login(): Promise<void>;
+//   public abstract logout(): void;
+// }
+
 export interface RegisteredUser {
   username: string;
   password: string;

@@ -27,30 +27,30 @@
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
           <ng-container *ngIf="!ObsConfig.FEATURES.taxonomy.GROUP; else optgroupmenu">
-            <option *ngFor="let s of sampledTaxonomy$ | async | keyvalue" [ngValue]="s.value.cd_nom">
+            <option *ngFor="let s of sampledTaxonomy$ | async" [ngValue]="s?.cd_nom">
               <span>{{
-                !localeId.startsWith('fr') && !!s?.value?.nom_vern_eng
-                  ? s?.value?.nom_vern_eng
-                  : s?.value?.nom_vern
-                  ? s?.value?.nom_vern
-                  : s?.value?.nom_valide
+                !localeId.startsWith('fr') && !!s?.nom_vern_eng
+                  ? s?.nom_vern_eng
+                  : s?.nom_vern
+                  ? s?.nom_vern
+                  : s?.nom_valide
               }}</span>
-              (<i>{{ s?.value?.nom_complet }}</i
+              (<i>{{ s?.nom_complet }}</i
               >)
             </option>
           </ng-container>
 
           <ng-template #optgroupmenu>
-            <optgroup *ngFor="let t of sampledTaxonomy$ | async | keyvalue" [label]="t.key">
-              <option *ngFor="let s of t.value | keyvalue" [ngValue]="s.value.cd_nom">
+            <optgroup *ngFor="let t of (sampledTaxonomy$ | async | keyvalue)" [label]="t?.key">
+              <option *ngFor="let s of t?.value" [ngValue]="s?.cd_nom">
                 <span>{{
-                  !localeId.startsWith('fr') && !!s?.value?.nom_vern_eng
-                    ? s?.value?.nom_vern_eng
-                    : s?.value?.nom_vern
-                    ? s?.value?.nom_vern
-                    : s?.value?.nom_valide
+                  !localeId.startsWith('fr') && !!s?.nom_vern_eng
+                    ? s?.nom_vern_eng
+                    : s?.nom_vern
+                    ? s?.nom_vern
+                    : s?.nom_valide
                 }}</span>
-                (<i>{{ s?.value?.nom_complet }}</i
+                (<i>{{ s?.nom_complet }}</i
                 >)
               </option>
             </optgroup>
@@ -77,7 +77,7 @@
       <div class="obs-count">
         <!-- TODO: loading => recherche… -->
         <p i18n>
-          {{ (filteredObservations$ | async)?.length }} { +(filteredObservations$ | async)?.length,
+          {{ (filteredObservations$ | async)?.length | number }} { +(filteredObservations$ | async)?.length,
           plural, =0 { observation trouvée } =1 { observation trouvée !} other { observations
           trouvées !} }
         </p>

@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule, Inject, ApplicationRef, DoBootstrap } from '@angular/core';
+import { LOCALE_ID, NgModule, Inject } from '@angular/core';
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,7 +33,6 @@ import { AboutComponent } from './components/about/about.component';
 import { AboutCustomComponent } from './components/about/custom/custom.component';
 import { AboutFixedComponent } from './components/about/fixed/fixed.component';
 
-import { AppConfig } from '../conf/app.config';
 
 @NgModule({
   imports: [
@@ -80,12 +79,8 @@ import { AppConfig } from '../conf/app.config';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule  implements DoBootstrap {
+export class AppModule {
   constructor(@Inject(LOCALE_ID) localeId: string) {
     console.info(`Locale: ${localeId}.`);
-  }
-
-  public ngDoBootstrap(app: ApplicationRef): void {
-    app.bootstrap(AppComponent);
   }
 }

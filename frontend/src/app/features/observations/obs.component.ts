@@ -101,9 +101,11 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     }),
     flatMap(items => zip(...items)),
     map(taxa => {
-      let r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
+      const r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
       if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
-        r = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
+        let m: {[key: string]: Taxon[]};
+        m = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
+        return m as { [key: string]: Taxon[]; };
       }
       return r;
     })

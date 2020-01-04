@@ -28,6 +28,7 @@ const appRoutes: Routes = [
     // loadChildren: () => import('./programs/programs.module').then(m => m.ProgramsModule),
     loadChildren: () => import('./features/programs/programs.module').then(m => m.ProgramsModule)
   },
+  // TODO: SpeciesComponent
   { path: 'taxon/:id', component: SpeciesComponent },
   {
     path: '',

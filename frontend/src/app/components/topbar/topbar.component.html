@@ -32,7 +32,7 @@
           routerLink="home"
           routerLinkActive="active"
           class="nav-link"
-          (click)="collapsed = !collapsed"
+          (click)="collapsed = true"
           i18n
           >Accueil</a
         >
@@ -52,7 +52,7 @@
           routerLink="/api/admin"
           routerLinkActive="active"
           class="nav-link"
-          (click)="collapsed = !collapsed"
+          (click)="collapsed = true"
           i18n
           >Admin</a
         >
@@ -62,7 +62,7 @@
           routerLink="about"
           routerLinkActive="active"
           class="nav-link"
-          (click)="collapsed = !collapsed"
+          (click)="collapsed = true"
           i18n
           >A Propos</a
         >
@@ -78,7 +78,6 @@
             ngbDropdownToggle
             id="cultureDropDown"
             role="button"
-            (click)="collapsed = !collapsed"
             >{{ lang.label }}</a
           >
         </ng-container>
@@ -93,7 +92,7 @@
               ngbDropdownItem
               [href]="base_href.replace('/' + localeId + '/', '/' + lang.code) + location"
               class="nav-link"
-              (click)="collapsed = !collapsed"
+              (click)="collapsed = true"
               >{{ lang.label }}</a
             >
           </ng-template>
