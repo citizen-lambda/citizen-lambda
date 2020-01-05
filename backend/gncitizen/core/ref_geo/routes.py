@@ -36,7 +36,7 @@ def get_municipalities():
             LAreas.area_name,
             LAreas.area_code,
             func.ST_Transform(LAreas.geom, 4326).label("geom"),
-        ).filter(LAreas.enable, LAreas.id_type == 'COM')
+        ).filter(LAreas.enable, LAreas.id_type == 25)
         datas = q.all()
         features = []
         for data in datas:
@@ -83,7 +83,7 @@ def get_municipality(insee):
                 func.ST_Transform(LAreas.geom, 4326).label("geom"),
             )
             .filter(
-                LAreas.enable, LAreas.area_code == str(insee), LAreas.id_type == 'COM'
+                LAreas.enable, LAreas.area_code == str(insee), LAreas.id_type == 25
             )
             .limit(1)
         )

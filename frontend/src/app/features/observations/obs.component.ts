@@ -242,7 +242,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   newObservationEventHandler(e: CustomEvent): void {
     e.stopPropagation();
     const observations = {} as FeatureCollection;
-    observations.features = [e.detail as Feature, ...observations.features];
+    observations.features = [e.detail as Feature];
     this.observations$.next(observations);
   }
 

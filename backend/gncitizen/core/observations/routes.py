@@ -36,6 +36,7 @@ from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from server import db
+import dataclasses
 
 
 logger = current_app.logger
@@ -93,7 +94,8 @@ def generate_observation_geojson(id_observation):
         if k in obs_keys:
             feature["properties"][k] = result_dict[k]
 
-    if current_app.config.get("API_TAXHUB") is None:
+    # FIXME: inverted condition
+    if current_app.config.get("API_TAXHUB") is not None:
         logger.critical("Selecting TaxHub Medias schema.")
         # Get official taxref scientific
         # and common names (first one)
@@ -116,9 +118,9 @@ def generate_observation_geojson(id_observation):
     else:
         from gncitizen.core.taxonomy import TAXA
 
-        feature["properties"]["media"] = list(
-            TAXA.get(feature.properties.cd_nom)["media"]
-        )
+        feature["properties"]["media"] = [
+            dataclasses.asdict(medium) for medium in TAXA.get(feature["properties"]["cd_nom"]).media
+        ]
 
     features.append(feature)
     return features
@@ -267,7 +269,7 @@ def post_observation():
             file = save_upload_files(
                 request.files,
                 "obstax",
-                dat2rec["cd_nom"],
+                newobs.cd_nom,
                 newobs.id_observation,
                 ObservationMediaModel,
             )

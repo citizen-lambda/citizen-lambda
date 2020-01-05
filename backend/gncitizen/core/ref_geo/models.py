@@ -10,8 +10,8 @@ class LAreas(db.Model):
     __tablename__ = "l_areas"
     __table_args__ = {"schema": "ref_geo"}
     id_area = db.Column(db.Integer, primary_key=True)
-    id_type = db.Column(
-        db.Unicode, db.ForeignKey("ref_geo.bib_areas_types.type_code")
+    id_type = db.Column(    
+        db.Integer, db.ForeignKey("ref_geo.bib_areas_types.id_type")
     )
     area_name = db.Column(db.Unicode)
     area_code = db.Column(db.Unicode)

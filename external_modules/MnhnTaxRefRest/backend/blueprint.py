@@ -19,7 +19,7 @@ blueprint = Blueprint("taxref", __name__)
 @blueprint.route("/<int:taxon_id>", methods=["GET"])
 def default(taxon_id: int, **kwargs):
     taxon: Taxon = TAXA.get(taxon_id)
-    return dataclasses.asdict(taxon) if taxon else { "message": "Error fetching species data" }, 400
+    return dataclasses.asdict(taxon)  # if taxon else { "message": "Error fetching species data" }, 400
 
 
 @blueprint.route("/config", methods=["GET"])
