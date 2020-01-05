@@ -103,9 +103,9 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     map(taxa => {
       const r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
       if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
-        let m: {[key: string]: Taxon[]};
+        let m: { [key: string]: Taxon[] };
         m = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
-        return m as { [key: string]: Taxon[]; };
+        return m as { [key: string]: Taxon[] };
       }
       return r;
     })
@@ -241,9 +241,13 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   @HostListener('document:NewObservationEvent', ['$event'])
   newObservationEventHandler(e: CustomEvent): void {
     e.stopPropagation();
-    const observations = {} as FeatureCollection;
-    observations.features = [e.detail as Feature];
-    this.observations$.next(observations);
+    this.features$.pipe(take(1)).subscribe(observations => {
+      const collection = {
+        type: 'FeatureCollection',
+        features: [e.detail as Feature, ...observations]
+      };
+      this.observations$.next(collection as FeatureCollection);
+    });
   }
 
   onFilterChange(): void {
