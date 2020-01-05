@@ -241,13 +241,20 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
   @HostListener('document:NewObservationEvent', ['$event'])
   newObservationEventHandler(e: CustomEvent): void {
     e.stopPropagation();
-    this.features$.pipe(take(1)).subscribe(observations => {
-      const collection = {
-        type: 'FeatureCollection',
-        features: [e.detail as Feature, ...observations]
-      };
-      this.observations$.next(collection as FeatureCollection);
-    });
+    this.observations$
+      .pipe(
+        filter(collection => !!collection),
+        pluck<FeatureCollection, Feature[]>('features'),
+        filter(o => !!o),
+        take(1)
+      )
+      .subscribe(observations => {
+        const collection = {
+          type: 'FeatureCollection',
+          features: [e.detail as Feature, ...observations]
+        };
+        this.observations$.next(collection as FeatureCollection);
+      });
   }
 
   onFilterChange(): void {
