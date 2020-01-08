@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './services/auth.guard';
 import { UniqueProgramGuard } from './features/programs/unique-program.guard';
 import { AboutComponent } from './components/about/about.component';
-import { SpeciesComponent } from './components/species/species.component';
+
 
 const appRoutes: Routes = [
   {
@@ -25,11 +25,8 @@ const appRoutes: Routes = [
   },
   {
     path: 'programs',
-    // loadChildren: () => import('./programs/programs.module').then(m => m.ProgramsModule),
     loadChildren: () => import('./features/programs/programs.module').then(m => m.ProgramsModule)
   },
-  // TODO: SpeciesComponent
-  { path: 'taxon/:id', component: SpeciesComponent },
   {
     path: '',
     redirectTo: '/home',
@@ -39,10 +36,10 @@ const appRoutes: Routes = [
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {
-  initialNavigation: 'enabled',
-  useHash: false,
-  // enableTracing: true,
-  scrollPositionRestoration: 'enabled',
-  anchorScrolling: 'enabled',
-  scrollOffset: [0, 65] // TODO: source from conf: router-outlet height
+    initialNavigation: 'enabled',
+    useHash: false,
+    // enableTracing: true,
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled',
+    scrollOffset: [0, 65] // TODO: source from conf: router-outlet height
 });

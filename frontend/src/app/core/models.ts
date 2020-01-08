@@ -13,7 +13,19 @@ export interface IAppConfig {
     DISPLAY_SIDEBAR: boolean;
   };
   ALLOWED_EXTENSIONS: string[]; // TODO: validate media (ext?) for obs submission
-  REWARDS: true;
+  REWARDS?: true;
+  SEO: {
+    description: {
+      fr: string;
+      en: string;
+    };
+    keywords?: {
+      fr: string;
+      en: string;
+    }
+    author: string;
+    [key: string]: any;
+  };
   termsOfUse: {
     fr: string;
     en: string;

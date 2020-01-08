@@ -37,8 +37,9 @@ import { composeAsync } from '../../helpers/compose';
 import { ObsMapComponent } from '../../shared/observations-shared/map/map.component';
 import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
 import { ModalFlowService } from '../../shared/observations-shared/modalflow/modalflow.service';
+import { SeoService } from 'src/app/services/seo.service';
 
-type AppConfigModalFlow = Pick<IAppConfig, 'program_add_an_observation'>;
+type AppConfigModalFlow = Pick<IAppConfig, 'appName' | 'SEO' | 'program_add_an_observation'>;
 
 // TODO: merge with AppConfig … config management
 export const ObsConfig = {
@@ -81,8 +82,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     filter(collection => !!collection),
     pluck<FeatureCollection, Feature[]>('features'),
     filter(o => !!o),
-    takeUntil(this.unsubscribe$),
-    shareReplay()
+    takeUntil(this.unsubscribe$)
   );
   filteredObservations$ = new BehaviorSubject<Feature[]>([]);
   taxonomy$ = new Subject<Taxon[]>();
@@ -181,7 +181,8 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private programService: GncProgramsService,
     public taxonomyService: TaxonomyService,
-    public flowService: ModalFlowService
+    public flowService: ModalFlowService,
+    protected seo: SeoService
   ) {
     combineLatest([this.programID$, this.route.data])
       .pipe(
@@ -202,6 +203,14 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
       .subscribe(([taxa, program]) => {
         this.context.taxa = taxa;
         this.context.program = program;
+
+        this.seo.setMetaTag({
+          name: 'description',
+          // tslint:disable-next-line: no-non-null-assertion
+          content: program.features[0].properties!.short_desc
+        });
+        // tslint:disable-next-line: no-non-null-assertion
+        this.seo.setTitle(`${program.features[0].properties!.title} - ${this.appConfig.appName}`);
       });
 
     this.programID$
@@ -212,21 +221,16 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
       .subscribe(observations => {
         this.observations$.next(observations);
       });
+
   }
 
   ngAfterViewInit() {
-    this.features$.subscribe(o => this.filteredObservations$.next(o));
-    this.cartogram.click.subscribe((point: L.Point) => (this.context.coords = point));
-    // this.sampledTaxonomy$.subscribe(
-    //   taxa => {
-    //     let r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
-    //     if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
-    //       r = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
-    //     }
-    //     this.taxonomy$.next(r);
-    //   },
-    //   error => console.error(error)
-    // );
+    this.features$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(o => this.filteredObservations$.next(o));
+    this.cartogram.click
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((point: L.Point) => (this.context.coords = point));
   }
 
   ngOnDestroy() {

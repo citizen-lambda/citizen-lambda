@@ -78,7 +78,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     return this.auth.authorized$.pipe(
       map(value => {
         if (value === true) {
-          this.username = localStorage.getItem('username') || this.username;
+          this.username = window.localStorage.getItem('username') || this.username;
         }
         return value;
       })
@@ -119,14 +119,14 @@ export class TopbarComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     // tslint:disable-next-line: no-non-null-assertion
-    this.base_href = document.getElementsByTagName('base').item(0)!.href;
+    this.base_href = document.getElementsByTagName('base').item(0)!.href || '/';
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
       this.location = (event as NavigationEnd).url;
     });
   }
 
   ngAfterViewInit(): void {
-    const access_token = localStorage.getItem('access_token');
+    const access_token = window.localStorage.getItem('access_token');
     if (access_token) {
       this.auth
         .ensureAuthorized()
@@ -152,7 +152,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
         )
         .subscribe();
     } else {
-      this.username = localStorage.getItem('username') || 'Anonymous';
+      this.username = window.localStorage.getItem('username') || 'Anonymous';
     }
 
     this.auth.authorized$

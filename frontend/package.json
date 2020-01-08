@@ -11,7 +11,11 @@
     "xi18n": "for l in fr en; do ng xi18n --output-path locale --out-file _messages.${l}.xlf --i18n-locale ${l}; done",
     "build:i18n": "ng --prod --aot --optimization --vendor-chunk --common-chunk --extract-licenses --extract-css --localize build",
     "brotli": "for f in $(ls ~/citizen/frontend/dist/browser/*/*.{css,js}); do brotli ${f}; done",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
+    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
+    "dev:ssr": "ng run frontend:serve-ssr",
+    "serve:ssr": "node dist/server/main.js",
+    "build:ssr": "ng run frontend:build:fr && ng run frontend:build:en && ng run frontend:server:production",
+    "prerender": "ng run frontend:prerender"
   },
   "private": true,
   "dependencies": {
@@ -32,7 +36,7 @@
     "@fortawesome/free-brands-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.10.2",
     "@ng-bootstrap/ng-bootstrap": "^5.1.4",
-    "@nguniversal/express-engine": "^9.0.0-next.9",
+    "@nguniversal/express-engine": "^9.0.0-rc.0",
     "@nguniversal/module-map-ngfactory-loader": "^9.0.0-next.9",
     "@ngx-loading-bar/core": "^4.2.0",
     "@ngx-loading-bar/http-client": "^4.2.0",
@@ -67,6 +71,7 @@
     "@angular/cli": "^9.0.0-rc.5",
     "@angular/compiler-cli": "^9.0.0-rc.7",
     "@angular/language-service": "^9.0.0-rc.7",
+    "@nguniversal/builders": "^9.0.0-rc.0",
     "@types/express": "^4.17.1",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",

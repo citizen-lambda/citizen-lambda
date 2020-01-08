@@ -38,8 +38,7 @@ export class TaxonomyService {
           this.taxa = { ...this.taxa, ...{ [safeTaxon.cd_nom]: safeTaxon } };
           return safeTaxon;
         }),
-        catchError(this.handleError<Taxon>(`getTaxon::{cd_nom}`, {} as Taxon)),
-        shareReplay(1)
+        catchError(this.handleError<Taxon>(`getTaxon::{cd_nom}`, {} as Taxon))
       );
     }
   }

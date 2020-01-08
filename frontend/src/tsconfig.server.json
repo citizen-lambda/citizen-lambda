@@ -7,7 +7,16 @@
   },
   "angularCompilerOptions": {
     "entryModule": "app/app.server.module#AppServerModule",
-    "enableIvy": false
+    "enableIvy": true
   },
-  "files": ["main.server.ts"]
+  "externalDependencies": [
+    "@ngx-loading-bar/*",
+    "LoadingBarModule",
+    "LoadingBarRouterModule",
+    "LoadingBarHttpClientModule"
+  ],
+  "files": [
+    "main.server.ts",
+    "../server.ts"
+  ]
 }

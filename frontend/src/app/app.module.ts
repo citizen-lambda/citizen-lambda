@@ -1,6 +1,7 @@
 import { LOCALE_ID, NgModule, Inject } from '@angular/core';
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -15,6 +16,7 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { ProgramsModule } from './features/programs/programs.module';
 import { AppComponent } from './app.component';
 import { routing } from './app.routing';
+import { SeoService } from './services/seo.service';
 import { AuthService } from './services/auth.service';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { LoginComponent } from './components/login/login.component';
@@ -39,6 +41,7 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserTransferStateModule,
     BrowserAnimationsModule,
+    RouterModule,
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
@@ -48,7 +51,7 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     LoadingBarRouterModule,
     LoadingBarModule,
     ProgramsModule,
-    routing
+    routing,
   ],
   declarations: [
     AppComponent,
@@ -71,6 +74,7 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     TaxonomyService,
     ErrorHandler,
     ProgramsResolve,
+    SeoService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

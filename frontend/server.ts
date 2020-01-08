@@ -1,94 +1,90 @@
 import 'zone.js/dist/zone-node';
-import { enableProdMode } from '@angular/core';
-// Express Engine
-import { ngExpressEngine } from '@nguniversal/express-engine';
-// Import module map for lazy loading
-import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 
+import { ngExpressEngine } from '@nguniversal/express-engine';
+// import * as express from 'express';
 const express = require('express');
 import { join } from 'path';
-import { readFileSync } from 'fs';
 
-// Faster server renders w/ Prod mode (dev mode never needed)
-enableProdMode();
+import { AppServerModule } from './src/main.server';
+import { APP_BASE_HREF } from '@angular/common';
+import { existsSync, readFileSync } from 'fs';
 
-// Express server
-const app = express();
+// The Express app is exported so that it can be used by serverless Functions.
+export function app() {
+  const server = express();
+  const distFolder = join(process.cwd(), 'dist/browser');
+  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+    ? 'index.original.html'
+    : 'index';
+  const MockBrowser = require('mock-browser').mocks.MockBrowser;
+  const mock = new MockBrowser();
+  const domino = require('domino');
+  const DEFAULT_LOCALE = 'fr';
+  const template = readFileSync(
+    existsSync(join(distFolder, DEFAULT_LOCALE))
+      ? join(distFolder, DEFAULT_LOCALE, 'index.html')
+      : join(distFolder, 'index.html')
+  ).toString();
 
-const PORT = process.env.PORT || 4000;
-const DIST_FOLDER = join(process.cwd(), 'dist/browser');
+  const win = domino.createWindow(template);
+  win.Object = Object;
+  win.Math = Math;
+  win.screen = { deviceXDPI: 1 };
+  (global as any)['window'] = win;
+  (global as any)['document'] = win.document;
+  (global as any)['navigator'] = win.navigator;
+  (global as any)['localStorage'] = win.localStorage = mock.getLocalStorage();
+  (global as any)['L'] = require('leaflet');
 
-const supportedLocales = ['en', 'fr'];
-const DEFAULT_LOCALE = 'fr';
-const MockBrowser = require('mock-browser').mocks.MockBrowser;
-const mock = new MockBrowser();
-const domino = require('domino');
-const template = readFileSync(join(DIST_FOLDER, DEFAULT_LOCALE, 'index.html')).toString();
-const win = domino.createWindow(template);
-win.Object = Object;
-win.Math = Math;
-win.screen = { deviceXDPI: 1 };
-(global as any)['window'] = win;
-(global as any)['document'] = win.document;
-(global as any)['navigator'] = mock.getNavigator();
-(global as any)['branch'] = null;
-(global as any)['object'] = win.object;
-(global as any)['HTMLElement'] = win.HTMLElement;
-(global as any)['DOMTokenList'] = win.DOMTokenList;
-(global as any)['Node'] = win.Node;
-(global as any)['Text'] = win.Text;
-(global as any)['localStorage'] = win.localStorage = mock.getLocalStorage();
-(global as any)['L'] = require('leaflet');
+  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
+  server.engine(
+    'html',
+    ngExpressEngine({
+      bootstrap: AppServerModule
+    })
+  );
 
-// * NOTE :: leave this as require() since this file is built Dynamically from webpack
-const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('./dist/server/main');
+  server.set('view engine', 'html');
+  server.set('views', distFolder);
 
-// Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-app.engine(
-  'html',
-  ngExpressEngine({
-    bootstrap: AppServerModuleNgFactory,
-    providers: [provideModuleMap(LAZY_MODULE_MAP)]
-  })
-);
+  // Example Express Rest API endpoints
+  // app.get('/api/**', (req, res) => { });
+  // Serve static files from /browser
+  server.get(
+    '*.*',
+    express.static(distFolder, {
+      maxAge: '1y'
+    })
+  );
 
-app.set('view engine', 'html');
-app.set('views', DIST_FOLDER);
-
-// Example Express Rest API endpoints
-// app.get('/api/**', (req, res) => { });
-// Serve static files from /browser
-app.get(
-  '*.*',
-  express.static(DIST_FOLDER, {
-    maxAge: '1y'
-  })
-);
-
-// All regular routes use the Universal engine
-// app.get('*', (req: express.Request, res: express.Response) => {
-app.get('*', (req: any, res: any) => {
-  const matches = req.url.match(/^\/([a-z]{2}(?:-[A-Z]{2})?)\//);
-  // check if the requested url has a correct format '/locale' and matches any of the supportedLocales
-  const locale =
-    matches && supportedLocales.indexOf(matches[1]) !== -1 ? matches[1] : DEFAULT_LOCALE;
-
-  let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  if (ip.substr(0, 7) === '::ffff:') {
-    ip = ip.substr(7);
-  }
-  // res.render("index", { req });
-  res.render(`${locale}/index`, {
-    req: req,
-    // url: req.url.replace(`/${locale}/`, '/'),
-    providers: [
-      { provide: 'language', useFactory: () => locale, deps: [] },
-      { provide: 'ip', useFactory: () => ip, deps: [] }
-    ]
+  // All regular routes use the Universal engine
+  server.get('*', (req: any, res: any) => {
+    const index = req.baseUrl !== '' && existsSync(join(distFolder, req.baseUrl))
+    ? join(distFolder, req.baseUrl, 'index.html')
+    : join(distFolder, 'index.html');
+    res.render(index, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
   });
-});
 
-// Start up the Node server
-app.listen(PORT, () => {
-  console.log(`Node Express server listening on http://localhost:${PORT}`);
-});
+  return server;
+}
+
+function run() {
+  const port = process.env.PORT || 4000;
+
+  // Start up the Node server
+  const server = app();
+  server.listen(port, () => {
+    console.log(`Node Express server listening on http://localhost:${port}`);
+  });
+}
+
+// Webpack will replace 'require' with '__webpack_require__'
+// '__non_webpack_require__' is a proxy to Node 'require'
+// The below code is to ensure that the server is run only when not requiring the bundle.
+declare const __non_webpack_require__: NodeRequire;
+const mainModule = __non_webpack_require__.main;
+if (mainModule && mainModule.filename === __filename) {
+  run();
+}
+
+export * from './src/main.server';

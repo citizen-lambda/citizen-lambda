@@ -1,20 +1,18 @@
 import { Component, ViewEncapsulation, Inject, LOCALE_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Meta } from '@angular/platform-browser';
 
 import { AppConfig } from '../../../conf/app.config';
 import { IAppConfig } from '../../core/models';
+import { SeoService } from './../../services/seo.service';
 import { Program } from '../programs/programs.models';
-import { ProgramsResolve } from '../programs/programs-resolve.service';
 
-type AppConfigHome = Pick<IAppConfig, 'platform_participate'>;
+type AppConfigHome = Pick<IAppConfig, 'SEO' | 'platform_participate'>;
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  encapsulation: ViewEncapsulation.None,
-  providers: [ProgramsResolve]
+  encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent {
   readonly appConfig: AppConfigHome = AppConfig;
@@ -26,16 +24,16 @@ export class HomeComponent {
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     protected route: ActivatedRoute,
-    protected meta: Meta,
+    protected seo: SeoService
   ) {
-
     this.route.data.subscribe(data => {
       this.programs = data.programs;
     });
 
-    this.meta.updateTag({
+    this.seo.setMetaTag({
       name: 'description',
-      content: 'GeoNature-citizen est une application de sciences participatives à la biodiversité.'
+      content: (this.appConfig.SEO.description as { [lang: string]: string })[this.localeId]
     });
+    this.seo.setTitle($localize `Home`);
   }
 }

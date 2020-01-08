@@ -11,6 +11,17 @@ export const AppConfig = {
   },
   URL_APPLICATION: 'http://127.0.0.1:4200',
   REWARDS: true,
+  SEO: {
+    description: {  // up to 156 characters
+      fr: 'geonature-citizen est une application de sciences participatives à la biodiversité.',
+      en: 'geonature-citizen is an application of participatory biodiversity sciences.'
+    },
+    keywords: {
+      fr: 'biodiversité, sciences participatives, occurence de taxon, application web',
+      en: 'participatory science, biodiversity, taxon occurence, webapp, biodiversity software'
+    },
+    author: 'geonature-citizen contributors'
+  },
   termsOfUse: {
     fr: 'assets/cgu.pdf',
     en: 'assets/termsOfUse.pdf'

@@ -112,11 +112,11 @@ export class AuthService {
   }
 
   private hasRefreshToken(): boolean {
-    return !!localStorage.getItem('refresh_token');
+    return !!window.localStorage.getItem('refresh_token');
   }
 
   private hasAccessToken(): boolean {
-    return !!localStorage.getItem('access_token');
+    return !!window.localStorage.getItem('access_token');
   }
 
   decodeToken(token: string): JWT | void {
