@@ -103,7 +103,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
         maxZoom: 19,
         attribution:
           // tslint:disable-next-line: max-line-length
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, hosted by <a href="https://openstreetmap.fr/" rel="noopener" target="_blank">OpenStreetMap France</a>'
       })
       // L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
       //   maxZoom: 20,
