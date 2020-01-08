@@ -6,7 +6,7 @@ import { IAppConfig } from '../../core/models';
 import { SeoService } from './../../services/seo.service';
 import { Program } from '../programs/programs.models';
 
-type AppConfigHome = Pick<IAppConfig, 'SEO' | 'platform_participate'>;
+type AppConfigHome = Pick<IAppConfig, 'appName' | 'SEO' | 'platform_participate'>;
 
 @Component({
   selector: 'app-home',
@@ -34,6 +34,6 @@ export class HomeComponent {
       name: 'description',
       content: (this.appConfig.SEO.description as { [lang: string]: string })[this.localeId]
     });
-    this.seo.setTitle($localize `Home`);
+    this.seo.setTitle(`${this.localeId.startsWith('fr')} ? 'Acceuil' : 'Home' - ${this.appConfig.appName}`);
   }
 }
