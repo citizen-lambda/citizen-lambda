@@ -19,5 +19,9 @@ export class AppComponent {
     this.seo.setMetaTag({ name: 'application-name', content: this.AppConfig.appName });
     this.seo.setMetaTag({ name: 'keywords', content: (this.AppConfig.SEO.keywords as { [lang: string]: string })[this.localeId] });
     this.seo.setMetaTag({ name: 'author', content: (this.AppConfig.SEO.author)});
+    if (this.AppConfig.SEO['google-site-verification']) {
+      this.seo.setMetaTag({ name: 'google-site-verification', content: (this.AppConfig.SEO['google-site-verification'])});
+    }
+
   }
 }

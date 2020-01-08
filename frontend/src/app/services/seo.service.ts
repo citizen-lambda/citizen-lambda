@@ -5,7 +5,8 @@ enum MetaNamesStrings {
   'application-name',
   'author',
   'description',
-  'keywords'
+  'keywords',
+  'google-site-verification'
 }
 type MetaNames = keyof typeof MetaNamesStrings;
 
