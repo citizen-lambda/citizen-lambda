@@ -180,11 +180,6 @@ app-home div.container-fluid {
   display: none;
 }
 
-#slider .carousel-inner,
-#slider .carousel-item {
-  max-height: 70vh;
-}
-
 #slider ol {
   width: 15%;
 }
@@ -204,8 +199,8 @@ app-home div.container-fluid {
   border: solid 1px var(--primary-color);
 }
 
-#slider .carousel-text div {
-  max-height: 6em;
+#slider .carousel-text-container {
+  max-height: calc(100vh - var(--narrow-topbar-height) - var(--footer-height));;
   height: fit-content;
   overflow-y: auto;
 }
@@ -247,9 +242,9 @@ app-home div.container-fluid {
     transform: translateX(50%) !important;
   }
   /* SCND SECT */
-  /* .mobile-hidden {
+  .mobile-hidden {
     display: none;
-  } */
+  }
 
   #slider .carousel-text {
     padding: 10px;
@@ -269,14 +264,14 @@ app-home div.container-fluid {
   }
 }
 
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 767.98px) {
   #welcome a[role='button'] {
     left: 50%;
     transform: translateX(-50%);
   }
 
   #slider .carousel-inner {
-    max-height: fit-content;
+    height: fit-content;
   }
 
   #slider .carousel-indicators {
@@ -311,7 +306,7 @@ app-home div.container-fluid {
   }
 
   #slider .carousel-item {
-    max-height: fit-content !important;
+    height: fit-content !important;
   }
 
   #slider .carousel-text p,
@@ -330,7 +325,7 @@ app-home div.container-fluid {
   }
 }
 
-@media screen and (min-width: 760px) {
+@media screen and (min-width: 767.98px) {
   #slider ol.carousel-indicators {
     position: absolute;
     right: 0;

@@ -88,13 +88,16 @@ section.row {
 }
 
 #slider .carousel-text-container {
-  position: absolute;
+  position: relative !important;
+  width: 100%;
+  max-width: inherit !important;
+  /* position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
-  display: flex;
+  bottom: 0; */
+  /* display: flex;
   align-items: center;
-  max-width: 80ch;
+  max-width: 80ch; */
 }
 
 #slider .carousel-text {
