@@ -212,7 +212,7 @@ input:not(:checked) ~ #obslist {
 .toggle {
   z-index: 2;
   background-color: var(--primary);
-  width: var(--list-toggler-width);
+  min-width: var(--list-toggler-width);
   display: flex;
   transition: left 0.5s ease;
   align-items: center;
@@ -466,6 +466,7 @@ app-marker-popup .species {
 }
 
 .species .infos {
+  white-space: nowrap;
   display: flex;
   flex-direction: column;
   justify-content: center;
