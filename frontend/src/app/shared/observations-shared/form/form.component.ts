@@ -246,6 +246,9 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
             const exifData = EXIF.readFromBinaryFile(reader.result);
             if (exifData.latitude && exifData.longitude) {
               console.debug('gps:', exifData.latitude, exifData.longitude);
+              const p = L.point(exifData.longitude, exifData.latitude);
+              this.obsForm.patchValue({ geometry: p });
+              this.data.coords = p;
             }
           } catch (error) {
             console.debug('No EXIF data', error);
