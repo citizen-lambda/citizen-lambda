@@ -10,6 +10,10 @@
   max-width: none !important;
 }
 
+app-user-dashboard #main .row {
+  margin: 0;
+}
+
 .user {
   background: url(../../../assets/faune-mercantour.jpg) no-repeat;
   background-size: cover;
