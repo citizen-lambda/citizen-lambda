@@ -10,6 +10,11 @@
   max-width: none !important;
 }
 
+app-user-dashboard #main {
+padding-left: 0;
+padding-right: 0;
+}
+
 app-user-dashboard #main .row {
   margin: 0;
 }
