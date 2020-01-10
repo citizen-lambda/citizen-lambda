@@ -92,5 +92,14 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "webpack-cli": "^3.2.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/citizen-lambda/citizen-lambda.git"
+  },
+  "bugs": {
+    "url": "https://github.com/citizen-lambda/citizen-lambda/issues",
+    "email" : "kappeler.patrick.jr@gmail.com"
+  },
+  "homepage": "https://citizendemo.patkap.tech/"
 }
