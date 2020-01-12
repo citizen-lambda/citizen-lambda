@@ -21,7 +21,7 @@
   "dependencies": {
     "@angular-devkit/build-webpack": "~0.900.0-rc.7",
     "@angular/animations": "^9.0.0-rc.7",
-    "@angular/cdk": "^9.0.0-rc.6",
+    "@angular/cdk": "^9.0.0-rc.7",
     "@angular/common": "^9.0.0-rc.7",
     "@angular/compiler": "^9.0.0-rc.7",
     "@angular/core": "^9.0.0-rc.7",
@@ -99,7 +99,7 @@
   },
   "bugs": {
     "url": "https://github.com/citizen-lambda/citizen-lambda/issues",
-    "email" : "kappeler.patrick.jr@gmail.com"
+    "email": "kappeler.patrick.jr@gmail.com"
   },
   "homepage": "https://citizendemo.patkap.tech/"
 }
