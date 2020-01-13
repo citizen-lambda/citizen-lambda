@@ -178,19 +178,6 @@ npm audit
 # … ok c'est tolérable en attendant notre montée en version Angular8
 ```
 
-```diff
---- frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts.old 2019-03-07 08:47:03.475859400 +0100
-+++ frontend/node_modules/@types/leaflet.locatecontrol/index.d.ts     2019-03-07 08:47:23.460562933 +0100
-@@ -38,6 +38,7 @@
-            onLocationOutsideMapBounds?: any;
-            showPopup?: boolean;
-            strings?: any;
- +          getLocationBounds?: Function;
-            locateOptions?: L.LocateOptions;
-        }
-    }
-```
-
 ### la configuration du frontend
 
 ```sh
@@ -208,12 +195,6 @@ API_ENDPOINT = 'http://citizendemo.patkap.tech:5002/api'
 ### un premier démarrage du frontend en mode très verbeux
 
 ```sh
-npm run start -- --host=0.0.0.0
-# Schema validation failed with the following errors:
-#   Data path ".builders['app-shell']" should have required property 'class'.
-# …
-npm uninstall @angular-devkit/build-angular
-npm install @angular-devkit/build-angular@0.12.4
 npm run start -- --host=0.0.0.0 --disableHostCheck
 ```
 
@@ -473,6 +454,8 @@ sudo a2enmod brotli
   RewriteEngine On
 
   RewriteBase /
+
+  #RewriteRule ^sitemap\.xml$ sitemap.xml [L]
   
   RewriteCond %{HTTP:Accept-Encoding} br
   RewriteCond %{REQUEST_FILENAME}.br -f
