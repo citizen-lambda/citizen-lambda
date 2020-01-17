@@ -24,7 +24,7 @@ import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
-import { Taxonomy, Taxon } from '../../../core/models';
+import { Taxonomy, Taxon, ObservationData } from '../../../core/models';
 import { MarkerPopupComponent } from './marker-popup.component';
 
 declare module 'leaflet' {
@@ -59,7 +59,7 @@ export const ZoomViewer = L.Control.extend({
 });
 
 export const conf = {
-  MAP_ID: 'cartogram',
+  MAP_ID: 'thematicMap',
   GEOLOCATION_HIGH_ACCURACY: false, // TODO: geolocation accuracy should be tunable at runtime
   BASE_LAYERS: MAP_CONFIG['BASEMAPS'].reduce((acc: { [name: string]: L.TileLayer }, baseLayer) => {
     acc[baseLayer['name'].toString()] = L.tileLayer(baseLayer['layer'], {
@@ -157,6 +157,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input() taxonomy!: Taxonomy;
   @Input() program!: FeatureCollection;
   @Output() click: EventEmitter<L.Point> = new EventEmitter();
+  @Output() obsSelected: EventEmitter<Feature> = new EventEmitter();
+  @Output() detailsRequested: EventEmitter<Feature> = new EventEmitter();
   options: any;
   layerControl!: L.Control.Layers;
   observationMap!: L.Map;
@@ -295,6 +297,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
           icon: conf.MARKER_ICON_OBS()
         });
         marker.on('click', _ => {
+          this.obsSelected.emit(feature);
           this.showPopup(feature);
         });
         this.featureMarkers.push({
@@ -313,26 +316,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
     // tslint:disable-next-line: no-use-before-declare
     const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
     const component = factory.create(this.injector);
-    component.instance.data = { ...feature.properties } as Taxon & {
-      // images?: string;
-      // image?: string;
-      // media?: any;
-      comment?: string;
-      observer?: { username: string };
-      municipality?: {
-        name?: string;
-        code?: string;
-      };
-      date: Date;
-      count: Number;
-    };
+    component.instance.data = { ...feature.properties } as Taxon & Partial<ObservationData>;
+    component.instance.detailsRequest.subscribe((data: any) => this.detailsRequested.emit(data));
     component.changeDetectorRef.detectChanges();
     const popupContent = component.location.nativeElement;
     return popupContent;
   }
 
   showPopup(obs: Feature): void {
-    // console.debug(event.sourceTarget.feature.properties);
     this.obsOnFocus = obs;
     const marker = this.featureMarkers.find(
       m =>
@@ -352,7 +343,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         this.observationMap.panTo(marker.marker.getLatLng());
       } else {
-        this.observationMap.flyTo(marker.marker.getLatLng(), 16);
+        this.observationMap.flyTo(marker.marker.getLatLng(), 19);
       }
       visibleParent = marker.marker;
     }

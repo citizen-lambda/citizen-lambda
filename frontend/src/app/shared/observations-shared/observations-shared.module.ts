@@ -2,9 +2,8 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-// WARNING: cdk-virtual-scroll-viewport rx scheduler calls requestAnimationFrame
-// our ssr will log the resulting error, fixed in 8.2.0
-// see https://github.com/angular/components/commit/4ff1c95ae7e7901ac6b954ad4813db8d71aa5224
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { ObsFormModule } from './form/obs-form.module';
@@ -23,9 +22,13 @@ import { OnboardComponent } from './modalflow/steps/onboard/onboard.component';
 import { CommittedComponent } from './modalflow/steps/committed/committed.component';
 import { CongratsComponent } from './modalflow/steps/congrats/congrats.component';
 import { RewardComponent } from './modalflow/steps/reward/reward.component';
+import {
+  ObservationSharedDetailsComponent,
+  ObsDetailsModalContentComponent
+} from './observation-shared-details/observation-shared-details.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, ScrollingModule, ObsFormModule],
+  imports: [RouterModule, CommonModule, ScrollingModule, ObsFormModule, NgbModule],
   declarations: [
     ProgramTeaserComponent,
     ProgramContentComponent,
@@ -38,7 +41,9 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     RewardComponent,
     ObsListComponent,
     ObsMapComponent,
-    MarkerPopupComponent
+    MarkerPopupComponent,
+    ObsDetailsModalContentComponent,
+    ObservationSharedDetailsComponent
   ],
   entryComponents: [
     ProgramTeaserComponent,
@@ -51,9 +56,12 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     RewardComponent,
     ObsMapComponent,
     ObsListComponent,
-    MarkerPopupComponent
+    MarkerPopupComponent,
+    ObsDetailsModalContentComponent,
+    ObservationSharedDetailsComponent
   ],
   exports: [
+    NgbModule,
     ProgramTeaserComponent,
     ProgramContentComponent,
     FlowDirective,
@@ -69,7 +77,8 @@ import { RewardComponent } from './modalflow/steps/reward/reward.component';
     ObsMapComponent,
     ObsListComponent,
     MarkerPopupComponent,
-    ScrollingModule
+    ScrollingModule,
+    ObservationSharedDetailsComponent
   ]
 })
 export class ObservationsSharedModule {

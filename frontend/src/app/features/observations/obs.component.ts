@@ -6,20 +6,21 @@ import {
   HostListener,
   AfterViewInit,
   Inject,
-  LOCALE_ID
+  LOCALE_ID,
+  Injectable,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { zip, forkJoin, combineLatest, Subject, Observable, BehaviorSubject } from 'rxjs';
+import { zip, forkJoin, combineLatest, Observable, Subject, BehaviorSubject } from 'rxjs';
 import {
   map,
   flatMap,
   filter,
   takeUntil,
   pluck,
-  shareReplay,
   share,
   take,
-  switchMap
+  switchMap,
+  distinctUntilChanged
 } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
@@ -27,7 +28,6 @@ import * as L from 'leaflet';
 
 import { AppConfig } from '../../../conf/app.config';
 import { Program } from '../programs/programs.models';
-import { ProgramsResolve } from '../programs/programs-resolve.service';
 import { GncProgramsService } from '../programs/gnc-programs.service';
 import { TaxonomyService } from '../../services/taxonomy.service';
 import { Taxonomy, Taxon, IAppConfig } from '../../core/models';
@@ -37,55 +37,64 @@ import { composeAsync } from '../../helpers/compose';
 import { ObsMapComponent } from '../../shared/observations-shared/map/map.component';
 import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
 import { ModalFlowService } from '../../shared/observations-shared/modalflow/modalflow.service';
-import { SeoService } from 'src/app/services/seo.service';
+import { SeoService } from '../../services/seo.service';
+import { ObsState, ObsFeaturesConfig, AppConfigModalFlow } from './observation.model';
 
-type AppConfigModalFlow = Pick<IAppConfig, 'appName' | 'SEO' | 'program_add_an_observation'>;
-
-// TODO: merge with AppConfig … config management
-export const ObsConfig = {
-  FEATURES: {
-    taxonomy: {
-      GROUP: (localeId: string): string => {
-        return localeId.startsWith('fr') ? 'group2_inpn' : 'classe';
-      }
-    }
-  }
+let _state: ObsState = {
+  program: {} as Program,
+  observations: {} as FeatureCollection,
+  selected: {} as Feature
 };
 
-@Component({
-  selector: 'app-observations',
-  templateUrl: './obs.component.html',
-  styleUrls: ['./obs.component.css', '../home/home.component.css'],
-  encapsulation: ViewEncapsulation.None,
-  providers: [ProgramsResolve, ModalFlowService]
-})
-export class ObsComponent implements AfterViewInit, OnDestroy {
-  ObsConfig = ObsConfig;
-  readonly appConfig: AppConfigModalFlow = AppConfig;
-  AddAnObservationLabel = (this.appConfig.program_add_an_observation as { [name: string]: string })[
-    this.localeId
-  ];
+@Injectable()
+export class ObservationsFacade implements OnDestroy {
+  ObsFeaturesConfig = (AppConfig as ObsFeaturesConfig).OBSERVATIONS_FEATURES;
   private unsubscribe$ = new Subject<void>();
-  @ViewChild(ObsMapComponent, { static: false }) cartogram!: ObsMapComponent;
-  @ViewChild(ObsListComponent, { static: false }) obsList!: ObsListComponent;
-  program: Program | undefined;
-  programs: Program[] | undefined;
-  context: {
+  private store = new BehaviorSubject<ObsState>(_state);
+  private state$ = this.store.asObservable();
+
+  sharedContext: {
     [name: string]: any;
     coords?: L.Point;
     program?: FeatureCollection;
     taxa?: Taxonomy;
   } = {};
-  programID$ = this.route.params.pipe(map(params => parseInt(params['id'], 10)));
-  observations$ = new BehaviorSubject<FeatureCollection>({} as FeatureCollection);
-  features$ = this.observations$.pipe(
-    filter(collection => !!collection),
-    pluck<FeatureCollection, Feature[]>('features'),
-    filter(o => !!o),
-    takeUntil(this.unsubscribe$)
+
+  observations$ = this.state$.pipe(
+    map(state => state.observations),
+    distinctUntilChanged(),
+    share()
   );
-  filteredObservations$ = new BehaviorSubject<Feature[]>([]);
-  taxonomy$ = new Subject<Taxon[]>();
+
+  selected$ = this.state$.pipe(
+    map(state => state.selected),
+    distinctUntilChanged(),
+    share()
+  );
+
+  program$ = this.state$.pipe(
+    map(state => state.program),
+    distinctUntilChanged(),
+    share()
+  );
+
+  private _programID = new BehaviorSubject<number>(0);
+  programID$ = this._programID.asObservable();
+  set programID(program_id: number) {
+    this._programID.next(program_id);
+  }
+
+  private _programs = new BehaviorSubject<Program[]>([]);
+  programs$ = this._programs.asObservable();
+  set programs(programs: Program[]) {
+    this._programs.next(programs);
+  }
+
+  features$ = this.state$.pipe(
+    pluck<ObsState, Feature[]>('observations', 'features'),
+    filter(features => !!features)
+  );
+
   sampledTaxonomy$ = this.features$.pipe(
     map(items => {
       return Array.from(
@@ -102,16 +111,18 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     flatMap(items => zip(...items)),
     map(taxa => {
       const r = taxa.sort(sorted(this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng'));
-      if (typeof this.ObsConfig.FEATURES.taxonomy.GROUP === 'function') {
+      if (this.ObsFeaturesConfig && typeof this.ObsFeaturesConfig.TAXONOMY.GROUP === 'function') {
         let m: { [key: string]: Taxon[] };
-        m = groupBy(r, this.ObsConfig.FEATURES.taxonomy.GROUP(this.localeId));
+        m = groupBy(r, this.ObsFeaturesConfig.TAXONOMY.GROUP(this.localeId));
         return m as { [key: string]: Taxon[] };
       }
       return r;
     })
   );
+
   municipalities$ = this.features$.pipe(
     map((items: Feature[]) => {
+      // FIXME: municipalities$ -> fix complexity once settled
       const result = items.reduce(
         (
           acc: {
@@ -149,27 +160,34 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     }),
     share()
   );
+
+  set selected(selected: Feature) {
+    this.updateState({
+      ..._state,
+      selected: selected
+    });
+  }
+
+  _filteredObservations = new BehaviorSubject<Feature[]>([]);
+  filteredObservations$ = this._filteredObservations.asObservable();
+
   selectedMunicipality: any = null;
-  selectedTaxon: string | null = null;
-  selectedTaxonFilter = (obs: Feature[]): Feature[] =>
-    obs && this.selectedTaxon
+  selectedTaxonID: string | null = null;
+
+  filterSelectedTaxon = (obs: Feature[]): Feature[] =>
+    obs && this.selectedTaxonID
       ? obs.filter(
-          o =>
-            o &&
-            o.properties &&
-            Object.keys(o.properties).length &&
-            // tslint:disable-next-line: no-non-null-assertion
-            o.properties.cd_nom === parseInt(this.selectedTaxon!, 10)
+          // tslint:disable-next-line: no-non-null-assertion
+          o => !!o && !!o.properties && o.properties.cd_nom === parseInt(this.selectedTaxonID!, 10)
         )
       : // tslint:disable-next-line: semicolon
         obs;
-  selectedMunicipalityFilter = (obs: Feature[]): Feature[] =>
+  filterSelectedMunicipality = (obs: Feature[]): Feature[] =>
     obs && this.selectedMunicipality
       ? obs.filter(
           o =>
-            o &&
-            o.properties &&
-            Object.keys(o.properties) &&
+            !!o &&
+            !!o.properties &&
             o.properties.municipality.code === this.selectedMunicipality.code
         )
       : // tslint:disable-next-line: semicolon
@@ -177,22 +195,13 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     @Inject(LOCALE_ID) public localeId: string,
-    protected router: Router,
-    private route: ActivatedRoute,
     private programService: GncProgramsService,
-    public taxonomyService: TaxonomyService,
-    public flowService: ModalFlowService,
-    protected seo: SeoService
+    public taxonomyService: TaxonomyService
   ) {
-    combineLatest([this.programID$, this.route.data])
+    this.programID$
       .pipe(
-        map(([id, data]) => {
-          this.programs = data.programs;
-          this.program = data.programs.find((p: Program) => p.id_program === id);
-          // tslint:disable-next-line: no-non-null-assertion
-          return this.program!.id_program;
-        }),
-        flatMap(program_id =>
+        filter(id => id >= 1),
+        flatMap((program_id: number) =>
           forkJoin([
             this.programService.getProgramTaxonomyList(program_id),
             this.programService.getProgram(program_id)
@@ -201,16 +210,12 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(([taxa, program]) => {
-        this.context.taxa = taxa;
-        this.context.program = program;
-
-        this.seo.setMetaTag({
-          name: 'description',
-          // tslint:disable-next-line: no-non-null-assertion
-          content: program.features[0].properties!.short_desc
+        this.updateState({
+          ..._state,
+          program: this.programService.convertFeature2Program(program.features[0])
         });
-        // tslint:disable-next-line: no-non-null-assertion
-        this.seo.setTitle(`${program.features[0].properties!.title} - ${this.appConfig.appName}`);
+        this.sharedContext.taxa = taxa;
+        this.sharedContext.program = program;
       });
 
     this.programID$
@@ -219,18 +224,22 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         switchMap(id => this.programService.getProgramObservations(id))
       )
       .subscribe(observations => {
-        this.observations$.next(observations);
+        this.updateState({
+          ..._state,
+          observations: observations
+        });
       });
 
+    this.observations$
+      .pipe(
+        pluck<FeatureCollection, Feature[]>('features'),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(o => this._filteredObservations.next(o));
   }
 
-  ngAfterViewInit() {
-    this.features$
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(o => this.filteredObservations$.next(o));
-    this.cartogram.click
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((point: L.Point) => (this.context.coords = point));
+  private updateState(state: ObsState) {
+    this.store.next((_state = state));
   }
 
   ngOnDestroy() {
@@ -238,40 +247,113 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onListToggle(): void {
-    this.cartogram.observationMap.invalidateSize();
-  }
-
-  @HostListener('document:NewObservationEvent', ['$event'])
-  newObservationEventHandler(e: CustomEvent): void {
-    e.stopPropagation();
-    this.observations$
-      .pipe(
-        filter(collection => !!collection),
-        pluck<FeatureCollection, Feature[]>('features'),
-        filter(o => !!o),
-        take(1)
-      )
-      .subscribe(observations => {
-        const collection = {
-          type: 'FeatureCollection',
-          features: [e.detail as Feature, ...observations]
-        };
-        this.observations$.next(collection as FeatureCollection);
-      });
-  }
-
   onFilterChange(): void {
     this.features$
       .pipe(
         take(1),
         map(observations =>
-          composeAsync(this.selectedTaxonFilter, this.selectedMunicipalityFilter)(observations)
+          composeAsync(this.filterSelectedTaxon, this.filterSelectedMunicipality)(observations)
         )
-        // tap(console.debug)
       )
       .subscribe(async observations => {
-        this.filteredObservations$.next(await observations);
+        this._filteredObservations.next(await observations);
       });
+  }
+
+  onNewObservation(feature: Feature) {
+    this.updateState({
+      ..._state,
+      observations: {
+        type: 'FeatureCollection',
+        features: [feature, ...(_state.observations.features as Feature[])]
+      } as FeatureCollection
+    });
+  }
+}
+
+/* ***************************************************************************** */
+
+@Component({
+  selector: 'app-observations',
+  templateUrl: './obs.component.html',
+  styleUrls: ['./obs.component.css', '../home/home.component.css'],
+  encapsulation: ViewEncapsulation.None,
+  providers: [ModalFlowService, ObservationsFacade]
+})
+export class ObsComponent implements AfterViewInit, OnDestroy {
+  readonly ObsFeaturesConfig = (AppConfig as ObsFeaturesConfig).OBSERVATIONS_FEATURES;
+  readonly appConfig: AppConfigModalFlow = AppConfig;
+  AddAnObservationLabel = (this.appConfig.program_add_an_observation as { [name: string]: string })[
+    this.localeId
+  ];
+  private unsubscribe$ = new Subject<void>();
+  @ViewChild(ObsMapComponent, { static: false }) thematicMap!: ObsMapComponent;
+  @ViewChild(ObsListComponent, { static: false }) obsList!: ObsListComponent;
+
+  constructor(
+    @Inject(LOCALE_ID) public localeId: string,
+    protected router: Router,
+    private route: ActivatedRoute,
+    public flowService: ModalFlowService,
+    protected seo: SeoService,
+    public facade: ObservationsFacade
+  ) {
+    combineLatest([
+      this.route.params.pipe(map(params => parseInt(params['id'], 10))),
+      this.route.data
+    ])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(([id, data]) => {
+        this.facade.programID = id;
+      });
+
+    this.facade.program$.subscribe(program => {
+      this.seo.setMetaTag({
+        name: 'description',
+        content: program.short_desc
+      });
+      this.seo.setTitle(`${program.title} - ${this.appConfig.appName}`);
+    });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  ngAfterViewInit() {
+    this.thematicMap.click
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((point: L.Point) => (this.facade.sharedContext.coords = point));
+  }
+
+  onListToggle(): void {
+    this.thematicMap.observationMap.invalidateSize();
+  }
+
+  onObsSelected($event: Feature) {
+    this.thematicMap.showPopup($event);
+    this.facade.selected = $event;
+  }
+
+  onDetailsRequested($event: number) {
+    this.facade.features$.pipe(
+      // tslint:disable-next-line: no-non-null-assertion
+      map(features => features.filter(feature => feature!.properties!.id_observation === $event)),
+      take(1)
+    ).subscribe(feature => {
+      this.facade.selected = feature[0];
+    });
+    this.router.navigate(['details', $event], {
+      fragment: 'observations',
+      relativeTo: this.route
+    });
+    // set selected if not already set ?
+  }
+
+  @HostListener('document:NewObservationEvent', ['$event'])
+  newObservationEventHandler(e: CustomEvent): void {
+    e.stopPropagation();
+    this.facade.onNewObservation(e.detail as Feature);
   }
 }

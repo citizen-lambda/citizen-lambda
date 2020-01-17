@@ -13,14 +13,6 @@ import { sorted } from '../../helpers/sorted';
 
 const PROGRAMS_KEY = makeStateKey('programs');
 
-export interface IGncProgram extends Feature {
-  properties: Program;
-}
-
-export interface IGncFeatures extends FeatureCollection {
-  features: IGncProgram[];
-  count: number;
-}
 
 @Injectable({
   deps: [
@@ -51,17 +43,18 @@ export class GncProgramsService {
     this.programs$.next(this.programs);
   }
 
+  convertFeature2Program(feature: Feature): Program {
+    const program = feature.properties as Program;
+    program.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(program.short_desc);
+    program.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(program.long_desc);
+    return program;
+  }
+
   getAllPrograms(): Observable<Program[] | null> {
-    if (!this.programs || this.programs.length >= 1) {
-      return this.client.get<IGncFeatures>(`${this.URL}/programs`).pipe(
-        pluck('features'),
-        map((features: IGncProgram[]) => features.map(feature => feature.properties)),
-        map((programs: Program[]) =>
-          programs.map(program => {
-            program.html_short_desc = this.domSanitizer.bypassSecurityTrustHtml(program.short_desc);
-            program.html_long_desc = this.domSanitizer.bypassSecurityTrustHtml(program.long_desc);
-            return program;
-          })
+    if (!this.programs) {
+      return this.client.get<FeatureCollection>(`${this.URL}/programs`).pipe(
+        pluck<FeatureCollection, Feature[]>('features'),
+        map(features => features.map(feature => this.convertFeature2Program(feature))
         ),
         map(programs => programs.sort(sorted(AppConfig['program_list_sort']))),
         tap(programs => {

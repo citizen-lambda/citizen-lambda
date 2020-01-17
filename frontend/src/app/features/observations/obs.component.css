@@ -182,7 +182,7 @@ input:checked ~ #obslist {
   display: none !important;
 }
 
-input:checked ~ #map app-obs-map #cartogram {
+input:checked ~ #map app-obs-map #thematicMap {
   /* 10px scrollbar width ? */
   width: calc(100vw - var(--list-toggler-width) - 10px);
   grid-column-start: 2;
@@ -278,7 +278,7 @@ input:checked ~ .toggle i {
   background-color: var(--primary);
 }
 
-#cartogram {
+#thematicMap {
   height: calc(100vh - var(--router-outlet-offset));
   /* supplementary 80px & 55px ? */
   min-width: calc(
@@ -287,31 +287,31 @@ input:checked ~ .toggle i {
 }
 
 @media screen and (max-width: 768px) {
-  #cartogram {
+  #thematicMap {
     margin: 0;
   }
 }
 
 @media screen and (max-width: 492px) {
-  #cartogram {
+  #thematicMap {
     min-width: calc(100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 1px - 80px + 55px);
   }
 }
 
 @media screen and (max-width: 425px) {
-  #cartogram {
+  #thematicMap {
     min-width: calc(100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 1px + 55px);
   }
 }
 
 @media screen and (max-width: 375px) {
-  #cartogram {
+  #thematicMap {
     min-width: calc(100vw - var(--list-toggler-width) - 80px - 36ch - 1px + 55px);
   }
 }
 
 @media screen and (max-width: 320px) {
-  #cartogram {
+  #thematicMap {
     min-width: calc(100vw - var(--list-toggler-width) - 80px - 36ch + 75px);
   }
 }
@@ -650,7 +650,7 @@ app-observations span.input-group-text {
   margin: 0;
 }
 
-.half #cartogram {
+.half #thematicMap {
   height: 228px;
   overflow: hidden;
 }
@@ -921,7 +921,7 @@ form .d-inline-flex {
     right: 0px;
   }
 
-  app-obs-map #cartogram {
+  app-obs-map #thematicMap {
     width: 100%;
   }
 }

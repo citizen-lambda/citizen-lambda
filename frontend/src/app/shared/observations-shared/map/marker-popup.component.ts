@@ -6,51 +6,16 @@ import {
   OnInit,
   Inject,
   LOCALE_ID,
-  TemplateRef
+  TemplateRef,
+  Output,
+  EventEmitter,
+  OnDestroy
 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppConfig } from '../../../../conf/app.config';
-import { Taxon } from '../../../core/models';
+import { Taxon, ObservationData } from '../../../core/models';
 import { TaxonomyService } from '../../../services/taxonomy.service';
 import { of, BehaviorSubject } from 'rxjs';
-
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-
-interface TaxonData {
-  cd_nom: number;
-  images?: string;
-  image?: string;
-  media?: any;
-  comment?: string;
-  observer?: {
-    username: string;
-  };
-  municipality?: {
-    name?: string;
-    code?: string;
-  };
-  date: Date;
-  count: Number;
-}
-
-
-// import { Pipe, PipeTransform } from '@angular/core';
-// import { isObservable, of } from 'rxjs';
-// import { map, startWith, catchError } from 'rxjs/operators';
-
-// @Pipe({
-//   name: 'withLoading',
-// })
-// export class WithLoadingPipe implements PipeTransform {
-//   transform(val: any) {
-//     return isObservable(val)
-//       ? val.pipe(
-//         map((value: any) => ({ loading: false, value })),
-//         startWith({ loading: true }),
-//         catchError(error => of({ loading: false, error }))
-//       )
-//       : val;
-//   }
-// }
 
 
 @Component({
@@ -59,46 +24,37 @@ interface TaxonData {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MarkerPopupComponent implements OnInit {
+export class MarkerPopupComponent implements OnInit, OnDestroy {
   AppConfig = AppConfig;
-  @Input() data!: TaxonData;
+  @Input() data!: Partial<ObservationData>;
   @Input() popupTemplate!: TemplateRef<HTMLElement>;
-  taxon$ = new BehaviorSubject<TaxonData & Taxon | undefined>(undefined);
+  @Output() detailsRequest = new EventEmitter<number>();
+  taxon$ = new BehaviorSubject<(Partial<ObservationData> & Taxon) | undefined>(undefined);
   closeResult = '';
-
 
   constructor(
     @Inject(LOCALE_ID) public localeId: string,
+    protected router: Router,
+    private route: ActivatedRoute,
     public taxonService: TaxonomyService,
-    private modalService: NgbModal
   ) {}
 
   ngOnInit() {
-    of(this.data)
-      .subscribe(data => {
-        if (!!data && data.cd_nom) {
-          this.taxonService.getTaxon(data.cd_nom).subscribe(t => {
-            this.taxon$.next({ ...t, ...data });
-          });
-        }
-      });
-  }
-
-  open(content: any) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-obs-details'}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    of(this.data).subscribe(data => {
+      if (!!data && data.cd_nom) {
+        this.taxonService.getTaxon(data.cd_nom).subscribe(t => {
+          this.taxon$.next({ ...t, ...data });
+        });
+      }
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return  `with: ${reason}`;
-    }
+  ngOnDestroy() {
+    // should adapt strategy to leaflet current setting: singleton ?
+    console.debug('popup destroyed:', this.data.id_observation);
+  }
+
+  onObservationDetails() {
+    this.detailsRequest.emit(this.data.id_observation);
   }
 }

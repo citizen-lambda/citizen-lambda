@@ -53,5 +53,12 @@ export const AppConfig = {
   taxonSelectInputThreshold: 7,
   taxonAutocompleteInputThreshold: 12,
   taxonAutocompleteFields: ['nom_complet', 'nom_vern', 'nom_vern_eng', 'cd_nom'],
-  program_list_sort: '-timestamp_create'
+  program_list_sort: '-timestamp_create',
+  OBSERVATIONS_FEATURES: {
+    TAXONOMY: {
+      GROUP: (localeId: string): string => {
+        return localeId.startsWith('fr') ? 'group2_inpn' : 'classe';
+      }
+    }
+}
 };

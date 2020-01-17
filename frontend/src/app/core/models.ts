@@ -55,6 +55,11 @@ export interface IAppConfig {
   taxonAutocompleteInputThreshold: number;
   taxonAutocompleteFields: string[];
   program_list_sort: string;
+  OBSERVATIONS_FEATURES?: {
+    TAXONOMY: {
+      GROUP: Function;
+    }
+  };
 }
 
 type Partial<T> = {
@@ -167,4 +172,22 @@ export interface Taxon {
 
 export interface Taxonomy {
   [key: string]: Taxon;
+}
+
+export interface ObservationData {
+  id_observation: number;
+  cd_nom: number;
+  images?: string;
+  image?: string;
+  media?: any;
+  comment?: string;
+  observer?: {
+    username: string;
+  };
+  municipality?: {
+    name?: string;
+    code?: string;
+  };
+  date: Date;
+  count: Number;
 }

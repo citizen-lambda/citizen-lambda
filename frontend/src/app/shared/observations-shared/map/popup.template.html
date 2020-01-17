@@ -2,7 +2,7 @@
   <div
     class="species"
     *ngIf="taxon$ | async as taxon; else loading"
-    (click)="open(observationDetails)"
+    (click)="onObservationDetails()"
   >
     <!-- FIXME: hardcoded api media endpoint -->
     <!-- TODO: mv complex template expressions to controller method -->
@@ -39,7 +39,7 @@
       </p>
     </div>
     <div class="hide">
-      <button (click)="open(observationDetails)">
+      <button (click)="onObservationDetails()">
         <i class="fa fa-search" style="font-size: 20px;"></i>
       </button>
     </div>
@@ -48,99 +48,6 @@
 
 <ng-template #loading>
   <div><i class="fa fa-spinner fa-spin"></i>Loading …</div>
-</ng-template>
-
-<ng-template #observationDetails let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-obs-details">Details</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body obs-added" *ngIf="taxon$ | async as taxon">
-    <div>
-      <!-- FIXME: hardcoded backend media url -->
-      <img
-        [src]="
-    data && !!data.images && !!data.images?.length
-        ? AppConfig.API_ENDPOINT + '/media/' + data.images[0]
-        : data.image
-        ? data.image
-        : taxon?.media && !!taxon?.media.length
-        ? taxon?.media[0].thumb_url
-        : 'assets/default_taxon.jpg'
-        "
-        [alt]="(!localeId.startsWith('fr') && !!taxon?.nom_vern_eng) ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon?.nom_vern : taxon?.nom_valide"
-      />
-    </div>
-    <p *ngIf="!localeId.startsWith('fr')">
-      {{ taxon?.nom_vern_eng ? [taxon?.nom_vern_eng, taxon?.nom_vern].join(', ') : [taxon?.nom_vern,
-      taxon?.nom_vern_eng].join(', ') }}
-    </p>
-    <p>{{ taxon?.nom_complet }}</p>
-    <p i18n>Dénombrement: {{ data.count }}</p>
-    <p *ngIf="!!data.comment">{{ data.comment }}</p>
-    <!-- <p i18n>Statut: {{ taxon?.id_statut }}</p> -->
-    <br>
-    <ul style="text-align: left;">
-      <li>
-        <span i18n>Phylum: {{ taxon?.phylum }}</span>
-      </li>
-      <li>
-        <ul>
-          <li>
-            <span i18n>Classe: {{ taxon?.classe }}</span>
-          </li>
-          <li>
-            <ul>
-              <li>
-                <span i18n>Ordre: {{ taxon?.ordre }}</span>
-              </li>
-              <li>
-                <ul>
-                  <li>
-                    <span i18n>Famille: {{ taxon?.famille }}</span>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
-    <!-- <p i18n>cd_nom: {{ taxon?.cd_nom }}</p>
-    <p i18n>cd_ref: {{ taxon?.cd_ref }}</p>
-    <p i18n>cd_sup: {{ taxon?.cd_sup }}</p> -->
-    <!-- <p>{{ taxon | json }}</p> -->
-    <br />
-    <p i18n>Découvrir sur INPN:</p>
-    <ul>
-      <li>
-        <a
-          rel="noopener" target="_blank"
-          [href]="['https://inpn.mnhn.fr/espece/cd_nom', taxon?.cd_nom].join('/')"
-          i18n
-          >le taxon</a
-        >
-      </li>
-      <li *ngIf="taxon?.cd_nom != taxon?.cd_ref">
-        <a
-          rel="noopener" target="_blank"
-          [href]="['https://inpn.mnhn.fr/espece/cd_nom', taxon?.cd_ref].join('/')"
-          i18n
-          >le taxon de référence</a
-        >
-      </li>
-      <!-- <li>
-        <a
-          rel="noopener" target="_blank"
-          [href]="['https://inpn.mnhn.fr/espece/cd_nom', taxon?.cd_sup].join('/')"
-          i18n
-          >le taxon supérieur</a
-        >
-      </li> -->
-    </ul>
-  </div>
 </ng-template>
 
 <ng-container *ngTemplateOutlet="popupTemplate? popupTemplate : wwwwcard"></ng-container>

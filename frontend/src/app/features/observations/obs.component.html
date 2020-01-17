@@ -1,13 +1,13 @@
 <div class="container-fluid">
   <!-- LA PLATEFORME -->
-  <app-greeter *ngIf="programs?.length === 1"></app-greeter>
+  <app-greeter *ngIf="(facade.programs$ | async)?.length === 1"></app-greeter>
 
   <!-- LE PROGRAMME -->
   <section id="program-teaser" class="row">
-    <app-program-teaser [program]="program"></app-program-teaser>
+    <app-program-teaser [program]="facade.program$ | async"></app-program-teaser>
   </section>
   <section id="program-content" class="row">
-    <app-program-content [program]="program"></app-program-content>
+    <app-program-content [program]="facade.program$ | async"></app-program-content>
   </section>
   <!-- LES OBSERVATIONS -->
   <section id="observations" class="observations row">
@@ -20,14 +20,14 @@
           #inputSpecies
           class="form-control rounded-0"
           id="inputSpecies"
-          [(ngModel)]="selectedTaxon"
-          (ngModelChange)="onFilterChange()"
+          [(ngModel)]="facade.selectedTaxonID"
+          (ngModelChange)="facade.onFilterChange()"
           i18n-aria-label
           aria-label="Toutes espèces"
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
-          <ng-container *ngIf="!ObsConfig.FEATURES.taxonomy.GROUP; else optgroupmenu">
-            <option *ngFor="let s of sampledTaxonomy$ | async" [ngValue]="s?.cd_nom">
+          <ng-container *ngIf="!ObsFeaturesConfig?.TAXONOMY.GROUP; else optgroupmenu">
+            <option *ngFor="let s of facade.sampledTaxonomy$ | async" [ngValue]="s?.cd_nom">
               <span>{{
                 !localeId.startsWith('fr') && !!s?.nom_vern_eng
                   ? s?.nom_vern_eng
@@ -41,7 +41,7 @@
           </ng-container>
 
           <ng-template #optgroupmenu>
-            <optgroup *ngFor="let t of (sampledTaxonomy$ | async | keyvalue)" [label]="t?.key">
+            <optgroup *ngFor="let t of (facade.sampledTaxonomy$ | async | keyvalue)" [label]="t?.key">
               <option *ngFor="let s of t?.value" [ngValue]="s?.cd_nom">
                 <span>{{
                   !localeId.startsWith('fr') && !!s?.nom_vern_eng
@@ -63,13 +63,13 @@
           name="municipality"
           type="text"
           class="form-control rounded-0 col-lg-6"
-          [(ngModel)]="selectedMunicipality"
-          (ngModelChange)="onFilterChange()"
+          [(ngModel)]="facade.selectedMunicipality"
+          (ngModelChange)="facade.onFilterChange()"
           i18n-aria-label
           aria-label="Toutes communes"
         >
           <option [ngValue]="null" i18n>Toutes communes</option>
-          <option *ngFor="let t of municipalities$ | async" [ngValue]="t">{{
+          <option *ngFor="let t of facade.municipalities$ | async" [ngValue]="t">{{
             t?.name || '?'
           }}</option>
         </select>
@@ -77,7 +77,7 @@
       <div class="obs-count">
         <!-- TODO: loading => recherche… -->
         <p i18n>
-          {{ (filteredObservations$ | async)?.length | number }} { +(filteredObservations$ | async)?.length,
+          {{ (facade.filteredObservations$ | async)?.length | number }} { +(facade.filteredObservations$ | async)?.length,
           plural, =0 { observation trouvée } =1 { observation trouvée !} other { observations
           trouvées !} }
         </p>
@@ -86,26 +86,28 @@
         #obsListRef
         [observations]="{
           type: 'FeatureCollection',
-          features: filteredObservations$ | async
+          features: facade.filteredObservations$ | async
         }"
-        [taxonomy]="context.taxa"
-        (obsSelected)="cartogramRef.showPopup($event)"
-      ></app-obs-list>
-    </div>
+        [taxonomy]="facade.sharedContext.taxa"
+        (obsSelected)="onObsSelected($event)"
+        ></app-obs-list>
+      </div>
 
-    <div class="map" id="map">
-      <app-obs-map
-        #cartogramRef
+      <div class="map" id="map">
+        <app-obs-map
+        #thematicMapRef
         [observations]="{
           type: 'FeatureCollection',
-          features: filteredObservations$ | async
+          features: facade.filteredObservations$ | async
         }"
-        [program]="context.program"
-        [taxonomy]="context.taxa"
+        [program]="facade.sharedContext.program"
+        [taxonomy]="facade.sharedContext.taxa"
+        (obsSelected)="onObsSelected($event)"
+        (detailsRequested) ="onDetailsRequested($event)"
       ></app-obs-map>
       <div class="btn-groups">
         <div class="btn-group">
-          <app-modalflow [data]="context"
+          <app-modalflow [data]="facade.sharedContext"
             ><span class="d-md-block d-sm-block d-xs-block d-lg-none d-xl-none">＋</span>
             <span class="d-lg-block d-xl-block d-none">{{
               AddAnObservationLabel
@@ -116,4 +118,5 @@
       </div>
     </div>
   </section>
+  <router-outlet ></router-outlet>
 </div>

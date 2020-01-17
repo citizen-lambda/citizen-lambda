@@ -1,4 +1,6 @@
 import { Feature, FeatureCollection } from 'geojson';
+import { IAppConfig } from '../../core/models';
+import { Program } from '../programs/programs.models';
 
 export interface PostObservationResponse extends FeatureCollection {
   message: string;
@@ -23,3 +25,11 @@ export type PostObservationResponsePayload = Feature & {
 };
 
 
+export type ObsFeaturesConfig = Pick<IAppConfig, 'OBSERVATIONS_FEATURES'>;
+export type AppConfigModalFlow = Pick<IAppConfig, 'appName' | 'SEO' | 'program_add_an_observation'>;
+
+export interface ObsState {
+  program: Program;
+  observations: FeatureCollection;
+  selected: Feature;
+}
