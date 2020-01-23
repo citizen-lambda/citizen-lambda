@@ -31,15 +31,18 @@ def mkTaxonRepository(taxalist_id: int) -> Dict[int, Any]:
     if TAXA is not None:
         taxa = taxa_list(taxalist_id)
         taxon_ids = [item["cd_nom"] for item in taxa.get("items", dict())]
-        return {
-            taxon_id: dataclasses.asdict(TAXA.get(taxon_id)) for taxon_id in taxon_ids
-        }
+        try:
+            return {
+                taxon_id: dataclasses.asdict(TAXA.get(taxon_id)) for taxon_id in taxon_ids if taxon_id
+            }
+        except Exception as e:
+            logger.warning(str(e))
     else:
         raise Exception("No TAXA")
 
 
 def get_specie_from_cd_nom(cd_nom):
-    """get specie datas from taxref id (cd_nom)
+    """get specie datas from taxref id (cd_nom)#observations
 
     :param cd_nom: taxref unique id (cd_nom)
     :type cd_nom: int

@@ -3,7 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
-import { NgbModal, ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbModal,
+  ModalDismissReasons,
+  NgbActiveModal,
+  NgbModalRef
+} from '@ng-bootstrap/ng-bootstrap';
 
 import { AppConfig } from '../../../../conf/app.config';
 import { ObservationData, Taxon } from '../../../core/models';
@@ -41,11 +46,13 @@ import { ObservationsFacade } from '../../../features/observations/obs.component
           "
         />
       </div>
-      <p *ngIf="!localeId.startsWith('fr')">
+      <p>
         {{
-          taxon?.nom_vern_eng
-            ? [taxon?.nom_vern_eng, taxon?.nom_vern].join(', ')
-            : [taxon?.nom_vern, taxon?.nom_vern_eng].join(', ')
+          !localeId.startsWith('fr') ?
+          !!taxon?.nom_vern_eng ?
+            [taxon?.nom_vern_eng, taxon?.nom_vern].join(', ')
+            : taxon?.nom_vern
+          : [taxon?.nom_vern, taxon?.nom_vern_eng].join(', ')
         }}
       </p>
       <p>{{ taxon?.nom_complet }}</p>
@@ -145,6 +152,7 @@ export class ObsDetailsModalContentComponent implements OnInit {
   styleUrls: []
 })
 export class ObservationSharedDetailsComponent implements OnInit {
+  modalRef?: NgbModalRef;
   closeResult = '';
   data: Partial<ObservationData> = {};
 
@@ -158,22 +166,47 @@ export class ObservationSharedDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.pipe(take(1)).subscribe(params => {
       const obsID = parseInt(params.get('obsid') || '1', 10);
-      this.facade.features$.pipe(
-        // tslint:disable-next-line: no-non-null-assertion
-        map(features => features.filter(feature => feature!.properties!.id_observation === obsID)),
-        take(1)
-      ).subscribe(feature => {
-        this.data = feature[0].properties as Partial<ObservationData>;
-        this.facade.selected = feature[0];
-        this.open();
-      });
+      this.facade.features$
+        .pipe(
+          map(features =>
+            // tslint:disable-next-line: no-non-null-assertion
+            features.filter(feature => feature!.properties!.id_observation === obsID)
+          ),
+          take(1)
+        )
+        .subscribe(feature => {
+          try {
+            this.data = feature[0].properties as Partial<ObservationData>;
+            this.facade.selected = feature[0];
+            this.open();
+          } catch (error) {
+            this.onError(error);
+          }
+        });
     });
   }
 
+  onError(error: any) {
+    let msg = error.toString();
+    if (error instanceof TypeError) {
+      msg = 'Unknown observation';
+      window.alert(msg);
+    }
+    console.error(error);
+    this.close(msg);
+    this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
+  }
+
+  close(msg: string) {
+    if (this.modalRef) {
+      this.modalRef.close(msg);
+    }
+  }
+
   open() {
-    const modalRef = this.modalService.open(ObsDetailsModalContentComponent);
-    modalRef.componentInstance.data = this.data;
-    modalRef.result.then(
+    this.modalRef = this.modalService.open(ObsDetailsModalContentComponent);
+    this.modalRef.componentInstance.data = this.data;
+    this.modalRef.result.then(
       result => {
         this.closeResult = `Closed with: ${result}`;
         this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });

@@ -12,7 +12,8 @@ import {
   ChangeDetectionStrategy,
   EventEmitter,
   HostListener,
-  ComponentFactoryResolver
+  ComponentFactoryResolver,
+  ComponentRef
 } from '@angular/core';
 
 import { FeatureCollection, Feature } from 'geojson';
@@ -173,6 +174,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }[] = [];
   obsOnFocus: Feature | null = null;
   zoomAlertTimeout: any;
+  popupRef?: ComponentRef<MarkerPopupComponent>;
 
   constructor(private injector: Injector, private resolver: ComponentFactoryResolver) {}
 
@@ -232,7 +234,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
     const zv = new ZoomViewer();
     zv.addTo(this.observationMap);
     zv.setPosition(this.options.CONTROL_ZOOMVIEW_POSITION);
-
   }
 
   loadProgramArea(canSubmit = true): void {
@@ -249,7 +250,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       }).addTo(this.observationMap);
 
       const programBounds = this.programArea.getBounds();
-      this.observationMap.fitBounds(programBounds);
+      this.observationMap.fitBounds(programBounds, { maxZoom: this.observationMap.getMaxZoom() });
       // this.observationMap.setMaxBounds(programBounds)
       this.newObsMarker = null;
 
@@ -313,45 +314,43 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   getPopupContent(feature: Feature): any {
+    if (this.popupRef) {
+      this.popupRef.destroy();
+      console.debug('destroyed popup');
+    }
+    console.debug('creating popup');
     // tslint:disable-next-line: no-use-before-declare
     const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
     const component = factory.create(this.injector);
     component.instance.data = { ...feature.properties } as Taxon & Partial<ObservationData>;
     component.instance.detailsRequest.subscribe((data: any) => this.detailsRequested.emit(data));
     component.changeDetectorRef.detectChanges();
-    const popupContent = component.location.nativeElement;
-    return popupContent;
+    this.popupRef = component;
+    return this.popupRef.location.nativeElement;
   }
 
   showPopup(obs: Feature): void {
     this.obsOnFocus = obs;
     const marker = this.featureMarkers.find(
-      m =>
-        (obs.properties &&
-          m.feature &&
-          m.feature.properties &&
-          m.feature.properties.id_observation === obs.properties.id_observation) ||
-        false
+      // tslint:disable-next-line: no-non-null-assertion
+      m => m.feature.properties!.id_observation === obs.properties!.id_observation || undefined
     );
     // console.debug(obs, marker, event);
     let visibleParent: L.Marker | null = null;
 
     if (this.observationLayer && marker) {
       visibleParent = this.observationLayer.getVisibleParent(marker.marker);
-    }
-    if (!visibleParent && this.observationLayer && marker) {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        this.observationMap.panTo(marker.marker.getLatLng());
-      } else {
-        this.observationMap.flyTo(marker.marker.getLatLng(), 19);
+
+      if (!visibleParent) {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          this.observationMap.panTo(marker.marker.getLatLng());
+        } else {
+          this.observationMap.flyTo(marker.marker.getLatLng(), 19);
+        }
+        visibleParent = marker.marker;
       }
-      visibleParent = marker.marker;
-    }
-    if (visibleParent) {
-      this.observationMap.openPopup(
-        this.getPopupContent(obs),
-        visibleParent.getLatLng()
-      );
+
+      this.observationMap.openPopup(this.getPopupContent(obs), visibleParent.getLatLng());
     }
   }
 
