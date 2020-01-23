@@ -188,6 +188,7 @@ export class ObservationsFacade implements OnDestroy {
     this.programID$
       .pipe(
         takeUntil(this.unsubscribe$),
+        filter(id => id > 0),
         switchMap(id => this.programService.getProgramObservations(id))
       )
       .subscribe(observations => {
