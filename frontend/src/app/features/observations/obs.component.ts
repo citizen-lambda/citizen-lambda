@@ -313,7 +313,6 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
       )
       .subscribe(features => {
         this.onObsSelected(features[0]);
-        console.debug('details selected')
       });
     this.router.navigate(['details', $event], {
       fragment: 'observations',
