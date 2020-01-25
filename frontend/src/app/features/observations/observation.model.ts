@@ -22,12 +22,10 @@ export interface ObservationData {
 
 export type AnonymousObserver = Partial<{ username: 'Anonyme' }>;
 export type Observer = Pick<ObservationData, 'observer'> | AnonymousObserver;
-export type Municipality =
-  | Pick<ObservationData, 'municipality'>
-  | {
-      name: string;
-      code: string;
-    };
+export interface Municipality {
+  name: string;
+  code: string;
+}
 export type Count = Pick<ObservationData, 'count'>;
 export type ObsDate = Pick<ObservationData, 'date'>;
 export type ObsSummary = Pick<
