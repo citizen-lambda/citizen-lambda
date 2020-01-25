@@ -25,7 +25,8 @@ import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
-import { Taxonomy, Taxon, ObservationData } from '../../../core/models';
+import { Taxonomy, Taxon } from '../../../core/models';
+import { ObservationData } from '../../../features/observations/observation.model';
 import { MarkerPopupComponent } from './marker-popup.component';
 
 declare module 'leaflet' {

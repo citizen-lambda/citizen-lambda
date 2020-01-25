@@ -174,20 +174,3 @@ export interface Taxonomy {
   [key: string]: Taxon;
 }
 
-export interface ObservationData {
-  id_observation: number;
-  cd_nom: number;
-  images?: string;
-  image?: string;
-  media?: any;
-  comment?: string;
-  observer?: {
-    username: string;
-  };
-  municipality?: {
-    name?: string;
-    code?: string;
-  };
-  date: Date;
-  count: Number;
-}

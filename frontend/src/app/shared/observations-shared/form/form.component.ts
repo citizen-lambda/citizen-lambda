@@ -27,8 +27,8 @@ import { MAP_CONFIG } from '../../../../conf/map.config';
 import { AppConfig } from '../../../../conf/app.config';
 import { IAppConfig } from '../../../core/models';
 import {
-  PostObservationResponse,
-  PostObservationResponsePayload
+  ObsPostResponse,
+  ObsPostResponsePayload
 } from '../../../features/observations/observation.model';
 import { Taxonomy, Taxon } from '../../../core/models';
 import { geometryValidator, ObsFormMapComponent } from './obs-form-map-component';
@@ -79,7 +79,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     program?: FeatureCollection;
     taxa?: Taxonomy;
   };
-  @Output() newObservation: EventEmitter<PostObservationResponsePayload> = new EventEmitter();
+  @Output() newObservation: EventEmitter<ObsPostResponsePayload> = new EventEmitter();
   @ViewChild('formMap', { static: false }) formMap: ObsFormMapComponent | undefined;
   @ViewChild('photo', { static: false }) photo: ElementRef | undefined;
   program_id = 0;
@@ -263,9 +263,9 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
   }
 
   onFormSubmit(): void {
-    let obs: PostObservationResponsePayload;
+    let obs: ObsPostResponsePayload;
     this.postObservation().subscribe(
-      (data: PostObservationResponse) => {
+      (data: ObsPostResponse) => {
         obs = data.features[0];
       },
       err => alert(err),
@@ -284,7 +284,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  postObservation(): Observable<PostObservationResponse> {
+  postObservation(): Observable<ObsPostResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
         Accept: 'application/json'
@@ -342,7 +342,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
       formData.append(item, c.value);
     }
 
-    return this.client.post<PostObservationResponse>(
+    return this.client.post<ObsPostResponse>(
       `${this.URL}/observations`,
       formData,
       httpOptions

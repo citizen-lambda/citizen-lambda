@@ -26,7 +26,7 @@
           aria-label="Toutes espèces"
         >
           <option [ngValue]="null" i18n>Toutes espèces</option>
-          <ng-container *ngIf="!ObsFeaturesConfig?.TAXONOMY.GROUP; else optgroupmenu">
+          <ng-container *ngIf="!ConfigObsFeatures?.TAXONOMY.GROUP; else optgroupmenu">
             <option *ngFor="let s of facade.sampledTaxonomy$ | async" [ngValue]="s?.cd_nom">
               <span>{{
                 !localeId.startsWith('fr') && !!s?.nom_vern_eng

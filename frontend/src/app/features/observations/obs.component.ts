@@ -38,7 +38,7 @@ import { ObsMapComponent } from '../../shared/observations-shared/map/map.compon
 import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
 import { ModalFlowService } from '../../shared/observations-shared/modalflow/modalflow.service';
 import { SeoService } from '../../services/seo.service';
-import { ObsState, ObsFeaturesConfig, AppConfigModalFlow } from './observation.model';
+import { ObsState, ConfigObsFeatures, ConfigModalFlow, Municipality } from './observation.model';
 
 let _state: ObsState = {
   program: {} as Program,
@@ -48,7 +48,7 @@ let _state: ObsState = {
 
 @Injectable()
 export class ObservationsFacade implements OnDestroy {
-  ObsFeaturesConfig = (AppConfig as ObsFeaturesConfig).OBSERVATIONS_FEATURES;
+  ConfigObsFeatures = (AppConfig as ConfigObsFeatures).OBSERVATIONS_FEATURES;
   private unsubscribe$ = new Subject<void>();
   private store = new BehaviorSubject<ObsState>(_state);
   private state$ = this.store.asObservable();
@@ -99,7 +99,7 @@ export class ObservationsFacade implements OnDestroy {
     map(items => {
       return Array.from(
         // tslint:disable-next-line: no-non-null-assertion
-        new Map(items.map(item => [`${item.properties!.cd_nom}`, item])).values()
+        new Map(items.map(item => [+`${item.properties!.cd_nom}`, item])).values()
       ).reduce((acc: Observable<Taxon>[], item: Feature) => {
         return [
           ...acc,
@@ -112,12 +112,12 @@ export class ObservationsFacade implements OnDestroy {
     map(taxa => {
       const prop = this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng';
       const r = taxa.sort(sorted(prop));
-      if (!!this.ObsFeaturesConfig && !!this.ObsFeaturesConfig.TAXONOMY.GROUP) {
-        if (typeof this.ObsFeaturesConfig.TAXONOMY.GROUP === 'function') {
-          return groupBy(r, this.ObsFeaturesConfig.TAXONOMY.GROUP(this.localeId)) as { [key: string]: Taxon[] };
+      if (!!this.ConfigObsFeatures && !!this.ConfigObsFeatures.TAXONOMY.GROUP) {
+        if (typeof this.ConfigObsFeatures.TAXONOMY.GROUP === 'function') {
+          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP(this.localeId)) as { [key: string]: Taxon[] };
         }
-        if (typeof this.ObsFeaturesConfig.TAXONOMY.GROUP === 'string') {
-          return groupBy(r, this.ObsFeaturesConfig.TAXONOMY.GROUP) as { [key: string]: Taxon[] };
+        if (typeof this.ConfigObsFeatures.TAXONOMY.GROUP === 'string') {
+          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP) as { [key: string]: Taxon[] };
         }
       }
       return r;
@@ -129,8 +129,8 @@ export class ObservationsFacade implements OnDestroy {
       return Array.from(
         new Map(
           // tslint:disable-next-line: no-non-null-assertion
-          items.map(item => [`${item.properties!.municipality.code}`, item.properties!.municipality])
-        ).values() as IterableIterator<{ code: number; name: string }>
+          items.map(item => [+`${item.properties!.municipality.code}`, item.properties!.municipality])
+        ).values() as IterableIterator<Municipality>
       ).sort(sorted('name'));
     }),
     share()
@@ -250,8 +250,8 @@ export class ObservationsFacade implements OnDestroy {
   providers: [ModalFlowService, ObservationsFacade]
 })
 export class ObsComponent implements AfterViewInit, OnDestroy {
-  readonly ObsFeaturesConfig = (AppConfig as ObsFeaturesConfig).OBSERVATIONS_FEATURES;
-  readonly appConfig: AppConfigModalFlow = AppConfig;
+  readonly ConfigObsFeatures = (AppConfig as ConfigObsFeatures).OBSERVATIONS_FEATURES;
+  readonly appConfig: ConfigModalFlow = AppConfig;
   AddAnObservationLabel = (this.appConfig.program_add_an_observation as { [name: string]: string })[
     this.localeId
   ];

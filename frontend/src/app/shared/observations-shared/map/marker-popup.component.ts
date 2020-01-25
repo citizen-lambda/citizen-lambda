@@ -13,7 +13,8 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppConfig } from '../../../../conf/app.config';
-import { Taxon, ObservationData } from '../../../core/models';
+import { Taxon } from '../../../core/models';
+import { ObservationData } from '../../../features/observations/observation.model';
 import { TaxonomyService } from '../../../services/taxonomy.service';
 import { of, BehaviorSubject } from 'rxjs';
 

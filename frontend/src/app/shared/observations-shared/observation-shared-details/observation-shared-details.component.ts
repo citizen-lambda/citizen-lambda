@@ -11,7 +11,8 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppConfig } from '../../../../conf/app.config';
-import { ObservationData, Taxon } from '../../../core/models';
+import { Taxon } from '../../../core/models';
+import { ObservationData } from '../../../features/observations/observation.model';
 import { TaxonomyService } from '../../../services/taxonomy.service';
 import { ObservationsFacade } from '../../../features/observations/obs.component';
 
