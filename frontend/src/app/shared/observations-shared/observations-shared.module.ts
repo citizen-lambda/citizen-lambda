@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { ObsFormModule } from './form/obs-form.module';
+import { WebshareModule } from '../webshare/webshare.module';
 
 import { ProgramContentComponent } from './program-content/program-content.component';
 import { ProgramTeaserComponent } from './program-teaser/program-teaser.component';
@@ -28,7 +29,7 @@ import {
 } from './observation-shared-details/observation-shared-details.component';
 
 @NgModule({
-  imports: [RouterModule, CommonModule, ScrollingModule, ObsFormModule, NgbModule],
+  imports: [RouterModule, CommonModule, ScrollingModule, ObsFormModule, NgbModule, WebshareModule],
   declarations: [
     ProgramTeaserComponent,
     ProgramContentComponent,

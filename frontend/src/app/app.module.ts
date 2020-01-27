@@ -35,7 +35,6 @@ import { AboutComponent } from './components/about/about.component';
 import { AboutCustomComponent } from './components/about/custom/custom.component';
 import { AboutFixedComponent } from './components/about/fixed/fixed.component';
 
-
 @NgModule({
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -51,7 +50,7 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     LoadingBarRouterModule,
     LoadingBarModule,
     ProgramsModule,
-    routing,
+    routing
   ],
   declarations: [
     AppComponent,
@@ -66,7 +65,13 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     AboutCustomComponent,
     AboutFixedComponent
   ],
-  entryComponents: [AppComponent, LoginComponent, LogoutComponent, RegisterComponent, SidebarComponent],
+  entryComponents: [
+    AppComponent,
+    LoginComponent,
+    LogoutComponent,
+    RegisterComponent,
+    SidebarComponent
+  ],
   providers: [
     AuthService,
     GncService,

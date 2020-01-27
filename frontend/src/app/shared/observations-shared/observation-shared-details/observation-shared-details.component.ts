@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, LOCALE_ID, Input } from '@angular/core';
+import { Component, OnInit, Inject, LOCALE_ID, Input, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
@@ -15,24 +15,15 @@ import { Taxon } from '../../../core/models';
 import { ObservationData } from '../../../features/observations/observation.model';
 import { TaxonomyService } from '../../../services/taxonomy.service';
 import { ObservationsFacade } from '../../../features/observations/obs.component';
-
-interface ShareData {
-  title?: string;
-  text?: string;
-  url?: string;
-  files?: ReadonlyArray<File>;
-}
-
-export declare interface Navigator {
-  share?: (data?: ShareData) => Promise<void>;
-  canShare?: (data?: ShareData) => boolean;
-}
+import { WebshareComponent, ShareData } from '../../webshare/webshare.component';
 
 @Component({
   selector: 'app-obs-details-modal-content',
   template: `
     <div class="modal-header">
-      <h4 class="modal-title" id="modal-obs-details">Details {{ data?.id_observation }}</h4>
+      <h4 class="modal-title" id="modal-obs-details">
+        Details Observation #{{ data?.id_observation }}
+      </h4>
       <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -137,9 +128,7 @@ export declare interface Navigator {
       </ul>
       <ng-container *ngIf="canShare()">
         <br />
-        <button (click)="share()" class="btn-big" style="background-color: var(--secondary);" i18n>
-          <i class="fa fa-share-alt" aria-hidden="true"></i> Partager
-        </button>
+        <app-webshare></app-webshare>
       </ng-container>
     </div>
   `,
@@ -148,6 +137,7 @@ export declare interface Navigator {
 export class ObsDetailsModalContentComponent implements OnInit {
   AppConfig = AppConfig;
   navigator: any = null;
+  @ViewChild(WebshareComponent) shareButton?: WebshareComponent;
   @Input() data!: Partial<ObservationData> | undefined;
   taxon$ = new BehaviorSubject<(Partial<ObservationData> & Taxon) | undefined>(undefined);
 
@@ -161,35 +151,30 @@ export class ObsDetailsModalContentComponent implements OnInit {
 
   ngOnInit() {
     of(this.data).subscribe(data => {
-      // console.debug(data);
       if (!!data && data.cd_nom) {
         this.taxonService.getTaxon(data.cd_nom).subscribe(t => {
           this.taxon$.next({ ...t, ...data });
         });
+
+        if (this.canShare() && this.shareButton) {
+          let url = document.location.href;
+          const canonicalElement = document.querySelector('link[rel=canonical]');
+          if (canonicalElement !== null) {
+            url = canonicalElement.getAttribute('href') as string;
+          }
+          this.shareButton.data = {
+            title: `${document.title} Details Observation #${data.id_observation}`,
+            // tslint:disable-next-line: no-non-null-assertion
+            text: data.comment,
+            url: url
+          } as ShareData;
+        }
       }
     });
   }
 
   canShare() {
     return 'share' in this.navigator;
-  }
-
-  share() {
-    if (this.canShare()) {
-      console.debug('sharing');
-      let url = document.location.href;
-      const canonicalElement = document.querySelector('link[rel=canonical]');
-      if (canonicalElement !== null) {
-        url = canonicalElement.getAttribute('href') as string;
-      }
-      this.navigator.share({
-        // tslint:disable-next-line: no-non-null-assertion
-        title: `${document.title} Details ${ this.data!.id_observation }`,
-        // tslint:disable-next-line: no-non-null-assertion
-        text: this.data!.comment,
-        url: url
-      } as ShareData);
-    }
   }
 }
 
