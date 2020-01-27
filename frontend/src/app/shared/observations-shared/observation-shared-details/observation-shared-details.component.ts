@@ -16,6 +16,18 @@ import { ObservationData } from '../../../features/observations/observation.mode
 import { TaxonomyService } from '../../../services/taxonomy.service';
 import { ObservationsFacade } from '../../../features/observations/obs.component';
 
+interface ShareData {
+  title?: string;
+  text?: string;
+  url?: string;
+  files?: ReadonlyArray<File>;
+}
+
+export declare interface Navigator {
+  share?: (data?: ShareData) => Promise<void>;
+  canShare?: (data?: ShareData) => boolean;
+}
+
 @Component({
   selector: 'app-obs-details-modal-content',
   template: `
@@ -49,15 +61,17 @@ import { ObservationsFacade } from '../../../features/observations/obs.component
       </div>
       <p>
         {{
-          !localeId.startsWith('fr') ?
-          !!taxon?.nom_vern_eng ?
-            [taxon?.nom_vern_eng, taxon?.nom_vern].join(', ')
-            : taxon?.nom_vern
-          : [taxon?.nom_vern, taxon?.nom_vern_eng].join(', ')
+          !localeId.startsWith('fr')
+            ? !!taxon?.nom_vern_eng
+              ? [taxon?.nom_vern_eng, taxon?.nom_vern].join(', ')
+              : taxon?.nom_vern
+            : [taxon?.nom_vern, taxon?.nom_vern_eng].join(', ')
         }}
       </p>
-      <p>{{ taxon?.nom_complet }}</p>
+      <p i18nn>Nom complet: {{ taxon?.nom_complet }}</p>
       <p i18n>Dénombrement: {{ data?.count }}</p>
+      <p i18n>Date: {{ data?.date }}</p>
+      <p *ngIf="data?.observer?.username" i18n>Observateur: {{ data?.observer?.username }}</p>
       <p *ngIf="!!data?.comment">{{ data?.comment }}</p>
       <!-- <p i18n>Statut: {{ taxon?.id_statut }}</p> -->
       <br />
@@ -121,12 +135,19 @@ import { ObservationsFacade } from '../../../features/observations/obs.component
         >
       </li> -->
       </ul>
+      <ng-container *ngIf="canShare()">
+        <br />
+        <button (click)="share()" class="btn-big" style="background-color: var(--secondary);" i18n>
+          <i class="fa fa-share-alt" aria-hidden="true"></i> Partager
+        </button>
+      </ng-container>
     </div>
   `,
   providers: [ObservationsFacade]
 })
 export class ObsDetailsModalContentComponent implements OnInit {
   AppConfig = AppConfig;
+  navigator: any = null;
   @Input() data!: Partial<ObservationData> | undefined;
   taxon$ = new BehaviorSubject<(Partial<ObservationData> & Taxon) | undefined>(undefined);
 
@@ -134,7 +155,9 @@ export class ObsDetailsModalContentComponent implements OnInit {
     @Inject(LOCALE_ID) public localeId: string,
     public modal: NgbActiveModal,
     public taxonService: TaxonomyService
-  ) {}
+  ) {
+    this.navigator = window.navigator;
+  }
 
   ngOnInit() {
     of(this.data).subscribe(data => {
@@ -145,6 +168,28 @@ export class ObsDetailsModalContentComponent implements OnInit {
         });
       }
     });
+  }
+
+  canShare() {
+    return 'share' in this.navigator;
+  }
+
+  share() {
+    if (this.canShare()) {
+      console.debug('sharing');
+      let url = document.location.href;
+      const canonicalElement = document.querySelector('link[rel=canonical]');
+      if (canonicalElement !== null) {
+        url = canonicalElement.getAttribute('href') as string;
+      }
+      this.navigator.share({
+        // tslint:disable-next-line: no-non-null-assertion
+        title: `${document.title} Details ${ this.data!.id_observation }`,
+        // tslint:disable-next-line: no-non-null-assertion
+        text: this.data!.comment,
+        url: url
+      } as ShareData);
+    }
   }
 }
 
