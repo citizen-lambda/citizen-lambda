@@ -16,7 +16,7 @@ export class AboutCustomComponent {
 
   constructor(@Inject(LOCALE_ID) public localeId: string, protected seo: SeoService) {
     this.seo.setTitle(
-      `${this.localeId.startsWith('fr') ? 'A Propos' : 'About'} - ${this.appConfig.appName}`
+      `${this.localeId.startsWith('fr') ? 'A Propos' : 'About'}`
     );
   }
 }

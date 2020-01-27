@@ -281,7 +281,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         name: 'description',
         content: program.short_desc
       });
-      this.seo.setTitle(`${program.title} - ${this.appConfig.appName}`);
+      this.seo.setTitle(`${program.title}`);
     });
   }
 

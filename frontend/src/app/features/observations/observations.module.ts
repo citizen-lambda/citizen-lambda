@@ -19,7 +19,7 @@ import { ObsComponent, ObservationsFacade } from './obs.component';
   ],
   declarations: [ObsComponent],
   providers: [
-    ObservationsFacade
+    ObservationsFacade,  // non treeshakable, mv to own module
   ]
 })
 export class ObservationsModule {}

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { AppConfig } from '.././../conf/app.config';
 
 enum MetaNamesStrings {
   'application-name',
@@ -14,6 +15,8 @@ type MetaNames = keyof typeof MetaNamesStrings;
   providedIn: 'root'
 })
 export class SeoService {
+  readonly appConfig = AppConfig;
+
   constructor(
     private readonly metaService: Meta,
     private readonly titleService: Title,
@@ -35,9 +38,9 @@ export class SeoService {
   }
 
   setTitle(title: string = '') {
-    this.titleService.setTitle(title);
+    this.titleService.setTitle(`${title} - ${this.appConfig.appName}`);
     if (!!title) {
-      this.metaService.updateTag({ name: 'title', content: title });
+      this.metaService.updateTag({ name: 'title', content: `${title} - ${this.appConfig.appName}` });
     } else {
       this.metaService.removeTag(`name='title'`);
     }

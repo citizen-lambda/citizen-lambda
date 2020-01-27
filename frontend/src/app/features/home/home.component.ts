@@ -34,6 +34,6 @@ export class HomeComponent {
       name: 'description',
       content: (this.appConfig.SEO.description as { [lang: string]: string })[this.localeId]
     });
-    this.seo.setTitle(`${this.localeId.startsWith('fr') ? 'Acceuil' : 'Home'} - ${this.appConfig.appName}`);
+    this.seo.setTitle(`${this.localeId.startsWith('fr') ? 'Acceuil' : 'Home'}`);
   }
 }
