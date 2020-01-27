@@ -70,7 +70,7 @@ export declare interface Navigator {
       </p>
       <p i18nn>Nom complet: {{ taxon?.nom_complet }}</p>
       <p i18n>Dénombrement: {{ data?.count }}</p>
-      <p i18n>Date: {{ data?.date }}</p>
+      <p i18n>Date: {{ data?.date | date }}</p>
       <p *ngIf="data?.observer?.username" i18n>Observateur: {{ data?.observer?.username }}</p>
       <p *ngIf="!!data?.comment">{{ data?.comment }}</p>
       <!-- <p i18n>Statut: {{ taxon?.id_statut }}</p> -->

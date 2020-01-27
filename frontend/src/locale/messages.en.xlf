@@ -1095,9 +1095,9 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1531fa6abae7570cd382d2bf291c6b43a74857ba" datatype="html">
-        <source>Date: <x id="INTERPOLATION" equiv-text="{{ data?.date }}"/></source>
-        <target>Date: <x id="INTERPOLATION" equiv-text="{{ data?.date }}"/></target>
+      <trans-unit id="7beb56aedc13aab0bd98a24daab4449d2106d763" datatype="html">
+        <source>Date: <x id="INTERPOLATION" equiv-text="{{ data?.date | date }}"/></source>
+        <target>Date: <x id="INTERPOLATION" equiv-text="{{ data?.date | date }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-shared-details/observation-shared-details.component.ts</context>
           <context context-type="linenumber">41</context>
