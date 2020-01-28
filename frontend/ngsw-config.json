@@ -30,23 +30,11 @@
     {
       "name": "osm-fr-tms",
       "urls": [
-        "http://wms.openstreetmap.fr/tms/"
+        "http://wms.openstreetmap.fr/tms/**"
       ],
       "cacheConfig": {
         "maxSize": 128,
         "maxAge": "3d12h",
-        "timeout": "2s",
-        "strategy": "performance"
-      }
-    },
-    {
-      "name": "programs",
-      "urls": [
-        "https://citizendemo.patkap.tech/api/programs/"
-      ],
-      "cacheConfig": {
-        "maxSize": 128,
-        "maxAge": "10m",
         "timeout": "2s",
         "strategy": "performance"
       }
@@ -59,6 +47,18 @@
       "cacheConfig": {
         "maxSize": 128,
         "maxAge": "1m",
+        "timeout": "2s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "programs",
+      "urls": [
+        "https://citizendemo.patkap.tech/api/programs/*"
+      ],
+      "cacheConfig": {
+        "maxSize": 128,
+        "maxAge": "10m",
         "timeout": "2s",
         "strategy": "performance"
       }

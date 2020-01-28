@@ -2,7 +2,7 @@
   "name": "citizen-lambda",
   "short_name": "citizenλ",
   "description": "Particpatory science, biodiversity, submit your observations!",
-  "theme_color": "#1976d2",
+  "theme_color": "#00a99d",
   "background_color": "#fafafa",
   "display": "fullscreen",
   "scope": "/",
