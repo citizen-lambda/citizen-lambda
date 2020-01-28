@@ -1,0 +1,67 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    }, {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "osm-fr-tms",
+      "urls": [
+        "http://wms.openstreetmap.fr/tms/"
+      ],
+      "cacheConfig": {
+        "maxSize": 128,
+        "maxAge": "3d12h",
+        "timeout": "2s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "programs",
+      "urls": [
+        "https://citizendemo.patkap.tech/api/programs/"
+      ],
+      "cacheConfig": {
+        "maxSize": 128,
+        "maxAge": "10m",
+        "timeout": "2s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "observations",
+      "urls": [
+        "https://citizendemo.patkap.tech/api/programs/*/observations"
+      ],
+      "cacheConfig": {
+        "maxSize": 128,
+        "maxAge": "1m",
+        "timeout": "2s",
+        "strategy": "performance"
+      }
+    }
+  ]
+}

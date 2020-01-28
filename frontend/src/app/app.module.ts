@@ -34,6 +34,8 @@ import { ErrorHandler } from './services/error_handler';
 import { AboutComponent } from './components/about/about.component';
 import { AboutCustomComponent } from './components/about/custom/custom.component';
 import { AboutFixedComponent } from './components/about/fixed/fixed.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   imports: [
@@ -50,7 +52,8 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     LoadingBarRouterModule,
     LoadingBarModule,
     ProgramsModule,
-    routing
+    routing,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   declarations: [
     AppComponent,
