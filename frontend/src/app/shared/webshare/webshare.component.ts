@@ -5,6 +5,7 @@ import {
   ChangeDetectionStrategy,
   Input
 } from '@angular/core';
+import { of } from 'rxjs';
 
 export interface ShareData {
   title?: string;
@@ -24,11 +25,11 @@ export declare interface Navigator {
     <button
       *ngIf="canShare()"
       (click)="share()"
+      [disabled]="!canShare()"
       class="btn-big"
       style="background-color: var(--secondary);"
-      i18n
     >
-      <i class="fa fa-share-alt" aria-hidden="true"></i> Partager
+      <ng-content></ng-content>
     </button>
   `,
   encapsulation: ViewEncapsulation.None,
@@ -49,17 +50,31 @@ export class WebshareComponent implements OnInit {
   }
 
   share() {
-    if (this.canShare() && this.data) {
+    of(this.data).subscribe(data => {
       let url = document.location.href;
       const canonicalElement = document.querySelector('link[rel=canonical]');
       if (canonicalElement !== null) {
         url = canonicalElement.getAttribute('href') as string;
       }
-      this.navigator.share({
-        title: this.data.title,
-        text: this.data.text,
-        url: this.data.url ? this.data.url : url
-      });
-    }
+      if ('share' in this.navigator) {
+        this.navigator.share({
+          // tslint:disable-next-line: no-non-null-assertion
+          title: data!.title,
+          // tslint:disable-next-line: no-non-null-assertion
+          text: data!.text,
+          // tslint:disable-next-line: no-non-null-assertion
+          url: data!.url ? data!.url : url
+        });
+      } else {
+        console.debug({
+          // tslint:disable-next-line: no-non-null-assertion
+          title: data!.title,
+          // tslint:disable-next-line: no-non-null-assertion
+          text: data!.text,
+          // tslint:disable-next-line: no-non-null-assertion
+          url: data!.url ? data!.url : url
+        });
+      }
+    });
   }
 }

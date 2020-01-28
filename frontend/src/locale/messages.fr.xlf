@@ -1088,16 +1088,12 @@
           <context context-type="linenumber">80</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="65f85bc53bc80a42217deae249e1e85724a5c414" datatype="html">
-        <source>
-      <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> Partager
-    </source>
-        <target>
-      <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> Partager
-    </target>
+      <trans-unit id="178d1d8b0f74e677ce4c4a33851f66900ed6ce32" datatype="html">
+        <source>Nom complet: <x id="INTERPOLATION" equiv-text="{{ taxon?.nom_complet }}"/></source>
+        <target>Nom complet: <x id="INTERPOLATION" equiv-text="{{ taxon?.nom_complet }}"/></target>
         <context-group purpose="location">
-          <context context-type="sourcefile">app/shared/webshare/webshare.component.ts</context>
-          <context context-type="linenumber">8</context>
+          <context context-type="sourcefile">app/shared/observations-shared/observation-shared-details/observation-shared-details.component.ts</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ea9352fd75c2fa500f7f341edcc1b097d4db56a7" datatype="html">
@@ -1178,6 +1174,16 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-shared-details/observation-shared-details.component.ts</context>
           <context context-type="linenumber">96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="694bebc9126d5ae7a471d9421901d12a98e46e06" datatype="html">
+        <source>
+          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> Partager</source>
+        <target>
+          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> Partager</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/observation-shared-details/observation-shared-details.component.ts</context>
+          <context context-type="linenumber">110</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ee62171bb5bf618165113912714b8adf22e656b0" datatype="html">

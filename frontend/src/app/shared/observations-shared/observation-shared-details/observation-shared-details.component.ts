@@ -59,7 +59,7 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
             : [taxon?.nom_vern, taxon?.nom_vern_eng].join(', ')
         }}
       </p>
-      <p i18nn>Nom complet: {{ taxon?.nom_complet }}</p>
+      <p i18n>Nom complet: {{ taxon?.nom_complet }}</p>
       <p i18n>Dénombrement: {{ data?.count }}</p>
       <p i18n>Date: {{ data?.date | date }}</p>
       <p *ngIf="data?.observer?.username" i18n>Observateur: {{ data?.observer?.username }}</p>
@@ -128,16 +128,18 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
       </ul>
       <ng-container *ngIf="canShare()">
         <br />
-        <app-webshare></app-webshare>
+        <app-webshare [data]="sharedData" i18n>
+          <i class="fa fa-share-alt" aria-hidden="true"></i> Partager</app-webshare
+        >
       </ng-container>
     </div>
-  `,
-  providers: [ObservationsFacade]
+  `
 })
 export class ObsDetailsModalContentComponent implements OnInit {
   AppConfig = AppConfig;
   navigator: any = null;
   @ViewChild(WebshareComponent) shareButton?: WebshareComponent;
+  sharedData = {};
   @Input() data!: Partial<ObservationData> | undefined;
   taxon$ = new BehaviorSubject<(Partial<ObservationData> & Taxon) | undefined>(undefined);
 
@@ -156,25 +158,30 @@ export class ObsDetailsModalContentComponent implements OnInit {
           this.taxon$.next({ ...t, ...data });
         });
 
-        if (this.canShare() && this.shareButton) {
-          let url = document.location.href;
-          const canonicalElement = document.querySelector('link[rel=canonical]');
-          if (canonicalElement !== null) {
-            url = canonicalElement.getAttribute('href') as string;
-          }
-          this.shareButton.data = {
-            title: `${document.title} Details Observation #${data.id_observation}`,
-            // tslint:disable-next-line: no-non-null-assertion
-            text: data.comment,
-            url: url
-          } as ShareData;
-        }
+        this.setupShare();
       }
     });
   }
 
   canShare() {
     return 'share' in this.navigator;
+  }
+
+  setupShare() {
+    if (this.canShare()) {
+      let url = document.location.href;
+      const canonicalElement = document.querySelector('link[rel=canonical]');
+      if (canonicalElement !== null) {
+        url = canonicalElement.getAttribute('href') as string;
+      }
+      this.sharedData = {
+        // tslint:disable-next-line: no-non-null-assertion
+        title: `${document.title} Details Observation #${this.data!.id_observation}`,
+        // tslint:disable-next-line: no-non-null-assertion
+        text: this.data!.comment,
+        url: url
+      } as ShareData;
+    }
   }
 }
 
