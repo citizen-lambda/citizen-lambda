@@ -128,7 +128,7 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
       </ul>
       <ng-container *ngIf="canShare()">
         <br />
-        <app-webshare [data]="sharedData" i18n>
+        <app-webshare [data]="sharedData" (click)="setupShare()" i18n>
           <i class="fa fa-share-alt" aria-hidden="true"></i> Partager</app-webshare
         >
       </ng-container>
@@ -157,8 +157,6 @@ export class ObsDetailsModalContentComponent implements OnInit {
         this.taxonService.getTaxon(data.cd_nom).subscribe(t => {
           this.taxon$.next({ ...t, ...data });
         });
-
-        this.setupShare();
       }
     });
   }
@@ -168,20 +166,18 @@ export class ObsDetailsModalContentComponent implements OnInit {
   }
 
   setupShare() {
-    if (this.canShare()) {
-      let url = document.location.href;
-      const canonicalElement = document.querySelector('link[rel=canonical]');
-      if (canonicalElement !== null) {
-        url = canonicalElement.getAttribute('href') as string;
-      }
-      this.sharedData = {
-        // tslint:disable-next-line: no-non-null-assertion
-        title: `${document.title} Details Observation #${this.data!.id_observation}`,
-        // tslint:disable-next-line: no-non-null-assertion
-        text: this.data!.comment,
-        url: url
-      } as ShareData;
+    let url = document.location.href;
+    const canonicalElement = document.querySelector('link[rel=canonical]');
+    if (canonicalElement !== null) {
+      url = canonicalElement.getAttribute('href') as string;
     }
+    this.sharedData = {
+      // tslint:disable-next-line: no-non-null-assertion
+      title: `${document.title} Details Observation #${this.data!.id_observation}`,
+      // tslint:disable-next-line: no-non-null-assertion
+      text: this.data!.comment,
+      url: url
+    } as ShareData;
   }
 }
 
