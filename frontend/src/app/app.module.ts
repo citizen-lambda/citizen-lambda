@@ -55,8 +55,7 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     ProgramsModule,
     routing,
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      scope: '../'
+      enabled: environment.production
     })
   ],
   declarations: [
