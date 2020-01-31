@@ -28,9 +28,9 @@
   ],
   "dataGroups": [
     {
-      "name": "taxonomy",
+      "name": "mnhn",
       "urls": [
-        "https://citizendemo.patkap.tech/api/taxref/*"
+        "https://taxref.mnhn.fr/api/media/*"
       ],
       "cacheConfig": {
         "maxSize": 128,
@@ -38,11 +38,10 @@
         "timeout": "7s",
         "strategy": "performance"
       }
-    },
-    {
-      "name": "mnhn",
+    },{
+      "name": "taxonomy",
       "urls": [
-        "https://taxref.mnhn.fr/api/media/*"
+        "/api/taxref/*"
       ],
       "cacheConfig": {
         "maxSize": 128,
@@ -54,7 +53,7 @@
     {
       "name": "observations",
       "urls": [
-        "https://citizendemo.patkap.tech/api/programs/*/observations"
+        "/api/programs/*/observations"
       ],
       "cacheConfig": {
         "maxSize": 128,
@@ -66,7 +65,7 @@
     {
       "name": "programs",
       "urls": [
-        "https://citizendemo.patkap.tech/api/programs/*"
+        "/api/programs/*"
       ],
       "cacheConfig": {
         "maxSize": 128,
