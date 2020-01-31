@@ -65,6 +65,7 @@
     {
       "name": "programs",
       "urls": [
+        "/api/programs",
         "/api/programs/*"
       ],
       "cacheConfig": {
