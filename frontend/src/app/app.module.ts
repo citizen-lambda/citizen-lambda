@@ -4,6 +4,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ServiceWorkerModule } from '@angular/service-worker';
+
+import { environment } from '../environments/environment';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -34,8 +37,6 @@ import { ErrorHandler } from './services/error_handler';
 import { AboutComponent } from './components/about/about.component';
 import { AboutCustomComponent } from './components/about/custom/custom.component';
 import { AboutFixedComponent } from './components/about/fixed/fixed.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 
 @NgModule({
   imports: [
@@ -53,7 +54,10 @@ import { environment } from '../environments/environment';
     LoadingBarModule,
     ProgramsModule,
     routing,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      scope: '../'
+    })
   ],
   declarations: [
     AppComponent,
