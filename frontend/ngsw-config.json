@@ -28,14 +28,26 @@
   ],
   "dataGroups": [
     {
-      "name": "osm-fr-tms",
+      "name": "taxonomy",
       "urls": [
-        "http://wms.openstreetmap.fr/tms/**"
+        "https://citizendemo.patkap.tech/api/taxref/*"
       ],
       "cacheConfig": {
         "maxSize": 128,
-        "maxAge": "3d12h",
-        "timeout": "2s",
+        "maxAge": "10m",
+        "timeout": "7s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "mnhn",
+      "urls": [
+        "https://taxref.mnhn.fr/api/media/*"
+      ],
+      "cacheConfig": {
+        "maxSize": 128,
+        "maxAge": "10m",
+        "timeout": "7s",
         "strategy": "performance"
       }
     },
