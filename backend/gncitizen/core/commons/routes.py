@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
+from flask import stream_with_context
+import logging
+import queue
 import json
 import urllib.parse
 from flask import Blueprint, request, current_app
-from flask_jwt_extended import jwt_optional, get_jwt_identity
+from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
 from flask_admin.form import SecureForm
 from flask_admin.contrib.sqla import ModelView
 from geoalchemy2.shape import from_shape
@@ -16,8 +19,16 @@ from gncitizen.utils.sqlalchemy import json_resp
 from gncitizen.utils.env import admin
 from server import db
 
-from .models import ModulesModel, ProgramsModel
+from .models import (
+    ModulesModel,
+    ProgramsModel,
+    FrontendBroadcastHandler,
+    # frontend_handler,
+    # frontend_broadcast
+)
 from gncitizen.core.users.models import UserModel
+from gncitizen.utils.jwt import admin_required
+
 
 try:
     from flask import _app_ctx_stack as ctx_stack
@@ -276,3 +287,95 @@ def post_program():
         )
     except Exception as e:
         return {"message": str(e)}, 400
+
+
+frontend_handler = FrontendBroadcastHandler()
+frontend_broadcast = logging.getLogger("stream")
+frontend_broadcast.setLevel(logging.DEBUG)
+frontend_broadcast.addHandler(frontend_handler)
+frontend_broadcast.info(
+    'data:{ "type": "debug", "data": { "message": "debug test" } }\n\n'
+)
+
+
+# @jwt_required
+@routes.route("/programs/stream")
+def program_stream():
+    return current_app.response_class(
+        stream_with_context(frontend_handler.subscribe()), mimetype="text/event-stream"
+    )
+
+
+"""
+@jwt_required
+@admin_required
+@routes.route("/programs/broadcast_test")
+def broadcast_test():
+    def generate_data():
+        import datetime
+        import time
+        import random
+
+        try:
+            while True:
+                rdm = random.random()
+                if rdm % 5 == 1:
+                    json_data = json.dumps(
+                        {
+                            "type": "keepalive",
+                            "data": {
+                                "time": datetime.datetime.now(
+                                    tz=datetime.timezone.utc
+                                ).strftime("%Y-%m-%d %H:%M:%S"),
+                                "value": rdm * 100,
+                            },
+                        }
+                    )
+                else:
+                    json_data = json.dumps(
+                        {
+                            "type": "update",
+                            "data": {
+                                "program": 1,
+                                "NewObservation": {
+                                    "geometry": {
+                                        "coordinates": [
+                                            5.414907932281495,
+                                            43.2861405430215,
+                                        ],
+                                        "type": "Point",
+                                    },
+                                    "properties": {
+                                        "cd_nom": 4474,
+                                        "comment": "Broadcast Test",
+                                        "count": 1,
+                                        "date": datetime.datetime.now(
+                                            tz=datetime.timezone.utc
+                                        ).strftime("%Y-%m-%d"),
+                                        "id_observation": 64,
+                                        "image": "https://citizendemo.patkap.tech/en/assets/icon.svg",
+                                        "municipality": {
+                                            "code": "13055",
+                                            "name": "Marseille",
+                                        },
+                                        "obs_txt": "",
+                                        "observer": {"username": "patkap"},
+                                        "timestamp_create": datetime.datetime.now(
+                                            tz=datetime.timezone.utc
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                                    },
+                                    "type": "Feature",
+                                },
+                            },
+                        }
+                    )
+                frontend_broadcast.info(f"data:{json_data}\n\n")
+                yield f"data:{json_data}\n\n"
+                time.sleep(rdm * 10)
+        except GeneratorExit:
+            print("closed")
+
+    return current_app.response_class(
+        stream_with_context(generate_data()), mimetype="text/event-stream"
+    )
+"""

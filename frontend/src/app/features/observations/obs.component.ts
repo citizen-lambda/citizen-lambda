@@ -90,6 +90,8 @@ export class ObservationsFacade implements OnDestroy {
     this._programs.next(programs);
   }
 
+  stream$ = this.programService.getProgramStream();
+
   features$ = this.state$.pipe(
     pluck<ObsState, Feature[]>('observations', 'features'),
     filter(features => !!features)
@@ -114,7 +116,9 @@ export class ObservationsFacade implements OnDestroy {
       const r = taxa.sort(sorted(prop));
       if (!!this.ConfigObsFeatures && !!this.ConfigObsFeatures.TAXONOMY.GROUP) {
         if (typeof this.ConfigObsFeatures.TAXONOMY.GROUP === 'function') {
-          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP(this.localeId)) as { [key: string]: Taxon[] };
+          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP(this.localeId)) as {
+            [key: string]: Taxon[];
+          };
         }
         if (typeof this.ConfigObsFeatures.TAXONOMY.GROUP === 'string') {
           return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP) as { [key: string]: Taxon[] };
@@ -128,8 +132,12 @@ export class ObservationsFacade implements OnDestroy {
     map(items => {
       return Array.from(
         new Map(
-          // tslint:disable-next-line: no-non-null-assertion
-          items.map(item => [+`${item.properties!.municipality.code}`, item.properties!.municipality])
+          items.map(item => [
+            // tslint:disable-next-line: no-non-null-assertion
+            +`${item.properties!.municipality.code}`,
+            // tslint:disable-next-line: no-non-null-assertion
+            item.properties!.municipality
+          ])
         ).values() as IterableIterator<Municipality>
       ).sort(sorted('name'));
     }),
@@ -294,6 +302,28 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     this.thematicMap.click
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((point: L.Point) => (this.facade.sharedContext.coords = point));
+
+    combineLatest([this.facade.stream$, this.facade.programID$])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(([items, program_id]) => {
+        console.debug(items, program_id);
+        if (!!items.length) {
+          try {
+            const event = JSON.parse(items.toString());
+            if (
+              event.type === 'update' &&
+              event.data.program &&
+              parseInt(event.data.program, 10) === program_id
+            ) {
+              if (event.data.NewObservation) {
+                this.facade.onNewObservation(event.data.NewObservation as Feature);
+              }
+            }
+          } catch (error) {
+            console.debug(error);
+          }
+        }
+      });
   }
 
   onListToggle(): void {
@@ -322,9 +352,9 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
     // set selected if not already set ?
   }
 
-  @HostListener('document:NewObservationEvent', ['$event'])
+  /* @HostListener('document:NewObservationEvent', ['$event'])
   newObservationEventHandler(e: CustomEvent): void {
     e.stopPropagation();
     this.facade.onNewObservation(e.detail as Feature);
-  }
+  } */
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
 import uuid
 from typing import Union, Tuple, Dict
 
@@ -14,7 +15,11 @@ from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
 
-from gncitizen.core.commons.models import MediaModel, ProgramsModel
+from gncitizen.core.commons.models import (
+    MediaModel,
+    ProgramsModel,
+    FrontendBroadcastHandler
+)
 from gncitizen.core.ref_geo.models import LAreas
 from .models import ObservationMediaModel, ObservationModel
 from gncitizen.core.users.models import UserModel
@@ -40,6 +45,13 @@ import dataclasses
 
 
 logger = current_app.logger
+frontend_handler = FrontendBroadcastHandler()
+frontend_broadcast = logging.getLogger("stream")
+frontend_broadcast.setLevel(logging.DEBUG)
+frontend_broadcast.addHandler(frontend_handler)
+frontend_broadcast.debug(
+    'data:{ "type": "debug", "data": { "message": "observations debug test" } }\n\n',
+)
 routes = Blueprint("observations", __name__)
 
 # logger.debug(TAXA.get(61153))
@@ -119,7 +131,8 @@ def generate_observation_geojson(id_observation):
         from gncitizen.core.taxonomy import TAXA
 
         feature["properties"]["media"] = [
-            dataclasses.asdict(medium) for medium in TAXA.get(feature["properties"]["cd_nom"]).media
+            dataclasses.asdict(medium)
+            for medium in TAXA.get(feature["properties"]["cd_nom"]).media
         ]
 
     features.append(feature)
@@ -276,6 +289,17 @@ def post_observation():
             logger.debug("ObsTax UPLOAD FILE {}".format(file))
             features[0]["properties"]["images"] = file
 
+            json_data = json.dumps(
+                {
+                    "type": "update",
+                    "data": {
+                        "program": newobs.id_program,
+                        "NewObservation": features[0],
+                    },
+                }
+            )
+            frontend_broadcast.info(f"data:{json_data}\n\n")
+
         except Exception as e:
             logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
@@ -393,7 +417,7 @@ def get_observations_from_list(id):  # noqa: A002
 @routes.route("/programs/<int:program_id>/observations", methods=["GET"])
 # @json_resp
 def get_program_observations(
-    program_id: int
+    program_id: int,
 ) -> Union[FeatureCollection, Tuple[Dict, int]]:
     """Get all observations from a program
         GET

@@ -1,4 +1,4 @@
-import { Injectable, Optional, SkipSelf, OnInit } from '@angular/core';
+import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { DomSanitizer, TransferState, makeStateKey } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
@@ -12,7 +12,6 @@ import { Taxonomy } from '../../core/models';
 import { sorted } from '../../helpers/sorted';
 
 const PROGRAMS_KEY = makeStateKey('programs');
-
 
 @Injectable({
   deps: [
@@ -54,8 +53,7 @@ export class GncProgramsService {
     if (!this.programs) {
       return this.client.get<FeatureCollection>(`${this.URL}/programs`).pipe(
         pluck<FeatureCollection, Feature[]>('features'),
-        map(features => features.map(feature => this.convertFeature2Program(feature))
-        ),
+        map(features => features.map(feature => this.convertFeature2Program(feature))),
         map(programs => programs.sort(sorted(AppConfig['program_list_sort']))),
         tap(programs => {
           this.state.set(PROGRAMS_KEY, programs as Program[]);
@@ -88,6 +86,27 @@ export class GncProgramsService {
         })
       )
     );
+  }
+
+  getProgramStream(): Observable<any[]> {
+    return new Observable(observer => {
+      const eventSource = new EventSource(`${this.URL}/programs/stream`);
+      eventSource.addEventListener('message', event => observer.next(event.data));
+      eventSource.addEventListener('update', event => {
+        console.log(event);
+      });
+      eventSource.addEventListener('error', _error => {
+        if (eventSource.readyState !== eventSource.CONNECTING) {
+          observer.error('An error occurred.');
+        }
+        eventSource.close();
+        observer.complete();
+      });
+
+      return () => {
+        eventSource.close();
+      };
+    });
   }
 
   getProgramTaxonomyList(program_id: number): Observable<Taxonomy> {

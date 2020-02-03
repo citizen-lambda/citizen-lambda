@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import logging
+import queue
 from datetime import datetime, timezone
 
 from geoalchemy2 import Geometry
@@ -79,3 +81,36 @@ class MediaModel(TimestampMixinModel, db.Model):
     __table_args__ = {"schema": "gnc_core"}
     id_media = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(50), nullable=False)
+
+
+class FrontendBroadcastHandler(logging.Handler):
+    def __init__(self):
+        logging.Handler.__init__(self)
+        self.subscriptions = []
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            print(msg)
+
+            def notify(subs, msg):
+                for sub in subs[:]:
+                    sub.put(msg)
+
+            # ?
+            notify(self.subscriptions, msg)
+
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
+
+    def subscribe(self):
+        q = queue.Queue()
+        self.subscriptions.append(q)
+        try:
+            while True:
+                result = q.get()
+                yield f"{result}\n\n"
+        except GeneratorExit:
+            self.subscriptions.remove(q)

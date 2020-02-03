@@ -501,3 +501,11 @@ $EDITOR ~/citizen/frontend/src/app/home/home.component.css
   --section-programs_height_max1366: 1100px !important;
 }
 ```
+
+```sh
+cp ~/citizen_sitemap.xml frontend/dist/browser/sitemap.xml
+# FIXME: robots.txt apache rewrite
+ln -s frontend/dist/browser/fr/robots.txt dist/robots.txt
+# update webapp manifest with name, scope && start_url per localeID
+vim frontend/dist/browser/*/manifest.webmanifest  
+```
