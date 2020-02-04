@@ -5,9 +5,8 @@
 - [x] j'ai commandé un nom de domaine,
 - [x] le service de résolution de nom de domaine (…chez le même fournisseur),
 - [x] mis à jour la zone DNS avec un enregistrement A pointant sur l'IP du VPS,
-- [x] finallement lié le VPS au domain via l'onglet <cite>DNS Secondaire</cite> 
-de l'interface d'administration du VPS.
-
+- [x] finallement lié le VPS au domain via l'onglet <cite>DNS Secondaire</cite>
+      de l'interface d'administration du VPS.
 
 ## prise en main
 
@@ -48,7 +47,7 @@ sudo apt install postgresql postgresql-client postgis \
   apache2 letsencrypt
 ```
 
-<cite>it works !</cite> La familière <cite>Apache2 Debian Default Page</cite> 
+<cite>it works !</cite> La familière <cite>Apache2 Debian Default Page</cite>
 est disponible sur le FQDN dans le navigateur.
 
 ## la ligne de commande
@@ -70,8 +69,8 @@ mkdir -p ~/.vim/pack/python/start/black/plugin && \
 
 ### `~/.ssh/config` et connnexion distante à la bdd de production
 
-Lors d'une connexion au shell distant, la mise en place d'un tunnel 
-relayant le port distant 5432 de la bdd au port local 5438 
+Lors d'une connexion au shell distant, la mise en place d'un tunnel
+relayant le port distant 5432 de la bdd au port local 5438
 facilite l'exploitation de la bdd avec `PgAdmin` ou `psql` depuis l'hôte local.
 Voici l'enregistrement que contient mon propre `~/.ssh/config`:
 
@@ -198,10 +197,10 @@ API_ENDPOINT = 'http://citizendemo.patkap.tech:5002/api'
 npm run start -- --host=0.0.0.0 --disableHostCheck
 ```
 
-c'est le moment d'aller vérifier 
-dans le navigateur que l'application se charge depuis 
+c'est le moment d'aller vérifier
+dans le navigateur que l'application se charge depuis
 `http://citizendemo.patkap.tech:4200/home`
-de s'enregister, et de mettre à jour le champs booléen 
+de s'enregister, et de mettre à jour le champs booléen
 `gnc_core`.`t_users`.`admin` dans la bdd.
 
 ## le déploiement
@@ -286,7 +285,9 @@ sudo systemctl status apache2.service
 ### serveur http de production
 
 ```sh
-python3 -m pip install gunicorn
+# python3 -m pip install gunicorn
+python3 -m pip install git+https://github.com/benoitc/gunicorn.git
+python3 -m pip install gevent
 $EDITOR ~/citizen/backend/start_gunicorn.sh
 ```
 
@@ -456,7 +457,7 @@ sudo a2enmod brotli
   RewriteBase /
 
   #RewriteRule ^sitemap\.xml$ sitemap.xml [L]
-  
+
   RewriteCond %{HTTP:Accept-Encoding} br
   RewriteCond %{REQUEST_FILENAME}.br -f
   RewriteRule ^(.*)$ $1.br [L]
@@ -468,7 +469,7 @@ sudo a2enmod brotli
 
   # If the requested resource doesn't exist, use index.html
   #RewriteRule ^ /index.html
-  
+
   RewriteRule ^../index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
@@ -507,5 +508,6 @@ cp ~/citizen_sitemap.xml frontend/dist/browser/sitemap.xml
 # FIXME: robots.txt apache rewrite
 ln -s frontend/dist/browser/fr/robots.txt dist/robots.txt
 # update webapp manifest with name, scope && start_url per localeID
-vim frontend/dist/browser/*/manifest.webmanifest  
+vim frontend/dist/browser/*/manifest.webmanifest
+for L in "fr" "en"; do sed -i "s/onFetch(event) {/onFetch(event) { if (event.request.url.indexOf('/api/stream') !== -1) { return; }/g" dist/browser/${L}/ngsw-worker.js; done
 ```

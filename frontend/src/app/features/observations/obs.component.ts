@@ -318,9 +318,10 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
               if (event.data.NewObservation) {
                 this.facade.onNewObservation(event.data.NewObservation as Feature);
               }
+              // …
             }
           } catch (error) {
-            console.debug(error);
+            console.error(error);
           }
         }
       });

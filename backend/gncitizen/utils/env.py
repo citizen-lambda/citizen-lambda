@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 from flask import current_app
 from flasgger import Swagger
 from flask_jwt_extended import JWTManager
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from flask_admin import Admin
 
 
@@ -44,6 +44,12 @@ def load_config(config_file=None):
 app_conf = load_config()
 MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
 SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
+# current_app.db.close_all_sessions()
+class SQLAlchemy(_BaseSQLAlchemy):
+    def apply_pool_defaults(self, app, options):
+        super(SQLAlchemy, self).apply_pool_defaults(app, options)
+        options["pool_pre_ping"] = True
+
 db = SQLAlchemy()
 
 jwt = JWTManager()
