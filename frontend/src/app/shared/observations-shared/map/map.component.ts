@@ -23,6 +23,8 @@ import 'leaflet-fullscreen';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
+import localForage from 'localforage';
+import 'leaflet-offline';
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { Taxonomy, Taxon } from '../../../core/models';
@@ -33,10 +35,37 @@ declare module 'leaflet' {
   interface MapOptions {
     gestureHandling?: boolean;
   }
+  export class TileLayerOffline extends L.TileLayer {
+    constructor(urlTemplate: string, tilesDb: Object, options?: L.TileLayerOptions);
+    initialize(url: String, tilesDb: Object, options: Object): void;
+    createTile(coords: Object, done: Function): HTMLElement;
+    getTileUrl(coords: Object): String;
+    getTileUrls(bounds: Object, zoom: Number): Array<any>;
+  }
+  // export function tileLayer(urlTemplate: string, options?: L.TileLayerOptions): L.TileLayer;
+  export namespace tileLayer {
+    function offline(url: String, tilesDb: Object, options: Object): TileLayerOffline;
+    /* export class Offline extends L.TileLayer {
+      constructor(urlTemplate: string, tilesDb: Object, options?: L.TileLayerOptions);
+      initialize(url: String, tilesDb: Object, options: Object): void;
+      createTile(coords: Object, done: Function): HTMLElement;
+      getTileUrl(coords: Object): String;
+      getTileUrls(bounds: Object, zoom: Number): Array<any>;
+    } */
+  }
+  export class ControlOffline extends L.Control {
+    constructor(baseLayer: Object, tilesDb: Object, options: Object);
+    initialize(baseLayer: Object, tilesDb: Object, options: Object): void;
+    onAdd(map: Object): HTMLElement;
+  }
   namespace Control {
     interface LocateOptions {
       getLocationBounds?: Function;
     }
+  }
+  export function control(): L.ControlOffline;
+  export namespace control {
+    function offline(baseLayer: Object, tilesDb: Object, options: Object): ControlOffline;
   }
 }
 
@@ -59,6 +88,56 @@ export const ZoomViewer = L.Control.extend({
     return container;
   }
 });
+
+export const tilesDb = {
+  getItem: function(key: string) {
+    return localForage.getItem(key);
+  },
+
+  saveTiles: function(tileUrls: { key: string; url: string }[]) {
+    const self = this;
+
+    const promises = [];
+
+    for (let i = 0; i < tileUrls.length; i++) {
+      const tileUrl = tileUrls[i];
+      promises[i] = new Promise(function(resolve, reject) {
+        const request = new XMLHttpRequest();
+        request.open('GET', tileUrl.url, true);
+        request.responseType = 'blob';
+        request.onreadystatechange = function() {
+          if (request.readyState === XMLHttpRequest.DONE) {
+            if (request.status === 200) {
+              resolve(self._saveTile(tileUrl.key, request.response));
+            } else {
+              reject({
+                status: request.status,
+                statusText: request.statusText
+              });
+            }
+          }
+        };
+        request.send();
+      });
+    }
+
+    return Promise.all(promises);
+  },
+
+  clear: function() {
+    return localForage.clear();
+  },
+
+  _saveTile: function(key: string, value: any) {
+    return this._removeItem(key).then(function() {
+      return localForage.setItem(key, value);
+    });
+  },
+
+  _removeItem: function(key: string) {
+    return localForage.removeItem(key);
+  }
+};
 
 export const conf = {
   MAP_ID: 'thematicMap',
@@ -235,6 +314,69 @@ export class ObsMapComponent implements OnInit, OnChanges {
     const zv = new ZoomViewer();
     zv.addTo(this.observationMap);
     zv.setPosition(this.options.CONTROL_ZOOMVIEW_POSITION);
+
+    const offlineLayer = L.tileLayer.offline(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      tilesDb,
+      {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: 'abc',
+        minZoom: 13,
+        maxZoom: 20,
+        crossOrigin: true,
+        name: 'offline'
+      }
+    );
+
+    const offlineControl = L.control.offline(offlineLayer, tilesDb, {
+      saveButtonHtml: '<i class="fa fa-download" aria-hidden="true"></i>',
+      removeButtonHtml: '<i class="fa fa-trash" aria-hidden="true"></i>',
+      confirmSavingCallback: function(nTilesToSave: number, continueSaveTiles: Function) {
+        if (window.confirm('Save ' + nTilesToSave + '?')) {
+          continueSaveTiles();
+        }
+      },
+      confirmRemovalCallback: function(continueRemoveTiles: Function) {
+        if (window.confirm('Remove all the tiles?')) {
+          continueRemoveTiles();
+        }
+      },
+      minZoom: 13,
+      maxZoom: 19
+    });
+
+    offlineLayer.addTo(this.observationMap);
+    offlineControl.addTo(this.observationMap);
+
+    offlineLayer.on('offline:below-min-zoom-error', function() {
+      alert('Can not save tiles below minimum zoom level.');
+    });
+
+    offlineLayer.on('offline:save-start', function(data) {
+      console.log(
+        'Saving ' + (data as L.LeafletEvent & { nTilesToSave: number }).nTilesToSave + ' tiles.'
+      );
+    });
+
+    offlineLayer.on('offline:save-end', function() {
+      alert('All the tiles were saved.');
+    });
+
+    offlineLayer.on('offline:save-error', function(err) {
+      console.error('Error when saving tiles: ' + err);
+    });
+
+    offlineLayer.on('offline:remove-start', function() {
+      console.log('Removing tiles.');
+    });
+
+    offlineLayer.on('offline:remove-end', function() {
+      alert('All the tiles were removed.');
+    });
+
+    offlineLayer.on('offline:remove-error', function(err) {
+      console.error('Error when removing tiles: ' + err);
+    });
   }
 
   loadProgramArea(canSubmit = true): void {
