@@ -1,11 +1,12 @@
 """
     Give a unique entry point for gunicorn
 """
-import gevent.monkey
-gevent.monkey.patch_all()
-
-from gncitizen.utils.env import load_config, get_config_file_path
+import os
+if "gunicorn" in os.environ.get("SERVER_SOFTWARE", ""):
+    import gevent.monkey
+    gevent.monkey.patch_all()
 from server import get_app
+from gncitizen.utils.env import load_config, get_config_file_path
 
 # get the app config file
 config = load_config()
