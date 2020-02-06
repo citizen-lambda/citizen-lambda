@@ -319,7 +319,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       tilesDb,
       {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
         subdomains: 'abc',
         minZoom: 13,
         maxZoom: 20,
