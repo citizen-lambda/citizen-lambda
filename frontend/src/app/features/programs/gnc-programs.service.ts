@@ -52,6 +52,7 @@ export class GncProgramsService {
   getAllPrograms(): Observable<Program[] | null> {
     if (!this.programs) {
       return this.client.get<FeatureCollection>(`${this.URL}/programs`).pipe(
+        // FIXME: handle empty|null case -> handleError
         pluck<FeatureCollection, Feature[]>('features'),
         map(features => features.map(feature => this.convertFeature2Program(feature))),
         map(programs => programs.sort(sorted(AppConfig['program_list_sort']))),
@@ -90,7 +91,7 @@ export class GncProgramsService {
 
   getProgramStream(): Observable<any[]> {
     return new Observable(observer => {
-      const eventSource = new EventSource(`${this.URL}/programs/stream`);
+      const eventSource = new EventSource(`${this.URL}/programs/stream?ngsw-bypass=1`);
       eventSource.addEventListener('message', event => observer.next(event.data));
       eventSource.addEventListener('update', event => {
         console.log(event);

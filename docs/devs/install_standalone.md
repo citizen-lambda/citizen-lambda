@@ -509,5 +509,4 @@ cp ~/citizen_sitemap.xml frontend/dist/browser/sitemap.xml
 ln -s frontend/dist/browser/fr/robots.txt dist/robots.txt
 # update webapp manifest with name, scope && start_url per localeID
 vim frontend/dist/browser/*/manifest.webmanifest
-for L in "fr" "en"; do sed -i "s/onFetch(event) {/onFetch(event) { if (event.request.url.indexOf('/api/stream') !== -1) { return; }/g" dist/browser/${L}/ngsw-worker.js; done
 ```

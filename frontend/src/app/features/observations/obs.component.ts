@@ -161,12 +161,12 @@ export class ObservationsFacade implements OnDestroy {
     !!obs && !!this.selectedTaxonID
       ? // tslint:disable-next-line: no-non-null-assertion
         obs.filter(o => o.properties!.cd_nom === parseInt(this.selectedTaxonID!, 10))
-      : obs
+      : obs;
   filterMunicipality = (obs: Feature[]): Feature[] =>
     !!obs && !!this.selectedMunicipality
       ? // tslint:disable-next-line: no-non-null-assertion
         obs.filter(o => o.properties!.municipality.code === this.selectedMunicipality.code)
-      : obs
+      : obs;
 
   constructor(
     @Inject(LOCALE_ID) public localeId: string,
@@ -311,11 +311,13 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
           try {
             const event = JSON.parse(items.toString());
             if (
+              'type' in event &&
               event.type === 'update' &&
-              event.data.program &&
+              'program' in event.data &&
               parseInt(event.data.program, 10) === program_id
             ) {
-              if (event.data.NewObservation) {
+              if ('NewObservation' in event.data) {
+                // TODO: leverage newObservationEventHandler
                 this.facade.onNewObservation(event.data.NewObservation as Feature);
               }
               // …
