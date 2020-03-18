@@ -62,8 +62,7 @@ class ProgramView(ModelView):
                 user = user_loader(ctx_stack.top.jwt["identity"])
                 if user is None:
                     raise UserLoadError("user_loader returned None for {}".format(user))
-                else:
-                    ctx_stack.top.jwt_user = user
+                ctx_stack.top.jwt_user = user
 
             current_user = get_jwt_identity()
             is_admin = UserModel.query.filter_by(username=current_user).one().admin

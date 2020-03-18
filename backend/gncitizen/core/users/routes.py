@@ -114,21 +114,21 @@ def registration():
                     400,
                 )
 
-            elif (
+            if (
                 db.session.query(UserModel)
                 .filter(UserModel.email == newuser.email)
                 .one()
             ):
                 return (
                     {
-                        "message": """Un email correspondant est déjà enregistré.""".format(
-                            newuser.email
-                        )
+                        "message": """Un email correspondant est déjà enregistré."""  # .format(
+                        #     newuser.email
+                        # )
                     },
                     400,
                 )
-            else:
-                raise GeonatureApiError(e)
+
+            raise GeonatureApiError(e)
 
         access_token = create_access_token(identity=newuser.username)
         refresh_token = create_refresh_token(identity=newuser.username)
@@ -206,8 +206,7 @@ def login():
                 },
                 200,
             )
-        else:
-            return {"message": """Mauvaises informations d'identification"""}, 400
+        return {"message": """Mauvaises informations d'identification"""}, 400
     except Exception as e:
         return {"message": str(e)}, 400
 
@@ -339,7 +338,6 @@ def logged_user():
 
             user.password = UserModel.generate_hash(request_data["password"])
             user.admin = is_admin
-            # QUESTION: do we want to update corresponding obs IDs ... in any case ?
             user.update()
             return (
                 {
@@ -398,7 +396,7 @@ def delete_user():
         except Exception as e:
             db.session.rollback()
             raise GeonatureApiError(e)
-            return {"message": str(e)}, 400
+            # return {"message": str(e)}, 400
 
         return (
             {
@@ -409,7 +407,7 @@ def delete_user():
             200,
         )
 
-
+# TODO: reset_passwd|login|register debounce + ban?(5)
 @routes.route("/user/resetpasswd", methods=["POST"])
 @json_resp
 def reset_user_password():

@@ -25,6 +25,7 @@ import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
 import localForage from 'localforage';
 import 'leaflet-offline';
+// L.Control.MousePosition
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { Taxonomy, Taxon } from '../../../core/models';

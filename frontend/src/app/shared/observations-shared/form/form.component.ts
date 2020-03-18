@@ -117,7 +117,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
   hasZoomAlert: boolean | undefined;
   zoomAlertTimeout: any;
 
-  // these functions have to stay anonymous.
+  
   disabledDates = (date: NgbDate, _current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
     return date_impl > this.today;

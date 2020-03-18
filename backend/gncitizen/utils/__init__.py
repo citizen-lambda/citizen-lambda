@@ -29,7 +29,7 @@ def compose(*fns):
     return reduce(lambda f, g: lambda x: f(g(x)), fns, lambda x: x)  # noqa
 
 
-def pass_through(k):
+def pass_through(_k):
     def _inner_passthrough(v):
         # print(f"k:{k} v:{v}")
         return v
@@ -87,8 +87,8 @@ def _path(mapping: Mapping[K, V]) -> Callable:
             head, *tail = nodes
             m = m.get(head)
             return path_val(tail)
-        else:
-            return m
+
+        return m
 
     return path_val
 
@@ -119,7 +119,7 @@ class ReadRepoAdapter(Generic[T]):
     name: str
     provides: str
 
-    def get(self, *args: Any, **kwargs: Any) -> Optional[T]:
+    def get(self, *_args: Any, **_kwargs: Any) -> Optional[T]:
         ...
 
 
@@ -127,14 +127,14 @@ class WriteRepoAdapter(Generic[T]):
     name: str
     provides: str
 
-    def upsert(self, item: T, payload: Any):
+    def upsert(self, _item: T, _payload: Any):
         ...
 
 
 class ReadRepository(Generic[T]):
     read_adapter: Union[ReadRepoAdapter[T], Any]
 
-    def __init__(self, read_adapter: ReadRepoAdapter[T], *args, **kwargs):
+    def __init__(self, read_adapter: ReadRepoAdapter[T], *_args, **_kwargs):
         self.read_adapter = read_adapter
 
     def get(self, ref: Any) -> Optional[T]:
@@ -148,7 +148,7 @@ class ReadRepository(Generic[T]):
 class WriteRepository(Generic[T]):
     write_adapter: Union[WriteRepoAdapter[T], Any]
 
-    def __init__(self, write_adapter: WriteRepoAdapter[T], *args, **kwargs):
+    def __init__(self, write_adapter: WriteRepoAdapter[T], *_args, **_kwargs):
         self.write_adapter = write_adapter
 
     def upsert(self, item: T, payload: Any):

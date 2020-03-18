@@ -47,8 +47,8 @@ def get_municipality_id_from_wkb(wkb: WKBElement):
         logger.debug(f"[get_municipality_id_from_wkb_point] Id: {municipality_id}")
     except Exception as e:
         logger.debug(f"[get_municipality_id_from_wkb_point] Can't get id: {str(e)}")
-        raise
         municipality_id = None
+        raise
     return municipality_id
 
 
@@ -65,6 +65,6 @@ def get_area_informations(id_area):
                 str(e)
             )
         )
-        raise
         area = None
+        raise
     return area
