@@ -74,7 +74,7 @@ relayant le port distant 5432 de la bdd au port local 5438
 facilite l'exploitation de la bdd avec `PgAdmin` ou `psql` depuis l'hôte local.
 Voici l'enregistrement que contient mon propre `~/.ssh/config`:
 
-```conf
+```sshconf
 Host citizendemo
   Hostname citizendemo.patkap.tech
   User pat
@@ -218,7 +218,7 @@ sudo systemctl restart apache2
 sudoedit /etc/apache2/sites-available/citizen.conf
 ```
 
-```conf
+```apacheconf
 # citizen
 <VirtualHost *:80>
   ServerName patkap.tech
@@ -397,15 +397,14 @@ sudo a2enmod brotli
  </Location>
 ```
 
-```conf
-# Configuration GeoNature-citizen
-# Alias / /home/pat/citizen/frontend/dist/browser
+```apacheconf
 <VirtualHost *:80>
-  ServerName patkap.tech
+  ServerName citizendemo.patkap.tech
+  ServerAlias patkap.tech
 
   RewriteEngine on
   RewriteCond %{HTTPS} !on
-  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 </VirtualHost>
 
@@ -413,6 +412,7 @@ sudo a2enmod brotli
     ServerAdmin patkap@no-reply.github.com
     ServerName patkap.tech
     ServerAlias citizendemo.patkap.tech
+    # DocumentRoot /var/www/html
     DocumentRoot /home/pat/citizen/frontend/dist/browser/
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
@@ -421,20 +421,33 @@ sudo a2enmod brotli
     SSLCertificateFile /etc/letsencrypt/live/citizendemo.patkap.tech/cert.pem
     SSLCertificateKeyFile /etc/letsencrypt/live/citizendemo.patkap.tech/privkey.pem
     SSLCertificateChainFile /etc/letsencrypt/live/citizendemo.patkap.tech/chain.pem
-    SSLProtocol all -SSLv2 -SSLv3
+    Protocols h2 http/1.1
+    SSLProtocol TLSv1.2
     SSLHonorCipherOrder on
-    SSLCompression off
     SSLOptions +StrictRequire
-    SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
-    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    SSLCipherSuite ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256
 
     AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json application/ld+json image/svg+xml application/xml+rss application/x-font-ttf application/vnd.ms-fontobject image/x-icon
     SetEnvIfNoCase Request_URI \
         \.(gif|jpe?g|png|swf|woff|woff2) no-brotli dont-vary
 
-    #Make sure proxies don't deliver the wrong content
     Header append Vary User-Agent env=!dont-vary
+    Header set Content-Security-Policy "default-src 'self'; form-action 'self'; img-src data: mediastream: blob: https://*; object-src 'self'; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
+    Header set X-Frame-Options "DENY" "expr=%{CONTENT_TYPE} =~ m#text/html#i"
+    Header set X-Content-Type-Options "nosniff"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+    Header set Referrer-Policy "strict-origin-when-cross-origin" "expr=%{CONTENT_TYPE} =~ m#text\/(css|html|javascript)|application\/pdf|xml#i"
+    Header set X-XSS-Protection "1; mode=block" "expr=%{CONTENT_TYPE} =~ m#text/html#i"
+    Header unset X-Powered-By
+    Header always unset X-Powered-By
 </VirtualHost>
+
+SSLProtocol TLSv1.2
+SSLHonorCipherOrder off
+SSLSessionTickets       off
+
+SSLUseStapling On
+SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
 
 <Files *.js.br>
   AddType "application/javascript" .br
@@ -454,9 +467,12 @@ sudo a2enmod brotli
 
   RewriteEngine On
 
-  RewriteBase /
+  RewriteCond %{REQUEST_METHOD} ^TRACE [NC]
+  RewriteRule .* - [R=405,L]
 
-  #RewriteRule ^sitemap\.xml$ sitemap.xml [L]
+  RewriteBase /
+  
+  RewriteRule ^sitemap\.xml$ sitemap.xml [L]
 
   RewriteCond %{HTTP:Accept-Encoding} br
   RewriteCond %{REQUEST_FILENAME}.br -f
@@ -469,7 +485,7 @@ sudo a2enmod brotli
 
   # If the requested resource doesn't exist, use index.html
   #RewriteRule ^ /index.html
-
+  
   RewriteRule ^../index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
