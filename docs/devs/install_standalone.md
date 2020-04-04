@@ -526,3 +526,10 @@ ln -s frontend/dist/browser/fr/robots.txt dist/robots.txt
 # update webapp manifest with name, scope && start_url per localeID
 vim frontend/dist/browser/*/manifest.webmanifest
 ```
+
+### Monitoring
+
+```sh
+sudo bash -c 'zcat /var/log/apache2/access.log.*.gz | sudo goaccess /var/log/apache2/access.log /var/log/apache2/access.log.1 --log-format=COMBINED'
+```
+
