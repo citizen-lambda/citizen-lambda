@@ -62,14 +62,23 @@ class ProgramsModel(TimestampMixinModel, db.Model):
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))
     module = db.Column(
-        db.Integer, ForeignKey(ModulesModel.id_module), nullable=False, default=1
+        db.Integer,
+        ForeignKey(ModulesModel.id_module),
+        nullable=False,
+        default=1,
     )
-    taxonomy_list = db.Column(db.Integer, ForeignKey(BibListes.id_liste), nullable=True)
-    is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
+    taxonomy_list = db.Column(
+        db.Integer, ForeignKey(BibListes.id_liste), nullable=True
+    )
+    is_active = db.Column(
+        db.Boolean(), server_default=expression.true(), default=True
+    )
     geom = db.Column(Geometry("GEOMETRY", 4326))
 
     def get_geofeature(self, recursif=True, columns=None):
-        return self.as_geofeature("geom", "id_program", recursif, columns=columns)
+        return self.as_geofeature(
+            "geom", "id_program", recursif, columns=columns
+        )
 
 
 @serializable
@@ -100,15 +109,16 @@ class FrontendBroadcastHandler(logging.Handler):
             # ?
             notify(self.subscriptions, msg)
 
-        except (KeyboardInterrupt, SystemExit):
+        except (KeyboardInterrupt, SystemExit):  # noqa: W0706
             raise
-        except:
+        except Exception:
             self.handleError(record)
 
     def subscribe(self):
         q = queue.Queue()
         self.subscriptions.append(q)
         try:
+            yield f"hello eventSource\n\n"
             while True:
                 result = q.get()
                 yield f"{result}\n\n"
