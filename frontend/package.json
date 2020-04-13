@@ -65,7 +65,7 @@
     "leaflet.markercluster": "^1.4.1",
     "localforage": "^1.7.3",
     "mock-browser": "^0.92.14",
-    "rxjs": "~6.5.4",
+    "rxjs": "~6.5.5",
     "tslib": "^1.10.0",
     "typescript": "^3.7.5",
     "uninstall": "0.0.0",
