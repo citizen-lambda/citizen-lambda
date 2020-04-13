@@ -2,9 +2,11 @@
   "compileOnSave": true,
   "compilerOptions": {
     "importHelpers": true,
-    "paths": {
-      "@nguniversal/*": ["./modules/*"]
-    },
+    // "paths": {
+    //   "@nguniversal/*": [
+    //     "./modules/*"
+    //   ]
+    // },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -23,9 +25,16 @@
     "strict": true,
     "noEmitOnError": true,
     "target": "es2015",
-    "types": [ "node" ],
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"]
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ]
   },
   "angularCompilerOptions": {
     // "fullTemplateTypeCheck": true,
