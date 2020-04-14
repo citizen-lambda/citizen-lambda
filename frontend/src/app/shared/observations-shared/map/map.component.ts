@@ -40,7 +40,7 @@ declare module 'leaflet' {
     constructor(urlTemplate: string, tilesDb: Object, options?: L.TileLayerOptions);
     initialize(url: String, tilesDb: Object, options: Object): void;
     createTile(coords: Object, done: Function): HTMLElement;
-    getTileUrl(coords: Object): String;
+    getTileUrl(coords: L.Coords): string;
     getTileUrls(bounds: Object, zoom: Number): Array<any>;
   }
   // export function tileLayer(urlTemplate: string, options?: L.TileLayerOptions): L.TileLayer;
@@ -82,7 +82,7 @@ export const ZoomViewer = L.Control.extend({
       const z = Math.round(map.getZoom());
       gauge.innerHTML = `<span style="color:${
         z >= MAP_CONFIG.ZOOM_LEVEL_RELEVE ? 'var(--valid)' : 'var(--invalid)'
-      };">Zoom: ${z}</span>`;
+        };">Zoom: ${ z }</span>`;
     });
     container.appendChild(gauge);
 
@@ -91,22 +91,22 @@ export const ZoomViewer = L.Control.extend({
 });
 
 export const tilesDb = {
-  getItem: function(key: string) {
+  getItem: function (key: string) {
     return localForage.getItem(key);
   },
 
-  saveTiles: function(tileUrls: { key: string; url: string }[]) {
+  saveTiles: function (tileUrls: { key: string; url: string }[]) {
     const self = this;
 
     const promises = [];
 
     for (let i = 0; i < tileUrls.length; i++) {
       const tileUrl = tileUrls[i];
-      promises[i] = new Promise(function(resolve, reject) {
+      promises[i] = new Promise(function (resolve, reject) {
         const request = new XMLHttpRequest();
         request.open('GET', tileUrl.url, true);
         request.responseType = 'blob';
-        request.onreadystatechange = function() {
+        request.onreadystatechange = function () {
           if (request.readyState === XMLHttpRequest.DONE) {
             if (request.status === 200) {
               resolve(self._saveTile(tileUrl.key, request.response));
@@ -125,17 +125,17 @@ export const tilesDb = {
     return Promise.all(promises);
   },
 
-  clear: function() {
+  clear: function () {
     return localForage.clear();
   },
 
-  _saveTile: function(key: string, value: any) {
-    return this._removeItem(key).then(function() {
+  _saveTile: function (key: string, value: any) {
+    return this._removeItem(key).then(function () {
       return localForage.setItem(key, value);
     });
   },
 
-  _removeItem: function(key: string) {
+  _removeItem: function (key: string) {
     return localForage.removeItem(key);
   }
 };
@@ -156,11 +156,11 @@ export const conf = {
     return !!MAP_CONFIG['DEFAULT_PROVIDER']
       ? (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[MAP_CONFIG['DEFAULT_PROVIDER']]
       : (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[
-          Object.keys(conf.BASE_LAYERS)[
-            // tslint:disable-next-line: no-bitwise
-            (Math.random() * MAP_CONFIG['BASEMAPS'].length) >> 0
-          ]
-        ];
+      Object.keys(conf.BASE_LAYERS)[
+      // tslint:disable-next-line: no-bitwise
+      (Math.random() * MAP_CONFIG['BASEMAPS'].length) >> 0
+      ]
+      ];
   },
   CONTROL_ZOOM_POSITION: 'topright',
   CONTROL_BASE_LAYER_POSITION: 'topright',
@@ -204,7 +204,7 @@ export const conf = {
       return c;
     };
     return new L.DivIcon({
-      html: `<div><span>${childCount}</span></div>`,
+      html: `<div><span>${ childCount }</span></div>`,
       className: 'marker-cluster' + quantiles(childCount),
       iconSize: new L.Point(40, 40)
     });
@@ -257,7 +257,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   zoomAlertTimeout: any;
   popupRef?: ComponentRef<MarkerPopupComponent>;
 
-  constructor(private injector: Injector, private resolver: ComponentFactoryResolver) {}
+  constructor(private injector: Injector, private resolver: ComponentFactoryResolver) { }
 
   ngOnInit() {
     this.options = conf;
@@ -290,13 +290,13 @@ export class ObsMapComponent implements OnInit, OnChanges {
     this.observationMap.zoomControl.setPosition(this.options.CONTROL_ZOOM_POSITION);
 
     (L.control as any)
-      ['fullscreen']({
-        position: this.options.CONTROL_FULLSCREEN_POSITION,
-        title: {
-          false: 'View Fullscreen',
-          true: 'Exit Fullscreen'
-        }
-      })
+    ['fullscreen']({
+      position: this.options.CONTROL_FULLSCREEN_POSITION,
+      title: {
+        false: 'View Fullscreen',
+        true: 'Exit Fullscreen'
+      }
+    })
       .addTo(this.observationMap);
 
     L.control
@@ -332,12 +332,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
     const offlineControl = L.control.offline(offlineLayer, tilesDb, {
       saveButtonHtml: '<i class="fa fa-download" aria-hidden="true"></i>',
       removeButtonHtml: '<i class="fa fa-trash" aria-hidden="true"></i>',
-      confirmSavingCallback: function(nTilesToSave: number, continueSaveTiles: Function) {
+      confirmSavingCallback: function (nTilesToSave: number, continueSaveTiles: Function) {
         if (window.confirm('Save ' + nTilesToSave + '?')) {
           continueSaveTiles();
         }
       },
-      confirmRemovalCallback: function(continueRemoveTiles: Function) {
+      confirmRemovalCallback: function (continueRemoveTiles: Function) {
         if (window.confirm('Remove all the tiles?')) {
           continueRemoveTiles();
         }
@@ -349,33 +349,33 @@ export class ObsMapComponent implements OnInit, OnChanges {
     offlineLayer.addTo(this.observationMap);
     offlineControl.addTo(this.observationMap);
 
-    offlineLayer.on('offline:below-min-zoom-error', function() {
+    offlineLayer.on('offline:below-min-zoom-error', function () {
       alert('Can not save tiles below minimum zoom level.');
     });
 
-    offlineLayer.on('offline:save-start', function(data) {
+    offlineLayer.on('offline:save-start', function (data) {
       console.log(
         'Saving ' + (data as L.LeafletEvent & { nTilesToSave: number }).nTilesToSave + ' tiles.'
       );
     });
 
-    offlineLayer.on('offline:save-end', function() {
+    offlineLayer.on('offline:save-end', function () {
       alert('All the tiles were saved.');
     });
 
-    offlineLayer.on('offline:save-error', function(err) {
+    offlineLayer.on('offline:save-error', function (err) {
       console.error('Error when saving tiles: ' + err);
     });
 
-    offlineLayer.on('offline:remove-start', function() {
+    offlineLayer.on('offline:remove-start', function () {
       console.log('Removing tiles.');
     });
 
-    offlineLayer.on('offline:remove-end', function() {
+    offlineLayer.on('offline:remove-end', function () {
       alert('All the tiles were removed.');
     });
 
-    offlineLayer.on('offline:remove-error', function(err) {
+    offlineLayer.on('offline:remove-error', function (err) {
       console.error('Error when removing tiles: ' + err);
     });
   }
