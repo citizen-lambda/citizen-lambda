@@ -117,7 +117,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
   hasZoomAlert: boolean | undefined;
   zoomAlertTimeout: any;
 
-  
+
   disabledDates = (date: NgbDate, _current: { month: number }) => {
     const date_impl = new Date(date.year, date.month - 1, date.day);
     return date_impl > this.today;
@@ -131,11 +131,11 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
         term === '' // term.length < n
           ? []
           : this.species
-              .filter(
-                value => new RegExp(term, 'gi').test(value['name'])
-                // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
-              )
-              .slice(0, this.taxonAutocompleteMaxResults)
+            .filter(
+              value => new RegExp(term, 'gi').test(value['name'])
+              // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
+            )
+            .slice(0, this.taxonAutocompleteMaxResults)
       )
       // tslint:disable-next-line: semicolon
     );
@@ -153,7 +153,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
       for (const field of this.taxonAutocompleteFields) {
         if (field in taxon) {
           fields[field] = (taxon as any)[field] as string;
-          str += ` \n${(taxon as any)[field]}`;
+          str += ` \n${ (taxon as any)[field] }`;
         }
       }
       this.species.push({
@@ -170,7 +170,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     @Inject(LOCALE_ID) readonly localeId: string,
     private sanitizer: DomSanitizer,
     private client: HttpClient
-  ) {}
+  ) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.data && changes.data.currentValue && this.data) {
@@ -233,12 +233,12 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     if (this.photo) {
       const files: FileList = this.photo.nativeElement.files;
       if (!!files.length) {
-        this.photoFilename$.next(files[0].name);
+        this.photoFilename$.next(name in files[0] ? files[0].name : '');
 
         const file: Blob = files[0];
         this.imageBlobURL = this.sanitizer.bypassSecurityTrustResourceUrl(
           window.URL.createObjectURL(files[0])
-          );
+        );
 
         const reader = new FileReader();
         reader.addEventListener('load', event => {
@@ -334,16 +334,16 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     for (const item of ['count', 'comment', 'id_program']) {
       const c = this.obsForm.get(item);
       if (!c) {
-        throw new Error(`form is missing field ${c}`);
+        throw new Error(`form is missing field ${ c }`);
       }
       if (item !== 'comment' && !!!c.value) {
-        throw new Error(`form is missing required field ${c}`);
+        throw new Error(`form is missing required field ${ c }`);
       }
       formData.append(item, c.value);
     }
 
     return this.client.post<ObsPostResponse>(
-      `${this.URL}/observations`,
+      `${ this.URL }/observations`,
       formData,
       httpOptions
     );

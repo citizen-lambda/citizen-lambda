@@ -101,7 +101,7 @@ export class ObservationsFacade implements OnDestroy {
     map(items => {
       return Array.from(
         // tslint:disable-next-line: no-non-null-assertion
-        new Map(items.map(item => [+`${item.properties!.cd_nom}`, item])).values()
+        new Map(items.map(item => [+`${ item.properties!.cd_nom }`, item])).values()
       ).reduce((acc: Observable<Taxon>[], item: Feature) => {
         return [
           ...acc,
@@ -124,7 +124,7 @@ export class ObservationsFacade implements OnDestroy {
           return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP) as { [key: string]: Taxon[] };
         }
       }
-      return r;
+      return null;
     })
   );
 
@@ -134,7 +134,7 @@ export class ObservationsFacade implements OnDestroy {
         new Map(
           items.map(item => [
             // tslint:disable-next-line: no-non-null-assertion
-            +`${item.properties!.municipality.code}`,
+            +`${ item.properties!.municipality.code }`,
             // tslint:disable-next-line: no-non-null-assertion
             item.properties!.municipality
           ])
@@ -160,12 +160,12 @@ export class ObservationsFacade implements OnDestroy {
   filterTaxon = (obs: Feature[]): Feature[] =>
     !!obs && !!this.selectedTaxonID
       ? // tslint:disable-next-line: no-non-null-assertion
-        obs.filter(o => o.properties!.cd_nom === parseInt(this.selectedTaxonID!, 10))
+      obs.filter(o => o.properties!.cd_nom === parseInt(this.selectedTaxonID!, 10))
       : obs;
   filterMunicipality = (obs: Feature[]): Feature[] =>
     !!obs && !!this.selectedMunicipality
       ? // tslint:disable-next-line: no-non-null-assertion
-        obs.filter(o => o.properties!.municipality.code === this.selectedMunicipality.code)
+      obs.filter(o => o.properties!.municipality.code === this.selectedMunicipality.code)
       : obs;
 
   constructor(
@@ -289,7 +289,7 @@ export class ObsComponent implements AfterViewInit, OnDestroy {
         name: 'description',
         content: program.short_desc
       });
-      this.seo.setTitle(`${program.title}`);
+      this.seo.setTitle(`${ program.title }`);
     });
   }
 
