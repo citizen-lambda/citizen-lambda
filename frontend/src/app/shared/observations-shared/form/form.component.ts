@@ -233,8 +233,8 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     if (this.photo) {
       const files: FileList = this.photo.nativeElement.files;
       if (!!files.length) {
-        this.photoFilename$.next(name in files[0] ? files[0].name : '');
-
+        this.photoFilename$.next(files[0].name);
+        console.debug(files[0].name)
         const file: Blob = files[0];
         this.imageBlobURL = this.sanitizer.bypassSecurityTrustResourceUrl(
           window.URL.createObjectURL(files[0])
