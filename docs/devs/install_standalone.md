@@ -519,12 +519,12 @@ $EDITOR ~/citizen/frontend/src/app/home/home.component.css
 ```sh
 cp ~/citizen_sitemap.xml frontend/dist/browser/sitemap.xml
 # TODO: remaining apache rewrite
-cp dist/browser/fr/robots.txt dist/browser/robots.txt
-cp dist/browser/fr/favicon.ico dist/browser/
-# update webapp manifest with name, scope && start_url per localeID
+cp frontend/dist/browser/fr/robots.txt frontend/dist/browser/
+cp frontend/dist/browser/fr/favicon.ico frontend/dist/browser/
+# update webapp manifest with description, scope && start_url per localeID
 $EDITOR frontend/dist/browser/en/manifest.webmanifest
 # copy/edit sitemap.xml
-$EDITOR dist/browser/sitemap.xml
+$EDITOR frontend/dist/browser/sitemap.xml
 ```
 
 ### Monitoring
