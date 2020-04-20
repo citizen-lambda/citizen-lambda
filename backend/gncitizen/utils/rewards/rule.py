@@ -1,8 +1,9 @@
-from .fact import Fact
+from typing import Callable
+from gncitizen.utils.rewards.fact import Fact
 
 
 class Rule:
-    def __init__(self, condition_fn: callable, action_fn: callable):
+    def __init__(self, condition_fn: Callable, action_fn: Callable):
         self.condition = condition_fn  # When condition met
         self.action = action_fn  # Then assign category badge
 

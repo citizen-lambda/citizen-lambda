@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey
 
 from gncitizen.utils.sqlalchemy import serializable
-from server import db
+from gncitizen.utils.env import db
 
 
 @serializable

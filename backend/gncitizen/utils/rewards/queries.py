@@ -16,7 +16,7 @@ from gncitizen.core.taxonomy.models import (
     # TMedias,
     Taxref,
 )
-from .models import recognition_model
+from gncitizen.utils.rewards.models import recognition_model
 
 from gncitizen.core.commons.models import (
     # MediaModel,
@@ -41,8 +41,8 @@ def program_attendance(attendance_data):
 
 
 # Seniority:
-def seniority_data(id):
-    return UserModel.query.filter(UserModel.id_user == id)
+def seniority_data(id_):
+    return UserModel.query.filter(UserModel.id_user == id_)
 
 
 # Specialism Recognition
@@ -65,7 +65,7 @@ def get_occ(attendance_data):
     ]
 
 
-def get_stats(id):
+def get_stats(_id):
     return {
         "seniority": seniority_data,
         "attendance": attendance_data,

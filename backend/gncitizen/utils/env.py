@@ -34,7 +34,7 @@ def get_config_file_path(config_file=None):
     return Path(config_file or DEFAULT_CONFIG_FILE)
 
 
-def load_config(config_file=None):
+def load_config():
     """ Load the geonature-citizen configuration from a given file"""
     config_gnc = load_toml(get_config_file_path())
 
@@ -45,10 +45,13 @@ app_conf = load_config()
 MEDIA_DIR = str(ROOT_DIR / app_conf["MEDIA_FOLDER"])
 SQLALCHEMY_DATABASE_URI = app_conf["SQLALCHEMY_DATABASE_URI"]
 # current_app.db.close_all_sessions()
+
+
 class SQLAlchemy(_BaseSQLAlchemy):
     def apply_pool_defaults(self, app, options):
         super(SQLAlchemy, self).apply_pool_defaults(app, options)
         options["pool_pre_ping"] = True
+
 
 db = SQLAlchemy()
 

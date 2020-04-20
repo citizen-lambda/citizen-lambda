@@ -1,5 +1,5 @@
 from typing import Any, List, Optional
-from .rule import Rule
+from gncitizen.utils.rewards.rule import Rule
 
 
 def find_match(rules: List[Rule], body: Any) -> List[Rule]:
@@ -12,5 +12,4 @@ class Classifier:
         matching_rules = find_match(ruleset, search_body)
         if matching_rules:
             return [rule.action(search_body) for rule in matching_rules]
-        else:
-            return None
+        return None

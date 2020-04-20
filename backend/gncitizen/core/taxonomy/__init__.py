@@ -47,7 +47,7 @@ def setup_taxon_repo(
             adapter = set_default_read_adapter()
             TAXA = TaxonRepository(adapter)
         except Exception:
-            # No surrogate repository could be found
+            print("No surrogate repository could be found")
             raise
 
     # if TAXA is not None:

@@ -5,18 +5,20 @@ from typing import Optional
 
 try:
     from flask import current_app
+
     conf = current_app.config["REWARDS"]["CONF"]
     logger = current_app.logger
 except RuntimeError as e:
     import logging
+
     logger = logging.getLogger()
-    if str(e.args[0]).startswith('Working outside of application context.\n'):
+    if str(e.args[0]).startswith("Working outside of application context.\n"):
         conf = {
             "attendance": {"Au": 348, "Ar": 347, "CuSn": 345},
             "seniority": {
                 "oeuf": "1month",
                 "chenille": "6months",
-                "papillon": "7 months"
+                "papillon": "7 months",
             },
             "program_attendance": {"Au": 64, "Ar": 48, "CuSn": 46},
             "program_date_bounds": {"start": "2019-03-20", "end": ""},
@@ -24,29 +26,29 @@ except RuntimeError as e:
                 {
                     "class": "Aves",
                     "specialization": "Ornitologue",
-                    "attendance": {"Au": 110, "Ar": 109, "CuSn": 10}
+                    "attendance": {"Au": 110, "Ar": 109, "CuSn": 10},
                 },
                 {
                     "class": "Mammalia",
                     "specialization": "Mammalogiste",
-                    "attendance": {"Au": 500, "Ar": 94, "CuSn": 7}
+                    "attendance": {"Au": 500, "Ar": 94, "CuSn": 7},
                 },
                 {
                     "class": "Reptilia",
                     "specialization": "Herpétologue",
-                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10}
+                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
                 },
                 {
                     "order": "Odonata",
                     "specialization": "Odonatologue",
-                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10}
+                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
                 },
                 {
                     "order": "Lepidoptera",
                     "specialization": "Lépidoptériste",
-                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10}
-                }
-            ]
+                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
+                },
+            ],
         }
     else:
         raise
@@ -64,7 +66,7 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
     True
     >>> config_duration2timestamp("52elephants") is None
     True
-    >>> config_duration2timestamp("1969-08-18") == datetime.datetime.strptime("1969-08-18", "%Y-%m-%d").timestamp()
+    >>> config_duration2timestamp("1969 08 18") == datetime.datetime.strptime("1969-08-18", "%Y-%m-%d").timestamp()
     True
     """  # noqa: E501
     if s is None or s == "":
@@ -103,14 +105,12 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
 
     if dt:
         return (datetime.datetime.now() - dt).timestamp()
-    else:
-        try:
-            # parse Y M D
-            dt = datetime.datetime(*map(int, re.findall(r"\d+", str(s))))
-            return dt.timestamp()
-        except Exception as e:
-            logger.critical(e)
-            return None
+    try:
+        y, m, d, *_rest = map(int, re.findall(r"\d+", str(s)))
+        return datetime.datetime(y, m, d).timestamp()
+    except Exception as e:
+        logger.critical(e)
+        return None
 
 
 attendance_model = OrderedDict(
@@ -140,7 +140,8 @@ program_date_bounds_model = {
 
 recognition_model = [
     {
-        "class" if "class" in conf["recognition"][i]
+        "class"
+        if "class" in conf["recognition"][i]
         else "order": conf["recognition"][i]["class"]
         if "class" in conf["recognition"][i]
         else conf["recognition"][i]["order"],
@@ -149,7 +150,8 @@ recognition_model = [
             reversed(
                 sorted(
                     conf["recognition"][i]["attendance"].items(),
-                    key=lambda t: t[1])
+                    key=lambda t: t[1],
+                )
             )
         ),
     }
@@ -160,4 +162,4 @@ recognition_model = [
 if __name__ == "__main__":
     import doctest
 
-    doctest.testmod(verbose=1)
+    doctest.testmod(verbose=True)

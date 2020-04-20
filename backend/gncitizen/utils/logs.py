@@ -1,6 +1,9 @@
 import logging
 from logging.handlers import SMTPHandler
 from flask import current_app
+import smtplib
+from email.mime.text import MIMEText
+from email.utils import formatdate
 
 
 # custom class to send email in SSL and with non ascii character
@@ -11,8 +14,6 @@ class SSLSMTPHandler(SMTPHandler):
         Emit a record.
         """
         try:
-            from email.mime.text import MIMEText
-            from email.utils import formatdate
 
             port = self.mailport
             if not port:
@@ -31,9 +32,11 @@ class SSLSMTPHandler(SMTPHandler):
             smtp.sendmail(self.fromaddr, self.toaddrs, message.as_string())
             smtp.quit()
         except (KeyboardInterrupt, SystemExit):
+            print("interupted, exiting")
             raise
-        except:
+        except Exception:
             self.handleError(record)
+
 
 MAIL_CONFIG = current_app.config['MAILERROR']
 mail_handler = SSLSMTPHandler(

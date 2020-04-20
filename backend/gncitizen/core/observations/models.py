@@ -34,10 +34,8 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
-    # FIXME: remove nullable prop from ObservationModel.municipality
-    #        once debugged
     municipality = db.Column(
-        db.Integer, db.ForeignKey(LAreas.id_area))  # , nullable=True)
+        db.Integer, db.ForeignKey(LAreas.id_area))
     geom = db.Column(Geometry("POINT", 4326))
 
 

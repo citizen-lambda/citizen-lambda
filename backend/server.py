@@ -5,7 +5,13 @@ import logging
 from flask import Flask, current_app
 from flask_cors import CORS
 
-from gncitizen.utils.env import db, list_and_import_gnc_modules, jwt, swagger, admin
+from gncitizen.utils.env import (
+    db,
+    list_and_import_gnc_modules,
+    jwt,
+    swagger,
+    admin,
+)
 from gncitizen.utils.sqlalchemy import create_schemas
 from gncitizen.utils import commands
 
@@ -13,7 +19,7 @@ from gncitizen.utils import commands
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-class ReverseProxied(object):
+class ReverseProxied:
     def __init__(self, app, script_name=None, scheme=None, server=None):
         self.app = app
         self.script_name = script_name
@@ -26,7 +32,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
+                environ["PATH_INFO"] = path_info[len(script_name):]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme

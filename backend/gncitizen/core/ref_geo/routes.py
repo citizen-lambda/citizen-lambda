@@ -4,9 +4,8 @@ from geoalchemy2.shape import to_shape
 from geojson import FeatureCollection, Feature
 
 from gncitizen.utils.env import db
-from gncitizen.utils.env import load_config
 from gncitizen.utils.sqlalchemy import json_resp, get_geojson_feature
-from .models import LAreas
+from gncitizen.core.ref_geo.models import LAreas
 
 routes = Blueprint("georepos", __name__)
 

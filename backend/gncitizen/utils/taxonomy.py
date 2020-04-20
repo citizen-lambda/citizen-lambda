@@ -14,7 +14,8 @@ def taxa_list(list_id: int) -> Dict:
     # TODO: plug in ListService
     try:
         with open(
-            f"/home/pat/citizen/external_modules/ListService/data/{list_id}.json", "r"
+            f"/home/pat/citizen/external_modules/ListService/data/{list_id}.json",
+            "r",
         ) as f:
             return dict(**json.loads(f.read()))
     except FileNotFoundError:
@@ -33,10 +34,13 @@ def mkTaxonRepository(taxalist_id: int) -> Dict[int, Any]:
         taxon_ids = [item["cd_nom"] for item in taxa.get("items", dict())]
         try:
             return {
-                taxon_id: dataclasses.asdict(TAXA.get(taxon_id)) for taxon_id in taxon_ids if taxon_id
+                taxon_id: dataclasses.asdict(TAXA.get(taxon_id))
+                for taxon_id in taxon_ids
+                if taxon_id
             }
         except Exception as e:
             logger.warning(str(e))
+            return {}
     else:
         raise Exception("No TAXA")
 

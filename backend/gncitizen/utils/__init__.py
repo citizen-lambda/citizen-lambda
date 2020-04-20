@@ -20,7 +20,7 @@ import json
 import requests
 
 
-K = TypeVar("K", str, int)
+K = str
 V = TypeVar("V", Mapping, int, str)
 T = TypeVar("T")
 
@@ -71,24 +71,12 @@ def parsed_url(link="") -> str:
 
 
 def _path(mapping: Mapping[K, V]) -> Callable:
-    # https://github.com/microsoft/python-language-server/issues/121
-    # split annotation and definition on nonlocal variable
     m: Any
     m = mapping
 
     def path_val(nodes: Sequence[K]) -> Optional[V]:
         nonlocal m
-        head: Union[K, int, str]
-        tail: Sequence[Union[K, int, str]]
-        if (
-            all(hasattr(m, attr) for attr in {"keys", "__getitem__"})
-            and len(nodes) >= 1
-        ):
-            head, *tail = nodes
-            m = m.get(head)
-            return path_val(tail)
-
-        return m
+        return reduce(lambda acc, n: acc[n] if acc and n in acc else None, nodes, m)
 
     return path_val
 

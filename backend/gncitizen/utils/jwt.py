@@ -19,7 +19,9 @@ def get_id_role_if_exists():
     """
     if get_jwt_identity() is not None:
         current_user = get_jwt_identity()
-        id_role = UserModel.query.filter_by(username=current_user).first().id_user
+        id_role = (
+            UserModel.query.filter_by(username=current_user).first().id_user
+        )
     else:
         id_role = None
     return id_role
@@ -39,7 +41,9 @@ def admin_required(func):
     def decorated_function(*args, **kwargs):
         current_user = get_jwt_identity()
         try:
-            is_admin = UserModel.query.filter_by(username=current_user).first().admin
+            is_admin = (
+                UserModel.query.filter_by(username=current_user).first().admin
+            )
             if not is_admin:
                 return {"message": "Special authorization required"}, 403
             return func(*args, **kwargs)
@@ -47,4 +51,3 @@ def admin_required(func):
             return jsonify(message=e), 500
 
     return decorated_function
-
