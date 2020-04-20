@@ -523,6 +523,8 @@ cp dist/browser/fr/robots.txt dist/browser/robots.txt
 cp dist/browser/fr/favicon.ico dist/browser/
 # update webapp manifest with name, scope && start_url per localeID
 $EDITOR frontend/dist/browser/en/manifest.webmanifest
+# copy/edit sitemap.xml
+$EDITOR dist/browser/sitemap.xml
 ```
 
 ### Monitoring
