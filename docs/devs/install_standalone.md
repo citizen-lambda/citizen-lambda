@@ -124,8 +124,8 @@ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash
 # pat@vps-123:~$
 source ~/.local/share/venv/citizen_prod/bin/activate
 # (citizen_prod) pat@vps-123:~$
-nvm install --lts
-nvm use --lts
+nvm install stable
+nvm use stable
 # …
 # Now using node v12.13.0 (npm v6.12.0)
 # Creating default alias: default -> lts/* (-> v12.13.0)
@@ -156,7 +156,7 @@ export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; 
 ### les dépendances
 
 ```sh
-nvm use --lts
+nvm use stable
 cd ~/citizen/frontend
 npm install -g @angular/cli@v6-lts
 # …
@@ -173,8 +173,6 @@ npm audit fix
 # fixed 1 of 3 vulnerabilities in 55306 scanned packages
 #   2 package updates for 2 vulnerabilities involved breaking changes
 #   (use `npm audit fix --force` to install breaking changes; or refer to `npm audit` for steps to fix these manually)
-npm audit
-# … ok c'est tolérable en attendant notre montée en version Angular8
 ```
 
 ### la configuration du frontend
@@ -327,7 +325,6 @@ sudo systemctl restart apache2
 $EDITOR src/conf/app.config.ts
 sudo supervisorctl restart citizen
 $EDITOR ../config/default_config.toml
-npm run ng -- build --prod --aot --optimization --build-optimizer --vendor-chunk --common-chunk --extract-licenses --extract-css
 ```
 
 ```toml
@@ -521,10 +518,11 @@ $EDITOR ~/citizen/frontend/src/app/home/home.component.css
 
 ```sh
 cp ~/citizen_sitemap.xml frontend/dist/browser/sitemap.xml
-# FIXME: robots.txt apache rewrite
-ln -s frontend/dist/browser/fr/robots.txt dist/robots.txt
+# TODO: remaining apache rewrite
+cp dist/browser/fr/robots.txt dist/browser/robots.txt
+cp dist/browser/fr/favicon.ico dist/browser/
 # update webapp manifest with name, scope && start_url per localeID
-vim frontend/dist/browser/*/manifest.webmanifest
+$EDITOR frontend/dist/browser/en/manifest.webmanifest
 ```
 
 ### Monitoring
