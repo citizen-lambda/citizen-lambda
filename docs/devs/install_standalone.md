@@ -145,6 +145,7 @@ git config user.name "patkap"
 ```sh
 cd ~/citizen/backend
 python3 -m pip install -r requirements.txt
+python3 setup.py install
 $EDITOR ~/citizen/config/default_config.toml
 # … éditer à souhait
 mkdir ~/citizen/media
