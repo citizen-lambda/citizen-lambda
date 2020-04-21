@@ -1,9 +1,6 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
+# coding: utf-8
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import UUID
-
 from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
@@ -13,8 +10,7 @@ from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
-from server import db
-# from gncitizen.utils.env import db
+from gncitizen.utils.env import db
 
 
 @serializable

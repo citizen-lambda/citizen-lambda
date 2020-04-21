@@ -1,5 +1,4 @@
 from sqlalchemy import ForeignKey
-
 from gncitizen.utils.sqlalchemy import serializable
 from gncitizen.utils.env import db
 
@@ -56,7 +55,6 @@ class CorNomListe(db.Model):
 
     # listes = db.relationship("CorNomListe", lazy='select')
     # media = db.relationship("TMedias", lazy='select')
-    #
 
 
 @serializable

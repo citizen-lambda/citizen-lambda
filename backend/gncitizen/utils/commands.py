@@ -6,7 +6,10 @@ from gncitizen.utils.env import db
 from gncitizen.core.taxonomy.models import Taxref, TMedias
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
-from gncitizen.core.observations.models import ObservationModel, ObservationMediaModel
+from gncitizen.core.observations.models import (
+    ObservationModel,
+    ObservationMediaModel,
+)
 from gncitizen.core.users.models import UserModel
 
 
@@ -32,7 +35,7 @@ def register(app):
 
     @dbmanage.command("create_all")
     @with_appcontext
-    def db_create_all():  # noqa: F401
+    def db_create_all():  # pylint: disable=unused-variable
         db.create_all()
 
     @app.cli.group()
@@ -49,15 +52,11 @@ def register(app):
     # def all_users():
     #     print(json.dumps([UserModel.return_all()], indent=4))
 
-    @users.command("allObsForUser")
+    @users.command("all_obs_for_user")
     @click.argument("username")
     @with_appcontext
-    def allObsForUser(username):  # noqa: F401
+    def all_obs_for_user(username):  # noqa: F401
         user = UserModel.query.filter(UserModel.username == username).one()
-        # results = ObservationModel.query.filter(
-        #     ObservationModel.id_role == user.id_user
-        # ).all()
-        # print(json.dumps([result.as_dict() for result in results], indent=4))
         results = (
             db.session.query(
                 ObservationModel,
@@ -70,8 +69,15 @@ def register(app):
                 TMedias,
                 ProgramsModel,
             )
-            .filter(ObservationModel.id_role == user.id_user)
-            .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
+            .filter(
+                ObservationModel.id_role  # pylint: disable=comparison-with-callable
+                == user.id_user
+            )
+            .join(
+                LAreas,
+                LAreas.id_area == ObservationModel.municipality,
+                isouter=True,
+            )
             .join(
                 ProgramsModel,
                 ProgramsModel.id_program == ObservationModel.id_program,
@@ -79,7 +85,8 @@ def register(app):
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
+                ObservationMediaModel.id_data_source
+                == ObservationModel.id_observation,
                 isouter=True,
             )
             .join(
@@ -87,8 +94,14 @@ def register(app):
                 ObservationMediaModel.id_media == MediaModel.id_media,
                 isouter=True,
             )
-            .join(Taxref, Taxref.cd_nom == ObservationModel.cd_nom, isouter=True)
-            .join(TMedias, TMedias.cd_ref == ObservationModel.cd_nom, isouter=True)
+            .join(
+                Taxref, Taxref.cd_nom == ObservationModel.cd_nom, isouter=True
+            )
+            .join(
+                TMedias,
+                TMedias.cd_ref == ObservationModel.cd_nom,
+                isouter=True,
+            )
             # .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
         )
 

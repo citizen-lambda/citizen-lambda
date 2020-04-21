@@ -1,10 +1,7 @@
 # import requests
 from flask import Blueprint, current_app
-
-# from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.env import db
 
-# from gncitizen.utils.sqlalchemy import json_resp
 
 if current_app.config.get("API_TAXHUB") is not None:
     from gncitizen.core.taxonomy.models import (
@@ -47,12 +44,6 @@ def get_lists():
             200:
                 description: A list of all species lists
         """
-    # r = requests.get(taxhub_lists_url)
-    # if r.status_code == 200:
-    #     result = r.json()
-    #     return result
-    # else:
-    #     return jsonify('Erreur de chargement de l \'API', r.status_code)
     try:
         data = BibListes.query.all()
         # current_app.logger.debug([l.as_dict() for l in data])

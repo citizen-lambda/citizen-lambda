@@ -26,7 +26,7 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.geo import get_municipality_id_from_wkb
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.sqlalchemy import get_geojson_feature  # , json_resp
+from gncitizen.utils.sqlalchemy import get_geojson_feature
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from gncitizen.utils.env import db
 
@@ -41,9 +41,7 @@ frontend_broadcast.debug(
 )
 routes = Blueprint("observations", __name__)
 
-# logger.debug(TAXA.get(61153))
-
-"""Used attributes in observation features"""
+#  observation features attributes
 obs_keys = (
     "cd_nom",
     "id_observation",
@@ -66,7 +64,6 @@ def generate_observation_geojson(id_observation):
         :return features: Observations as a Feature dict
         :rtype features: dict
     """
-
     # Crée le dictionnaire de l'observation
     observation = (
         db.session.query(
@@ -105,15 +102,8 @@ def generate_observation_geojson(id_observation):
         if k in obs_keys:
             feature["properties"][k] = result_dict[k]
 
-    # FIXME: inverted condition
     if current_app.config.get("API_TAXHUB") is not None:
-        logger.critical("Selecting TaxHub Medias schema.")
-        # Get official taxref scientific
-        # and common names (first one)
-        # from cd_nom where cd_nom = cd_ref
-        # taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-        # for k in taxref:
-        #     feature["properties"][k] = taxref[k]
+        logger.debug("Selecting TaxHub Medias schema.")
         taxref = Taxref.query.filter(
             Taxref.cd_nom == observation.ObservationModel.cd_nom
         ).first()
@@ -529,14 +519,6 @@ def get_program_observations(
                 if k in obs_keys and k != "municipality":
                     feature["properties"][k] = observation_dict[k]
 
-            # from gncitizen.core.taxonomy import TAXA
-
-            # if TAXA is not None:
-            #     taxon = TAXA.get(feature["properties"]["cd_nom"])
-            #     feature["properties"].update(dataclasses.asdict(taxon))
-            # else:
-            #     logger.warning(f"TAXA is None")
-
             features.append(feature)
 
         return FeatureCollection(features)
@@ -561,7 +543,7 @@ def get_media(item):
     return send_from_directory(str(MEDIA_DIR), item)
 
 
-@routes.route("/dev_rewards/<int:id>")
+@routes.route("/dev_rewards/<int:id_>")
 def get_rewards(id_):
     from gncitizen.utils.rewards import (  # pylint: disable=import-outside-toplevel
         get_rewards,

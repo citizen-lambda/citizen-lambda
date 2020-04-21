@@ -2,10 +2,7 @@ from flask import Blueprint
 from geoalchemy2 import func
 from geoalchemy2.shape import to_shape
 from geojson import FeatureCollection, Feature
-
 from gncitizen.utils.env import db
-
-# from gncitizen.utils.sqlalchemy import json_resp, get_geojson_feature
 from gncitizen.utils.sqlalchemy import get_geojson_feature
 from gncitizen.core.ref_geo.models import LAreas
 

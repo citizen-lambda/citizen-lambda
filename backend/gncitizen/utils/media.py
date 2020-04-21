@@ -11,8 +11,7 @@ from flask import current_app
 from gncitizen.core.commons.models import MediaModel
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.env import ALLOWED_EXTENSIONS
-from server import db  # noqa: F401
+from gncitizen.utils.env import ALLOWED_EXTENSIONS, db
 
 
 def allowed_file(filename):
@@ -125,7 +124,6 @@ def save_upload_files(  # pylint: disable=too-many-locals
                     )
                     raise GeonatureApiError(e)
 
-                # log
                 current_app.logger.debug(
                     "[save_upload_files] Fichier %s enregistré", filename
                 )

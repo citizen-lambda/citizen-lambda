@@ -1,20 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 """A module to manage database and datas with sqlalchemy"""
 
-import json
-from functools import wraps
-
-from flask import Response, current_app
+from flask import current_app
 from geoalchemy2.shape import from_shape, to_shape
 from geojson import Feature
 from shapely.geometry import asShape
-# from werkzeug.datastructures import Headers
 
-# Liste des types de données sql qui
-# nécessite une sérialisation particulière en
-# @TODO MANQUE FLOAT
 
 SERIALIZERS = {
     "date": lambda x: str(x) if x else None,
@@ -23,6 +15,7 @@ SERIALIZERS = {
     "timestamp": lambda x: str(x) if x else None,
     "uuid": lambda x: str(x) if x else None,
     "numeric": lambda x: str(x) if x else None,
+    "float": lambda x: str(x) if x else None,
 }
 
 
@@ -153,16 +146,18 @@ def geoserializable(cls):
         Permet de rajouter la fonction as_geofeature à une classe
     """
 
-    def serializegeofn(self, geoCol, idCol, recursif=False, columns=()):
+    def serializegeofn(
+        self, geo_colname, id_col_name, recursif=False, columns=()
+    ):
         """
         Méthode qui renvoie les données de l'objet sous la forme
         d'une Feature geojson
 
         Parameters
         ----------
-           geoCol: string
+           geo_colname: string
             Nom de la colonne géométrie
-           idCol: string
+           id_col_name: string
             Nom de la colonne primary key
            recursif: boolean
             Spécifie si on veut que les sous objet (relationship) soit
@@ -170,9 +165,9 @@ def geoserializable(cls):
            columns: liste
             liste des columns qui doivent être prisent en compte
         """
-        geometry = to_shape(getattr(self, geoCol))
+        geometry = to_shape(getattr(self, geo_colname))
         feature = Feature(
-            id=str(getattr(self, idCol)),
+            id=str(getattr(self, id_col_name)),
             geometry=geometry,
             properties=self.as_dict(recursif, columns),
         )
@@ -180,42 +175,3 @@ def geoserializable(cls):
 
     cls.as_geofeature = serializegeofn
     return cls
-
-
-# def json_resp(fn):
-#     """
-#     Décorateur transformant le résultat renvoyé par une vue
-#     en objet JSON
-#     """
-
-#     @wraps(fn)
-#     def _json_resp(*args, **kwargs):
-#         res = fn(*args, **kwargs)
-#         if isinstance(res, tuple):
-#             return to_json_resp(*res)
-#         return to_json_resp(res)
-
-#     return _json_resp
-
-
-# def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
-#     if not res:
-#         status = 404
-#         res = {"message": "not found"}
-
-#     headers = None
-#     if as_file:
-#         headers = Headers()
-#         headers.add("Content-Type", "application/json")
-#         headers.add(
-#             "Content-Disposition",
-#             "attachment",
-#             filename="export_%s.json" % filename,
-#         )
-
-#     return Response(
-#         json.dumps(res, indent=indent),
-#         status=status,
-#         mimetype="application/json",
-#         headers=headers,
-#     )
