@@ -22,6 +22,7 @@
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
+    "strictFunctionTypes": true,
     "strict": true,
     "noEmitOnError": true,
     "target": "es2015",
