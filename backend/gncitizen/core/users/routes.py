@@ -10,12 +10,10 @@ from flask_jwt_extended import (
 )
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.sqlalchemy import json_resp
-from server import db, jwt
+from gncitizen.utils.env import db, jwt
 from gncitizen.core.observations.models import ObservationModel
-from .models import UserModel, RevokedTokenModel
+from gncitizen.core.users.models import UserModel, RevokedTokenModel
 from gncitizen.utils.jwt import admin_required
 import uuid
 import smtplib
@@ -33,7 +31,6 @@ def check_if_token_in_blacklist(decrypted_token):
 
 
 @routes.route("/registration", methods=["POST"])
-@json_resp
 def registration():
     """
     User registration
@@ -84,7 +81,9 @@ def registration():
                 datas_to_save[data] = request_datas[data]
 
         # Hashed password
-        datas_to_save["password"] = UserModel.generate_hash(request_datas["password"])
+        datas_to_save["password"] = UserModel.generate_hash(
+            request_datas["password"]
+        )
 
         # Protection against admin creation from API
         datas_to_save["admin"] = False
@@ -120,11 +119,7 @@ def registration():
                 .one()
             ):
                 return (
-                    {
-                        "message": """Un email correspondant est déjà enregistré."""  # .format(
-                        #     newuser.email
-                        # )
-                    },
+                    {"message": "Un email correspondant est déjà enregistré."},
                     400,
                 )
 
@@ -150,7 +145,6 @@ def registration():
 
 
 @routes.route("/login", methods=["POST"])
-@json_resp
 def login():
     """
     User login
@@ -181,9 +175,9 @@ def login():
             description: user created
     """
     try:
-        request_datas = dict(request.get_json())
-        username = request_datas["username"]
-        password = request_datas["password"]
+        request_data = dict(request.get_json())
+        username = request_data["username"]
+        password = request_data["password"]
         current_user = UserModel.find_by_username(username)
         if not current_user:
             return (
@@ -199,7 +193,9 @@ def login():
             refresh_token = create_refresh_token(identity=username)
             return (
                 {
-                    "message": """Connecté en tant que "{}".""".format(username),
+                    "message": """Connecté en tant que "{}".""".format(
+                        username
+                    ),
                     "username": username,
                     "access_token": access_token,
                     "refresh_token": refresh_token,
@@ -208,11 +204,13 @@ def login():
             )
         return {"message": """Mauvaises informations d'identification"""}, 400
     except Exception as e:
+        current_app.logger.critical(
+            "login failure: %s for %s", str(e), dict(request.get_json())
+        )
         return {"message": str(e)}, 400
 
 
 @routes.route("/logout", methods=["POST"])
-@json_resp
 @jwt_required
 def logout():
     """
@@ -236,7 +234,7 @@ def logout():
             properties:
                 authorization:
                 type: string
-                example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eSI6ImZjbG9pdHJlIiwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTMyMjA4Nzk0LCJqdGkiOiI5YmQ5OGEwNC1lMTYyLTQwNWMtODg4Zi03YzlhMTAwNTE2ODAiLCJuYmYiOjE1MzIyMDc4OTQsImlhdCI6MTUzMjIwNzg5NH0.oZKoybFIt4mIPF6LrC2cKXHP8o32vAEcet0xVjpCptE
+                example: Bearer eyJhb…pXVCJ9.eyJpZGVu…jIwNzg5NH0.oZKoy…xVjpCptE
     responses:
         200:
             description: user disconnected
@@ -253,7 +251,6 @@ def logout():
 
 @routes.route("/token_refresh", methods=["POST"])
 @jwt_refresh_token_required
-@json_resp
 def token_refresh():
     """Refresh token
     ---
@@ -272,7 +269,6 @@ def token_refresh():
 
 
 @routes.route("/allusers", methods=["GET"])
-@json_resp
 @jwt_required
 @admin_required
 def get_allusers():
@@ -294,7 +290,6 @@ def get_allusers():
 
 
 @routes.route("/user/info", methods=["GET", "POST"])
-@json_resp
 @jwt_required
 def logged_user():
     """current user model
@@ -318,15 +313,23 @@ def logged_user():
                 "platform_attendance": db.session.query(
                     func.count(ObservationModel.id_role)
                 )
-                .filter(ObservationModel.id_role == user.id_user)
+                .filter(
+                    ObservationModel.id_role  # pylint: disable=comparison-with-callable
+                    == user.id_user
+                )
                 .one()[0]
             }
 
-            return ({"message": "Vos données personelles", "features": result}, 200)
+            return (
+                {"message": "Vos données personelles", "features": result},
+                200,
+            )
 
         if flask.request.method == "POST":
             is_admin = user.admin or False
-            current_app.logger.debug("[logged_user] Update current user personnal data")
+            current_app.logger.debug(
+                "[logged_user] Update current user personnal data"
+            )
             request_data = dict(request.get_json())
             for data in request_data:
                 if hasattr(UserModel, data) and data not in {
@@ -341,23 +344,29 @@ def logged_user():
             user.update()
             return (
                 {
-                    "message": "Informations personnelles mises à jour. Merci.",
+                    "message": "Informations personnelles mises à jour.",
                     "features": user.as_secured_dict(True),
                 },
                 200,
             )
-
+        return (
+            {
+                "message": "Connectez vous pour obtenir vos données personnelles."
+            },
+            400,
+        )
     except Exception as e:
         # raise GeonatureApiError(e)
         current_app.logger.error("AUTH ERROR:", str(e))
         return (
-            {"message": "Connectez vous pour obtenir vos données personnelles."},
+            {
+                "message": "Connectez vous pour obtenir vos données personnelles."
+            },
             400,
         )
 
 
 @routes.route("/user/delete", methods=["DELETE"])
-@json_resp
 @jwt_required
 def delete_user():
     """list all logged users
@@ -379,7 +388,7 @@ def delete_user():
     current_user = get_jwt_identity()
     if current_user:
         current_app.logger.debug(
-            "[delete_user] current user is {}".format(current_user)
+            "[delete_user] current user is %s", current_user
         )
         user = UserModel.query.filter_by(username=current_user)
         # get username
@@ -391,7 +400,7 @@ def delete_user():
             ).delete()
             db.session.commit()
             current_app.logger.debug(
-                "[delete_user] user {} succesfully deleted".format(username)
+                "[delete_user] user %s succesfully deleted", username
             )
         except Exception as e:
             db.session.rollback()
@@ -400,16 +409,22 @@ def delete_user():
 
         return (
             {
-                "message": """Account "{}" have been successfully deleted""".format(
-                    username
-                )
+                "message": f"""Account "{username}" have been successfully deleted"""
             },
             200,
         )
+    return (
+        {
+            "message": "Connectez vous pour supprimers vos données personnelles."
+        },
+        400,
+    )
+
 
 # TODO: reset_passwd|login|register debounce + ban?(5)
+
+
 @routes.route("/user/resetpasswd", methods=["POST"])
-@json_resp
 def reset_user_password():
     request_datas = dict(request.get_json())
     email = request_datas["email"]
@@ -419,7 +434,11 @@ def reset_user_password():
         user = UserModel.query.filter_by(username=username, email=email).one()
     except Exception:
         return (
-            {"message": """L'email "{}" n'est pas enregistré.""".format(email)},
+            {
+                "message": """L'email "{}" n'est pas enregistré.""".format(
+                    email
+                )
+            },
             400,
         )
 
@@ -461,13 +480,17 @@ def reset_user_password():
                 str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
             )
             server.sendmail(
-                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string()
+                current_app.config["MAIL"]["MAIL_FROM"],
+                user.email,
+                msg.as_string(),
             )
             server.quit()
         user.password = passwd_hash
         db.session.commit()
         return (
-            {"message": "Check your email, you credentials have been updated."},
+            {
+                "message": "Check your email, you credentials have been updated."
+            },
             200,
         )
     except Exception as e:
@@ -476,9 +499,7 @@ def reset_user_password():
         )
         return (
             {
-                "message": """Echec d'envoi des informations de connexion: "{}".""".format(
-                    str(e)
-                )
+                "message": f"Echec d'envoi des informations de connexion: `{str(e)}`"
             },
             500,
         )

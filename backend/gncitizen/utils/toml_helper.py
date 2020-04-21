@@ -11,5 +11,4 @@ def load_toml(toml_file):
     if Path(toml_file).is_file():
         toml_config = toml.load(str(toml_file))
         return toml_config
-    else:
-        raise GeoNatureError("Missing file {}".format(toml_file))
+    raise GeoNatureError("Missing file {}".format(toml_file))

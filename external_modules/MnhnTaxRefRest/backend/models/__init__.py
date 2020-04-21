@@ -6,7 +6,7 @@ from flask import current_app
 logger = current_app.logger
 
 
-def create_schema(db):
+def create_schema(_db):
     # try:
     #     result = db.session.execute(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA};")
     #     return result is not None

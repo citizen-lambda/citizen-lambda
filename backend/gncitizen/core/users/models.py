@@ -1,14 +1,11 @@
-#!/usr/bin/env python3
-
 from passlib.hash import pbkdf2_sha256 as sha256
-
 from gncitizen.core.commons.models import (
     ModulesModel,
     ProgramsModel,
     TimestampMixinModel,
 )
 from gncitizen.utils.sqlalchemy import serializable
-from server import db
+from gncitizen.utils.env import db
 from sqlalchemy.ext.declarative import declared_attr
 
 
@@ -55,7 +52,7 @@ class UserModel(TimestampMixinModel, db.Model):
     def update(self):
         db.session.commit()
 
-    def as_secured_dict(self, recursif=False, columns=()):
+    def as_secured_dict(self, _recursif=False, _columns=()):
         surname = self.username or ""
         name = self.name or ""
         return {
@@ -79,8 +76,8 @@ class UserModel(TimestampMixinModel, db.Model):
         return sha256.hash(password)
 
     @staticmethod
-    def verify_hash(password, hash):
-        return sha256.verify(password, hash)
+    def verify_hash(password, hash_):
+        return sha256.verify(password, hash_)
 
     @classmethod
     def find_by_username(cls, username):
@@ -97,7 +94,14 @@ class UserModel(TimestampMixinModel, db.Model):
                 "admin": x.admin,
             }
 
-        return {"users": list(map(lambda x: to_json(x), UserModel.query.all()))}
+        return {
+            "users": list(
+                map(
+                    lambda x: to_json(x),  # pylint: disable=unnecessary-lambda
+                    UserModel.query.all(),
+                )
+            )
+        }
 
     # @classmethod
     # def delete_all(cls):
@@ -126,7 +130,9 @@ class UserRightsModel(TimestampMixinModel, db.Model):
     __tablename__ = "t_users_rights"
     __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
+    id_user = db.Column(
+        db.Integer, db.ForeignKey(UserModel.id_user), nullable=False
+    )
     id_module = db.Column(
         db.Integer, db.ForeignKey(ModulesModel.id_module), nullable=True
     )
@@ -146,13 +152,16 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
     __tablename__ = "cor_users_groups"
     __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
+    id_user = db.Column(
+        db.Integer, db.ForeignKey(UserModel.id_user), nullable=False
+    )
     id_group = db.Column(
         db.Integer, db.ForeignKey(GroupsModel.id_group), nullable=False
     )
 
 
-class ObserverMixinModel(object):
+class ObserverMixinModel:
+
     @declared_attr
     def id_role(cls):
         return db.Column(

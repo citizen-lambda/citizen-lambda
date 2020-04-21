@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from flask_admin import Admin
 
 
-from gncitizen.utils.toml import load_toml
+from gncitizen.utils.toml_helper import load_toml
 
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 BACKEND_DIR = ROOT_DIR / "backend"

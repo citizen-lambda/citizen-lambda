@@ -10,12 +10,12 @@ from flask import Response, current_app
 from geoalchemy2.shape import from_shape, to_shape
 from geojson import Feature
 from shapely.geometry import asShape
+# from werkzeug.datastructures import Headers
 
-"""
-    Liste des types de données sql qui
-    nécessite une sérialisation particulière en
-    @TODO MANQUE FLOAT
-"""
+# Liste des types de données sql qui
+# nécessite une sérialisation particulière en
+# @TODO MANQUE FLOAT
+
 SERIALIZERS = {
     "date": lambda x: str(x) if x else None,
     "datetime": lambda x: str(x) if x else None,
@@ -74,24 +74,19 @@ def get_geojson_feature(wkb):
         feature = Feature(geometry=geometry, properties={})
     except Exception as e:
         current_app.logger.error(
-            "[get_geojson_feature] Can't convert wkb geometry to geojson: {}".format(
-                str(e)
-            )
+            "[get_geojson_feature] Can't convert wkb geometry to geojson: %s",
+            str(e),
         )
     return feature
 
 
 def serializable(cls):
-    """
-        Décorateur de classe pour les DB.Models
-        Permet de rajouter la fonction as_dict
-        qui est basée sur le mapping SQLAlchemy
-    """
+    # Décorateur de classe pour les DB.Models
+    # Permet de rajouter la fonction as_dict
+    # qui est basée sur le mapping SQLAlchemy
 
-    """
-        Liste des propriétés sérialisables de la classe
-        associées à leur sérializer en fonction de leur type
-    """
+    # Liste des propriétés sérialisables de la classe
+    # associées à leur sérializer en fonction de leur type
     cls_db_columns = [
         (
             db_col.key,
@@ -103,12 +98,11 @@ def serializable(cls):
         if not db_col.type.__class__.__name__ == "Geometry"
     ]
 
-    """
-        Liste des propriétés de type relationship
-        uselist permet de savoir si c'est une collection de sous objet
-        sa valeur est déduite du type de relation
-        (OneToMany, ManyToOne ou ManyToMany)
-    """
+    # Liste des propriétés de type relationship
+    # uselist permet de savoir si c'est une collection de sous objet
+    # sa valeur est déduite du type de relation
+    # (OneToMany, ManyToOne ou ManyToMany)
+
     cls_db_relationships = [
         (db_rel.key, db_rel.uselist) for db_rel in cls.__mapper__.relationships
     ]
@@ -188,41 +182,40 @@ def geoserializable(cls):
     return cls
 
 
-def json_resp(fn):
-    """
-    Décorateur transformant le résultat renvoyé par une vue
-    en objet JSON
-    """
+# def json_resp(fn):
+#     """
+#     Décorateur transformant le résultat renvoyé par une vue
+#     en objet JSON
+#     """
 
-    @wraps(fn)
-    def _json_resp(*args, **kwargs):
-        res = fn(*args, **kwargs)
-        if isinstance(res, tuple):
-            return to_json_resp(*res)
-        else:
-            return to_json_resp(res)
+#     @wraps(fn)
+#     def _json_resp(*args, **kwargs):
+#         res = fn(*args, **kwargs)
+#         if isinstance(res, tuple):
+#             return to_json_resp(*res)
+#         return to_json_resp(res)
 
-    return _json_resp
+#     return _json_resp
 
 
-def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
-    if not res:
-        status = 404
-        res = {"message": "not found"}
+# def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
+#     if not res:
+#         status = 404
+#         res = {"message": "not found"}
 
-    headers = None
-    if as_file:
-        headers = Headers()
-        headers.add("Content-Type", "application/json")
-        headers.add(
-            "Content-Disposition",
-            "attachment",
-            filename="export_%s.json" % filename,
-        )
+#     headers = None
+#     if as_file:
+#         headers = Headers()
+#         headers.add("Content-Type", "application/json")
+#         headers.add(
+#             "Content-Disposition",
+#             "attachment",
+#             filename="export_%s.json" % filename,
+#         )
 
-    return Response(
-        json.dumps(res, indent=indent),
-        status=status,
-        mimetype="application/json",
-        headers=headers,
-    )
+#     return Response(
+#         json.dumps(res, indent=indent),
+#         status=status,
+#         mimetype="application/json",
+#         headers=headers,
+#     )

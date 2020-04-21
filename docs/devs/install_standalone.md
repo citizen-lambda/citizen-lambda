@@ -158,9 +158,9 @@ export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; 
 ```sh
 nvm use stable
 cd ~/citizen/frontend
-npm install -g @angular/cli@v6-lts
+npm install -g @angular/cli@latest
 # …
-# + @angular/cli@6.2.9
+# + @angular/cli@9.1.2
 # added 330 packages from 220 contributors in 19.287s
 npm install
 # … après une longue compilation de `libsass` qui échoue

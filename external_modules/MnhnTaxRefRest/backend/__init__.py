@@ -4,7 +4,13 @@ from functools import lru_cache
 
 from flask import current_app
 
-from gncitizen.utils import path_str, path_url, mapper, ReadRepoAdapter, HttpProxy
+from gncitizen.utils import (
+    path_str,
+    path_url,
+    mapper,
+    ReadRepoAdapter,
+    HttpClient,
+)
 from gncitizen.core.taxonomy import TAXA_READ_REPO_ADAPTERS, setup_default_repo
 from gncitizen.core.taxonomy.taxon import Taxon, TaxonMedium
 
@@ -23,7 +29,7 @@ class MnhnTaxRefRest:
     CACHE_ITEMS = 128
     TAXON_ATTR = {
         k: v
-        for k, v in zip(
+        for k, v in zip(  # pylint: disable=unnecessary-comprehension
             fields(Taxon),
             [
                 ["id"],
@@ -56,7 +62,7 @@ class MnhnTaxRefRest:
 
     MEDIA_ATTR = {
         k: v
-        for k, v in zip(
+        for k, v in zip(  # pylint: disable=unnecessary-comprehension
             fields(TaxonMedium),
             [
                 ["taxon", "id"],
@@ -70,6 +76,7 @@ class MnhnTaxRefRest:
             ],
         )
     }
+
     RANK_NAMES = {
         "AB": "Abberation",
         "AGES": "Agrégat",
@@ -128,6 +135,7 @@ class MnhnTaxRefRest:
         "TR": "Tribu",
         "VAR": "Variété",
     }
+    fetch_media: bool
 
 
 def transformer(k: str) -> Callable:
@@ -154,27 +162,29 @@ def extractor(data: Mapping) -> Callable:
 class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
     name = module_name
     provides = "TaxRef"
+    fetch_media = True
 
     def __init__(self):
-        self.api = HttpProxy()
+        self.api = HttpClient()
 
     @lru_cache(maxsize=MnhnTaxRefRest.CACHE_ITEMS)
-    def get(self, ref: int, fetch_media=True) -> Optional[Taxon]:
-        # TODO: make our own cache
+    def get(  # pylint: disable=arguments-differ
+        self, ref: int
+    ) -> Optional[Taxon]:
         data = self.get_info(ref)
         if data:
             media: List[TaxonMedium] = []
             href = path_url(["_links", "media", "href"], data)
-            if not href and fetch_media:
+            if not href and self.fetch_media:
                 ref_taxon_id = data.get("referenceId")
                 media = self.get_media(
                     ref_taxon_id, f"{super().TAXA_URL}/{ref_taxon_id}/media"
                 )
-            if href and fetch_media:
+            if href and self.fetch_media:
                 media = self.get_media(ref, href)
             # data.update({"media": media})
             r = Taxon(*mapper(transformer, extractor, self.TAXON_ATTR, data))
-            r.media = [medium for medium in media]
+            r.media = media
             return r
         return None
 
@@ -183,13 +193,15 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
         # assert url == f"{super().TAXA_URL}/{ref}"
         return self.api.call(f"{super().TAXA_URL}/{ref}", None)
 
-    def get_media(self, ref, link) -> List[TaxonMedium]:
+    def get_media(self, _ref, link) -> List[TaxonMedium]:
         # assert link == f"{super().TAXA_URL}/{ref}/media"
         data: Mapping = self.api.call(link, dict())
         if data and "_embedded" in data and "media" in data["_embedded"]:
             media = data["_embedded"]["media"]
             return [
-                TaxonMedium(*mapper(transformer, extractor, self.MEDIA_ATTR, medium))
+                TaxonMedium(
+                    *mapper(transformer, extractor, self.MEDIA_ATTR, medium)
+                )
                 for medium in media
                 # if medium["taxon"]["referenceId"] == ref
             ]
@@ -205,7 +217,7 @@ setup_default_repo()
 
 # get taxref archive at:
 # https://inpn.mnhn.fr/telechargement/referentielEspece/taxref/12.0/menu#
-# python3  -mpip install --user csvs-to-sqlite
+# python3 -mpip install --user csvs-to-sqlite
 # sudo apt install sqlite
 # csvs-to-sqlite TAXREFv12.txt taxref.db -s $'\t'
 # sqlite3 taxref.db "SELECT * FROM TAXREFv12 WHERE ordre LIKE 'ODONATA' limit 10;"

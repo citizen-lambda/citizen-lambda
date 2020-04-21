@@ -1,7 +1,7 @@
 from geoalchemy2 import Geometry
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
 
-from server import db
+from server import db  # noqa: F401
 
 
 @serializable

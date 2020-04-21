@@ -14,6 +14,7 @@ from gncitizen.core.taxonomy.models import Taxref
 from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
 from server import db
+# from gncitizen.utils.env import db
 
 
 @serializable

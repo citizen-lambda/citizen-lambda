@@ -34,5 +34,5 @@ taxonomy
 toms
 ****
 
-.. automodule:: gncitizen.utils.toml
+.. automodule:: gncitizen.utils.toml_helper
     :members: load_toml

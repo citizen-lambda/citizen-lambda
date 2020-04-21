@@ -1,47 +1,34 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
+# coding: utf-8
+from typing import Union, Tuple, Dict
 import logging
 import uuid
-from typing import Union, Tuple, Dict
-
-# from sqlalchemy import func
-
-# from datetime import datetime
+import dataclasses
 import requests
 from flask import Blueprint, current_app, request, json, send_from_directory
 from flask_jwt_extended import jwt_optional
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
-
 from gncitizen.core.commons.models import (
     MediaModel,
     ProgramsModel,
-    FrontendBroadcastHandler
+    FrontendBroadcastHandler,
 )
 from gncitizen.core.ref_geo.models import LAreas
-from .models import ObservationMediaModel, ObservationModel
+from gncitizen.core.observations.models import (
+    ObservationMediaModel,
+    ObservationModel,
+)
 from gncitizen.core.users.models import UserModel
-
 from gncitizen.core.taxonomy.models import Taxref, TMedias
-
-# DOING: TaxRef REST as alternative
-# TODO: if we were to implement pagination lets have relative cursor pagination
-# SELECT * FROM `observations` WHERE `observervations`.`date` > some_date
-# ORDER BY `observations`.`date` DESC LIMIT 100
-# TODO: eval BRIN index on observations
-# from gncitizen.core.taxonomy.routes import get_list
-
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.geo import get_municipality_id_from_wkb
 from gncitizen.utils.media import save_upload_files
-from gncitizen.utils.sqlalchemy import get_geojson_feature, json_resp
+from gncitizen.utils.sqlalchemy import get_geojson_feature  # , json_resp
 from gncitizen.utils.taxonomy import get_specie_from_cd_nom
-from server import db
-import dataclasses
+from gncitizen.utils.env import db
 
 
 logger = current_app.logger
@@ -83,10 +70,22 @@ def generate_observation_geojson(id_observation):
     # Crée le dictionnaire de l'observation
     observation = (
         db.session.query(
-            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code
+            ObservationModel,
+            UserModel.username,
+            LAreas.area_name,
+            LAreas.area_code,
         )
-        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
-        .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
+        .join(
+            UserModel,
+            ObservationModel.id_role  # pylint: disable=comparison-with-callable
+            == UserModel.id_user,
+            full=True,
+        )
+        .join(
+            LAreas,
+            LAreas.id_area == ObservationModel.municipality,
+            isouter=True,
+        )
         .filter(ObservationModel.id_observation == id_observation)
     ).one()
 
@@ -125,10 +124,14 @@ def generate_observation_geojson(id_observation):
             TMedias.cd_ref == observation.ObservationModel.cd_nom
         ).all()
         if media:
-            feature["properties"]["media"] = [medium.as_dict(True) for medium in media]
+            feature["properties"]["media"] = [
+                medium.as_dict(True) for medium in media
+            ]
 
     else:
-        from gncitizen.core.taxonomy import TAXA
+        from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
+            TAXA,
+        )
 
         feature["properties"]["media"] = [
             dataclasses.asdict(medium)
@@ -140,7 +143,6 @@ def generate_observation_geojson(id_observation):
 
 
 @routes.route("/observations/<int:pk>")
-@json_resp
 def get_observation(pk):
     """Get on observation by id
         ---
@@ -175,7 +177,6 @@ def get_observation(pk):
 
 
 @routes.route("/observations", methods=["POST"])
-@json_resp
 @jwt_optional
 def post_observation():
     """Post a observation
@@ -298,14 +299,17 @@ def post_observation():
                     },
                 }
             )
-            frontend_broadcast.info(f"data:{json_data}\n\n")
+            frontend_broadcast.info("data:%s\n\n", json_data)
 
         except Exception as e:
             logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
             # raise GeonatureApiError(e)
             logger.critical(str(e))
 
-        return ({"message": "Nouvelle observation créée.", "features": features}, 200)
+        return (
+            {"message": "Nouvelle observation créée.", "features": features},
+            200,
+        )
 
     except Exception as e:
         logger.warning("[post_observation] Error: %s", str(e))
@@ -313,7 +317,6 @@ def post_observation():
 
 
 @routes.route("/observations", methods=["GET"])
-@json_resp
 def get_observations():
     """Get all observations
         ---
@@ -356,7 +359,6 @@ def get_observations():
 
 
 @routes.route("/observations/lists/<int:id>", methods=["GET"])
-@json_resp
 def get_observations_from_list(id):  # noqa: A002
     """Get all observations from a taxonomy list
     GET
@@ -387,7 +389,7 @@ def get_observations_from_list(id):  # noqa: A002
     # taxhub_url = load_config()['TAXHUB_API_URL']
     taxhub_lists_taxa_url = taxhub_lists_url + "taxons/" + str(id)
     rtaxa = requests.get(taxhub_lists_taxa_url)
-    if rtaxa.status_code == 200:
+    if rtaxa.status_code == 200:  # pylint: disable=too-many-nested-blocks
         try:
             taxa = rtaxa.json()["items"]
             logger.debug(taxa)
@@ -405,7 +407,9 @@ def get_observations_from_list(id):  # noqa: A002
                     for k in observation_dict:
                         if k in obs_keys:
                             feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+                    taxref = get_specie_from_cd_nom(
+                        feature["properties"]["cd_nom"]
+                    )
                     for k in taxref:
                         feature["properties"][k] = taxref[k]
                     features.append(feature)
@@ -415,7 +419,6 @@ def get_observations_from_list(id):  # noqa: A002
 
 
 @routes.route("/programs/<int:program_id>/observations", methods=["GET"])
-# @json_resp
 def get_program_observations(
     program_id: int,
 ) -> Union[FeatureCollection, Tuple[Dict, int]]:
@@ -446,7 +449,7 @@ def get_program_observations(
                     description: A list of all species lists
         """
     try:
-        observations = (
+        observations_sql = (
             db.session.query(
                 ObservationModel,
                 UserModel.username,
@@ -454,8 +457,15 @@ def get_program_observations(
                 LAreas.area_name,
                 LAreas.area_code,
             )
-            .filter(ObservationModel.id_program == program_id, ProgramsModel.is_active)
-            .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True)
+            .filter(
+                ObservationModel.id_program == program_id,
+                ProgramsModel.is_active,
+            )
+            .join(
+                LAreas,
+                LAreas.id_area == ObservationModel.municipality,
+                isouter=True,
+            )
             .join(
                 ProgramsModel,
                 ProgramsModel.id_program == ObservationModel.id_program,
@@ -463,7 +473,8 @@ def get_program_observations(
             )
             .join(
                 ObservationMediaModel,
-                ObservationMediaModel.id_data_source == ObservationModel.id_observation,
+                ObservationMediaModel.id_data_source
+                == ObservationModel.id_observation,
                 isouter=True,
             )
             .join(
@@ -471,12 +482,19 @@ def get_program_observations(
                 ObservationMediaModel.id_media == MediaModel.id_media,
                 isouter=True,
             )
-            .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
+            .join(
+                UserModel,
+                ObservationModel.id_role  # pylint: disable=comparison-with-callable
+                == UserModel.id_user,
+                full=True,
+            )
         )
 
-        observations = observations.order_by(ObservationModel.date.desc())
-        logger.debug(str(observations))
-        observations = observations.all()
+        observations_sql = observations_sql.order_by(
+            ObservationModel.date.desc()
+        )
+        logger.debug(str(observations_sql))
+        observations = observations_sql.all()
 
         features = []
         for observation in observations:
@@ -487,7 +505,9 @@ def get_program_observations(
             }
 
             # Observer
-            feature["properties"]["observer"] = {"username": observation.username}
+            feature["properties"]["observer"] = {
+                "username": observation.username
+            }
 
             # Observer submitted medium
             # FIXME: media route, now!
@@ -532,8 +552,8 @@ def get_program_observations(
         # trace = str(traceback.print_exception(etype, value, tb))
         # trace = traceback.format_exc()
         # return("<pre>" + trace + "</pre>"), 500
-        raise e
         return {"message": str(e)}, 400
+        # raise e
 
 
 @routes.route("media/<item>")
@@ -542,11 +562,13 @@ def get_media(item):
 
 
 @routes.route("/dev_rewards/<int:id>")
-@json_resp
-def get_rewards(id):
-    from gncitizen.utils.rewards import get_rewards, get_badges
+def get_rewards(id_):
+    from gncitizen.utils.rewards import (  # pylint: disable=import-outside-toplevel
+        get_rewards,
+        get_badges,
+    )
 
-    badges, rewards = get_badges(id), get_rewards(id)
+    badges, rewards = get_badges(id_), get_rewards(id_)
     logger.debug("rewards: %s", json.dumps(rewards, indent=4))
     return (
         {

@@ -4,14 +4,15 @@ from geoalchemy2.shape import to_shape
 from geojson import FeatureCollection, Feature
 
 from gncitizen.utils.env import db
-from gncitizen.utils.sqlalchemy import json_resp, get_geojson_feature
+
+# from gncitizen.utils.sqlalchemy import json_resp, get_geojson_feature
+from gncitizen.utils.sqlalchemy import get_geojson_feature
 from gncitizen.core.ref_geo.models import LAreas
 
 routes = Blueprint("georepos", __name__)
 
 
 @routes.route("/municipality", methods=["GET"])
-@json_resp
 def get_municipalities():
     """List all enabled municipalities
         ---
@@ -49,7 +50,6 @@ def get_municipalities():
 
 
 @routes.route("/municipality/<insee>", methods=["GET"])
-@json_resp
 def get_municipality(insee):
     """Get one enabled municipality by insee code
         ---
@@ -82,7 +82,9 @@ def get_municipality(insee):
                 func.ST_Transform(LAreas.geom, 4326).label("geom"),
             )
             .filter(
-                LAreas.enable, LAreas.area_code == str(insee), LAreas.id_type == 25
+                LAreas.enable,
+                LAreas.area_code == str(insee),
+                LAreas.id_type == 25,
             )
             .limit(1)
         )

@@ -27,7 +27,9 @@ def taxa_list(list_id: int) -> Dict:
 
 
 def mkTaxonRepository(taxalist_id: int) -> Dict[int, Any]:
-    from gncitizen.core.taxonomy import TAXA
+    from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
+        TAXA,
+    )
 
     if TAXA is not None:
         taxa = taxa_list(taxalist_id)
@@ -54,6 +56,6 @@ def get_specie_from_cd_nom(cd_nom):
     :return: french and scientific official name (from ``cd_ref`` = ``cd_nom``) as dict
     :rtype: dict
     """
-    from gncitizen.core.taxonomy import TAXA
+    from gncitizen.core.taxonomy import TAXA  # pylint: disable=import-outside-toplevel
 
     return dataclasses.asdict(TAXA.get(cd_nom))

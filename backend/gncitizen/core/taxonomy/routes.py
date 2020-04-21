@@ -3,7 +3,8 @@ from flask import Blueprint, current_app
 
 # from gncitizen.utils.env import taxhub_lists_url
 from gncitizen.utils.env import db
-from gncitizen.utils.sqlalchemy import json_resp
+
+# from gncitizen.utils.sqlalchemy import json_resp
 
 if current_app.config.get("API_TAXHUB") is not None:
     from gncitizen.core.taxonomy.models import (
@@ -21,7 +22,6 @@ routes = Blueprint("taxonomy", __name__)
 
 
 @routes.route("/taxonomy/lists", methods=["GET"])
-@json_resp
 def get_lists():
     """Renvoie toutes liste d'espèces
     GET
@@ -61,9 +61,8 @@ def get_lists():
         return {"message": str(e)}, 400
 
 
-@routes.route("/taxonomy/lists/<int:id>/species", methods=["GET"])
-@json_resp
-def get_list(id):
+@routes.route("/taxonomy/lists/<int:id_>/species", methods=["GET"])
+def get_list(id_):
     """Renvoie une liste d'espèces spécifiée par son id
     GET
         ---
@@ -93,32 +92,30 @@ def get_list(id):
         current_app.logger.info("Calling TaxRef REST API.")
         return mkTaxonRepository(id)
 
-    else:
-        current_app.logger.info("Select TaxHub schema.")
-        try:
-            data = (
-                db.session.query(BibNoms, Taxref, TMedias)
-                .distinct(BibNoms.cd_ref)
-                .join(CorNomListe, CorNomListe.id_nom == BibNoms.id_nom)
-                .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)
-                .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)
-                .filter(CorNomListe.id_liste == id)
-                .all()
-            )
-            return [
-                {
-                    "nom": d[0].as_dict(),
-                    "taxref": d[1].as_dict(),
-                    "media": d[2].as_dict() if d[2] else None,
-                }
-                for d in data
-            ]
-        except Exception as e:
-            return {"message": str(e)}, 400
+    current_app.logger.info("Select TaxHub schema.")
+    try:
+        data = (
+            db.session.query(BibNoms, Taxref, TMedias)
+            .distinct(BibNoms.cd_ref)
+            .join(CorNomListe, CorNomListe.id_nom == BibNoms.id_nom)
+            .join(Taxref, Taxref.cd_ref == BibNoms.cd_ref)
+            .outerjoin(TMedias, TMedias.cd_ref == BibNoms.cd_ref)
+            .filter(CorNomListe.id_liste == id_)
+            .all()
+        )
+        return [
+            {
+                "nom": d[0].as_dict(),
+                "taxref": d[1].as_dict(),
+                "media": d[2].as_dict() if d[2] else None,
+            }
+            for d in data
+        ]
+    except Exception as e:
+        return {"message": str(e)}, 400
 
 
 @routes.route("/taxonomy/taxon/<int:cd_nom>", methods=["GET"])
-@json_resp
 def get_taxon_from_cd_nom(cd_nom):
     """Get taxon TaxRef data from cd_nom
         ---
@@ -138,8 +135,9 @@ def get_taxon_from_cd_nom(cd_nom):
             200:
                 description: Taxon data from Taxref
     """
-    """Renvoie la fiche TaxRef de l'espèce d'après le cd_nom"""
-    from gncitizen.core.taxonomy.models import Taxref
+    from gncitizen.core.taxonomy.models import (  # noqa: E501  pylint: disable=import-outside-toplevel
+        Taxref,
+    )
 
     taxon = Taxref.query.filter_by(cd_nom=cd_nom).first()
     return taxon.as_dict(True)

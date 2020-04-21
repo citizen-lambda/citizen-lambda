@@ -8,7 +8,7 @@ SCHEMA = 'gnc_lists'
 logger = current_app.logger
 
 
-def create_schema(db):
+def create_schema(_db):
     # fetch schema name from load_toml
     # try:
     #     result = db.session.execute(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA};")

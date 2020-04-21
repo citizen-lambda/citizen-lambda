@@ -49,9 +49,15 @@ transformer = pass_through
 
 
 def mapper(
-    transformer: Callable, extractor: Callable, extractions: Dict, data: Mapping[K, V]
+    transformer: Callable,
+    extractor: Callable,
+    extractions: Dict,
+    data: Mapping[K, V],
 ) -> Iterable[V]:
-    return [compose(transformer(k), extractor(data))(v) for k, v in extractions.items()]
+    return [
+        compose(transformer(k), extractor(data))(v)
+        for k, v in extractions.items()
+    ]
 
 
 def is_url(link="") -> bool:
@@ -76,7 +82,9 @@ def _path(mapping: Mapping[K, V]) -> Callable:
 
     def path_val(nodes: Sequence[K]) -> Optional[V]:
         nonlocal m
-        return reduce(lambda acc, n: acc[n] if acc and n in acc else None, nodes, m)
+        return reduce(
+            lambda acc, n: acc[n] if acc and n in acc else None, nodes, m
+        )
 
     return path_val
 
@@ -125,8 +133,8 @@ class ReadRepository(Generic[T]):
     def __init__(self, read_adapter: ReadRepoAdapter[T], *_args, **_kwargs):
         self.read_adapter = read_adapter
 
-    def get(self, ref: Any) -> Optional[T]:
-        return self.read_adapter.get(ref)
+    def get(self, ref: Any, *_args, **_kwargs) -> Optional[T]:
+        return self.read_adapter.get(ref, *_args, **_kwargs)
 
     # def resolve(self, prop: str, match: Any) -> Iterable[T]:
     #     todo: merge with accessor
@@ -145,7 +153,9 @@ class WriteRepository(Generic[T]):
 
 class RWRepository(ReadRepository, WriteRepository, Generic[T]):
     def __init__(
-        self, read_adapter: ReadRepoAdapter[T], write_adapter: WriteRepoAdapter[T]
+        self,
+        read_adapter: ReadRepoAdapter[T],
+        write_adapter: WriteRepoAdapter[T],
     ):
         self.read_adapter = read_adapter
         self.write_adapter = write_adapter
@@ -166,7 +176,7 @@ class AdapterCollection(Generic[T]):
         return self._adapters
 
 
-class HttpProxy:
+class HttpClient:
     # TODO: handle eventual post & auth
     def call(
         self, link: str, defaultvalue: Optional[V] = None

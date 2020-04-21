@@ -32,19 +32,17 @@ def register(app):
 
     @dbmanage.command("create_all")
     @with_appcontext
-    def db_create_all():
+    def db_create_all():  # noqa: F401
         db.create_all()
 
     @app.cli.group()
     def users():
         pass
 
-    """
-    @users.command()
-    @click.argument("some_arg")
-    def do_something(some_arg):
-        ...
-    """
+    # @users.command()
+    # @click.argument("some_arg")
+    # def do_something(some_arg):
+    #     ...
 
     # @users.command("allusers")
     # @with_appcontext
@@ -54,7 +52,7 @@ def register(app):
     @users.command("allObsForUser")
     @click.argument("username")
     @with_appcontext
-    def allObsForUser(username):
+    def allObsForUser(username):  # noqa: F401
         user = UserModel.query.filter(UserModel.username == username).one()
         # results = ObservationModel.query.filter(
         #     ObservationModel.id_role == user.id_user
