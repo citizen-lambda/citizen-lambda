@@ -526,6 +526,11 @@ $EDITOR frontend/dist/browser/en/manifest.webmanifest
 # copy/edit sitemap.xml
 # $EDITOR frontend/dist/browser/sitemap.xml
 cp ~/citizen_sitemap.xml frontend/dist/browser/sitemap.xml
+# do not forget to:
+# restart backend after git pull and/or python code changes
+sudo supervisorctl restart citizen
+# reload apache after frontend rebuild
+sudo systemctl reload apache2
 ```
 
 ### Monitoring
