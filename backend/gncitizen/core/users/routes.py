@@ -179,35 +179,38 @@ def login():
         username = request_data["username"]
         password = request_data["password"]
         current_user = UserModel.find_by_username(username)
-        if not current_user:
+        if current_user:
+            if UserModel.verify_hash(password, current_user.password):
+                access_token = create_access_token(identity=username)
+                refresh_token = create_refresh_token(identity=username)
+                return (
+                    {
+                        "message": f"""Connecté en tant que "{username}".""",
+                        "username": username,
+                        "access_token": access_token,
+                        "refresh_token": refresh_token,
+                    },
+                    200,
+                )
+            current_app.logger.critical(
+                "login failure: invalid credentials for user `%s`", username
+            )
             return (
-                {
-                    "message": """L'utilisateur "{}" n'est pas enregistré.""".format(
-                        username
-                    )
-                },
+                {"message": "Les informations d'identification sont erronées"},
                 400,
             )
-        if UserModel.verify_hash(password, current_user.password):
-            access_token = create_access_token(identity=username)
-            refresh_token = create_refresh_token(identity=username)
-            return (
-                {
-                    "message": """Connecté en tant que "{}".""".format(
-                        username
-                    ),
-                    "username": username,
-                    "access_token": access_token,
-                    "refresh_token": refresh_token,
-                },
-                200,
-            )
-        return {"message": """Mauvaises informations d'identification"""}, 400
-    except Exception as e:
         current_app.logger.critical(
-            "login failure: %s for %s", str(e), dict(request.get_json())
+            "login failure: non-existant user `%s`", username
         )
-        return {"message": str(e)}, 400
+        return (
+            {
+                "message": f"""L'utilisateur "{username}" n'est pas enregistré."""
+            },
+            400,
+        )
+    except Exception as e:
+        current_app.logger.critical("login failure: %s", str(e))
+        return {"message": "Tentative de login auditée"}, 400
 
 
 @routes.route("/logout", methods=["POST"])
