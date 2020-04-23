@@ -392,7 +392,6 @@ def delete_user():
 
 
 @routes.route("/user/resetpasswd", methods=["POST"])
-@jwt_required
 def reset_user_password():
     request_data = dict(request.get_json())
     email = request_data["email"]
