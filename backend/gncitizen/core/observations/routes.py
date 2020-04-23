@@ -20,7 +20,7 @@ from gncitizen.core.observations.models import (
     ObservationModel,
 )
 from gncitizen.core.users.models import UserModel
-from gncitizen.core.taxonomy.models import Taxref, TMedias
+# from gncitizen.core.taxonomy.models import Taxref, TMedias
 from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
@@ -102,31 +102,31 @@ def generate_observation_geojson(id_observation):
         if k in obs_keys:
             feature["properties"][k] = result_dict[k]
 
-    if current_app.config.get("API_TAXHUB") is not None:
-        logger.debug("Selecting TaxHub Medias schema.")
-        taxref = Taxref.query.filter(
-            Taxref.cd_nom == observation.ObservationModel.cd_nom
-        ).first()
-        if taxref:
-            feature["properties"]["taxref"] = taxref.as_dict(True)
+    # if current_app.config.get("API_TAXHUB") is not None:
+    #     logger.debug("Selecting TaxHub Medias schema.")
+    #     taxref = Taxref.query.filter(
+    #         Taxref.cd_nom == observation.ObservationModel.cd_nom
+    #     ).first()
+    #     if taxref:
+    #         feature["properties"]["taxref"] = taxref.as_dict(True)
 
-        media = TMedias.query.filter(
-            TMedias.cd_ref == observation.ObservationModel.cd_nom
-        ).all()
-        if media:
-            feature["properties"]["media"] = [
-                medium.as_dict(True) for medium in media
-            ]
+    #     media = TMedias.query.filter(
+    #         TMedias.cd_ref == observation.ObservationModel.cd_nom
+    #     ).all()
+    #     if media:
+    #         feature["properties"]["media"] = [
+    #             medium.as_dict(True) for medium in media
+    #         ]
 
-    else:
-        from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
-            TAXA,
-        )
+    # else:
+    from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
+        TAXA,
+    )
 
-        feature["properties"]["media"] = [
-            dataclasses.asdict(medium)
-            for medium in TAXA.get(feature["properties"]["cd_nom"]).media
-        ]
+    feature["properties"]["media"] = [
+        dataclasses.asdict(medium)
+        for medium in TAXA.get(feature["properties"]["cd_nom"]).media
+    ]
 
     features.append(feature)
     return features
@@ -339,9 +339,9 @@ def get_observations():
                 if k in obs_keys:
                     feature["properties"][k] = observation_dict[k]
 
-            taxref = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-            for k in taxref:
-                feature["properties"][k] = taxref[k]
+            taxon = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
+            for k in taxon:
+                feature["properties"][k] = taxon[k]
             features.append(feature)
         return FeatureCollection(features)
     except Exception as e:
@@ -397,11 +397,11 @@ def get_observations_from_list(id):  # noqa: A002
                     for k in observation_dict:
                         if k in obs_keys:
                             feature["properties"][k] = observation_dict[k]
-                    taxref = get_specie_from_cd_nom(
+                    taxon = get_specie_from_cd_nom(
                         feature["properties"]["cd_nom"]
                     )
-                    for k in taxref:
-                        feature["properties"][k] = taxref[k]
+                    for k in taxon:
+                        feature["properties"][k] = taxon[k]
                     features.append(feature)
             return FeatureCollection(features)
         except Exception as e:

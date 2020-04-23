@@ -10,22 +10,22 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.sql import expression
 from sqlalchemy.ext.declarative import declared_attr
 
-from gncitizen.core.taxonomy.models import BibListes
+from gncitizen.core.taxonomy.models import BibListes  # todo: rm
 from gncitizen.utils.env import db
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
 
 
-class TimestampMixinModel(object):
+class TimestampMixinModel:
     """Structure commune de suivi des modifications d'une table"""
 
     @declared_attr
-    def timestamp_create(cls):
+    def timestamp_create(self):
         return db.Column(
             db.DateTime, nullable=False, default=datetime.now(tz=timezone.utc)
         )
 
     @declared_attr
-    def timestamp_update(cls):
+    def timestamp_update(self):
         return db.Column(
             db.DateTime,
             nullable=True,
@@ -68,7 +68,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
         default=1,
     )
     taxonomy_list = db.Column(
-        db.Integer, ForeignKey(BibListes.id_liste), nullable=True
+        db.Integer,
+        ForeignKey(BibListes.id_liste),  # todo: rm
+        nullable=True
     )
     is_active = db.Column(
         db.Boolean(), server_default=expression.true(), default=True
@@ -106,10 +108,10 @@ class FrontendBroadcastHandler(logging.Handler):
                 for sub in subs[:]:
                     sub.put(msg)
 
-            # ?
             notify(self.subscriptions, msg)
 
-        except (KeyboardInterrupt, SystemExit):  # noqa: W0706
+        except (KeyboardInterrupt, SystemExit):
+            print("Interrupt signal, exiting")
             raise
         except Exception:
             self.handleError(record)

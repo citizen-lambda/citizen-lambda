@@ -42,7 +42,9 @@ class ReverseProxied:
         return self.app(environ, start_response)
 
 
-def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
+def get_app(  # pylint: disable=too-many-locals
+    config, _app=None, with_external_mods=True, url_prefix="/api"
+):
     # Make sure app is a singleton
     if _app is not None:
         return _app
@@ -51,8 +53,10 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     app.config.update(config)
 
     if app.config["DEBUG"]:
-        from flask.logging import default_handler
-        import colorlog
+        from flask.logging import (  # pylint: disable=import-outside-toplevel
+            default_handler,
+        )
+        import colorlog  # pylint: disable=import-outside-toplevel
 
         handler = colorlog.StreamHandler()
         handler.setFormatter(
@@ -99,23 +103,33 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
 
     with app.app_context():
 
-        from gncitizen.core.users.routes import routes
+        from gncitizen.core.users.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
+            routes,
+        )
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        from gncitizen.core.commons.routes import routes
+        from gncitizen.core.commons.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
+            routes,
+        )
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        from gncitizen.core.observations.routes import routes
+        from gncitizen.core.observations.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
+            routes,
+        )
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        from gncitizen.core.ref_geo.routes import routes
+        from gncitizen.core.ref_geo.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
+            routes,
+        )
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
-        from gncitizen.core.taxonomy.routes import routes
+        from gncitizen.core.taxonomy.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
+            routes,
+        )
 
         app.register_blueprint(routes, url_prefix=url_prefix)
 
@@ -148,7 +162,7 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         commands.register(app)
 
         @app.shell_context_processor
-        def make_shell_context():
+        def make_shell_context():  # pylint: disable=unused-variable
             return {"db": db}
 
     return app

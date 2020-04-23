@@ -7,7 +7,9 @@ from gncitizen.core.commons.models import (
     MediaModel,
 )
 from gncitizen.core.ref_geo.models import LAreas
-from gncitizen.core.taxonomy.models import Taxref
+from gncitizen.core.taxonomy.models import (
+    Taxref,
+)  # todo: removal breaks rewards
 from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
 from gncitizen.utils.env import db
@@ -25,14 +27,15 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     id_program = db.Column(
         db.Integer, db.ForeignKey(ProgramsModel.id_program), nullable=False
     )
-    cd_nom = db.Column(db.Integer, db.ForeignKey(
-        Taxref.cd_nom), nullable=False)
-    # specie = db.Column(db.String(200))
+    cd_nom = db.Column(
+        db.Integer,
+        db.ForeignKey(Taxref.cd_nom),  # todo: removal breaks rewards
+        nullable=False,
+    )
     date = db.Column(db.Date, nullable=False)
     count = db.Column(db.Integer)
     comment = db.Column(db.String(300))
-    municipality = db.Column(
-        db.Integer, db.ForeignKey(LAreas.id_area))
+    municipality = db.Column(db.Integer, db.ForeignKey(LAreas.id_area))
     geom = db.Column(Geometry("POINT", 4326))
 
 

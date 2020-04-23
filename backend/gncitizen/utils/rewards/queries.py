@@ -28,15 +28,22 @@ logger = logging.getLogger()
 
 def attendance_data(role_id):
     """Platform Attendance: observations count the observer submitted platform wise."""
-    return ObservationModel.query.filter(ObservationModel.id_role == role_id)
+    return ObservationModel.query.filter(
+        ObservationModel.id_role  # pylint: disable=comparison-with-callable
+        == role_id
+    )
 
 
 # Program Attendance
 # Observations count the current user submitted program wise
 def program_attendance(attendance_data):
     return [
-        attendance_data.filter(ObservationModel.id_program == program.id_program)
-        for program in ProgramsModel.query.distinct(ProgramsModel.id_program).all()
+        attendance_data.filter(
+            ObservationModel.id_program == program.id_program
+        )
+        for program in ProgramsModel.query.distinct(
+            ProgramsModel.id_program
+        ).all()
     ]
 
 
@@ -55,13 +62,17 @@ def filter_class_or_order(model, query):
 
 
 def get_occ(attendance_data):
-    base_query = attendance_data.join(Taxref, Taxref.cd_nom == ObservationModel.cd_nom)
+    # TODO: rm Taxref schema dep
+    base_query = attendance_data.join(
+        Taxref, Taxref.cd_nom == ObservationModel.cd_nom
+    )  # TODO: rm Taxref schema dep
     # .filter(
     #     ObservationModel.id_role == role_id,
     #     ObservationModel.id_program == program_id
     # )
     return [
-        filter_class_or_order(item, base_query).count() for item in recognition_model
+        filter_class_or_order(item, base_query).count()
+        for item in recognition_model
     ]
 
 

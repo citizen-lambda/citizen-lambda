@@ -288,7 +288,7 @@ def get_allusers():
     """
     # allusers = UserModel.return_all()
     allusers = UserModel.return_all()
-    print(allusers)
+    # print(allusers)
     return allusers, 200
 
 
@@ -311,7 +311,7 @@ def logged_user():
         user = UserModel.query.filter_by(username=current_user).one()
         if flask.request.method == "GET":
             # base stats, to enhance as we go
-            result = user.as_secured_dict(True)
+            result = user.as_secured_dict()
             result["stats"] = {
                 "platform_attendance": db.session.query(
                     func.count(ObservationModel.id_role)
@@ -348,7 +348,7 @@ def logged_user():
             return (
                 {
                     "message": "Informations personnelles mises à jour.",
-                    "features": user.as_secured_dict(True),
+                    "features": user.as_secured_dict(),
                 },
                 200,
             )
@@ -417,9 +417,7 @@ def delete_user():
             200,
         )
     return (
-        {
-            "message": "Connectez vous pour supprimers vos données personnelles."
-        },
+        {"message": "Connectez vous pour supprimer vos données personnelles."},
         400,
     )
 
@@ -437,11 +435,7 @@ def reset_user_password():
         user = UserModel.query.filter_by(username=username, email=email).one()
     except Exception:
         return (
-            {
-                "message": """L'email "{}" n'est pas enregistré.""".format(
-                    email
-                )
-            },
+            {"message": f"""L'email "{email}" n'est pas enregistré."""},
             400,
         )
 

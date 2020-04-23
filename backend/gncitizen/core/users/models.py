@@ -52,7 +52,7 @@ class UserModel(TimestampMixinModel, db.Model):
     def update(self):
         db.session.commit()
 
-    def as_secured_dict(self, _recursif=False, _columns=()):
+    def as_secured_dict(self):
         surname = self.username or ""
         name = self.name or ""
         return {
@@ -163,7 +163,7 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
 class ObserverMixinModel:
 
     @declared_attr
-    def id_role(cls):
+    def id_role(self):
         return db.Column(
             db.Integer,
             db.ForeignKey(UserModel.id_user, ondelete="SET NULL"),
@@ -171,9 +171,9 @@ class ObserverMixinModel:
         )
 
     @declared_attr
-    def obs_txt(cls):
+    def obs_txt(self):
         return db.Column(db.String(150))
 
     @declared_attr
-    def email(cls):
+    def email(self):
         return db.Column(db.String(150))
