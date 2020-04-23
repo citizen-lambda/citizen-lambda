@@ -3,7 +3,6 @@ from typing import Union, Tuple, Dict
 import logging
 import uuid
 import dataclasses
-import requests
 from flask import Blueprint, current_app, request, json, send_from_directory
 from flask_jwt_extended import jwt_optional
 from geojson import FeatureCollection
@@ -20,28 +19,25 @@ from gncitizen.core.observations.models import (
     ObservationModel,
 )
 from gncitizen.core.users.models import UserModel
-# from gncitizen.core.taxonomy.models import Taxref, TMedias
-from gncitizen.utils.env import taxhub_lists_url, MEDIA_DIR
+
+from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.geo import get_municipality_id_from_wkb
 from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.sqlalchemy import get_geojson_feature
-from gncitizen.utils.taxonomy import get_specie_from_cd_nom
 from gncitizen.utils.env import db
 
 
 logger = current_app.logger
+
 frontend_handler = FrontendBroadcastHandler()
 frontend_broadcast = logging.getLogger("stream")
 frontend_broadcast.setLevel(logging.DEBUG)
 frontend_broadcast.addHandler(frontend_handler)
-frontend_broadcast.debug(
-    'data:{ "type": "debug", "data": { "message": "observations debug test" } }\n\n',
-)
+
 routes = Blueprint("observations", __name__)
 
-#  observation features attributes
 obs_keys = (
     "cd_nom",
     "id_observation",
@@ -64,7 +60,6 @@ def generate_observation_geojson(id_observation):
         :return features: Observations as a Feature dict
         :rtype features: dict
     """
-    # Crée le dictionnaire de l'observation
     observation = (
         db.session.query(
             ObservationModel,
@@ -102,23 +97,6 @@ def generate_observation_geojson(id_observation):
         if k in obs_keys:
             feature["properties"][k] = result_dict[k]
 
-    # if current_app.config.get("API_TAXHUB") is not None:
-    #     logger.debug("Selecting TaxHub Medias schema.")
-    #     taxref = Taxref.query.filter(
-    #         Taxref.cd_nom == observation.ObservationModel.cd_nom
-    #     ).first()
-    #     if taxref:
-    #         feature["properties"]["taxref"] = taxref.as_dict(True)
-
-    #     media = TMedias.query.filter(
-    #         TMedias.cd_ref == observation.ObservationModel.cd_nom
-    #     ).all()
-    #     if media:
-    #         feature["properties"]["media"] = [
-    #             medium.as_dict(True) for medium in media
-    #         ]
-
-    # else:
     from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
         TAXA,
     )
@@ -130,40 +108,6 @@ def generate_observation_geojson(id_observation):
 
     features.append(feature)
     return features
-
-
-@routes.route("/observations/<int:pk>")
-def get_observation(pk):
-    """Get on observation by id
-        ---
-        tags:
-            - observations
-        parameters:
-            - name: pk
-                in: path
-                type: integer
-                required: true
-                example: 1
-        definitions:
-            cd_nom:
-                type: integer
-                description: cd_nom taxref
-            geometry:
-                type: dict
-                description: Géométrie de la donnée
-            name:
-                type: string
-            geom:
-                type: geojson
-        responses:
-            200:
-                description: A list of all observations
-        """
-    try:
-        features = generate_observation_geojson(pk)
-        return {"features": features}, 200
-    except Exception as e:
-        return {"message": str(e)}, 400
 
 
 @routes.route("/observations", methods=["POST"])
@@ -265,10 +209,8 @@ def post_observation():
         db.session.add(newobs)
         db.session.commit()
         logger.debug(newobs.as_dict())
-        # Réponse en retour
         features = generate_observation_geojson(newobs.id_observation)
         logger.debug("FEATURES: {}".format(features))
-        # Enregistrement de la photo et correspondance Obs Photo
         try:
             file = save_upload_files(
                 request.files,
@@ -304,108 +246,6 @@ def post_observation():
     except Exception as e:
         logger.warning("[post_observation] Error: %s", str(e))
         return {"message": str(e)}, 400
-
-
-@routes.route("/observations", methods=["GET"])
-def get_observations():
-    """Get all observations
-        ---
-        tags:
-            - observations
-        definitions:
-            cd_nom:
-                type: integer
-                description: cd_nom taxref
-            geometry:
-                type: dict
-                description: Géométrie de la donnée
-            name:
-                type: string
-            geom:
-                type: geometry
-        responses:
-            200:
-                description: A list of all observations
-        """
-    try:
-        observations = ObservationModel.query.order_by(
-            ObservationModel.timestamp_create.desc()
-        ).all()
-        features = []
-        for observation in observations:
-            feature = get_geojson_feature(observation.geom)
-            observation_dict = observation.as_dict(True)
-            for k in observation_dict:
-                if k in obs_keys:
-                    feature["properties"][k] = observation_dict[k]
-
-            taxon = get_specie_from_cd_nom(feature["properties"]["cd_nom"])
-            for k in taxon:
-                feature["properties"][k] = taxon[k]
-            features.append(feature)
-        return FeatureCollection(features)
-    except Exception as e:
-        return {"message": str(e)}, 400
-
-
-@routes.route("/observations/lists/<int:id>", methods=["GET"])
-def get_observations_from_list(id):  # noqa: A002
-    """Get all observations from a taxonomy list
-    GET
-        ---
-        tags:
-            - observations
-        parameters:
-            - name: id
-                in: path
-                type: integer
-                required: true
-                example: 1
-        definitions:
-            cd_nom:
-                type: integer
-                description: cd_nom taxref
-            geometry:
-                type: dict
-                description: Géométrie de la donnée
-            name:
-                type: string
-            geom:
-                type: geometry
-        responses:
-            200:
-                description: A list of all species lists
-        """
-    # taxhub_url = load_config()['TAXHUB_API_URL']
-    taxhub_lists_taxa_url = taxhub_lists_url + "taxons/" + str(id)
-    rtaxa = requests.get(taxhub_lists_taxa_url)
-    if rtaxa.status_code == 200:  # pylint: disable=too-many-nested-blocks
-        try:
-            taxa = rtaxa.json()["items"]
-            logger.debug(taxa)
-            features = []
-            for t in taxa:
-                logger.debug("R", t["cd_nom"])
-                datas = (
-                    ObservationModel.query.filter_by(cd_nom=t["cd_nom"])
-                    .order_by(ObservationModel.timestamp_create.desc())
-                    .all()
-                )
-                for d in datas:
-                    feature = get_geojson_feature(d.geom)
-                    observation_dict = d.as_dict(True)
-                    for k in observation_dict:
-                        if k in obs_keys:
-                            feature["properties"][k] = observation_dict[k]
-                    taxon = get_specie_from_cd_nom(
-                        feature["properties"]["cd_nom"]
-                    )
-                    for k in taxon:
-                        feature["properties"][k] = taxon[k]
-                    features.append(feature)
-            return FeatureCollection(features)
-        except Exception as e:
-            return {"message": str(e)}, 400
 
 
 @routes.route("/programs/<int:program_id>/observations", methods=["GET"])
@@ -483,12 +323,13 @@ def get_program_observations(
         observations_sql = observations_sql.order_by(
             ObservationModel.date.desc()
         )
-        logger.debug(str(observations_sql))
+        # logger.debug(str(observations_sql))
         observations = observations_sql.all()
 
         features = []
         for observation in observations:
             feature = get_geojson_feature(observation.ObservationModel.geom)
+            # Municipality
             feature["properties"]["municipality"] = {
                 "name": observation.area_name,
                 "code": observation.area_code,
@@ -499,9 +340,9 @@ def get_program_observations(
                 "username": observation.username
             }
 
-            # Observer submitted medium
-            # FIXME: media route, now!
+            # submitted medium
             feature["properties"]["image"] = (
+                # FIXME: media route, now!
                 "/".join(
                     [
                         current_app.config["API_ENDPOINT"],
@@ -513,7 +354,6 @@ def get_program_observations(
                 else None
             )
 
-            # Municipality
             observation_dict = observation.ObservationModel.as_dict(True)
             for k in observation_dict:
                 if k in obs_keys and k != "municipality":

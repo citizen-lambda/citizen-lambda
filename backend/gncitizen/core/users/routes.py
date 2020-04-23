@@ -1,4 +1,7 @@
-import flask
+import uuid
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from flask import request, Blueprint, current_app
 from flask_jwt_extended import (
     create_access_token,
@@ -14,11 +17,6 @@ from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.env import db, jwt
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import UserModel, RevokedTokenModel
-from gncitizen.utils.jwt import admin_required
-import uuid
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 
 routes = Blueprint("users", __name__)
@@ -72,29 +70,30 @@ def registration():
             description: user created
     """
     try:
-        request_datas = dict(request.get_json())
-
-        # Génération du dictionnaire des données à sauvegarder
-        datas_to_save = {}
-        for data in request_datas:
+        request_data = dict(request.get_json())
+        data_to_save = {}
+        for data in request_data:
             if hasattr(UserModel, data) and data != "password":
-                datas_to_save[data] = request_datas[data]
+                data_to_save[data] = request_data[data]
 
-        # Hashed password
-        datas_to_save["password"] = UserModel.generate_hash(
-            request_datas["password"]
+        data_to_save["password"] = UserModel.generate_hash(
+            request_data["password"]
         )
 
-        # Protection against admin creation from API
-        datas_to_save["admin"] = False
+        data_to_save["admin"] = False
 
         try:
-            newuser = UserModel(**datas_to_save)
+            newuser = UserModel(**data_to_save)
         except Exception as e:
             db.session.rollback()
             current_app.logger.critical(e)
             # raise GeonatureApiError(e)
-            return ({"message": "La syntaxe de la requête est erronée."}, 400)
+            return (
+                {
+                    "message": "les informations d'enregistrement sont erronées."
+                },
+                400,
+            )
 
         try:
             newuser.save_to_db()
@@ -106,9 +105,7 @@ def registration():
             if UserModel.find_by_username(newuser.username):
                 return (
                     {
-                        "message": """L'utilisateur "{}" existe déjà.""".format(
-                            newuser.username
-                        )
+                        "message": f"""L'utilisateur "{newuser.username}" est déjà enregistré."""  # noqa: E501
                     },
                     400,
                 )
@@ -271,31 +268,10 @@ def token_refresh():
     return {"access_token": access_token}
 
 
-@routes.route("/allusers", methods=["GET"])
-@jwt_required
-@admin_required
-def get_allusers():
-    """list all users
-    ---
-    tags:
-      - Authentication
-    summary: List all registered users
-    produces:
-      - application/json
-    responses:
-      200:
-        description: list all users
-    """
-    # allusers = UserModel.return_all()
-    allusers = UserModel.return_all()
-    # print(allusers)
-    return allusers, 200
-
-
 @routes.route("/user/info", methods=["GET", "POST"])
 @jwt_required
-def logged_user():
-    """current user model
+def user_info():
+    """current user record
     ---
     tags:
       - Authentication
@@ -309,9 +285,9 @@ def logged_user():
     try:
         current_user = get_jwt_identity()
         user = UserModel.query.filter_by(username=current_user).one()
-        if flask.request.method == "GET":
+        if request.method == "GET":
             # base stats, to enhance as we go
-            result = user.as_secured_dict()
+            result = user.as_user_dict()
             result["stats"] = {
                 "platform_attendance": db.session.query(
                     func.count(ObservationModel.id_role)
@@ -328,10 +304,10 @@ def logged_user():
                 200,
             )
 
-        if flask.request.method == "POST":
+        if request.method == "POST":
             is_admin = user.admin or False
             current_app.logger.debug(
-                "[logged_user] Update current user personnal data"
+                "[user_info] Update current user personnal data"
             )
             request_data = dict(request.get_json())
             for data in request_data:
@@ -348,7 +324,7 @@ def logged_user():
             return (
                 {
                     "message": "Informations personnelles mises à jour.",
-                    "features": user.as_secured_dict(),
+                    "features": user.as_user_dict(),
                 },
                 200,
             )
@@ -360,7 +336,7 @@ def logged_user():
         )
     except Exception as e:
         # raise GeonatureApiError(e)
-        current_app.logger.error("AUTH ERROR:", str(e))
+        current_app.logger.error("[user_info] ERROR:", str(e))
         return (
             {
                 "message": "Connectez vous pour obtenir vos données personnelles."
@@ -372,38 +348,30 @@ def logged_user():
 @routes.route("/user/delete", methods=["DELETE"])
 @jwt_required
 def delete_user():
-    """list all logged users
+    """delete user record
     ---
     tags:
       - Authentication
-    summary: Delete current logged user
+    summary: Delete user record
     consumes:
       - application/json
     produces:
       - application/json
     responses:
       200:
-        description: Delete current logged user
+        description: user record deleted
     """
-    # Get logged user
-    current_app.logger.debug("[delete_user] Delete current user")
-
     current_user = get_jwt_identity()
     if current_user:
-        current_app.logger.debug(
-            "[delete_user] current user is %s", current_user
-        )
         user = UserModel.query.filter_by(username=current_user)
-        # get username
         username = user.one().username
-        # delete user
         try:
             db.session.query(UserModel).filter(
                 UserModel.username == current_user
             ).delete()
             db.session.commit()
             current_app.logger.debug(
-                "[delete_user] user %s succesfully deleted", username
+                "[delete_user] user %s record deleted", username
             )
         except Exception as e:
             db.session.rollback()
@@ -411,9 +379,7 @@ def delete_user():
             # return {"message": str(e)}, 400
 
         return (
-            {
-                "message": f"""Account "{username}" have been successfully deleted"""
-            },
+            {"message": f"""Account "{username}" deleted"""},
             200,
         )
     return (
@@ -426,10 +392,11 @@ def delete_user():
 
 
 @routes.route("/user/resetpasswd", methods=["POST"])
+@jwt_required
 def reset_user_password():
-    request_datas = dict(request.get_json())
-    email = request_datas["email"]
-    username = request_datas["username"]
+    request_data = dict(request.get_json())
+    email = request_data["email"]
+    username = request_data["username"]
 
     try:
         user = UserModel.query.filter_by(username=username, email=email).one()
@@ -486,17 +453,15 @@ def reset_user_password():
         db.session.commit()
         return (
             {
-                "message": "Check your email, you credentials have been updated."
+                "message": "Check your email: your credentials have been updated."
             },
             200,
         )
     except Exception as e:
         current_app.logger.warning(
-            "reset_password: failled to send new credentials. %s", str(e)
+            "[reset_password] failed to send new credentials. %s", str(e)
         )
         return (
-            {
-                "message": f"Echec d'envoi des informations de connexion: `{str(e)}`"
-            },
+            {"message": f"Echec d'envoi des informations de connexion."},
             500,
         )

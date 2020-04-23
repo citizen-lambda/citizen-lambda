@@ -72,6 +72,6 @@ class Taxon:
     def __repr__(self):
         return (
             f"""<Taxon {self.cd_nom} "{self.nom_valide}" "{self.nom_vern}">"""
-        )  # noqa: E501
+        )
 
     __str__ = __repr__

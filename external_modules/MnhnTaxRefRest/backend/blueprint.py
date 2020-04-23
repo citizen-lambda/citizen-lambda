@@ -6,10 +6,6 @@ from gncitizen.core.taxonomy import TAXA, TAXON_REPO_ADAPTERS
 from gncitizen.core.taxonomy.taxon import Taxon
 
 
-# logger.setLevel(logging.DEBUG)
-# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-# current_app.config['DEBUG'] = True
-
 blueprint = Blueprint("taxref", __name__)
 
 

@@ -34,18 +34,20 @@ export class RegisterComponent {
     private auth: AuthService,
     private router: Router,
     public activeModal: NgbActiveModal
-  ) {}
+  ) { }
 
   onRegister(): void {
     this.auth
       .register(this.user)
       .pipe(
         map((user: LoggedUser) => {
-          localStorage.setItem('access_token', user.access_token);
-          localStorage.setItem('refresh_token', user.refresh_token);
-          localStorage.setItem('username', user.username);
-          console.log(user.status);
+          console.log(user);
           if (user) {
+            localStorage.setItem('access_token', user.access_token);
+            this.auth.authorized$.next(true)
+            localStorage.setItem('refresh_token', user.refresh_token);
+            localStorage.setItem('username', user.username);
+            this.auth.authenticated$.next(true)
             const message = user.message;
             this._success.subscribe(msg => (this.successMessage = msg));
             this._success.pipe(debounceTime(1500)).subscribe(() => {
@@ -62,7 +64,7 @@ export class RegisterComponent {
         catchError(this.handleError)
       )
       .subscribe(
-        _data => {},
+        _data => { },
         errorMessage => {
           console.error('errorMessage', errorMessage);
           this.errorMessage = errorMessage;
@@ -76,7 +78,7 @@ export class RegisterComponent {
     if (error.error instanceof ErrorEvent) {
       console.error('client-side error');
       // client-side or network error
-      errorMessage = `Error: ${error.error.message}`;
+      errorMessage = `Error: ${ error.error.message }`;
     } else {
       // server-side error
       if (error.error && error.error.message) {
@@ -85,7 +87,7 @@ export class RegisterComponent {
         errorMessage = error.error.message;
       } else {
         console.error('server-side error', error);
-        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        errorMessage = `Error Code: ${ error.status }\nMessage: ${ error.message }`;
       }
     }
     return throwError(errorMessage);

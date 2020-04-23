@@ -34,7 +34,7 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
         <img
           [src]="
             !!data?.images && !!data?.images?.length
-              ? AppConfig.API_ENDPOINT + '/media/' + (data?.images)[0]
+              ? AppConfig.API_ENDPOINT + '/media/' + (data?.images!)[0]
               : data?.image
               ? data?.image
               : taxon?.media && !!taxon?.media.length

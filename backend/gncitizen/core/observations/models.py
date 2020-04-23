@@ -9,7 +9,7 @@ from gncitizen.core.commons.models import (
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.taxonomy.models import (
     Taxref,
-)  # todo: removal breaks rewards
+)  # todo: removal breaks recog rewards
 from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
 from gncitizen.utils.env import db
@@ -31,7 +31,7 @@ class ObservationModel(
     )
     cd_nom = db.Column(
         db.Integer,
-        db.ForeignKey(Taxref.cd_nom),  # todo: removal breaks rewards
+        db.ForeignKey(Taxref.cd_nom),  # todo: removal breaks recog rewards
         nullable=False,
     )
     date = db.Column(db.Date, nullable=False)

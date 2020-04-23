@@ -82,18 +82,10 @@ taxhub_url = app_conf.get("API_TAXHUB", "")
 taxhub_lists_url = taxhub_url + "biblistes/"
 
 
-def list_and_import_gnc_modules(app, mod_path=GNC_EXTERNAL_MODULE):
+def list_and_import_gnc_modules(_app, mod_path=GNC_EXTERNAL_MODULE):
     """
         Get all the module enabled from gn_commons.t_modules
     """
-    # with app.app_context():
-    #     data = db.session.query(TModules).filter(
-    #         TModules.active_backend == True
-    #     )
-    #     enabled_modules = [d.as_dict()['module_name'] for d in data]
-
-    # iter over external_modules dir
-    #   and import only modules which are enabled
     for path in mod_path.iterdir():
         if path.is_dir():
             manifest = load_toml(str(path / "manifest.toml"))

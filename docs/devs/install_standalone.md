@@ -518,6 +518,8 @@ $EDITOR ~/citizen/frontend/src/app/home/home.component.css
 ```
 
 ```sh
+# regen translations
+npm run xi18n  # and diffedit
 # TODO: remaining apache rewrite
 cp frontend/dist/browser/fr/robots.txt frontend/dist/browser/
 cp frontend/dist/browser/fr/favicon.ico frontend/dist/browser/

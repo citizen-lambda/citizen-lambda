@@ -14,7 +14,7 @@ from gncitizen.utils import (
 from gncitizen.core.taxonomy import TAXON_REPO_ADAPTERS, setup_default_repo
 from gncitizen.core.taxonomy.taxon import Taxon, TaxonMedium
 
-from . import models  # noqa: F401
+from . import models  # noqa: F401  unused
 
 
 module_name = ".".join(__name__.split(".")[:-1])

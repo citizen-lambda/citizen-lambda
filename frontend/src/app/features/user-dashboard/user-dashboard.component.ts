@@ -34,7 +34,7 @@ export class UserDashboardComponent implements OnInit {
     private client: HttpClient,
     private router: Router,
     private modalService: NgbModal
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const access_token = localStorage.getItem('access_token');
@@ -66,8 +66,9 @@ export class UserDashboardComponent implements OnInit {
       this.auth
         .selfDeleteAccount(access_token)
         .then(data => {
+          this.auth.logout()
           const getBackHome = confirm(
-            data.hasOwnProperty('message') ? `${data.message}\nRevenir à l'accueil ?` : data
+            data.hasOwnProperty('message') ? `${ data.message }\nRevenir à l'accueil ?` : data
           );
           if (getBackHome) {
             this.router.navigate(['/home']);
@@ -78,7 +79,7 @@ export class UserDashboardComponent implements OnInit {
   }
 
   getPersonalInfo(): Observable<any> {
-    const url = `${AppConfig.API_ENDPOINT}/user/info`;
+    const url = `${ AppConfig.API_ENDPOINT }/user/info`;
     return this.client.get(url, { headers: this.headers });
   }
 
@@ -101,7 +102,7 @@ export class UserDashboardComponent implements OnInit {
 
   onUpdatePersonalData(): void | Error {
     this.client
-      .post(`${AppConfig.API_ENDPOINT}/user/info`, this.personalInfo, {
+      .post(`${ AppConfig.API_ENDPOINT }/user/info`, this.personalInfo, {
         headers: this.headers
       })
       .pipe(
@@ -117,7 +118,7 @@ export class UserDashboardComponent implements OnInit {
 
   getBadgeCategories(): Observable<Object | Error> {
     return this.client
-      .get<{ [name: string]: any }>(`${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
+      .get<{ [name: string]: any }>(`${ AppConfig.API_ENDPOINT }/dev_rewards/${ this.role_id }`)
       .pipe(
         tap(data => {
           const categories: { [name: string]: any } = data['badges'].reduce(

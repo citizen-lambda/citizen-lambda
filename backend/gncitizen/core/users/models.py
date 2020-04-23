@@ -52,7 +52,7 @@ class UserModel(TimestampMixinModel, db.Model):  # type: ignore
     def update(self):
         db.session.commit()
 
-    def as_secured_dict(self):
+    def as_user_dict(self):
         surname = self.username or ""
         name = self.name or ""
         return {
@@ -85,7 +85,7 @@ class UserModel(TimestampMixinModel, db.Model):  # type: ignore
 
     @classmethod
     def return_all(cls):
-        def to_json(x):
+        def to_dict(x):
             return {
                 "username": x.username,
                 "password": x.password,
@@ -97,20 +97,11 @@ class UserModel(TimestampMixinModel, db.Model):  # type: ignore
         return {
             "users": list(
                 map(
-                    lambda x: to_json(x),  # pylint: disable=unnecessary-lambda
+                    lambda x: to_dict(x),  # pylint: disable=unnecessary-lambda
                     UserModel.query.all(),
                 )
             )
         }
-
-    # @classmethod
-    # def delete_all(cls):
-    #     try:
-    #         num_rows_deleted = db.session.query(cls).delete()
-    #         db.session.commit()
-    #         return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
-    #     except:
-    #         return {'message': 'Something went wrong'}
 
 
 class GroupsModel(db.Model):  # type: ignore
