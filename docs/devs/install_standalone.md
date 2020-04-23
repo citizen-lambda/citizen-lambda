@@ -530,6 +530,7 @@ cp ~/citizen_sitemap.xml frontend/dist/browser/sitemap.xml
 # restart backend after backend/python code changes
 sudo supervisorctl restart citizen
 # reload apache after frontend rebuild
+npm run brotli
 sudo systemctl reload apache2
 ```
 
