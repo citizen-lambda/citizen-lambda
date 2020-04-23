@@ -12,7 +12,7 @@ if current_app.config.get("API_TAXHUB") is not None:
         Taxref,
     )
 else:
-    from gncitizen.utils.taxonomy import mkTaxonRepository
+    from gncitizen.utils.taxonomy import mk_taxon_repository
 
 
 routes = Blueprint("taxonomy", __name__)
@@ -81,7 +81,7 @@ def get_list(id_):
 
     if current_app.config.get("API_TAXHUB") is None:
         current_app.logger.info("Calling TaxRef REST API.")
-        return mkTaxonRepository(id)
+        return mk_taxon_repository(id)
 
     current_app.logger.info("Select TaxHub schema.")
     try:

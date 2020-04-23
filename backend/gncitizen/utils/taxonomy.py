@@ -26,7 +26,7 @@ def taxa_list(list_id: int) -> Dict:
             return dict(**json.loads(f.read()))
 
 
-def mkTaxonRepository(taxalist_id: int) -> Dict[int, Any]:
+def mk_taxon_repository(taxalist_id: int) -> Dict[int, Any]:
     from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
         TAXA,
     )
@@ -56,6 +56,8 @@ def get_specie_from_cd_nom(cd_nom):
     :return: french and scientific official name (from ``cd_ref`` = ``cd_nom``) as dict
     :rtype: dict
     """
-    from gncitizen.core.taxonomy import TAXA  # pylint: disable=import-outside-toplevel
+    from gncitizen.core.taxonomy import (
+        TAXA,
+    )  # pylint: disable=import-outside-toplevel
 
     return dataclasses.asdict(TAXA.get(cd_nom))
