@@ -1,4 +1,4 @@
-from typing import Type, Optional
+from typing import Dict, Type, Optional, cast
 
 
 from gncitizen.utils import (
@@ -12,22 +12,27 @@ from gncitizen.core.taxonomy.taxon import Taxon
 TaxonRepository = ReadRepository[Taxon]
 # TODO: considering gunicorn workers: test with flask.app['taxonomy'] = TAXA binding
 TAXA: Optional[TaxonRepository] = None
-TAXA_READ_REPO_ADAPTERS: AdapterCollection[
-    Taxon
-] = AdapterCollection()
+TAXON_REPO_ADAPTERS: AdapterCollection[Taxon] = AdapterCollection()
 
 
 def set_default_read_adapter(
-    adapter: Optional[Type[ReadRepoAdapter]] = None
-) -> ReadRepoAdapter:
-    adapter_types = TAXA_READ_REPO_ADAPTERS.get()
-    if len(adapter_types) <= 0:
+    adapter: Optional[Type[ReadRepoAdapter[Taxon]]] = None,
+) -> ReadRepoAdapter[Taxon]:
+    adapter_types: Dict[
+        str, Type[ReadRepoAdapter[Taxon]]
+    ] = TAXON_REPO_ADAPTERS.get()
+    if len(adapter_types) < 1:
         raise Exception("No registered adapter.")
     if adapter and adapter.name not in adapter_types:
         raise Exception(f"Unregistered adapter {adapter.name}.")
-    if not adapter:
-        _adapter = adapter_types.get(list(adapter_types)[0])
-    read_repo_adapter: Type[ReadRepoAdapter] = adapter_types[_adapter.name]
+    if adapter is None:
+        _adapter: Type[ReadRepoAdapter[Taxon]] = cast(
+            Type[ReadRepoAdapter[Taxon]],  # non Optional
+            adapter_types.get(list(adapter_types)[0]),
+        )
+    read_repo_adapter: Type[ReadRepoAdapter[Taxon]] = adapter_types[
+        _adapter.name
+    ]
     return read_repo_adapter()
 
 
@@ -38,9 +43,9 @@ def setup_taxon_repo(
 ):
     global TAXA
 
-    if (adapter is not None and TAXA is not None):
+    if adapter is not None and TAXA is not None:
         TAXA.read_adapter = adapter
-    if (adapter is not None and TAXA is None):
+    if adapter is not None and TAXA is None:
         TAXA = TaxonRepository(adapter)
     else:
         try:

@@ -2,7 +2,7 @@
 import dataclasses
 from flask import Blueprint
 
-from gncitizen.core.taxonomy import TAXA, TAXA_READ_REPO_ADAPTERS
+from gncitizen.core.taxonomy import TAXA, TAXON_REPO_ADAPTERS
 from gncitizen.core.taxonomy.taxon import Taxon
 
 
@@ -26,4 +26,4 @@ def default(taxon_id: int, **_kwargs):
 
 @blueprint.route("/config", methods=["GET"])
 def configview(*_args, **_kwargs):
-    return {"adapters": str(TAXA_READ_REPO_ADAPTERS.get())}
+    return {"adapters": str(TAXON_REPO_ADAPTERS.get())}

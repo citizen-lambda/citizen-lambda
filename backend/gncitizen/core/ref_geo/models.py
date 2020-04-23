@@ -5,7 +5,7 @@ from gncitizen.utils.env import db
 
 @serializable
 @geoserializable
-class LAreas(db.Model):
+class LAreas(db.Model):  # type: ignore
     __tablename__ = "l_areas"
     __table_args__ = {"schema": "ref_geo"}
     id_area = db.Column(db.Integer, primary_key=True)
@@ -24,11 +24,11 @@ class LAreas(db.Model):
 
 @serializable
 @geoserializable
-class BibAreasTypes(db.Model):
+class BibAreasTypes(db.Model):  # type: ignore
     __tablename__ = "bib_areas_types"
     __table_args__ = {"schema": "ref_geo"}
     id_type = db.Column(db.Integer, primary_key=True)
-    type_name = db.Column(db.Unicode)
+    type_name = db.Column(db.Unicode)  # type: ignore
     type_code = db.Column(db.Unicode)
     type_desc = db.Column(db.Unicode)
     ref_name = db.Column(db.Unicode)
@@ -38,7 +38,7 @@ class BibAreasTypes(db.Model):
 
 @serializable
 @geoserializable
-class LiMunicipalities(db.Model):
+class LiMunicipalities(db.Model):  # type: ignore
     __tablename__ = "li_municipalities"
     __table_args__ = {"schema": "ref_geo"}
     id_municipality = db.Column(db.Unicode, primary_key=True, unique=True)

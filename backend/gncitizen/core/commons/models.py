@@ -35,7 +35,9 @@ class TimestampMixinModel:
 
 
 @serializable
-class ModulesModel(TimestampMixinModel, db.Model):
+class ModulesModel(
+    TimestampMixinModel, db.Model  # type: ignore
+):
     """Table des modules de GeoNature-citizen"""
 
     __tablename__ = "t_modules"
@@ -50,7 +52,9 @@ class ModulesModel(TimestampMixinModel, db.Model):
 
 @serializable
 @geoserializable
-class ProgramsModel(TimestampMixinModel, db.Model):
+class ProgramsModel(
+    TimestampMixinModel, db.Model  # type: ignore
+):
     """Table des Programmes de GeoNature-citizen"""
 
     __tablename__ = "t_programs"
@@ -68,9 +72,7 @@ class ProgramsModel(TimestampMixinModel, db.Model):
         default=1,
     )
     taxonomy_list = db.Column(
-        db.Integer,
-        ForeignKey(BibListes.id_liste),  # todo: rm
-        nullable=True
+        db.Integer, ForeignKey(BibListes.id_liste), nullable=True  # todo: rm
     )
     is_active = db.Column(
         db.Boolean(), server_default=expression.true(), default=True
@@ -85,7 +87,9 @@ class ProgramsModel(TimestampMixinModel, db.Model):
 
 @serializable
 @geoserializable
-class MediaModel(TimestampMixinModel, db.Model):
+class MediaModel(
+    TimestampMixinModel, db.Model  # type: ignore
+):
     """Table des media de GeoNature-citizen """
 
     __tablename__ = "t_medias"

@@ -9,7 +9,7 @@ from gncitizen.utils.env import db
 from sqlalchemy.ext.declarative import declared_attr
 
 
-class RevokedTokenModel(db.Model):
+class RevokedTokenModel(db.Model):  # type: ignore
     __tablename__ = "t_revoked_tokens"
     __table_args__ = {"schema": "gnc_core"}
 
@@ -27,7 +27,7 @@ class RevokedTokenModel(db.Model):
 
 
 @serializable
-class UserModel(TimestampMixinModel, db.Model):
+class UserModel(TimestampMixinModel, db.Model):  # type: ignore
     """
         Table des utilisateurs
     """
@@ -113,7 +113,7 @@ class UserModel(TimestampMixinModel, db.Model):
     #         return {'message': 'Something went wrong'}
 
 
-class GroupsModel(db.Model):
+class GroupsModel(db.Model):  # type: ignore
     """Table des groupes d'utilisateurs"""
 
     __tablename__ = "bib_groups"
@@ -124,7 +124,7 @@ class GroupsModel(db.Model):
 
 
 @serializable
-class UserRightsModel(TimestampMixinModel, db.Model):
+class UserRightsModel(TimestampMixinModel, db.Model):  # type: ignore
     """Table de gestion des droits des utilisateurs de GeoNature-citizen"""
 
     __tablename__ = "t_users_rights"
@@ -146,7 +146,7 @@ class UserRightsModel(TimestampMixinModel, db.Model):
     delete = db.Column(db.Boolean(), default=False)
 
 
-class UserGroupsModel(TimestampMixinModel, db.Model):
+class UserGroupsModel(TimestampMixinModel, db.Model):  # type: ignore
     """Table de classement des utilisateurs dans des groupes"""
 
     __tablename__ = "cor_users_groups"
@@ -161,7 +161,6 @@ class UserGroupsModel(TimestampMixinModel, db.Model):
 
 
 class ObserverMixinModel:
-
     @declared_attr
     def id_role(self):
         return db.Column(

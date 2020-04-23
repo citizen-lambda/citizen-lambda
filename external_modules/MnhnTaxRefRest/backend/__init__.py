@@ -11,7 +11,7 @@ from gncitizen.utils import (
     ReadRepoAdapter,
     HttpClient,
 )
-from gncitizen.core.taxonomy import TAXA_READ_REPO_ADAPTERS, setup_default_repo
+from gncitizen.core.taxonomy import TAXON_REPO_ADAPTERS, setup_default_repo
 from gncitizen.core.taxonomy.taxon import Taxon, TaxonMedium
 
 from . import models  # noqa: F401
@@ -211,7 +211,7 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
     #     ...
 
 
-TAXA_READ_REPO_ADAPTERS.register(MnhnTaxRefRestAdapter)
+TAXON_REPO_ADAPTERS.register(MnhnTaxRefRestAdapter)
 setup_default_repo()
 
 

@@ -167,9 +167,9 @@ RepoAdapter = Union[ReadRepoAdapter[T], WriteRepoAdapter[T]]
 
 class AdapterCollection(Generic[T]):
     def __init__(self):
-        self._adapters: Dict[str, Type[RepoAdapter[T]]] = dict()
+        self._adapters: Dict[str, Type[ReadRepoAdapter[T]]] = dict()
 
-    def register(self, adapter: Type[RepoAdapter[T]]):
+    def register(self, adapter: Type[ReadRepoAdapter[T]]):
         self._adapters.update({adapter.name: adapter})
 
     def get(self):

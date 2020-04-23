@@ -17,7 +17,9 @@ from gncitizen.utils.env import db
 
 @serializable
 @geoserializable
-class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
+class ObservationModel(
+    ObserverMixinModel, TimestampMixinModel, db.Model  # type: ignore
+):
     """Table des observations"""
 
     __tablename__ = "t_obstax"
@@ -39,7 +41,9 @@ class ObservationModel(ObserverMixinModel, TimestampMixinModel, db.Model):
     geom = db.Column(Geometry("POINT", 4326))
 
 
-class ObservationMediaModel(TimestampMixinModel, db.Model):
+class ObservationMediaModel(
+    TimestampMixinModel, db.Model  # type: ignore
+):
     """Table de correspondances des médias (photos) avec les observations"""
 
     __tablename__ = "cor_obstax_media"

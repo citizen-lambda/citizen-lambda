@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 """A module to manage taxonomy"""
 
@@ -56,8 +55,8 @@ def get_specie_from_cd_nom(cd_nom):
     :return: french and scientific official name (from ``cd_ref`` = ``cd_nom``) as dict
     :rtype: dict
     """
-    from gncitizen.core.taxonomy import (
+    from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
         TAXA,
-    )  # pylint: disable=import-outside-toplevel
+    )
 
     return dataclasses.asdict(TAXA.get(cd_nom))
