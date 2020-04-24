@@ -24,7 +24,6 @@ class BibListes(db.Model):  # type: ignore
     picto = db.Column(db.Unicode)
     regne = db.Column(db.Unicode)
     group2_inpn = db.Column(db.Unicode)
-
     # cnl = db.relationship("CorNomListe", lazy='select')
 
     def __repr__(self):
@@ -49,12 +48,11 @@ class CorNomListe(db.Model):  # type: ignore
     )
     bib_nom = db.relationship("BibNoms")
     bib_liste = db.relationship("BibListes")
+    # listes = db.relationship("CorNomListe", lazy='select')
+    # media = db.relationship("TMedias", lazy='select')
 
     def __repr__(self):
         return "<CorNomListe %r>" % self.id_liste
-
-    # listes = db.relationship("CorNomListe", lazy='select')
-    # media = db.relationship("TMedias", lazy='select')
 
 
 @serializable

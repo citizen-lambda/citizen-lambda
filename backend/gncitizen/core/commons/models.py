@@ -124,7 +124,7 @@ class FrontendBroadcastHandler(logging.Handler):
         q = queue.Queue()
         self.subscriptions.append(q)
         try:
-            yield f"hello eventSource\n\n"
+            yield f"hello\n\n"
             while True:
                 result = q.get()
                 yield f"{result}\n\n"

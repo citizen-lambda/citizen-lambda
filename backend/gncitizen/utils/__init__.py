@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# coding: utf-8
 from warnings import warn
 from typing import (
     Iterable,
@@ -20,12 +20,12 @@ import json
 import requests
 
 
-K = str
-V = TypeVar("V", Mapping, int, str)
+KT = str
+VT = TypeVar("VT", Mapping, int, str)
 T = TypeVar("T")
 
 
-def compose(*fns):
+def compose(*fns: Callable[..., Any]):
     return reduce(lambda f, g: lambda x: f(g(x)), fns, lambda x: x)  # noqa
 
 
@@ -52,8 +52,8 @@ def mapper(
     transformer: Callable,
     extractor: Callable,
     extractions: Dict,
-    data: Mapping[K, V],
-) -> Iterable[V]:
+    data: Mapping[KT, VT],
+) -> Iterable[VT]:
     return [
         compose(transformer(k), extractor(data))(v)
         for k, v in extractions.items()
@@ -76,11 +76,11 @@ def parsed_url(link="") -> str:
         return ""
 
 
-def _path(mapping: Mapping[K, V]) -> Callable:
+def _path(mapping: Mapping[KT, VT]) -> Callable:
     m: Any
     m = mapping
 
-    def path_val(nodes: Sequence[K]) -> Optional[V]:
+    def path_val(nodes: Sequence[KT]) -> Optional[VT]:
         nonlocal m
         return reduce(
             lambda acc, n: acc[n] if acc and n in acc else None, nodes, m
@@ -92,7 +92,7 @@ def _path(mapping: Mapping[K, V]) -> Callable:
 # TODO: pick + strategy
 
 
-def path_str(nodes: Sequence[str], mapping: Mapping[str, V]) -> str:
+def path_str(nodes: Sequence[str], mapping: Mapping[str, VT]) -> str:
     """Traverse the map following the nodes path
     and return the value of the terminal node
     >>> path_str(["A", "B", "Z"], {"A": {"B": {"C": "bingo"}}})
@@ -179,8 +179,8 @@ class AdapterCollection(Generic[T]):
 class HttpClient:
     # TODO: handle eventual post & auth
     def call(
-        self, link: str, defaultvalue: Optional[V] = None
-    ) -> Union[Optional[Mapping[Any, Any]], Optional[V]]:
+        self, link: str, defaultvalue: Optional[VT] = None
+    ) -> Union[Optional[Mapping[Any, Any]], Optional[VT]]:
         url = parsed_url(link)
         r = requests.get(url)
         try:

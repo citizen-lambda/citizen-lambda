@@ -5,7 +5,6 @@ from gncitizen.utils import (
     ReadRepoAdapter,
     AdapterCollection,
     ReadRepository,
-    # RWRepository
 )
 from gncitizen.core.taxonomy.taxon import Taxon
 
@@ -36,11 +35,7 @@ def set_default_read_adapter(
     return read_repo_adapter()
 
 
-def setup_taxon_repo(
-    # reading_head ?
-    adapter: Optional[ReadRepoAdapter[Taxon]] = None,
-    # write_repo: Optional[WriteRepoAdapter[Taxon]]
-):
+def setup_taxon_repo(adapter: Optional[ReadRepoAdapter[Taxon]] = None):
     global TAXA
 
     if adapter is not None and TAXA is not None:
@@ -54,18 +49,6 @@ def setup_taxon_repo(
         except Exception:
             print("No surrogate repository could be found")
             raise
-
-    # if TAXA is not None:
-    #     _t: Optional[Taxon] = TAXA.get(61153)
-    #     if _t:
-    #         _m = [dataclasses.asdict(medium) for medium in _t.media]
-    #         print(f"test: {_t}")
-    #         print(f"test: {type(_t.media)}")
-    #         print(f"test: {_m}")
-    #     else:
-    #         print('NO TAXON')
-    # else:
-    #     print('Empty TAXA repo')
 
 
 setup_default_repo = setup_taxon_repo

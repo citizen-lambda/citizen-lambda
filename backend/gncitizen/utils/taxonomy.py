@@ -50,14 +50,6 @@ def mk_taxon_repository(taxalist_id: int) -> Dict[int, Optional[Taxon]]:
 
 def get_specie_from_cd_nom(cd_nom) -> Optional[Dict]:
     # backend/gncitizen/core/observations/routes.py:get_observations:/observations
-    """get specie datas from taxref id (cd_nom)#observations
-
-    :param cd_nom: taxref unique id (cd_nom)
-    :type cd_nom: int
-
-    :return: french and scientific official name (from ``cd_ref`` = ``cd_nom``) as dict
-    :rtype: dict
-    """
     from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
         TAXA,
     )
