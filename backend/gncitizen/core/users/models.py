@@ -38,7 +38,7 @@ class UserModel(TimestampMixinModel, db.Model):  # type: ignore
     id_user = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     surname = db.Column(db.String(100), nullable=False)
-    username = db.Column(db.String(120), unique=True, nullable=False)
+    username = db.Column(db.String(12), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     phone = db.Column(db.String(15))
