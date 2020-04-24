@@ -518,16 +518,17 @@ $EDITOR ~/citizen/frontend/src/app/home/home.component.css
 ```
 
 ```sh
+cd frontend
 # regen translations
 npm run xi18n  # and diffedit
 # TODO: remaining apache rewrite
-cp frontend/dist/browser/fr/robots.txt frontend/dist/browser/
-cp frontend/dist/browser/fr/favicon.ico frontend/dist/browser/
+cp dist/browser/fr/robots.txt  dist/browser/
+cp dist/browser/fr/favicon.ico  dist/browser/
 # update webapp manifest with description, scope && start_url per localeID
-$EDITOR frontend/dist/browser/en/manifest.webmanifest
+$EDITOR dist/browser/en/manifest.webmanifest
 # copy/edit sitemap.xml
-# $EDITOR frontend/dist/browser/sitemap.xml
-cp ~/citizen_sitemap.xml frontend/dist/browser/sitemap.xml
+# $EDITOR dist/browser/sitemap.xml
+cp ~/sitemap-citizen.xml dist/browser/sitemap.xml
 # do not forget to:
 # restart backend after backend/python code changes
 sudo supervisorctl restart citizen
