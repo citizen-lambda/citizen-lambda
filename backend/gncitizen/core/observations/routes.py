@@ -3,8 +3,15 @@ from typing import Union, Tuple, Dict
 import logging
 import uuid
 import dataclasses
-from flask import Blueprint, current_app, request, json, send_from_directory
-from flask_jwt_extended import jwt_optional
+from flask import (
+    Blueprint,
+    current_app,
+    request,
+    json,
+    send_from_directory,
+    make_response,
+)
+from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
@@ -17,8 +24,10 @@ from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.observations.models import (
     ObservationMediaModel,
     ObservationModel,
+    obs_keys,
 )
 from gncitizen.core.users.models import UserModel
+from gncitizen.core.taxonomy.models import Taxref
 
 from gncitizen.utils.env import MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
@@ -38,18 +47,6 @@ frontend_broadcast.addHandler(frontend_handler)
 
 routes = Blueprint("observations", __name__)
 
-obs_keys = (
-    "cd_nom",
-    "id_observation",
-    "observer",
-    "municipality",
-    "obs_txt",
-    "count",
-    "date",
-    "comment",
-    "timestamp_create",
-)
-
 
 def generate_observation_geojson(id_observation):
     """generate observation in geojson format from observation id
@@ -61,6 +58,7 @@ def generate_observation_geojson(id_observation):
         :rtype features: dict
     """
     observation = (
+        # pylint: disable=comparison-with-callable
         db.session.query(
             ObservationModel,
             UserModel.username,
@@ -69,8 +67,7 @@ def generate_observation_geojson(id_observation):
         )
         .join(
             UserModel,
-            ObservationModel.id_role  # pylint: disable=comparison-with-callable
-            == UserModel.id_user,
+            ObservationModel.id_role == UserModel.id_user,
             full=True,
         )
         .join(
@@ -248,6 +245,124 @@ def post_observation():
         return {"message": str(e)}, 400
 
 
+@routes.route("/observations", methods=["GET"])
+@jwt_required
+def export_user_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
+    try:
+        current_user = get_jwt_identity()
+        user = UserModel.query.filter_by(username=current_user).one()
+        if user:
+            # pylint: disable=comparison-with-callable
+            observations = (
+                db.session.query(
+                    ObservationModel,
+                    UserModel.username,
+                    MediaModel.filename.label("image"),
+                    LAreas.area_name,
+                    LAreas.area_code,
+                    Taxref.cd_nom,
+                    Taxref.nom_complet,
+                    Taxref.nom_vern,
+                )
+                .filter(ObservationModel.id_role == user.id_user)
+                .join(
+                    LAreas,
+                    LAreas.id_area == ObservationModel.municipality,
+                    isouter=True,
+                )
+                .join(
+                    ProgramsModel,
+                    ProgramsModel.id_program == ObservationModel.id_program,
+                    isouter=True,
+                )
+                .join(
+                    ObservationMediaModel,
+                    ObservationMediaModel.id_data_source
+                    == ObservationModel.id_observation,
+                    isouter=True,
+                )
+                .join(
+                    MediaModel,
+                    ObservationMediaModel.id_media == MediaModel.id_media,
+                    isouter=True,
+                )
+                .join(
+                    Taxref,
+                    Taxref.cd_nom == ObservationModel.cd_nom,
+                    isouter=True,
+                )
+                .join(
+                    UserModel,
+                    ObservationModel.id_role == UserModel.id_user,
+                    full=True,
+                )
+            ).all()
+            features = []
+            for observation in observations:
+                feature = get_geojson_feature(
+                    observation.ObservationModel.geom
+                )
+                feature["properties"]["municipality"] = {
+                    "name": observation.area_name,
+                    "code": observation.area_code,
+                }
+                feature["properties"]["observer"] = {
+                    "username": observation.username
+                }
+                feature["properties"]["image"] = (
+                    # FIXME: media route, now!
+                    "/".join(
+                        [
+                            current_app.config["API_ENDPOINT"],
+                            current_app.config["MEDIA_FOLDER"],
+                            observation.image,
+                        ]
+                    )
+                    if observation.image
+                    else None
+                )
+                observation_dict = observation.ObservationModel.as_dict(True)
+                observation_dict.update(
+                    {
+                        "nom_complet": observation.nom_complet,
+                        "nom_vern": observation.nom_vern,
+                    }
+                )
+                for k in observation_dict:
+                    if (
+                        k in {*obs_keys, "nom_complet", "nom_vern"}
+                        and k != "municipality"
+                    ):
+                        feature["properties"][k] = observation_dict[k]
+
+                features.append(feature)
+            response = make_response(json.dumps(FeatureCollection(features), indent=4))
+            response.headers["Content-Type"] = "text/json"
+            response.headers[
+                "Content-Disposition"
+            ] = "attachment; filename=export.geojson"
+            return response
+
+        return (
+            {
+                "message": "Connectez vous pour obtenir vos données personnelles."
+            },
+            400,
+        )
+    except Exception as e:
+        current_app.logger.critical(
+            "[export observations] `%s` export failure: %s",
+            current_user,
+            str(e),
+        )
+        return (
+            {
+                "message": "Une erreur est survenue: contactez l'administrateur."
+            },
+            500,
+        )
+
+
 @routes.route("/programs/<int:program_id>/observations", methods=["GET"])
 def get_program_observations(
     program_id: int,
@@ -280,6 +395,7 @@ def get_program_observations(
         """
     try:
         observations_sql = (
+            # pylint: disable=comparison-with-callable
             db.session.query(
                 ObservationModel,
                 UserModel.username,
@@ -314,8 +430,7 @@ def get_program_observations(
             )
             .join(
                 UserModel,
-                ObservationModel.id_role  # pylint: disable=comparison-with-callable
-                == UserModel.id_user,
+                ObservationModel.id_role == UserModel.id_user,
                 full=True,
             )
         )

@@ -86,7 +86,25 @@ export class UserDashboardComponent implements OnInit {
   exportPersonalData() {
     this.getPersonalInfo().subscribe(data => {
       alert(JSON.stringify(data));
-      // TODO: data format: csv, geojson ? Link observations and associated media ?
+    });
+  }
+
+  getPersonalObs(): Observable<any> {
+    const url = `${ AppConfig.API_ENDPOINT }/observations`;
+    return this.client.get(url, { headers: this.headers, responseType: 'blob' as 'json' });
+  }
+
+  exportPersonalObs() {
+    this.getPersonalObs().subscribe(data => {
+      const date = new Date;
+      const geojson = [];
+      geojson.push(data);
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(new Blob(geojson, { type: data.type }));
+      link.setAttribute('download', `export-${ date.toISOString() }.geojson`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
     });
   }
 

@@ -80,7 +80,7 @@ export class BadgeFacade {
           if (user.features['id_role']) {
             this.role_id = user['features']['id_role'];
             this.client
-              .get<Object>(`${this.AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
+              .get<Object>(`${ this.AppConfig.API_ENDPOINT }/dev_rewards/${ this.role_id }`)
               .pipe(
                 pluck('badges'),
                 // FIXME: untested
@@ -184,7 +184,7 @@ export class RewardComponent implements IFlowComponent {
   }
 
   close(d: string) {
-    if (this.data){
+    if (this.data) {
       this.data.service.close(d);
     }
   }

@@ -1241,24 +1241,24 @@
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="cd184261291cec5321da4273ff743e8806b5b7cd" datatype="html">
+      <trans-unit id="b49d5dec5d4a2bf7792eab18e06e16c141773b83" datatype="html">
         <source>
-          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Exporter mes données personnelles
+          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Exporter mes observations
         </source>
         <target>
-          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Exporter mes données personnelles
+          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Exporter mes observations
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
           <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9a7c8e4a5ee4f7a6da459429b9dcbf58604bc93f" datatype="html">
+      <trans-unit id="c15c9af05d17de7c1de2650616868d1a65a2454d" datatype="html">
         <source>
-          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Supprimer mes données personnelles
+          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Supprimer mon compte
         </source>
         <target>
-          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Supprimer mes données personnelles
+          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Supprimer mon compte
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
