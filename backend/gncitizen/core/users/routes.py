@@ -71,7 +71,7 @@ def registration():
     """
     try:
         request_data = dict(request.get_json())
-        data_to_save = {}
+        data_to_save = dict()
         for data in request_data:
             if hasattr(UserModel, data) and data != "password":
                 data_to_save[data] = request_data[data]
@@ -238,7 +238,6 @@ def logout():
     responses:
         200:
             description: user disconnected
-
     """
     jti = get_raw_jwt()["jti"]
     try:
@@ -265,7 +264,7 @@ def token_refresh():
     """
     current_user = get_jwt_identity()
     access_token = create_access_token(identity=current_user)
-    return {"access_token": access_token}
+    return {"access_token": access_token}, 200
 
 
 @routes.route("/user/info", methods=["GET", "POST"])
@@ -306,9 +305,6 @@ def user_info():
 
         if request.method == "POST":
             is_admin = user.admin or False
-            current_app.logger.debug(
-                "[user_info] Update current user personnal data"
-            )
             request_data = dict(request.get_json())
             for data in request_data:
                 if hasattr(UserModel, data) and data not in {
@@ -335,8 +331,9 @@ def user_info():
             400,
         )
     except Exception as e:
-        # raise GeonatureApiError(e)
-        current_app.logger.error("[user_info] ERROR:", str(e))
+        current_app.logger.warning(
+            "[user_info] error with method `%s` %s:", request.method, str(e)
+        )
         return (
             {
                 "message": "Connectez vous pour obtenir vos données personnelles."
@@ -347,7 +344,7 @@ def user_info():
 
 @routes.route("/user/delete", methods=["DELETE"])
 @jwt_required
-def delete_user():
+def delete_account():
     """delete user record
     ---
     tags:
@@ -361,25 +358,37 @@ def delete_user():
       200:
         description: user record deleted
     """
-    current_user = get_jwt_identity()
-    if current_user:
-        user = UserModel.query.filter_by(username=current_user)
-        username = user.one().username
+    username = get_jwt_identity()
+    if username:
         try:
             db.session.query(UserModel).filter(
-                UserModel.username == current_user
+                UserModel.username == username
             ).delete()
             db.session.commit()
-            current_app.logger.debug(
-                "[delete_user] user %s record deleted", username
-            )
+            jti = get_raw_jwt()["jti"]
+            revoked_token = RevokedTokenModel(jti=jti)
+            revoked_token.add()
+            #
+            # TODO: anonymize corresponding observations
+            #
+            current_app.logger.info("[delete account] `%s` deleted", username)
         except Exception as e:
             db.session.rollback()
-            raise GeonatureApiError(e)
-            # return {"message": str(e)}, 400
+            current_app.logger.critical(
+                "[delete account] `%s` deletion failure: %s", username, str(e)
+            )
+            return (
+                {
+                    "message": "Une erreur est survenue: contactez l'administrateur."
+                },
+                500,
+            )
 
         return (
-            {"message": f"""Account "{username}" deleted"""},
+            {
+                "message": f"""Le compte "{username}" a été supprimé, \
+                les observations correspondantes seront anonymisées(WIP)."""
+            },
             200,
         )
     return (
@@ -392,16 +401,22 @@ def delete_user():
 
 
 @routes.route("/user/resetpasswd", methods=["POST"])
-def reset_user_password():
+def reset_password():
     request_data = dict(request.get_json())
-    email = request_data["email"]
-    username = request_data["username"]
-
     try:
+        email = request_data["email"]
+        username = request_data["username"]
         user = UserModel.query.filter_by(username=username, email=email).one()
     except Exception:
+        current_app.logger.critical(
+            "reset password failure: invalid email for user `%s`",
+            username or "__?__",
+        )
         return (
-            {"message": f"""L'email "{email}" n'est pas enregistré."""},
+            {
+                "message": f"""L'email "{email or '?'}" \
+                    ou le compte "{username or '?'} ne correspondent pas."""
+            },
             400,
         )
 
@@ -457,8 +472,10 @@ def reset_user_password():
             200,
         )
     except Exception as e:
-        current_app.logger.warning(
-            "[reset_password] failed to send new credentials. %s", str(e)
+        current_app.logger.critical(
+            "reset password failure: email with new pass not sent to `%s`, reason: %s",
+            username,
+            str(e),
         )
         return (
             {"message": f"Echec d'envoi des informations de connexion."},
