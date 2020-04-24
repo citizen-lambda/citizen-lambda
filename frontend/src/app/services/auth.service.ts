@@ -29,10 +29,10 @@ export class AuthService {
   );
   timeoutID: any = null;
 
-  constructor(private client: HttpClient, private router: Router) {}
+  constructor(private client: HttpClient, private router: Router) { }
 
   login(user: LoggingUser): Observable<LoginPayload> {
-    const url = `${AppConfig.API_ENDPOINT}/login`;
+    const url = `${ AppConfig.API_ENDPOINT }/login`;
     return this.client.post<LoginPayload>(url, user, { headers: this.headers }).pipe(
       map(u => {
         if (u && u.refresh_token) {
@@ -45,6 +45,9 @@ export class AuthService {
             localStorage.setItem('username', u.username);
             this.authenticated$.next(true);
           }
+          if (localStorage.getItem('badges') !== null) {
+            localStorage.removeItem('badges');
+          }
         }
         return u;
       })
@@ -52,28 +55,29 @@ export class AuthService {
   }
 
   register(user: RegisteringUser): Observable<any> {
-    const url = `${AppConfig.API_ENDPOINT}/registration`;
+    const url = `${ AppConfig.API_ENDPOINT }/registration`;
     return this.client.post(url, user, { headers: this.headers });
   }
 
   logout(): Promise<any> {
-    const url = `${AppConfig.API_ENDPOINT}/logout`;
+    const url = `${ AppConfig.API_ENDPOINT }/logout`;
     return this.client
       .post<LogoutPayload>(url, { headers: this.headers })
       .pipe(
         map(payload => {
-          // fixme: feed back to the ui.
-          console.debug(`[logout] payload:`, payload);
           this.router.navigateByUrl('/home');
           this.authorized$.next(false);
           localStorage.removeItem('access_token');
           this.authenticated$.next(false);
           localStorage.removeItem('refresh_token');
           localStorage.removeItem('username');
+          if (localStorage.getItem('badges') !== null) {
+            localStorage.removeItem('badges');
+          }
           return payload;
         }),
         catchError(error => {
-          console.error(`[logout] error "${error}"`);
+          console.error(`[logout] error "${ error }"`);
           return throwError(error);
         })
       )
@@ -81,21 +85,21 @@ export class AuthService {
   }
 
   ensureAuthorized(): Observable<UserInfo> {
-    const url = `${AppConfig.API_ENDPOINT}/user/info`;
+    const url = `${ AppConfig.API_ENDPOINT }/user/info`;
     return this.client.get<UserInfo>(url, { headers: this.headers });
   }
 
   performTokenRefresh(): Observable<TokenRefresh> {
-    const url = `${AppConfig.API_ENDPOINT}/token_refresh`;
+    const url = `${ AppConfig.API_ENDPOINT }/token_refresh`;
     const refresh_token = this.getRefreshToken();
-    const headers = this.headers.set('Authorization', `Bearer ${refresh_token}`);
+    const headers = this.headers.set('Authorization', `Bearer ${ refresh_token }`);
     return this.client.post<TokenRefresh>(url, '', {
       headers: headers
     });
   }
 
   selfDeleteAccount(_access_token: string): Promise<any> {
-    const url = `${AppConfig.API_ENDPOINT}/user/delete`;
+    const url = `${ AppConfig.API_ENDPOINT }/user/delete`;
     return this.client.delete(url, { headers: this.headers }).toPromise();
   }
 
