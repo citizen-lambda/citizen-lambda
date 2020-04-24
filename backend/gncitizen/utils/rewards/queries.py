@@ -29,7 +29,8 @@ logger = logging.getLogger()
 def attendance_data(role_id):
     """Platform Attendance: observations count the observer submitted platform wise."""
     return ObservationModel.query.filter(
-        ObservationModel.id_role  # pylint: disable=comparison-with-callable
+        # pylint: disable=comparison-with-callable
+        ObservationModel.id_role
         == role_id
     )
 

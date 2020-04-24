@@ -2,7 +2,7 @@ import uuid
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from flask import request, Blueprint, current_app
+from flask import request, Blueprint, current_app  # , json
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -11,11 +11,13 @@ from flask_jwt_extended import (
     jwt_refresh_token_required,
     jwt_required,
 )
-from sqlalchemy import func
+
+# from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.env import db, jwt
-from gncitizen.core.observations.models import ObservationModel
+
+# from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import UserModel, RevokedTokenModel
 
 
@@ -284,26 +286,26 @@ def user_info():
     try:
         current_user = get_jwt_identity()
         user = UserModel.query.filter_by(username=current_user).one()
-        if request.method == "GET":
-            # base stats, to enhance as we go
+        if user and request.method == "GET":
             result = user.as_user_dict()
-            result["stats"] = {
-                "platform_attendance": db.session.query(
-                    func.count(ObservationModel.id_role)
-                )
-                .filter(
-                    ObservationModel.id_role  # pylint: disable=comparison-with-callable
-                    == user.id_user
-                )
-                .one()[0]
-            }
-
+            # base stats, to enhance as we go
+            # result["stats"] = {
+            #     "platform_attendance": db.session.query(
+            #         func.count(ObservationModel.id_role)
+            #     )
+            #     .filter(
+            #         # pylint: disable=comparison-with-callable
+            #         ObservationModel.id_role
+            #         == user.id_user
+            #     )
+            #     .one()[0]
+            # }
             return (
                 {"message": "Vos données personelles", "features": result},
                 200,
             )
 
-        if request.method == "POST":
+        if user and request.method == "POST":
             is_admin = user.admin or False
             request_data = dict(request.get_json())
             for data in request_data:

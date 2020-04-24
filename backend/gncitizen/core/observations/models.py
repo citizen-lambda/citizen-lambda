@@ -15,6 +15,19 @@ from gncitizen.utils.sqlalchemy import serializable, geoserializable
 from gncitizen.utils.env import db
 
 
+obs_keys = (
+    "cd_nom",
+    "id_observation",
+    "observer",
+    "municipality",
+    "obs_txt",
+    "count",
+    "date",
+    "comment",
+    "timestamp_create",
+)
+
+
 @serializable
 @geoserializable
 class ObservationModel(

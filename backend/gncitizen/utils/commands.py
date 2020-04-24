@@ -1,17 +1,20 @@
 import click
 from flask.cli import with_appcontext
-from flask import json
+from flask import current_app, json
 
 from gncitizen.utils.env import db
-from gncitizen.core.taxonomy.models import Taxref, TMedias
+from gncitizen.core.taxonomy.models import Taxref  # , TMedias
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.commons.models import MediaModel, ProgramsModel
 from gncitizen.core.observations.models import (
     ObservationModel,
     ObservationMediaModel,
+    obs_keys,
 )
 from gncitizen.core.users.models import UserModel
 
+
+# export FLASK_ENV=develop; export FLASK_DEBUG=1; export FLASK_APP=wsgi; python3 -m flask shell  # noqa: E501
 
 # wanna save 40% on image disk space ?
 # sudo apt install jpegoptim optipng advancecomp pngcrush
@@ -47,63 +50,108 @@ def register(app):
     # def do_something(some_arg):
     #     ...
 
-    # @users.command("allusers")
-    # @with_appcontext
-    # def all_users():
-    #     print(json.dumps([UserModel.return_all()], indent=4))
-
-    @users.command("all_obs_for_user")
+    # export FLASK_ENV=develop; export FLASK_DEBUG=1; export FLASK_APP=wsgi; python3 -m flask users obs patkap  # noqa: E501
+    @users.command("obs")
     @click.argument("username")
     @with_appcontext
-    def all_obs_for_user(username):  # noqa: F401
-        user = UserModel.query.filter(UserModel.username == username).one()
-        results = (
-            db.session.query(
-                ObservationModel,
-                # UserModel.username,
-                UserModel,
-                # MediaModel.filename.label("image"),
-                MediaModel,
-                LAreas,
-                Taxref,
-                TMedias,
-                ProgramsModel,
-            )
-            .filter(
-                ObservationModel.id_role  # pylint: disable=comparison-with-callable
-                == user.id_user
-            )
-            .join(
-                LAreas,
-                LAreas.id_area == ObservationModel.municipality,
-                isouter=True,
-            )
-            .join(
-                ProgramsModel,
-                ProgramsModel.id_program == ObservationModel.id_program,
-                isouter=True,
-            )
-            .join(
-                ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,
-                isouter=True,
-            )
-            .join(
-                MediaModel,
-                ObservationMediaModel.id_media == MediaModel.id_media,
-                isouter=True,
-            )
-            .join(
-                Taxref, Taxref.cd_nom == ObservationModel.cd_nom, isouter=True
-            )
-            .join(
-                TMedias,
-                TMedias.cd_ref == ObservationModel.cd_nom,
-                isouter=True,
-            )
-            # .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True)
-        )
+    def obs_for_user(username):  # pylint: disable=unused-variable
+        # pylint: disable=import-outside-toplevel
+        from geojson import FeatureCollection
+        from gncitizen.utils.sqlalchemy import get_geojson_feature
 
-        # print([result for result in results])
-        print(json.dumps([item.as_dict() for item in results[0]], indent=4))
+        try:
+            user = UserModel.find_by_username(username)
+            if user:
+                # pylint: disable=comparison-with-callable
+                observations = (
+                    db.session.query(
+                        ObservationModel,
+                        UserModel.username,
+                        MediaModel.filename.label("image"),
+                        LAreas.area_name,
+                        LAreas.area_code,
+                        Taxref.cd_nom,
+                        Taxref.nom_complet,
+                        Taxref.nom_vern,
+                    )
+                    .filter(ObservationModel.id_role == user.id_user)
+                    .join(
+                        LAreas,
+                        LAreas.id_area == ObservationModel.municipality,
+                        isouter=True,
+                    )
+                    .join(
+                        ProgramsModel,
+                        ProgramsModel.id_program
+                        == ObservationModel.id_program,
+                        isouter=True,
+                    )
+                    .join(
+                        ObservationMediaModel,
+                        ObservationMediaModel.id_data_source
+                        == ObservationModel.id_observation,
+                        isouter=True,
+                    )
+                    .join(
+                        MediaModel,
+                        ObservationMediaModel.id_media == MediaModel.id_media,
+                        isouter=True,
+                    )
+                    .join(
+                        Taxref,
+                        Taxref.cd_nom == ObservationModel.cd_nom,
+                        isouter=True,
+                    )
+                    .join(
+                        UserModel,
+                        ObservationModel.id_role == UserModel.id_user,
+                        full=True,
+                    )
+                ).all()
+                features = []
+                for observation in observations:
+                    feature = get_geojson_feature(
+                        observation.ObservationModel.geom
+                    )
+                    feature["properties"]["municipality"] = {
+                        "name": observation.area_name,
+                        "code": observation.area_code,
+                    }
+                    feature["properties"]["observer"] = {
+                        "username": observation.username
+                    }
+                    feature["properties"]["image"] = (
+                        # FIXME: media route, now!
+                        "/".join(
+                            [
+                                current_app.config["API_ENDPOINT"],
+                                current_app.config["MEDIA_FOLDER"],
+                                observation.image,
+                            ]
+                        )
+                        if observation.image
+                        else None
+                    )
+                    observation_dict = observation.ObservationModel.as_dict(
+                        True
+                    )
+                    observation_dict.update(
+                        {
+                            "nom_complet": observation.nom_complet,
+                            "nom_vern": observation.nom_vern,
+                        }
+                    )
+                    for k in observation_dict:
+                        if (
+                            k in {*obs_keys, "nom_complet", "nom_vern"}
+                            and k != "municipality"
+                        ):
+                            feature["properties"][k] = observation_dict[k]
+
+                    features.append(feature)
+
+                print(json.dumps(FeatureCollection(features), indent=4))
+            else:
+                print(f"no such user: `{username}`")
+        except Exception as e:
+            print(str(e))
