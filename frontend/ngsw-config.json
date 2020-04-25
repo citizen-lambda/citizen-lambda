@@ -14,7 +14,8 @@
           "/*.js"
         ]
       }
-    }, {
+    },
+    {
       "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",
@@ -38,7 +39,8 @@
         "timeout": "7s",
         "strategy": "performance"
       }
-    },{
+    },
+    {
       "name": "taxonomy",
       "urls": [
         "/api/taxref/*"
@@ -47,31 +49,6 @@
         "maxSize": 128,
         "maxAge": "10m",
         "timeout": "30s",
-        "strategy": "performance"
-      }
-    },
-    {
-      "name": "observations",
-      "urls": [
-        "/api/programs/*/observations"
-      ],
-      "cacheConfig": {
-        "maxSize": 128,
-        "maxAge": "1m",
-        "timeout": "30s",
-        "strategy": "performance"
-      }
-    },
-    {
-      "name": "programs",
-      "urls": [
-        "/api/programs",
-        "/api/programs/*"
-      ],
-      "cacheConfig": {
-        "maxSize": 128,
-        "maxAge": "10m",
-        "timeout": "10s",
         "strategy": "performance"
       }
     }
