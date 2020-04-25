@@ -2,6 +2,7 @@
 
 """A module to manage database and datas with sqlalchemy"""
 
+from typing import Dict, Optional, Tuple
 from flask import current_app
 from geoalchemy2.shape import from_shape, to_shape
 from geojson import Feature
@@ -30,47 +31,30 @@ def create_schemas(db):
     db.session.commit()
 
 
-def geom_from_geojson(data):
+def geom_from_geojson(geojson: str) -> Optional[bytes]:
     """this function transform geojson geometry into `WKB\
     <https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry#Well-known_binary>`_\
-    data commonly used in PostGIS geometry fields
-
-    :param data: geojson formatted geometry
-    :type data: dict
-
-    :return: wkb geometry
-    :rtype: str
-    """
+    geojson commonly used in PostGIS geometry fields """
     try:
-        geojson = asShape(data)
-        geom = from_shape(geojson, srid=4326)
+        shape = asShape(geojson)
+        return from_shape(shape, srid=4326)
     except Exception as e:
         current_app.logger.error(
-            "[geom_from_geojson] Can't convert geojson geometry to wkb: {}".format(
-                str(e)
-            )
+            "[geom_from_geojson] Can't convert geojson geometry to wkb: %s", str(e),
         )
-    return geom
+        return None
 
 
-def get_geojson_feature(wkb):
-    """ return a geojson feature from WKB
-
-    :param wkb: wkb geometry
-    :type wkb: str
-
-    :return: geojson
-    :rtype: dict
-    """
+def get_geojson_feature(wkb: bytes) -> Optional[Feature]:
+    """ return a geojson feature from WKB """
     try:
         geometry = to_shape(wkb)
-        feature = Feature(geometry=geometry, properties={})
+        return Feature(geometry=geometry, properties=dict())
     except Exception as e:
         current_app.logger.error(
-            "[get_geojson_feature] Can't convert wkb geometry to geojson: %s",
-            str(e),
+            "[get_geojson_feature] Can't convert wkb geometry to geojson: %s", str(e),
         )
-    return feature
+        return None
 
 
 def serializable(cls):
@@ -83,12 +67,10 @@ def serializable(cls):
     cls_db_columns = [
         (
             db_col.key,
-            SERIALIZERS.get(
-                db_col.type.__class__.__name__.lower(), lambda x: x
-            ),
+            SERIALIZERS.get(db_col.type.__class__.__name__.lower(), lambda x: x),
         )
         for db_col in cls.__mapper__.c
-        if not db_col.type.__class__.__name__ == "Geometry"
+        if db_col.type.__class__.__name__ != "Geometry"
     ]
 
     # Liste des propriétés de type relationship
@@ -100,16 +82,16 @@ def serializable(cls):
         (db_rel.key, db_rel.uselist) for db_rel in cls.__mapper__.relationships
     ]
 
-    def serializefn(self, recursif=False, columns=()):
+    def serializefn(self, recursive: bool = False, columns: Tuple = ()) -> Dict:
         """
         Méthode qui renvoie les données de l'objet sous la forme d'un dict
 
         Parameters
         ----------
-            recursif: boolean
+            recursive: boolean
                 Spécifie si on veut que les sous objet (relationship)
                 soit également sérialisé
-            columns: liste
+            columns: tuple
                 liste des colonnes qui doivent être prises en compte
         """
         if columns:
@@ -117,12 +99,9 @@ def serializable(cls):
         else:
             fprops = cls_db_columns
 
-        out = {
-            item: _serializer(getattr(self, item))
-            for item, _serializer in fprops
-        }
+        out = {item: _serializer(getattr(self, item)) for item, _serializer in fprops}
 
-        if recursif is False:
+        if recursive is False:
             return out
 
         for (rel, uselist) in cls_db_relationships:
@@ -130,9 +109,9 @@ def serializable(cls):
                 break
 
             if uselist is True:
-                out[rel] = [x.as_dict(recursif) for x in getattr(self, rel)]
+                out[rel] = [x.as_dict(recursive) for x in getattr(self, rel)]
             else:
-                out[rel] = getattr(self, rel).as_dict(recursif)
+                out[rel] = getattr(self, rel).as_dict(recursive)
 
         return out
 
@@ -147,29 +126,19 @@ def geoserializable(cls):
     """
 
     def serializegeofn(
-        self, geo_colname, id_col_name, recursif=False, columns=()
-    ):
-        """
-        Méthode qui renvoie les données de l'objet sous la forme
-        d'une Feature geojson
-
-        Parameters
-        ----------
-           geo_colname: string
-            Nom de la colonne géométrie
-           id_col_name: string
-            Nom de la colonne primary key
-           recursif: boolean
-            Spécifie si on veut que les sous objet (relationship) soit
-            également sérialisé
-           columns: liste
-            liste des columns qui doivent être prisent en compte
-        """
+        self,
+        geo_colname: str,
+        id_colname: str,
+        recursive: bool = False,
+        columns: Tuple = (),
+    ) -> Feature:
+        """ Méthode qui renvoie les données de l'objet sous la forme
+        d'une Feature geojson """
         geometry = to_shape(getattr(self, geo_colname))
         feature = Feature(
-            id=str(getattr(self, id_col_name)),
+            id=str(getattr(self, id_colname)),
             geometry=geometry,
-            properties=self.as_dict(recursif, columns),
+            properties=self.as_dict(recursive, columns),
         )
         return feature
 

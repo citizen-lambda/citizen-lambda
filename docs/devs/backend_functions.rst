@@ -11,7 +11,7 @@ medias
 ******
 
 .. automodule:: gncitizen.utils.media
-   :members: allowed_file,save_upload_files
+   :members: allowed_file,save_uploaded_files
 
 geometry
 ********

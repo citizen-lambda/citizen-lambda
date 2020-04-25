@@ -30,7 +30,7 @@ def allowed_file(filename):
     )
 
 
-def save_upload_files(  # pylint: disable=too-many-locals
+def save_uploaded_files(  # pylint: disable=too-many-locals
     request_file,
     prefix="none",
     cdnom="0",
@@ -69,7 +69,7 @@ def save_upload_files(  # pylint: disable=too-many-locals
             i = i + 1
             filename = file.filename
             current_app.logger.debug(
-                "[save_upload_files] %s is an allowed filename : %s",
+                "[save_uploaded_files] %s is an allowed filename : %s",
                 filename,
                 allowed_file(filename),
             )
@@ -77,7 +77,7 @@ def save_upload_files(  # pylint: disable=too-many-locals
             if allowed_file(filename):
                 # save file
                 current_app.logger.debug(
-                    '[save_upload_files] Preparing file "%s" saving',
+                    '[save_uploaded_files] Preparing file "%s" saving',
                     filename,
                 )
                 ext = filename.rsplit(".", 1)[1].lower()
@@ -86,25 +86,25 @@ def save_upload_files(  # pylint: disable=too-many-locals
                 ).strftime("%Y%m%d_%H%M%S")
                 filename = f"{prefix}_{str(cdnom)}_{i}_{timestamp}.{ext}"
                 current_app.logger.debug(
-                    "[save_upload_files] new filename : %s", filename
+                    "[save_uploaded_files] new filename : %s", filename
                 )
                 file.save(os.path.join(str(MEDIA_DIR), filename))
                 # Save media filename to Database
                 try:
                     newmedia = MediaModel(filename=filename)
                     current_app.logger.debug(
-                        "[save_upload_files] newmedia %s", newmedia
+                        "[save_uploaded_files] newmedia %s", newmedia
                     )
                     db.session.add(newmedia)
                     db.session.commit()
                     id_media = newmedia.id_media
                     current_app.logger.debug(
-                        "[save_upload_files] id_media : %s", str(id_media)
+                        "[save_uploaded_files] id_media : %s", str(id_media)
                     )
                     # return id_media
                 except Exception as e:
                     current_app.logger.debug(
-                        "[save_upload_files] ERROR MEDIAMODEL: %s", e
+                        "[save_uploaded_files] ERROR MEDIAMODEL: %s", e
                     )
                     raise GeonatureApiError(e)
                 # Save id_media in matching table
@@ -116,22 +116,22 @@ def save_upload_files(  # pylint: disable=too-many-locals
                     db.session.commit()
                     id_match = newmatch.id_match
                     current_app.logger.debug(
-                        "[save_upload_files] id_match %s", id_match
+                        "[save_uploaded_files] id_match %s", id_match
                     )
                 except Exception as e:
                     current_app.logger.debug(
-                        "[save_upload_files] ERROR MATCH MEDIA: %s", e
+                        "[save_uploaded_files] ERROR MATCH MEDIA: %s", e
                     )
                     raise GeonatureApiError(e)
 
                 current_app.logger.debug(
-                    "[save_upload_files] Fichier %s enregistré", filename
+                    "[save_uploaded_files] Fichier %s enregistré", filename
                 )
                 files.append(filename)
 
     except Exception as e:
         current_app.logger.debug(
-            "[save_upload_files] ERROR save_upload_file : %s", e
+            "[save_uploaded_files] ERROR save_upload_file : %s", e
         )
         raise GeonatureApiError(e)
 

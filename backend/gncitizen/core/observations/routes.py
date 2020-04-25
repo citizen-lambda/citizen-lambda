@@ -1,5 +1,5 @@
 # coding: utf-8
-from typing import Union, Tuple, Dict
+from typing import Dict, List, Tuple, Union, cast
 import logging
 import uuid
 import dataclasses
@@ -10,32 +10,34 @@ from flask import (
     json,
     send_from_directory,
     make_response,
+    Response,
 )
 from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity
-from geojson import FeatureCollection
+from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
-from gncitizen.core.commons.models import (
-    MediaModel,
-    ProgramsModel,
-    FrontendBroadcastHandler,
-)
+
+from gncitizen.core.commons.models import FrontendBroadcastHandler
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.observations.models import (
     ObservationMediaModel,
     ObservationModel,
     obs_keys,
 )
+from gncitizen.core.observations.commands import (
+    observations4program,
+    observations2features4front,
+    export4user,
+)
 from gncitizen.core.users.models import UserModel
-from gncitizen.core.taxonomy.models import Taxref
-
-from gncitizen.utils.env import MEDIA_DIR
+from gncitizen.utils import ReadRepository
+from gncitizen.utils.env import db, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
 from gncitizen.utils.geo import get_municipality_id_from_wkb
-from gncitizen.utils.media import save_upload_files
 from gncitizen.utils.sqlalchemy import get_geojson_feature
-from gncitizen.utils.env import db
+from gncitizen.utils.media import save_uploaded_files
+from gncitizen.utils.taxonomy import Taxon
 
 
 logger = current_app.logger
@@ -48,76 +50,56 @@ frontend_broadcast.addHandler(frontend_handler)
 routes = Blueprint("observations", __name__)
 
 
-def generate_observation_geojson(id_observation):
-    """generate observation in geojson format from observation id
-
-        :param id_observation: Observation unique id
-        :type id_observation: int
-
-        :return features: Observations as a Feature dict
-        :rtype features: dict
-    """
+def generate_observation_geojson(id_observation: int) -> Feature:
+    """ generate a geojson feature from an observation id """
     observation = (
         # pylint: disable=comparison-with-callable
         db.session.query(
-            ObservationModel,
-            UserModel.username,
-            LAreas.area_name,
-            LAreas.area_code,
+            ObservationModel, UserModel.username, LAreas.area_name, LAreas.area_code,
         )
-        .join(
-            UserModel,
-            ObservationModel.id_role == UserModel.id_user,
-            full=True,
-        )
-        .join(
-            LAreas,
-            LAreas.id_area == ObservationModel.municipality,
-            isouter=True,
-        )
+        .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True,)
+        .join(LAreas, LAreas.id_area == ObservationModel.municipality, isouter=True,)
         .filter(ObservationModel.id_observation == id_observation)
     ).one()
 
-    result_dict = observation.ObservationModel.as_dict(True)
-    result_dict["observer"] = {"username": observation.username}
-    result_dict["municipality"] = {
+    result: Dict = observation.ObservationModel.as_dict(True)
+    result["observer"] = {"username": observation.username}
+    result["municipality"] = {
         "name": observation.area_name,
         "code": observation.area_code,
     }
 
     # Populate "geometry"
-    features = []
-    feature = get_geojson_feature(observation.ObservationModel.geom)
+    feature: Feature = get_geojson_feature(observation.ObservationModel.geom)
 
     # Populate "properties"
-    for k in result_dict:
+    for k in result:
         if k in obs_keys:
-            feature["properties"][k] = result_dict[k]
+            feature["properties"][k] = result[k]
 
-    from gncitizen.core.taxonomy import (  # pylint: disable=import-outside-toplevel
-        TAXA,
-    )
+    from gncitizen.core.taxonomy import TAXA  # pylint: disable=import-outside-toplevel
 
     feature["properties"]["media"] = [
         dataclasses.asdict(medium)
-        for medium in TAXA.get(feature["properties"]["cd_nom"]).media
+        for medium in cast(
+            Taxon,
+            cast(ReadRepository[Taxon], TAXA).get(feature["properties"]["cd_nom"]),
+        ).media
     ]
 
-    features.append(feature)
-    return features
+    return feature
 
 
 @routes.route("/observations", methods=["POST"])
 @jwt_optional
-def post_observation():
-    """Post a observation
-    add a observation to database
+def post_observation() -> Tuple[Dict, int]:
+    """ Add an observation to the database
         ---
         tags:
             - observations
         # security:
         #   - bearerAuth: []
-        summary: Creates a new observation (JWT auth optional, if used, obs_txt replaced by username)
+        summary: Creates a new observation (login is optional)
         consumes:
             - application/json
             - multipart/form-data
@@ -147,9 +129,9 @@ def post_observation():
                         obs_txt:
                             type: string
                             default:  none
-                            description: User name
+                            description: comment
                             required: false
-                            example: Martin Dupont
+                            example: amazing xp
                         count:
                             type: integer
                             description: Number of individuals
@@ -170,173 +152,81 @@ def post_observation():
         """  # noqa: E501
     try:
         request_data = request.form
-        logger.debug("[post_observation] request data:", request_data)
-
-        dat2rec = {}
-        for field in request_data:
-            if hasattr(ObservationModel, field):
-                dat2rec[field] = request_data[field]
-        logger.debug("[post_observation] dat2rec: %s", dat2rec)
+        data = dict()
+        for k in request_data:
+            if hasattr(ObservationModel, k):
+                data[k] = request_data[k]
+        logger.debug("[post_observation] data: %s", data)
 
         try:
-            newobs = ObservationModel(**dat2rec)
+            newobs = ObservationModel(**data)
         except Exception as e:
-            logger.debug("[post_observation] data2rec ", e)
+            logger.error("[post_observation] ObservationModel failure: %s", str(e))
             raise GeonatureApiError(e)
 
         try:
-            _coord = json.loads(request_data["geometry"])
-            _point = Point(_coord["x"], _coord["y"])
-            _shape = asShape(_point)
-            newobs.geom = from_shape(Point(_shape), srid=4326)
+            coord = json.loads(request_data["geometry"])
+            point = Point(coord["x"], coord["y"])
+            shape = asShape(point)
+            newobs.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
-            logger.debug("[post_observation] coords ", e)
+            logger.error("[post_observation] geometry extraction failure: %s", str(e))
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
         if id_role:
             newobs.id_role = id_role
-        else:
-            if newobs.obs_txt is None or len(newobs.obs_txt) == 0:
-                newobs.obs_txt = "Anonyme"
 
         newobs.uuid_sinp = uuid.uuid4()
-
         newobs.municipality = get_municipality_id_from_wkb(newobs.geom)
+
         db.session.add(newobs)
         db.session.commit()
-        logger.debug(newobs.as_dict())
-        features = generate_observation_geojson(newobs.id_observation)
-        logger.debug("FEATURES: {}".format(features))
+
+        feature = generate_observation_geojson(newobs.id_observation)
         try:
-            file = save_upload_files(
-                request.files,
+            files = save_uploaded_files(
+                request.files,  # MultiDict of FileStorage
                 "obstax",
                 newobs.cd_nom,
                 newobs.id_observation,
                 ObservationMediaModel,
             )
-            logger.debug("ObsTax UPLOAD FILE {}".format(file))
-            features[0]["properties"]["images"] = file
+            logger.debug("[post_observation] uploaded image files %s", str(files))
+            feature["properties"]["images"] = files
 
             json_data = json.dumps(
                 {
                     "type": "update",
-                    "data": {
-                        "program": newobs.id_program,
-                        "NewObservation": features[0],
-                    },
+                    "data": {"program": newobs.id_program, "NewObservation": feature},
                 }
             )
             frontend_broadcast.info("data:%s\n\n", json_data)
 
+            return (
+                {"message": "Nouvelle observation créée.", "features": feature},
+                200,
+            )
         except Exception as e:
-            logger.debug("ObsTax ERROR ON FILE SAVING", str(e))
-            # raise GeonatureApiError(e)
-            logger.critical(str(e))
-
-        return (
-            {"message": "Nouvelle observation créée.", "features": features},
-            200,
-        )
-
+            logger.critical("[post_observation] image saving failure: %s", str(e))
+            raise
     except Exception as e:
-        logger.warning("[post_observation] Error: %s", str(e))
-        return {"message": str(e)}, 400
+        logger.critical("[post_observation] Error: %s", str(e))
+        return (
+            {"message": "Une erreur est survenue: contactez l'administrateur."},
+            500,
+        )
 
 
 @routes.route("/observations", methods=["GET"])
 @jwt_required
-def export_user_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
+def export_user_observations() -> Union[Response, Tuple[Dict, int]]:
+    username = get_jwt_identity() or "Anonymous"
     try:
-        current_user = get_jwt_identity()
-        user = UserModel.query.filter_by(username=current_user).one()
-        if user:
-            # pylint: disable=comparison-with-callable
-            observations = (
-                db.session.query(
-                    ObservationModel,
-                    UserModel.username,
-                    MediaModel.filename.label("image"),
-                    LAreas.area_name,
-                    LAreas.area_code,
-                    Taxref.cd_nom,
-                    Taxref.nom_complet,
-                    Taxref.nom_vern,
-                )
-                .filter(ObservationModel.id_role == user.id_user)
-                .join(
-                    LAreas,
-                    LAreas.id_area == ObservationModel.municipality,
-                    isouter=True,
-                )
-                .join(
-                    ProgramsModel,
-                    ProgramsModel.id_program == ObservationModel.id_program,
-                    isouter=True,
-                )
-                .join(
-                    ObservationMediaModel,
-                    ObservationMediaModel.id_data_source
-                    == ObservationModel.id_observation,
-                    isouter=True,
-                )
-                .join(
-                    MediaModel,
-                    ObservationMediaModel.id_media == MediaModel.id_media,
-                    isouter=True,
-                )
-                .join(
-                    Taxref,
-                    Taxref.cd_nom == ObservationModel.cd_nom,
-                    isouter=True,
-                )
-                .join(
-                    UserModel,
-                    ObservationModel.id_role == UserModel.id_user,
-                    full=True,
-                )
-            ).all()
-            features = []
-            for observation in observations:
-                feature = get_geojson_feature(
-                    observation.ObservationModel.geom
-                )
-                feature["properties"]["municipality"] = {
-                    "name": observation.area_name,
-                    "code": observation.area_code,
-                }
-                feature["properties"]["observer"] = {
-                    "username": observation.username
-                }
-                feature["properties"]["image"] = (
-                    # FIXME: media route, now!
-                    "/".join(
-                        [
-                            current_app.config["API_ENDPOINT"],
-                            current_app.config["MEDIA_FOLDER"],
-                            observation.image,
-                        ]
-                    )
-                    if observation.image
-                    else None
-                )
-                observation_dict = observation.ObservationModel.as_dict(True)
-                observation_dict.update(
-                    {
-                        "nom_complet": observation.nom_complet,
-                        "nom_vern": observation.nom_vern,
-                    }
-                )
-                for k in observation_dict:
-                    if (
-                        k in {*obs_keys, "nom_complet", "nom_vern"}
-                        and k != "municipality"
-                    ):
-                        feature["properties"][k] = observation_dict[k]
-
-                features.append(feature)
-            response = make_response(json.dumps(FeatureCollection(features), indent=4))
+        if username:
+            response: Response = make_response(
+                json.dumps(export4user(username), indent=4)
+            )
             response.headers["Content-Type"] = "text/json"
             response.headers[
                 "Content-Disposition"
@@ -344,21 +234,15 @@ def export_user_observations() -> Union[FeatureCollection, Tuple[Dict, int]]:
             return response
 
         return (
-            {
-                "message": "Connectez vous pour obtenir vos données personnelles."
-            },
+            {"message": "Connectez vous pour obtenir vos données personnelles."},
             400,
         )
     except Exception as e:
         current_app.logger.critical(
-            "[export observations] `%s` export failure: %s",
-            current_user,
-            str(e),
+            "[export user observations] `%s` export failure: %s", username, str(e),
         )
         return (
-            {
-                "message": "Une erreur est survenue: contactez l'administrateur."
-            },
+            {"message": "Une erreur est survenue: contactez l'administrateur."},
             500,
         )
 
@@ -394,103 +278,17 @@ def get_program_observations(
                     description: A list of all species lists
         """
     try:
-        observations_sql = (
-            # pylint: disable=comparison-with-callable
-            db.session.query(
-                ObservationModel,
-                UserModel.username,
-                MediaModel.filename.label("image"),
-                LAreas.area_name,
-                LAreas.area_code,
-            )
-            .filter(
-                ObservationModel.id_program == program_id,
-                ProgramsModel.is_active,
-            )
-            .join(
-                LAreas,
-                LAreas.id_area == ObservationModel.municipality,
-                isouter=True,
-            )
-            .join(
-                ProgramsModel,
-                ProgramsModel.id_program == ObservationModel.id_program,
-                isouter=True,
-            )
-            .join(
-                ObservationMediaModel,
-                ObservationMediaModel.id_data_source
-                == ObservationModel.id_observation,
-                isouter=True,
-            )
-            .join(
-                MediaModel,
-                ObservationMediaModel.id_media == MediaModel.id_media,
-                isouter=True,
-            )
-            .join(
-                UserModel,
-                ObservationModel.id_role == UserModel.id_user,
-                full=True,
-            )
-        )
-
-        observations_sql = observations_sql.order_by(
-            ObservationModel.date.desc()
-        )
-        # logger.debug(str(observations_sql))
-        observations = observations_sql.all()
-
-        features = []
-        for observation in observations:
-            feature = get_geojson_feature(observation.ObservationModel.geom)
-            # Municipality
-            feature["properties"]["municipality"] = {
-                "name": observation.area_name,
-                "code": observation.area_code,
-            }
-
-            # Observer
-            feature["properties"]["observer"] = {
-                "username": observation.username
-            }
-
-            # submitted medium
-            feature["properties"]["image"] = (
-                # FIXME: media route, now!
-                "/".join(
-                    [
-                        current_app.config["API_ENDPOINT"],
-                        current_app.config["MEDIA_FOLDER"],
-                        observation.image,
-                    ]
-                )
-                if observation.image
-                else None
-            )
-
-            observation_dict = observation.ObservationModel.as_dict(True)
-            for k in observation_dict:
-                if k in obs_keys and k != "municipality":
-                    feature["properties"][k] = observation_dict[k]
-
-            features.append(feature)
-
-        return FeatureCollection(features)
+        records: List[Tuple] = observations4program(program_id)
+        return FeatureCollection(observations2features4front(records))
 
     except Exception as e:
-        # if current_app.config["DEBUG"]:
-        # import traceback
-        # import sys
-
-        # import pdb
-        # pdb.set_trace()
-        # etype, value, tb = sys.exc_info()
-        # trace = str(traceback.print_exception(etype, value, tb))
-        # trace = traceback.format_exc()
-        # return("<pre>" + trace + "</pre>"), 500
-        return {"message": str(e)}, 400
-        # raise e
+        current_app.logger.critical(
+            "[program observations] failure: %s", str(e),
+        )
+        return (
+            {"message": "Une erreur est survenue: contactez l'administrateur."},
+            500,
+        )
 
 
 @routes.route("media/<item>")
@@ -506,7 +304,7 @@ def get_rewards(id_):
     )
 
     badges, rewards = get_badges(id_), get_rewards(id_)
-    logger.debug("rewards: %s", json.dumps(rewards, indent=4))
+    # logger.debug("rewards: %s", json.dumps(rewards, indent=4))
     return (
         {
             "badges": badges,

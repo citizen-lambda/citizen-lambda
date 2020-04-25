@@ -12,7 +12,6 @@ blueprint = Blueprint("taxref", __name__)
 @blueprint.route("/<int:taxon_id>", methods=["GET"])
 def default(taxon_id: int, **_kwargs):
     taxon: Taxon = TAXA.get(taxon_id)
-    print(type(taxon))
     return (
         dataclasses.asdict(taxon)
         if dataclasses.is_dataclass(taxon)

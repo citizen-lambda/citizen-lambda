@@ -79,9 +79,9 @@ class ProgramsModel(
     )
     geom = db.Column(Geometry("GEOMETRY", 4326))
 
-    def get_geofeature(self, recursif=True, columns=None):
+    def get_geofeature(self, recursive=True, columns=None):
         return self.as_geofeature(
-            "geom", "id_program", recursif, columns=columns
+            "geom", "id_program", recursive, columns=columns
         )
 
 
@@ -106,7 +106,6 @@ class FrontendBroadcastHandler(logging.Handler):
     def emit(self, record):
         try:
             msg = self.format(record)
-            print(msg)
 
             def notify(subs, msg):
                 for sub in subs[:]:

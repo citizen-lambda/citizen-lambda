@@ -13,7 +13,7 @@ from gncitizen.utils.env import (
     admin,
 )
 from gncitizen.utils.sqlalchemy import create_schemas
-from gncitizen.utils import commands
+from gncitizen.utils import cli
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -159,7 +159,7 @@ def get_app(  # pylint: disable=too-many-locals
         create_schemas(db)
         db.create_all()
 
-        commands.register(app)
+        cli.register(app)
 
         @app.shell_context_processor
         def make_shell_context():  # pylint: disable=unused-variable

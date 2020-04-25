@@ -173,7 +173,7 @@ def get_programs():
             if with_geom:
                 feature = program.get_geofeature()
             else:
-                feature = {}
+                feature = dict()
             feature["properties"] = program.as_dict(True)
             features.append(feature)
         feature_collection = FeatureCollection(features)

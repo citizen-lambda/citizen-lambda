@@ -1,6 +1,7 @@
 # coding: utf-8
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import UUID
+
 from gncitizen.core.commons.models import (
     ProgramsModel,
     TimestampMixinModel,
@@ -8,8 +9,8 @@ from gncitizen.core.commons.models import (
 )
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.taxonomy.models import (
-    Taxref,
-)  # todo: removal breaks recog rewards
+    Taxref,  # todo: removal would break recog rewards
+)
 from gncitizen.core.users.models import ObserverMixinModel
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
 from gncitizen.utils.env import db
@@ -20,7 +21,6 @@ obs_keys = (
     "id_observation",
     "observer",
     "municipality",
-    "obs_txt",
     "count",
     "date",
     "comment",

@@ -18,8 +18,8 @@ class LAreas(db.Model):  # type: ignore
     enable = db.Column(db.Boolean)
     geom = db.Column(Geometry("GEOMETRY", 4326))
 
-    def get_geofeature(self, recursif=True):
-        return self.as_geofeature("geom", "id_area", recursif)
+    def get_geofeature(self, recursive=True):
+        return self.as_geofeature("geom", "id_area", recursive)
 
 
 @serializable

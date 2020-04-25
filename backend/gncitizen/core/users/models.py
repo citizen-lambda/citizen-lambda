@@ -7,6 +7,7 @@ from gncitizen.core.commons.models import (
 from gncitizen.utils.sqlalchemy import serializable
 from gncitizen.utils.env import db
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm.exc import NoResultFound
 
 
 class RevokedTokenModel(db.Model):  # type: ignore
@@ -81,7 +82,10 @@ class UserModel(TimestampMixinModel, db.Model):  # type: ignore
 
     @classmethod
     def find_by_username(cls, username):
-        return cls.query.filter_by(username=username).first()
+        try:
+            return cls.query.filter_by(username=username).one()
+        except NoResultFound:
+            raise Exception(f"""User "{username}" not found.""")
 
     @classmethod
     def return_all(cls):
