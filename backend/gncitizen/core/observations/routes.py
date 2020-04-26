@@ -107,45 +107,45 @@ def post_observation() -> Tuple[Dict, int]:
             - application/json
         parameters:
             - name: json
-                in: body
-                description: JSON parameters.
-                required: true
-                schema:
-                    id: observation
-                    required:
-                        - cd_nom
-                        - date
-                        - geom
-                    properties:
-                        id_program:
-                            type: string
-                            description: Program unique id
-                            example: 1
-                            default: 1
-                        cd_nom:
-                            type: string
-                            description: CD_Nom Taxref
-                            example: 3582
-                        obs_txt:
-                            type: string
-                            default:  none
-                            description: comment
-                            required: false
-                            example: amazing xp
-                        count:
-                            type: integer
-                            description: Number of individuals
-                            default:  none
-                            example: 1
-                        date:
-                            type: string
-                            description: Date
-                            required: false
-                            example: "2018-09-20"
-                        geometry:
-                            type: string
-                            description: Geometry (GeoJson format)
-                            example: {"type":"Point", "coordinates":[5,45]}
+              in: body
+              description: JSON parameters.
+              required: true
+              schema:
+                  id: observation
+                  required:
+                      - cd_nom
+                      - date
+                      - geom
+                  properties:
+                      id_program:
+                          type: string
+                          description: Program unique id
+                          example: 1
+                          default: 1
+                      cd_nom:
+                          type: string
+                          description: CD_Nom Taxref
+                          example: 3582
+                      comment:
+                          type: string
+                          default:  none
+                          description: comment
+                          required: false
+                          example: amazing xp
+                      count:
+                          type: integer
+                          description: Number of individuals
+                          default:  none
+                          example: 1
+                      date:
+                          type: string
+                          description: Date
+                          required: false
+                          example: "2018-09-20"
+                      geometry:
+                          type: string
+                          description: Geometry (GeoJson format)
+                          example: {"type":"Point", "coordinates":[5,45]}
         responses:
             200:
                 description: Adding a observation
@@ -258,10 +258,10 @@ def get_program_observations(
                 - observations
             parameters:
                 - name: id
-                    in: path
-                    type: integer
-                    required: true
-                    example: 1
+                  in: path
+                  type: integer
+                  required: true
+                  example: 1
             definitions:
                 cd_nom:
                     type: integer

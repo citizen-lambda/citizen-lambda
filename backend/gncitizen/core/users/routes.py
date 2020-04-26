@@ -44,29 +44,29 @@ def registration():
         - application/json
     parameters:
         - name: body
-            in: body
-            description: JSON parameters
-            required: true
-            schema:
-            required:
-                - name
-                - surname
-                - username
-                - email
-                - password
-            properties:
-                name:
-                type: string
-                surname:
-                type: string
-                username:
-                type: string
-                example: user1
-                email:
-                type: string
-                password:
-                type: string
-                example: user1
+          in: body
+          description: JSON parameters
+          required: true
+          schema:
+          required:
+              - name
+              - surname
+              - username
+              - email
+              - password
+          properties:
+              name:
+              type: string
+              surname:
+              type: string
+              username:
+              type: string
+              example: user1
+              email:
+              type: string
+              password:
+              type: string
+              example: user1
     responses:
         200:
             description: user created
@@ -157,18 +157,18 @@ def login():
         - application/json
     parameters:
         - name: body
-            in: body
-            description: JSON parameters
-            required: true
-            schema:
-            required:
-                - username
-                - password
-            properties:
-                username:
-                type: string
-                password:
-                type: string
+          in: body
+          description: JSON parameters
+          required: true
+          schema:
+          required:
+              - username
+              - password
+          properties:
+              username:
+              type: string
+              password:
+              type: string
     responses:
         200:
             description: user created
@@ -227,16 +227,16 @@ def logout():
         - application/json
     parameters:
         - name: authorization
-            in: authorization
-            description: JSON parameter
-            required: true
-            schema:
-            required:
-                - authorization
-            properties:
-                authorization:
-                type: string
-                example: Bearer eyJhb…pXVCJ9.eyJpZGVu…jIwNzg5NH0.oZKoy…xVjpCptE
+          in: authorization
+          description: JSON parameter
+          required: true
+          schema:
+          required:
+              - authorization
+          properties:
+              authorization:
+              type: string
+              example: Bearer eyJhb…pXVCJ9.eyJpZGVu…jIwNzg5NH0.oZKoy…xVjpCptE
     responses:
         200:
             description: user disconnected

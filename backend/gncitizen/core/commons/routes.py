@@ -48,15 +48,11 @@ class ProgramView(ModelView):
             if has_user_loader():
                 user = user_loader(ctx_stack.top.jwt["identity"])
                 if user is None:
-                    raise UserLoadError(
-                        "user_loader returned None for {}".format(user)
-                    )
+                    raise UserLoadError("user_loader returned None for {}".format(user))
                 ctx_stack.top.jwt_user = user
 
             current_user = get_jwt_identity()
-            is_admin = (
-                UserModel.query.filter_by(username=current_user).one().admin
-            )
+            is_admin = UserModel.query.filter_by(username=current_user).one().admin
             return current_user and is_admin
         except Exception as e:
             current_app.logger.critical("FAULTY ADMIN UI ACCESS: %s", str(e))
@@ -76,10 +72,10 @@ def get_module(pk):
             - Modules
         parameters:
             - name: pk
-                in: path
-                type: integer
-                required: true
-                example: 1
+              in: path
+              type: integer
+              required: true
+              example: 1
         responses:
             200:
                 description: A module description
@@ -121,18 +117,16 @@ def get_program(pk):
             - Programs
         parameters:
             - name: pk
-                in: path
-                type: integer
-                required: true
-                example: 1
+              in: path
+              type: integer
+              required: true
+              example: 1
         responses:
             200:
                 description: A list of all programs
         """
     try:
-        data = ProgramsModel.query.filter_by(
-            id_program=pk, is_active=True
-        ).limit(1)
+        data = ProgramsModel.query.filter_by(id_program=pk, is_active=True).limit(1)
         features = []
         for datum in data:
             feature = datum.get_geofeature()
@@ -152,9 +146,9 @@ def get_programs():
             - Programs
         parameters:
             - name: with_geom
-                in: query
-                type: boolean
-                description: geom desired (true) or not (false, default)
+              in: query
+              type: boolean
+              description: geom desired (true) or not (false, default)
         responses:
             200:
                 description: A list of all programs
@@ -193,6 +187,5 @@ frontend_broadcast.addHandler(frontend_handler)
 @routes.route("/programs/stream")
 def program_stream():
     return current_app.response_class(
-        stream_with_context(frontend_handler.subscribe()),
-        mimetype="text/event-stream",
+        stream_with_context(frontend_handler.subscribe()), mimetype="text/event-stream",
     )

@@ -54,19 +54,19 @@ def get_municipality(insee):
             - Reférentiel géo
         parameters:
             - name: insee
-                in: path
-                type: string
-                required: true
-                default: none
-                properties:
-                area_name:
-                    type: string
-                    description: Municipality name
-                area_code:
-                    type: string
-                    description: Municipality insee code
-                geometry:
-                    type: geometry
+              in: path
+              type: string
+              required: true
+              default: none
+              properties:
+              area_name:
+                  type: string
+                  description: Municipality name
+              area_code:
+                  type: string
+                  description: Municipality insee code
+              geometry:
+                  type: geometry
         responses:
             200:
                 description: A municipality
