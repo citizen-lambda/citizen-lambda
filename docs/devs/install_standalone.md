@@ -118,17 +118,18 @@ mkdir -p ~/.local/share/venv/citizen_prod
 python3 -m venv ~/.local/share/venv/citizen_prod
 source ~/.local/share/venv/citizen_prod/bin/activate
 # (citizen_prod) pat@vps-123:~$
-python3 -m pip install wheel
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash
+python3 -m pip install --upgrade pip setuptools wheel
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 # logout et re-login
 # pat@vps-123:~$
 source ~/.local/share/venv/citizen_prod/bin/activate
 # (citizen_prod) pat@vps-123:~$
-nvm install stable
-nvm use stable
+nvm install node 
+nvm use node
 # …
-# Now using node v12.13.0 (npm v6.12.0)
-# Creating default alias: default -> lts/* (-> v12.13.0)
+# Now using node v14.0.0 (npm v6.14.4)
+nvm alias default node
+# default -> node (-> v14.0.0)
 ```
 
 ### le dépôt du code source
@@ -144,11 +145,12 @@ git config user.name "patkap"
 
 ```sh
 cd ~/citizen/backend
-python3 -m pip install -r requirements.txt
-python3 setup.py install
+# python3 -m pip install -r requirements.txt
+python3 setup.py develop
+cp ~/citizen/config/default_config.toml.example ~/citizen/config/default_config.toml
 $EDITOR ~/citizen/config/default_config.toml
 # … éditer à souhait
-mkdir ~/citizen/media
+mkdir ~/citizen/media  # MEDIA_FOLDER
 export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; export FLASK_APP=wsgi; python3 -m flask run --host=0.0.0.0
 ```
 
@@ -157,11 +159,11 @@ export FLASK_ENV=development; export FLASK_DEBUG=1; export FLASK_RUN_PORT=5002; 
 ### les dépendances
 
 ```sh
-nvm use stable
+nvm use node
 cd ~/citizen/frontend
 npm install -g @angular/cli@latest
 # …
-# + @angular/cli@9.1.2
+# + @angular/cli@9…
 # added 330 packages from 220 contributors in 19.287s
 npm install
 # … après une longue compilation de `libsass` qui échoue
@@ -198,7 +200,7 @@ npm run start -- --host=0.0.0.0 --disableHostCheck
 
 c'est le moment d'aller vérifier
 dans le navigateur que l'application se charge depuis
-`http://citizendemo.patkap.tech:4200/home`
+`http://citizendemo.patkap.tech:4200/home`, 
 de s'enregister, et de mettre à jour le champs booléen
 `gnc_core`.`t_users`.`admin` dans la bdd.
 
@@ -284,9 +286,9 @@ sudo systemctl status apache2.service
 ### serveur http de production
 
 ```sh
-# python3 -m pip install gunicorn
-python3 -m pip install git+https://github.com/benoitc/gunicorn.git
-python3 -m pip install gevent
+cd citizen/backend
+# python3 -m pip install git+https://github.com/benoitc/gunicorn.git gevent
+python3 -mpip install -r requirements_deploy.txt
 $EDITOR ~/citizen/backend/start_gunicorn.sh
 ```
 
@@ -322,10 +324,8 @@ sudo a2enmod http2
 sudoedit /etc/apache2/sites-available/citizen.conf
 sudo apachectl -t
 # sudo tail -f /var/log/apache2/error.log
-sudo systemctl restart apache2
-$EDITOR src/conf/app.config.ts
-sudo supervisorctl restart citizen
-$EDITOR ../config/default_config.toml
+$EDITOR ~/citizen/config/default_config.toml
+$EDITOR ~/citizen/frontend/src/conf/app.config.ts
 ```
 
 ```toml
@@ -333,12 +333,18 @@ URL_APPLICATION = 'https://citizendemo.patkap.tech'
 API_ENDPOINT = 'https://citizendemo.patkap.tech/api'
 ```
 
+```sh
+sudo supervisorctl restart citizen
+cd ~/citizen/frontend && npm run build:i18n
+sudo systemctl restart apache2
+```
+
 ### brotli
 
 ```sh
 sudo apt install brotli
 # TODO: automate optional postbuild brotli packing
-for i in ~/citizen/frontend/dist/browser/*.{css,js}; do brotli $i; done
+for i in ~/citizen/frontend/dist/browser/*/*.{css,js}; do brotli $i; done
 sudoedit /etc/apache2/sites-available/citizen.conf
 sudo a2enmod brotli
 ```
@@ -517,29 +523,35 @@ $EDITOR ~/citizen/frontend/src/app/home/home.component.css
 }
 ```
 
+### Updates
+
 ```sh
 cd frontend
-# regen translations
-npm run xi18n  # and diffedit
+# regenerate the translation files if, somehow, the templates got edited
+npm run xi18n  # and diffedit to sync
 # TODO: remaining apache rewrite
-cp dist/browser/fr/robots.txt  dist/browser/
-cp dist/browser/fr/favicon.ico  dist/browser/
+cp dist/browser/fr/robots.txt dist/browser/
+cp dist/browser/fr/favicon.ico dist/browser/
 # update webapp manifest with description, scope && start_url per localeID
 $EDITOR dist/browser/en/manifest.webmanifest
 # copy/edit sitemap.xml
 # $EDITOR dist/browser/sitemap.xml
 cp ~/sitemap-citizen.xml dist/browser/sitemap.xml
 # do not forget to:
-# restart backend after backend/python code changes
+# restart backend after backend/python code changes e.g. git pull
 sudo supervisorctl restart citizen
-# reload apache after frontend rebuild
+# restart apache after a frontend rebuild: a simple reload won't do
+# (angular differential loading and/or apache cache … ?)
 npm run brotli
-sudo systemctl reload apache2
+sudo systemctl restart apache2
 ```
 
 ### Monitoring
 
 ```sh
+# whole history overview
 sudo bash -c 'zcat /var/log/apache2/access.log.*.gz | sudo goaccess /var/log/apache2/access.log /var/log/apache2/access.log.1 --log-format=COMBINED'
+# since midnight … rotation of apache log
+sudo goaccess /var/log/apache2/access.log --log-format=COMBINED
 ```
 

@@ -1,0 +1,3 @@
+-r requirements.txt
+-e git+https://github.com/benoitc/gunicorn.git@20.0.4#egg=gunicorn
+gevent==20.4.0

@@ -17,7 +17,7 @@ from gncitizen.utils.sqlalchemy import get_geojson_feature
 
 
 def is_anonymous(username: str) -> bool:
-    return username and username.lower() in {"anonymous", "anonyme"}
+    return username and username.strip().lower() in {"anonymous", "anonyme"}
 
 
 def observations4user(username: str) -> List[Tuple]:
@@ -32,7 +32,7 @@ def observations4user(username: str) -> List[Tuple]:
         Taxref.nom_vern,
     )
     if not is_anonymous(username):
-        user = UserModel.find_by_username(username=username)
+        user = UserModel.find_by_username(username=username.strip())
         models = (UserModel.username, *models)
 
     query = db.session.query(*models)

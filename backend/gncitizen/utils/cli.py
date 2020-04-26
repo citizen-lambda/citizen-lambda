@@ -48,4 +48,4 @@ def register(app):
     @with_appcontext
     # pylint: disable=unused-variable
     def obs_for_user(username: str) -> None:
-        print(json.dumps(export4user(username), indent=4))
+        print(json.dumps(export4user(username.strip()), indent=4))
