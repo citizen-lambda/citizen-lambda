@@ -12,12 +12,12 @@ from flask_jwt_extended import (
     jwt_required,
 )
 
-# from sqlalchemy import func
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.env import db, jwt
 
-# from gncitizen.core.observations.models import ObservationModel
+from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import UserModel, RevokedTokenModel
 
 
@@ -289,17 +289,17 @@ def user_info():
         if user and request.method == "GET":
             result = user.as_user_dict()
             # base stats, to enhance as we go
-            # result["stats"] = {
-            #     "platform_attendance": db.session.query(
-            #         func.count(ObservationModel.id_role)
-            #     )
-            #     .filter(
-            #         # pylint: disable=comparison-with-callable
-            #         ObservationModel.id_role
-            #         == user.id_user
-            #     )
-            #     .one()[0]
-            # }
+            result["stats"] = {
+                "platform_attendance": db.session.query(
+                    func.count(ObservationModel.id_role)
+                )
+                .filter(
+                    # pylint: disable=comparison-with-callable
+                    ObservationModel.id_role
+                    == user.id_user
+                )
+                .one()[0]
+            }
             return (
                 {"message": "Vos données personelles", "features": result},
                 200,
