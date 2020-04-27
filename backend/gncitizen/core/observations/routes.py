@@ -96,60 +96,213 @@ def post_observation() -> Tuple[Dict, int]:
     """ Add an observation to the database
         ---
         tags:
-            - observations
+          - Observations
         # security:
         #   - bearerAuth: []
         summary: Creates a new observation (login is optional)
         consumes:
-            - application/json
-            - multipart/form-data
+          - multipart/form-data
         produces:
-            - application/json
+          - application/json
         parameters:
-            - name: json
-              in: body
-              description: JSON parameters.
-              required: true
-              schema:
-                  id: observation
-                  required:
-                      - cd_nom
-                      - date
-                      - geom
-                  properties:
-                      id_program:
-                          type: string
-                          description: Program unique id
-                          example: 1
-                          default: 1
-                      cd_nom:
-                          type: string
-                          description: CD_Nom Taxref
-                          example: 3582
-                      comment:
-                          type: string
-                          default:  none
-                          description: comment
-                          required: false
-                          example: amazing xp
-                      count:
-                          type: integer
-                          description: Number of individuals
-                          default:  none
-                          example: 1
-                      date:
-                          type: string
-                          description: Date
-                          required: false
-                          example: "2018-09-20"
-                      geometry:
-                          type: string
-                          description: Geometry (GeoJson format)
-                          example: {"type":"Point", "coordinates":[5,45]}
+          - name: id_program
+            in: formData
+            type: integer
+            description: The program key.
+            required: true
+          - name: cd_nom
+            in: formData
+            description: The TaxRef taxon key.
+            required: true
+          - name: count
+            in: formData
+            description: Number of individuals.
+            required: true
+          - name: date
+            in: formData
+            description: The date of the observation.
+            required: true
+          - name: comment
+            in: formData
+            description: A comment relative to the photo or experience.
+            required: true
+            default: '""'
+          - name: geometry
+            in: formData
+            description: Simple coordinates {"x"&colon; 5.4156, "y"&colon; 43.285}.
+            exemple: {"x": 5.4156, "y": 43.285}
+            required: true
+          - name: file
+            in: formData
+            description: The photo to upload.
+            required: false
         responses:
-            200:
-                description: Adding a observation
-        """  # noqa: E501
+          200:
+            description: Added the observation
+            schema:
+              $ref: '#/definitions/Observation'
+
+        definitions:
+          Observation:
+            allOf:
+              - $ref: '#/definitions/Feature'
+              - properties:
+                  geometry:
+                    $ref: '#/definitions/Point'
+                  "properties":
+                    type: object
+                    properties:
+                      cd_nom:
+                        type: integer
+                        description: Taxon key in the TaxRef repository
+                      id_observation:
+                        type: integer
+                        description: Observation key in the repository
+                      count:
+                        type: integer
+                        description: Number of individuals seen during the observation
+                      date:
+                        type: string
+                        description: Date of observation
+                        exemple: "2020-04-26"
+                      image:
+                        type: string
+                        description: Photograph of the taxon submitted for observation,
+                          failing this the support provided by the MNHN
+                      comment:
+                        type: string
+                        description: A comment relative to the photo or experience.
+                      municipality:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Municipality name
+                          code:
+                            type: string
+                            description: Municipality INSEE code
+                      observer:
+                        type: object
+                        properties:
+                          username:
+                            type: string
+                            description: Registered username or "Anonymous"
+                      timestamp_create:
+                        type: string
+                        description: Observation creation date
+                        exemple: "2020-04-26 14:42:00.763699"
+          Observations:
+            allOf:
+              - $ref: '#/definitions/FeatureCollection'
+              - type: object
+              - properties:
+                  features:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Observation'
+          cd_nom:
+            type: integer
+            description: Taxon key in the TaxRef repository
+          cd_ref:
+            type: integer
+            description: Key of the reference taxon in the TaxRef repository
+          Geometry:
+            type: object
+            description: GeoJSon geometry
+            discriminator: type
+            required:
+              - type
+            externalDocs:
+                url: http://geojson.org/geojson-spec.html#geometry-objects
+            properties:
+              type:
+                type: string
+                enum:
+                - Point
+                - Polygon
+                - MultiPolygon
+                description: the geometry type
+          Point2D:
+            type: array
+            maxItems: 2
+            minItems: 2
+            items:
+              type: number
+          Point:
+            type: object
+            description: GeoJSon geometry
+            externalDocs:
+              url: http://geojson.org/geojson-spec.html#id2
+            allOf:
+              - $ref: "#/definitions/Geometry"
+              - properties:
+                  coordinates:
+                    $ref: '#/definitions/Point2D'
+          Polygon:
+            type: object
+            description: GeoJSon geometry
+            externalDocs:
+              url: http://geojson.org/geojson-spec.html#id4
+            allOf:
+              - $ref: "#/definitions/Geometry"
+              - properties:
+                  coordinates:
+                    type: array
+                    items:
+                      type: array
+                    items:
+                      $ref: '#/definitions/Point2D'
+          MultiPolygon:
+            type: object
+            description: GeoJSon geometry
+            externalDocs:
+              url: http://geojson.org/geojson-spec.html#id6
+            allOf:
+              - $ref: "#/definitions/Geometry"
+              - properties:
+                  coordinates:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Point2D'
+          Feature:
+            type: object
+            description: GeoJSon Feature
+            externalDocs:
+              url: http://geojson.org/geojson-spec.html#feature-objects
+            properties:
+              type:
+                type: string
+                enum:
+                - Feature
+                description: The "Feature" type
+              id:
+                type: string
+              geometry:
+                $ref: '#/definitions/Geometry'
+              "properties":
+                type: object
+          FeatureCollection:
+            type: object
+            description: GeoJSon FeatureCollection
+            required:
+              - type
+              - geometries
+            externalDocs:
+              url: http://geojson.org/geojson-spec.html#feature-collection-objects
+            properties:
+              type:
+                type: string
+                enum:
+                - FeatureCollection
+              features:
+                type: array
+                items:
+                  $ref: '#/definitions/Feature'
+        """
     try:
         request_data = request.form
         data = dict()
@@ -166,6 +319,7 @@ def post_observation() -> Tuple[Dict, int]:
 
         try:
             coord = json.loads(request_data["geometry"])
+            logger.debug(coord)
             point = Point(coord["x"], coord["y"])
             shape = asShape(point)
             newobs.geom = from_shape(Point(shape), srid=4326)
@@ -251,31 +405,22 @@ def export_user_observations() -> Union[Response, Tuple[Dict, int]]:
 def get_program_observations(
     program_id: int,
 ) -> Union[FeatureCollection, Tuple[Dict, int]]:
-    """Get all observations from a program
-        GET
-            ---
-            tags:
-                - observations
-            parameters:
-                - name: id
-                  in: path
-                  type: integer
-                  required: true
-                  example: 1
-            definitions:
-                cd_nom:
-                    type: integer
-                    description: cd_nom taxref
-                geometry:
-                    type: dict
-                    description: Géométrie de la donnée
-                name:
-                    type: string
-                geom:
-                    type: geometry
-            responses:
-                200:
-                    description: A list of all species lists
+    """ Returns all observations of a program
+        ---
+        tags:
+          - Observations
+        parameters:
+          - name: id
+            description: The program key
+            in: path
+            type: integer
+            required: true
+            example: 1
+        responses:
+          200:
+            description: A list of all observations
+            schema:
+              $ref: '#/definitions/Observations'
         """
     try:
         records: List[Tuple] = observations4program(program_id)

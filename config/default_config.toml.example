@@ -142,7 +142,27 @@ UPLOAD_FOLDER = 'static/medias'
 
 # API flasgger main config
 [SWAGGER]
-    title = 'GeoNature-Citizen API'
-    version = 'x.x.x'
-    produces = ["application/json"]
-    consumes = ["application/json"]
+static_url_path = "/api/flasgger_static/"
+title = "gncitizen API"
+swagger_ui = true
+swagger = "2.0"
+uiversion = 3
+specs_route = "/api/docs/"
+# cp css & favicon assets to venv/lib/python3.7/site-packages/flasgger/ui3/static
+# https://github.com/ostranme/swagger-ui-themes/raw/develop/themes/3.x/theme-material.css
+# top_text = '''<link rel="stylesheet" type="text/css" href="/api/flasgger_static/swagger-ui3-theme-material.css">
+#   <style>#swagger-ui > div > div:nth-child(2) > div.information-container.wrapper > section > div > div { margin-top: 20px;}</style>'''
+# favicon = "/api/flasgger_static/favicon-72x72.png"
+# hide_top_bar = true
+# headers = [
+#   ["Access-Control-Allow-Origin", "*"],
+#   ["Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"],
+#   ["Access-Control-Allow-Credentials", "true"]
+# ]
+
+[[SWAGGER.specs]]
+version = "0.0.1"
+title = "citizenλ API v1"
+endpoint = "v1_spec"
+description = "version 1"
+route = "/api/docs/v1"

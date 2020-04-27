@@ -1,11 +1,14 @@
-from typing import Dict, Any
 import os
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
 from flask import current_app
-from flasgger import Swagger
+from flasgger import (  # noqa: F401
+    Swagger,
+    LazyString,
+    LazyJSONEncoder as LazyJSONEncoder,
+)
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from flask_admin import Admin
@@ -57,20 +60,7 @@ db = SQLAlchemy()
 
 jwt = JWTManager()
 
-swagger_template: Dict[str, Any] = {
-    # "openapi": "3.0.0",
-    # "components": {
-    #     "securitySchemes": {
-    #         "bearerAuth": {
-    #             "type": "http",
-    #             "scheme": "bearer",
-    #             "bearerFormat": "JWT",
-    #         }
-    #     }
-    # },
-}
-
-swagger = Swagger(template=swagger_template)
+swagger = Swagger()
 
 admin = Admin(
     name="GN-Citizen: Backoffice d'administration",
@@ -101,6 +91,8 @@ def list_and_import_gnc_modules(_app, mod_path=GNC_EXTERNAL_MODULE):
 
             conf_module = load_toml(str(path / "config/conf_gn_module.toml"))
             current_app.logger.info(
-                f":{manifest['module_name']} loaded ✨ {app_conf['API_ENDPOINT']}{conf_module['api_url']} ✨")  # noqa: E501
+                f":{manifest['module_name']}"
+                f"loaded ✨ {app_conf['API_ENDPOINT']}{conf_module['api_url']} ✨"
+            )
 
             yield conf_module, manifest, module_blueprint

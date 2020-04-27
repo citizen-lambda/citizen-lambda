@@ -14,19 +14,22 @@ def get_municipalities():
     """List all enabled municipalities
         ---
         tags:
-          - Reférentiel géo
-        definitions:
-          area_name:
-            type: string
-            description: Municipality name
-          area_code:
-            type: string
-            description: Municipality insee code
-          geometry:
-            type: geometry
+          - Geographic repository
         responses:
           200:
             description: A list of municipalities
+            schema:
+              $ref: '#/definitions/Municipalities'
+        definitions:
+          Municipalities:
+            allOf:
+              - $ref: '#/definitions/FeatureCollection'
+              - type: object
+              - properties:
+                  features:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Municipality'
         """
     try:
         q = db.session.query(
@@ -51,25 +54,46 @@ def get_municipality(insee):
     """Get one enabled municipality by insee code
         ---
         tags:
-            - Reférentiel géo
+          - Geographic repository
         parameters:
-            - name: insee
-              in: path
-              type: string
-              required: true
-              default: none
-              properties:
+          - name: insee
+            in: path
+            type: string
+            required: true
+            default: none
+            properties:
               area_name:
-                  type: string
-                  description: Municipality name
+                type: string
+                description: Municipality name
               area_code:
-                  type: string
-                  description: Municipality insee code
+                type: string
+                description: Municipality INSEE code
               geometry:
-                  type: geometry
+                type: geometry
         responses:
             200:
-                description: A municipality
+              description: A municipality
+              schema:
+                $ref: '#/definitions/Feature'
+        definitions:
+          Municipality:
+            allOf:
+              - $ref: '#/definitions/Feature'
+              - properties:
+                  geometry:
+                    type: Geometry
+                    enum:
+                    - Polygon
+                    - Multipolygon
+                  "properties":
+                    type: object
+                    properties:
+                      area_name:
+                        type: string
+                        description: Municipality name
+                      area_code:
+                        type: string
+                        description: Municipality insee code
         """
     try:
         q = (

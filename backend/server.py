@@ -2,7 +2,7 @@ import sys
 import os
 import logging
 
-from flask import Flask, current_app
+from flask import Flask, current_app, request
 from flask_cors import CORS
 
 from gncitizen.utils.env import (
@@ -10,6 +10,8 @@ from gncitizen.utils.env import (
     list_and_import_gnc_modules,
     jwt,
     swagger,
+    LazyString,
+    LazyJSONEncoder,
     admin,
 )
 from gncitizen.utils.sqlalchemy import create_schemas
@@ -53,10 +55,11 @@ def get_app(  # pylint: disable=too-many-locals
     app.config.update(config)
 
     if app.config["DEBUG"]:
-        from flask.logging import (  # pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
+        from flask.logging import (
             default_handler,
         )
-        import colorlog  # pylint: disable=import-outside-toplevel
+        import colorlog
 
         handler = colorlog.StreamHandler()
         handler.setFormatter(
@@ -97,41 +100,47 @@ def get_app(  # pylint: disable=too-many-locals
     jwt.init_app(app)
 
     # Swagger for api documentation
+    app.json_encoder = LazyJSONEncoder
+    app.config["SWAGGER"].update(
+        {
+            "termsOfService": "/".join(
+                [
+                    # TODO: sync config with frontend
+                    app.config["URL_APPLICATION"],
+                    # or "assets/cgu.pdf" for fr locale
+                    "assets/termsOfUse.pdf",
+                ]
+            ),
+            "swaggerUiPrefix": LazyString(
+                lambda: request.environ.get("HTTP_X_SCRIPT_NAME", "")
+            ),
+        }
+    )
     swagger.init_app(app)
 
     admin.init_app(app)
 
     with app.app_context():
+        # noqa: E501  pylint: disable=import-outside-toplevel
+        from gncitizen.core.users.routes import routes as users_routes
 
-        from gncitizen.core.users.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
-            routes,
-        )
+        app.register_blueprint(users_routes, url_prefix=url_prefix)
 
-        app.register_blueprint(routes, url_prefix=url_prefix)
+        from gncitizen.core.commons.routes import routes as commons_routes
 
-        from gncitizen.core.commons.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
-            routes,
-        )
+        app.register_blueprint(commons_routes, url_prefix=url_prefix)
 
-        app.register_blueprint(routes, url_prefix=url_prefix)
+        from gncitizen.core.observations.routes import routes as observations_routes
 
-        from gncitizen.core.observations.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
-            routes,
-        )
+        app.register_blueprint(observations_routes, url_prefix=url_prefix)
 
-        app.register_blueprint(routes, url_prefix=url_prefix)
+        from gncitizen.core.ref_geo.routes import routes as geo_routes
 
-        from gncitizen.core.ref_geo.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
-            routes,
-        )
+        app.register_blueprint(geo_routes, url_prefix=url_prefix)
 
-        app.register_blueprint(routes, url_prefix=url_prefix)
+        from gncitizen.core.taxonomy.routes import routes as taxonomy_routes
 
-        from gncitizen.core.taxonomy.routes import (  # noqa: E501  pylint: disable=import-outside-toplevel
-            routes,
-        )
-
-        app.register_blueprint(routes, url_prefix=url_prefix)
+        app.register_blueprint(taxonomy_routes, url_prefix=url_prefix)
 
         # Chargement des modules tiers
         if with_external_mods:
@@ -164,5 +173,4 @@ def get_app(  # pylint: disable=too-many-locals
         @app.shell_context_processor
         def make_shell_context():  # pylint: disable=unused-variable
             return {"db": db}
-
     return app
