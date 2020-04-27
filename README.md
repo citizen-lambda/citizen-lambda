@@ -35,10 +35,10 @@ La discussion de préfiguration du projet est [ici](https://github.com/PnX-SI/Ge
 
 ### Frontend
 
-- NodeJS LTS
-- Angular rc9
+- NodeJS stable
+- Angular 9
 - Leaflet @latest
-- Bootstrap 4 / ng-bootstrap 5.1.4
+- Bootstrap 4 / ng-bootstrap 6
 
 ## L'origine du projet
 
