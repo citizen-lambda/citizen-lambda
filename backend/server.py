@@ -34,7 +34,7 @@ class ReverseProxied:
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name):]
+                environ["PATH_INFO"] = path_info[len(script_name) :]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -56,9 +56,7 @@ def get_app(  # pylint: disable=too-many-locals
 
     if app.config["DEBUG"]:
         # pylint: disable=import-outside-toplevel
-        from flask.logging import (
-            default_handler,
-        )
+        from flask.logging import default_handler
         import colorlog
 
         handler = colorlog.StreamHandler()
@@ -108,7 +106,7 @@ def get_app(  # pylint: disable=too-many-locals
                     # TODO: sync config with frontend
                     app.config["URL_APPLICATION"],
                     # or "assets/cgu.pdf" for fr locale
-                    "assets/termsOfUse.pdf",
+                    "/en/assets/termsOfUse.pdf",
                 ]
             ),
             "swaggerUiPrefix": LazyString(
@@ -173,4 +171,5 @@ def get_app(  # pylint: disable=too-many-locals
         @app.shell_context_processor
         def make_shell_context():  # pylint: disable=unused-variable
             return {"db": db}
+
     return app
