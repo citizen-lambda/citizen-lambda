@@ -124,7 +124,7 @@ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 # pat@vps-123:~$
 source ~/.local/share/venv/citizen_prod/bin/activate
 # (citizen_prod) pat@vps-123:~$
-nvm install node 
+nvm install node
 nvm use node
 # …
 # Now using node v14.0.0 (npm v6.14.4)
@@ -195,12 +195,12 @@ API_ENDPOINT = 'http://citizendemo.patkap.tech:5002/api'
 ### un premier démarrage du frontend en mode très verbeux
 
 ```sh
-npm run start -- --host=0.0.0.0 --disableHostCheck
+npm run start:fr -- --host=0.0.0.0 --disableHostCheck
 ```
 
 c'est le moment d'aller vérifier
 dans le navigateur que l'application se charge depuis
-`http://citizendemo.patkap.tech:4200/home`, 
+`http://citizendemo.patkap.tech:4200/home`,
 de s'enregister, et de mettre à jour le champs booléen
 `gnc_core`.`t_users`.`admin` dans la bdd.
 
@@ -477,7 +477,7 @@ SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
   RewriteRule .* - [R=405,L]
 
   RewriteBase /
-  
+
   RewriteRule ^sitemap\.xml$ sitemap.xml [L]
 
   RewriteCond %{HTTP:Accept-Encoding} br
@@ -491,7 +491,7 @@ SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
 
   # If the requested resource doesn't exist, use index.html
   #RewriteRule ^ /index.html
-  
+
   RewriteRule ^../index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
@@ -557,3 +557,6 @@ sudo bash -c 'zcat /var/log/apache2/access.log.*.gz | sudo goaccess /var/log/apa
 sudo goaccess /var/log/apache2/access.log --log-format=COMBINED
 ```
 
+### Frontend code coverage (not yet enforceable)
+
+open `citizen/frontend/coverage/index.html` in your favorite browser after running `npm run test`
