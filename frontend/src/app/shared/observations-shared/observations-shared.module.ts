@@ -24,9 +24,9 @@ import { CommittedComponent } from './modalflow/steps/committed/committed.compon
 import { CongratsComponent } from './modalflow/steps/congrats/congrats.component';
 import { RewardComponent } from './modalflow/steps/reward/reward.component';
 import {
-  ObservationSharedDetailsComponent,
+  ObservationDetailsComponent,
   ObsDetailsModalContentComponent
-} from './observation-shared-details/observation-shared-details.component';
+} from './observation-details/observation-details.component';
 
 @NgModule({
   imports: [RouterModule, CommonModule, ScrollingModule, ObsFormModule, NgbModule, WebshareModule],
@@ -44,7 +44,7 @@ import {
     ObsMapComponent,
     MarkerPopupComponent,
     ObsDetailsModalContentComponent,
-    ObservationSharedDetailsComponent
+    ObservationDetailsComponent
   ],
   entryComponents: [
     ProgramTeaserComponent,
@@ -59,7 +59,7 @@ import {
     ObsListComponent,
     MarkerPopupComponent,
     ObsDetailsModalContentComponent,
-    ObservationSharedDetailsComponent
+    ObservationDetailsComponent
   ],
   exports: [
     NgbModule,
@@ -79,7 +79,7 @@ import {
     ObsListComponent,
     MarkerPopupComponent,
     ScrollingModule,
-    ObservationSharedDetailsComponent
+    ObservationDetailsComponent
   ]
 })
 export class ObservationsSharedModule {

@@ -1,4 +1,12 @@
-import { Component, OnInit, Inject, LOCALE_ID, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  LOCALE_ID,
+  Input,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
@@ -7,18 +15,20 @@ import {
   NgbModal,
   ModalDismissReasons,
   NgbActiveModal,
-  NgbModalRef
+  NgbModalRef,
 } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppConfig } from '../../../../conf/app.config';
 import { Taxon } from '../../../core/models';
 import { ObservationData } from '../../../features/observations/observation.model';
 import { TaxonomyService } from '../../../services/taxonomy.service';
-import { ObservationsFacade } from '../../../features/observations/obs.component';
+import { ObservationsFacade } from '../observations-facade.service';
 import { WebshareComponent, ShareData } from '../../webshare/webshare.component';
 
 @Component({
   selector: 'app-obs-details-modal-content',
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: [],
   template: `
     <div class="modal-header">
       <h4 class="modal-title" id="modal-obs-details">
@@ -34,7 +44,7 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
         <img
           [src]="
             !!data?.images && !!data?.images?.length
-              ? AppConfig.API_ENDPOINT + '/media/' + (data?.images!)[0]
+              ? AppConfig.API_ENDPOINT + '/media/' + data?.images![0]
               : data?.image
               ? data?.image
               : taxon?.media && !!taxon?.media.length
@@ -133,14 +143,14 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
         >
       </ng-container>
     </div>
-  `
+  `,
 })
 export class ObsDetailsModalContentComponent implements OnInit {
   AppConfig = AppConfig;
-  navigator: any = null;
+  navigator: Navigator | null = null;
   @ViewChild(WebshareComponent) shareButton?: WebshareComponent;
   sharedData = {};
-  @Input() data!: Partial<ObservationData> | undefined;
+  @Input() data: Partial<ObservationData> | undefined;
   taxon$ = new BehaviorSubject<(Partial<ObservationData> & Taxon) | undefined>(undefined);
 
   constructor(
@@ -152,9 +162,9 @@ export class ObsDetailsModalContentComponent implements OnInit {
   }
 
   ngOnInit() {
-    of(this.data).subscribe(data => {
+    of(this.data).subscribe((data) => {
       if (!!data && data.cd_nom) {
-        this.taxonService.getTaxon(data.cd_nom).subscribe(t => {
+        this.taxonService.getTaxon(data.cd_nom).subscribe((t) => {
           this.taxon$.next({ ...t, ...data });
         });
       }
@@ -162,30 +172,29 @@ export class ObsDetailsModalContentComponent implements OnInit {
   }
 
   canShare() {
-    return 'share' in this.navigator;
+    return !!this.navigator && 'share' in this.navigator;
   }
 
   setupShare() {
-    let url = document.location.href;
-    const canonicalElement = document.querySelector('link[rel=canonical]');
-    if (canonicalElement !== null) {
-      url = canonicalElement.getAttribute('href') as string;
+    if (!!this.data) {
+      let url = document.location.href;
+      const canonicalElement = document.querySelector('link[rel=canonical]');
+      if (canonicalElement !== null) {
+        url = canonicalElement.getAttribute('href') as string;
+      }
+      this.sharedData = {
+        title: `${document.title} Details Observation #${this.data.id_observation}`,
+        text: this.data.comment,
+        url: url,
+      } as ShareData;
     }
-    this.sharedData = {
-      // tslint:disable-next-line: no-non-null-assertion
-      title: `${document.title} Details Observation #${this.data!.id_observation}`,
-      // tslint:disable-next-line: no-non-null-assertion
-      text: this.data!.comment,
-      url: url
-    } as ShareData;
   }
 }
 
 @Component({
   template: '',
-  styleUrls: []
 })
-export class ObservationSharedDetailsComponent implements OnInit {
+export class ObservationDetailsComponent implements OnInit {
   modalRef?: NgbModalRef;
   closeResult = '';
   data: Partial<ObservationData> = {};
@@ -198,17 +207,17 @@ export class ObservationSharedDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(take(1)).subscribe(params => {
+    this.route.paramMap.pipe(take(1)).subscribe((params) => {
       const obsID = parseInt(params.get('obsid') || '1', 10);
       this.facade.features$
         .pipe(
-          map(features =>
+          map((features) =>
             // tslint:disable-next-line: no-non-null-assertion
-            features.filter(feature => feature!.properties!.id_observation === obsID)
+            features.filter((feature) => !!feature && feature.properties!.id_observation === obsID)
           ),
           take(1)
         )
-        .subscribe(feature => {
+        .subscribe((feature) => {
           try {
             this.data = feature[0].properties as Partial<ObservationData>;
             this.facade.selected = feature[0];
@@ -241,11 +250,11 @@ export class ObservationSharedDetailsComponent implements OnInit {
     this.modalRef = this.modalService.open(ObsDetailsModalContentComponent);
     this.modalRef.componentInstance.data = this.data;
     this.modalRef.result.then(
-      result => {
+      (result) => {
         this.closeResult = `Closed with: ${result}`;
         this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
       },
-      reason => {
+      (reason) => {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
         this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
       }

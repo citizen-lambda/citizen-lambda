@@ -1,7 +1,9 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
@@ -19,7 +21,7 @@ import { FooterComponent } from './components/footer/footer.component';
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [AuthService],
+      providers: [AuthService, ],
       declarations: [AppComponent, TopbarComponent, SidebarComponent, FooterComponent],
       imports: [
         BrowserTransferStateModule,
@@ -27,7 +29,8 @@ describe('AppComponent', () => {
         HttpClientTestingModule,
         LoadingBarHttpClientModule,
         LoadingBarRouterModule,
-        LoadingBarModule
+        LoadingBarModule,
+        ServiceWorkerModule.register('', { enabled: environment.production })
       ]
     }).compileComponents();
   }));
