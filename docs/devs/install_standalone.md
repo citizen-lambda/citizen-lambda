@@ -534,8 +534,6 @@ npm run xi18n  # and diffedit to sync
 # TODO: remaining apache rewrite
 cp dist/browser/fr/robots.txt dist/browser/
 cp dist/browser/fr/favicon.ico dist/browser/
-# update webapp manifest with description, scope && start_url per localeID
-$EDITOR dist/browser/en/manifest.webmanifest
 # copy/edit sitemap.xml
 # $EDITOR dist/browser/sitemap.xml
 cp ~/sitemap-citizen.xml dist/browser/sitemap.xml
