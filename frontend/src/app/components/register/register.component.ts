@@ -15,7 +15,7 @@ type AppConfigRegister = Pick<IAppConfig, 'termsOfUse'>;
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
   readonly AppConfig: AppConfigRegister = AppConfig;
@@ -34,7 +34,9 @@ export class RegisterComponent {
     private auth: AuthService,
     private router: Router,
     public activeModal: NgbActiveModal
-  ) { }
+  ) {}
+
+  // a note
 
   onRegister(): void {
     this.auth
@@ -44,12 +46,12 @@ export class RegisterComponent {
           console.log(user);
           if (user) {
             localStorage.setItem('access_token', user.access_token);
-            this.auth.authorized$.next(true)
+            this.auth.authorized$.next(true);
             localStorage.setItem('refresh_token', user.refresh_token);
             localStorage.setItem('username', user.username);
-            this.auth.authenticated$.next(true)
+            this.auth.authenticated$.next(true);
             const message = user.message;
-            this._success.subscribe(msg => (this.successMessage = msg));
+            this._success.subscribe((msg) => (this.successMessage = msg));
             this._success.pipe(debounceTime(1500)).subscribe(() => {
               this.successMessage = null;
               this.activeModal.close();
@@ -64,8 +66,8 @@ export class RegisterComponent {
         catchError(this.handleError)
       )
       .subscribe(
-        _data => { },
-        errorMessage => {
+        (_data) => {},
+        (errorMessage) => {
           console.error('errorMessage', errorMessage);
           this.errorMessage = errorMessage;
           this.displayErrorMessage(errorMessage);
@@ -78,7 +80,7 @@ export class RegisterComponent {
     if (error.error instanceof ErrorEvent) {
       console.error('client-side error');
       // client-side or network error
-      errorMessage = `Error: ${ error.error.message }`;
+      errorMessage = `Error: ${error.error.message}`;
     } else {
       // server-side error
       if (error.error && error.error.message) {
@@ -87,7 +89,7 @@ export class RegisterComponent {
         errorMessage = error.error.message;
       } else {
         console.error('server-side error', error);
-        errorMessage = `Error Code: ${ error.status }\nMessage: ${ error.message }`;
+        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
       }
     }
     return throwError(errorMessage);

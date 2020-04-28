@@ -34,6 +34,7 @@ export function geometryValidator(): ValidatorFn {
     const validGeometry = /Point\(\d{1,3}(|\.\d{1,7}),(|\s)\d{1,3}(|\.\d{1,7})\)$/.test(
       control.value
     );
+    // Point -90 < lat < +90 && -180 < lon < 180, 7 decimal places is cm precision
     return validGeometry ? null : { geometry: { value: control.value } };
   };
 }

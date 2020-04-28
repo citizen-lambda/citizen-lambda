@@ -3,28 +3,24 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, take, filter } from 'rxjs/operators';
 
-
-// TODO: mv anchorNavigation to directive.
 @Directive()
-export abstract class AnchorNavigation implements AfterViewInit {
+export abstract class AnchorNavigationDirective implements AfterViewInit {
   fragment$ = new BehaviorSubject<string>('');
 
   constructor(protected router: Router, protected route: ActivatedRoute) {
-    combineLatest(
-      route.fragment.pipe(
+    combineLatest([
+      route.fragment.pipe(take(1)),
+      this.router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
         take(1)
       ),
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        take(1)
-      )
-    )
+    ])
       .pipe(
         map(([fragment, _]) => {
           return fragment;
         })
       )
-      .subscribe(fragment => this.fragment$.next(fragment));
+      .subscribe((fragment) => this.fragment$.next(fragment));
   }
 
   jumpTo(fragment: string, delay: number = 200) {
@@ -40,7 +36,7 @@ export abstract class AnchorNavigation implements AfterViewInit {
       setTimeout(() => {
         window.scrollTo({
           top: anchor.getBoundingClientRect().top + window.pageYOffset - offset,
-          behavior: 'smooth'
+          behavior: 'smooth',
         });
       }, delay);
     }

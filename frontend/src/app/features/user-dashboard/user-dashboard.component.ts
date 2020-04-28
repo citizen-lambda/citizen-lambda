@@ -12,11 +12,11 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.css']
+  styleUrls: ['./user-dashboard.component.css'],
 })
 export class UserDashboardComponent implements OnInit {
   private headers: HttpHeaders = new HttpHeaders({
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   });
   readonly AppConfig = AppConfig;
   modalRef!: NgbModalRef;
@@ -34,7 +34,7 @@ export class UserDashboardComponent implements OnInit {
     private client: HttpClient,
     private router: Router,
     private modalService: NgbModal
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const access_token = localStorage.getItem('access_token');
@@ -42,7 +42,7 @@ export class UserDashboardComponent implements OnInit {
       this.auth
         .ensureAuthorized()
         .pipe(
-          tap(user => {
+          tap((user) => {
             if (user) {
               this.isLoggedIn = true;
               this.username = user.features.username;
@@ -54,7 +54,7 @@ export class UserDashboardComponent implements OnInit {
               }
             }
           }),
-          catchError(err => throwError(err))
+          catchError((err) => throwError(err))
         )
         .subscribe();
     }
@@ -65,43 +65,43 @@ export class UserDashboardComponent implements OnInit {
     if (access_token) {
       this.auth
         .selfDeleteAccount(access_token)
-        .then(data => {
-          this.auth.logout()
+        .then((data) => {
+          this.auth.logout();
           const getBackHome = confirm(
-            data.hasOwnProperty('message') ? `${ data.message }\nRevenir à l'accueil ?` : data
+            data.hasOwnProperty('message') ? `${data.message}\nRevenir à l'accueil ?` : data
           );
           if (getBackHome) {
             this.router.navigate(['/home']);
           }
         })
-        .catch(err => alert(err));
+        .catch((err) => alert(err));
     }
   }
 
   getPersonalInfo(): Observable<any> {
-    const url = `${ AppConfig.API_ENDPOINT }/user/info`;
+    const url = `${AppConfig.API_ENDPOINT}/user/info`;
     return this.client.get(url, { headers: this.headers });
   }
 
   exportPersonalData() {
-    this.getPersonalInfo().subscribe(data => {
+    this.getPersonalInfo().subscribe((data) => {
       alert(JSON.stringify(data));
     });
   }
 
   getPersonalObs(): Observable<any> {
-    const url = `${ AppConfig.API_ENDPOINT }/observations`;
+    const url = `${AppConfig.API_ENDPOINT}/observations`;
     return this.client.get(url, { headers: this.headers, responseType: 'blob' as 'json' });
   }
 
   exportPersonalObs() {
-    this.getPersonalObs().subscribe(data => {
-      const date = new Date;
+    this.getPersonalObs().subscribe((data) => {
+      const date = new Date();
       const geojson = [];
       geojson.push(data);
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(new Blob(geojson, { type: data.type }));
-      link.setAttribute('download', `export-${ date.toISOString() }.geojson`);
+      link.setAttribute('download', `export-${date.toISOString()}.geojson`);
       document.body.appendChild(link);
       link.click();
       link.parentNode?.removeChild(link);
@@ -109,22 +109,22 @@ export class UserDashboardComponent implements OnInit {
   }
 
   editInfos(content: { [name: string]: any }): void {
-    this.getPersonalInfo().subscribe(data => {
+    this.getPersonalInfo().subscribe((data) => {
       this.personalInfo = data;
       this.modalRef = this.modalService.open(content, {
         size: 'lg',
-        centered: true
+        centered: true,
       });
     });
   }
 
   onUpdatePersonalData(): void | Error {
     this.client
-      .post(`${ AppConfig.API_ENDPOINT }/user/info`, this.personalInfo, {
-        headers: this.headers
+      .post(`${AppConfig.API_ENDPOINT}/user/info`, this.personalInfo, {
+        headers: this.headers,
       })
       .pipe(
-        catchError(error => {
+        catchError((error) => {
           window.alert(error);
           return throwError(error);
         })
@@ -136,9 +136,9 @@ export class UserDashboardComponent implements OnInit {
 
   getBadgeCategories(): Observable<Object | Error> {
     return this.client
-      .get<{ [name: string]: any }>(`${ AppConfig.API_ENDPOINT }/dev_rewards/${ this.role_id }`)
+      .get<{ [name: string]: any }>(`${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
       .pipe(
-        tap(data => {
+        tap((data) => {
           const categories: { [name: string]: any } = data['badges'].reduce(
             (acc: { [name: string]: any }, item: { img: string; alt: string }) => {
               const category: string = item['alt'].split(/\.[^/.]+$/)[0];
@@ -152,11 +152,11 @@ export class UserDashboardComponent implements OnInit {
             {}
           );
 
-          Object.values(categories).map(value => this.badges.push(value));
+          Object.values(categories).map((value) => this.badges.push(value));
           this.badges$.next(this.badges);
           localStorage.setItem('badges', JSON.stringify(data['badges']));
         }),
-        catchError(error => {
+        catchError((error) => {
           window.alert(error);
           return throwError(error);
         })

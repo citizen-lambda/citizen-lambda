@@ -5,10 +5,10 @@ import {
   ChangeDetectionStrategy,
   AfterViewInit,
   OnDestroy,
-  Input
+  Input,
 } from '@angular/core';
 
-import { AnchorNavigation } from '../../../helpers/anav';
+import { AnchorNavigationDirective } from '../../../helpers/anav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, fromEvent } from 'rxjs';
 import { throttleTime, map, filter, takeUntil } from 'rxjs/operators';
@@ -18,9 +18,9 @@ import { Program } from '../../../features/programs/programs.models';
   selector: 'app-program-content',
   templateUrl: './program-content.component.html',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProgramContentComponent extends AnchorNavigation
+export class ProgramContentComponent extends AnchorNavigationDirective
   implements OnInit, AfterViewInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   @Input() program!: Program;
@@ -46,7 +46,7 @@ export class ProgramContentComponent extends AnchorNavigation
             ? 'top'
             : null
         ),
-        filter(reached => reached !== null),
+        filter((reached) => reached !== null),
         takeUntil(this.unsubscribe$)
       );
 
@@ -63,7 +63,7 @@ export class ProgramContentComponent extends AnchorNavigation
         }
       };
 
-      scroll$.subscribe(reached => swapClasses(<'top' | 'bottom'>reached, element));
+      scroll$.subscribe((reached) => swapClasses(<'top' | 'bottom'>reached, element));
     }
   }
 

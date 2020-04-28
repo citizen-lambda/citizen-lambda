@@ -1,21 +1,30 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Inject, LOCALE_ID } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  Inject,
+  LOCALE_ID,
+} from '@angular/core';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { AppConfig } from '../../../conf/app.config';
 import { IAppConfig } from '../../core/models';
-import { AnchorNavigation } from '../../helpers/anav';
+import { AnchorNavigationDirective } from '../../helpers/anav';
 
-type AppConfigGreeter = Pick<IAppConfig, 'platform_intro' | 'platform_greeter' | 'platform_participate'>;
+type AppConfigGreeter = Pick<
+  IAppConfig,
+  'platform_intro' | 'platform_greeter' | 'platform_participate'
+>;
 
 @Component({
   selector: 'app-greeter',
   templateUrl: './greeter.component.html',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GreeterComponent extends AnchorNavigation implements OnInit {
-
+export class GreeterComponent extends AnchorNavigationDirective implements OnInit {
   readonly AppConfig: AppConfigGreeter = AppConfig;
   platform_greeter: SafeHtml = '';
   platform_intro: SafeHtml = '';
@@ -25,9 +34,9 @@ export class GreeterComponent extends AnchorNavigation implements OnInit {
     protected router: Router,
     protected route: ActivatedRoute,
     protected domSanitizer: DomSanitizer
-    ) {
-      super(router, route);
-    }
+  ) {
+    super(router, route);
+  }
 
   ngOnInit() {
     this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
@@ -37,5 +46,4 @@ export class GreeterComponent extends AnchorNavigation implements OnInit {
       (AppConfig['platform_greeter'] as { [name: string]: string })[this.localeId]
     );
   }
-
 }

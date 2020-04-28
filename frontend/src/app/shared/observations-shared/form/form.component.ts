@@ -177,19 +177,14 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
       console.debug('form onChanges:', this.data);
 
       if (
-        // FIXME: aot compilation complains
         this.data.program &&
         this.data.program.features &&
         !!this.data.program.features.length &&
         this.data.program.features[0] &&
         this.data.program.features[0].properties &&
-        // ERROR in src/app/programs/observations/form/form.component.ts(182,9):
-        // error TS2531: Object is possibly 'null'.
         // tslint:disable-next-line: no-non-null-assertion
         !!this.data.program.features[0].properties!.id_program
       ) {
-        // src/app/programs/observations/form/form.component.ts(186,27):
-        // error TS2531: Object is possibly 'null'.
         // tslint:disable-next-line: no-non-null-assertion
         this.program_id = this.data.program.features[0].properties!.id_program;
         // console.debug('program_id:', this.program_id);
@@ -234,7 +229,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
       const files: FileList = this.photo.nativeElement.files;
       if (!!files.length) {
         this.photoFilename$.next(files[0].name);
-        console.debug(files[0].name)
+        // console.debug(files[0].name)
         const file: Blob = files[0];
         this.imageBlobURL = this.sanitizer.bypassSecurityTrustResourceUrl(
           window.URL.createObjectURL(files[0])
@@ -249,6 +244,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
               const p = L.point(exifData.longitude, exifData.latitude);
               this.obsForm.patchValue({ geometry: p });
               this.data.coords = p;
+              // ask map to create a marker if it doesn't exit
             }
           } catch (error) {
             console.debug('No EXIF data', error);
