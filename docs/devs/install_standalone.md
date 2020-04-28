@@ -436,7 +436,9 @@ sudo a2enmod brotli
         \.(gif|jpe?g|png|swf|woff|woff2) no-brotli dont-vary
 
     Header append Vary User-Agent env=!dont-vary
-    Header set Content-Security-Policy "default-src 'self'; form-action 'self'; img-src data: mediastream: blob: https://*; object-src 'self'; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
+    #Header set Content-Security-Policy "default-src 'self'; form-action 'self'; img-src data: mediastream: blob: https://*; object-src 'self'; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
+    # swaggwe-ui3 needs some relaxed directives: "script-src 'self' 'unsafe-inline'; font-src 'self' fonts.gstatic.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' fonts.googleapis.com;"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; form-action 'self'; img-src data: mediastream: blob: https://*; object-src 'self'; font-src 'self' fonts.gstatic.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' fonts.googleapis.com; frame-ancestors 'none'; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
     Header set X-Frame-Options "DENY" "expr=%{CONTENT_TYPE} =~ m#text/html#i"
     Header set X-Content-Type-Options "nosniff"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
