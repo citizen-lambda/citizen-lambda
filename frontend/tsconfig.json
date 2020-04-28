@@ -2,11 +2,11 @@
   "compileOnSave": true,
   "compilerOptions": {
     "importHelpers": true,
-    // "paths": {
-    //   "@nguniversal/*": [
-    //     "./modules/*"
-    //   ]
-    // },
+    "paths": {
+      "@nguniversal/*": [
+        "./modules/*"
+      ]
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
