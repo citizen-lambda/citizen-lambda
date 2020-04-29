@@ -1,5 +1,5 @@
 # coding: utf-8
-from typing import List, Optional, Tuple
+from typing import List, Optional, Union, cast
 from geojson import Feature, FeatureCollection
 from flask import current_app
 
@@ -16,13 +16,40 @@ from gncitizen.core.users.models import UserModel
 from gncitizen.utils.sqlalchemy import get_geojson_feature
 
 
+class ObservationRecord4Program:
+    ObservationModel: ObservationModel
+    username: str = ""
+    image: str
+    area_name: str
+    area_code: str
+
+
+class ObservationRecord4AnonymousExport:
+    ObservationModel: ObservationModel
+    image: str
+    area_name: str
+    municipality_insee: str
+    cd_nom: int
+    nom_complet: str
+    nom_vern: str
+
+
+class ObservationRecord4UserExport(ObservationRecord4AnonymousExport):
+    username: str
+
+
+ObservationRecord4Export = Union[
+    ObservationRecord4AnonymousExport, ObservationRecord4UserExport
+]
+
+
 def is_anonymous(username: str) -> bool:
-    return username and username.strip().lower() in {"anonymous", "anonyme"}
+    return username is not None and username.strip().lower() in {"anonymous", "anonyme"}
 
 
-def observations4user(username: str) -> List[Tuple]:
+def observations4user(username: str,) -> List[ObservationRecord4Export]:
     user = None
-    models = (
+    models = {
         ObservationModel,
         MediaModel.filename.label("image"),
         LAreas.area_name,
@@ -30,10 +57,10 @@ def observations4user(username: str) -> List[Tuple]:
         Taxref.cd_nom,
         Taxref.nom_complet,
         Taxref.nom_vern,
-    )
+    }
     if not is_anonymous(username):
         user = UserModel.find_by_username(username=username.strip())
-        models = (UserModel.username, *models)
+        models = {UserModel.username, *models}
 
     query = db.session.query(*models)
     if user:
@@ -58,10 +85,12 @@ def observations4user(username: str) -> List[Tuple]:
         )
         .join(Taxref, Taxref.cd_nom == ObservationModel.cd_nom, isouter=True,)
     ).order_by(ObservationModel.date.desc())
-    return query.all()
+    return cast(List[ObservationRecord4Export], query.all())
 
 
-def observations2features4export(records: List[Tuple]) -> Optional[List[Feature]]:
+def observations2features4export(
+    records: List[ObservationRecord4Export],
+) -> Optional[List[Feature]]:
     features: List[Feature] = []
     for record in records:
         feature: Feature = get_geojson_feature(record.ObservationModel.geom)
@@ -75,7 +104,7 @@ def observations2features4export(records: List[Tuple]) -> Optional[List[Feature]
         feature["properties"]["municipality_name"] = record.area_name
         feature["properties"]["municipality_insee"] = record.municipality_insee
         feature["properties"]["observer"] = (
-            record.username if "username" in record._fields else "Anonymous"
+            record.__getattribute__("username") or "Anonymous"
         )
         feature["properties"]["image"] = (
             "/".join(
@@ -93,11 +122,11 @@ def observations2features4export(records: List[Tuple]) -> Optional[List[Feature]
 
 
 def export4user(username: str) -> FeatureCollection:
-    records: List[Tuple] = observations4user(username)
+    records: List[ObservationRecord4Export] = observations4user(username)
     return FeatureCollection(observations2features4export(records))
 
 
-def observations4program(program_id: int) -> Tuple:
+def observations4program(program_id: int) -> List[ObservationRecord4Program]:
     query = (
         # pylint: disable=comparison-with-callable
         db.session.query(
@@ -126,10 +155,12 @@ def observations4program(program_id: int) -> Tuple:
         )
         .join(UserModel, ObservationModel.id_role == UserModel.id_user, full=True,)
     ).order_by(ObservationModel.date.desc())
-    return query.all()
+    return cast(List[ObservationRecord4Program], query.all())
 
 
-def observations2features4front(records: List[Tuple]) -> Optional[List[Feature]]:
+def observations2features4front(
+    records: List[ObservationRecord4Program],
+) -> Optional[List[Feature]]:
     features: List[Feature] = []
     for record in records:
         feature: Feature = get_geojson_feature(record.ObservationModel.geom)

@@ -25,6 +25,7 @@ from gncitizen.core.observations.models import (
     obs_keys,
 )
 from gncitizen.core.observations.commands import (
+    ObservationRecord4Program,
     observations4program,
     observations2features4front,
     export4user,
@@ -423,7 +424,7 @@ def get_program_observations(
               $ref: '#/definitions/Observations'
         """
     try:
-        records: List[Tuple] = observations4program(program_id)
+        records: List[ObservationRecord4Program] = observations4program(program_id)
         return FeatureCollection(observations2features4front(records))
 
     except Exception as e:

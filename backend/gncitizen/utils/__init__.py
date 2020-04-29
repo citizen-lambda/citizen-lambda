@@ -1,17 +1,17 @@
 # coding: utf-8
 from warnings import warn
 from typing import (
-    Iterable,
-    Optional,
-    TypeVar,
-    Callable,
-    Union,
-    Mapping,
     Any,
-    Sequence,
+    Callable,
     Dict,
+    Iterable,
     Generic,
+    Mapping,
+    Optional,
+    Sequence,
     Type,
+    TypeVar,
+    Union,
 )
 from functools import reduce
 from urllib.parse import urlparse
@@ -54,10 +54,7 @@ def mapper(
     extractions: Dict,
     data: Mapping[KT, VT],
 ) -> Iterable[VT]:
-    return [
-        compose(transformer(k), extractor(data))(v)
-        for k, v in extractions.items()
-    ]
+    return [compose(transformer(k), extractor(data))(v) for k, v in extractions.items()]
 
 
 def is_url(link="") -> bool:
@@ -71,7 +68,7 @@ def is_url(link="") -> bool:
 def parsed_url(link="") -> str:
     try:
         url = urlparse(link)
-        return url.geturl()
+        return str(url.geturl())
     except ValueError:
         return ""
 
@@ -82,7 +79,7 @@ def _path(mapping: Mapping[KT, VT]) -> Callable:
 
     def path_val(nodes: Sequence[KT]) -> Optional[VT]:
         nonlocal m
-        return reduce(
+        return reduce(  # type: ignore
             lambda acc, n: acc[n] if acc and n in acc else None, nodes, m
         )
 
@@ -153,9 +150,7 @@ class WriteRepository(Generic[T]):
 
 class RWRepository(ReadRepository, WriteRepository, Generic[T]):
     def __init__(
-        self,
-        read_adapter: ReadRepoAdapter[T],
-        write_adapter: WriteRepoAdapter[T],
+        self, read_adapter: ReadRepoAdapter[T], write_adapter: WriteRepoAdapter[T],
     ):
         self.read_adapter = read_adapter
         self.write_adapter = write_adapter
@@ -185,7 +180,7 @@ class HttpClient:
         r = requests.get(url)
         try:
             r.raise_for_status()
-            return r.json()
+            return r.json()  # type: ignore
         except (
             requests.exceptions.HTTPError,
             json.decoder.JSONDecodeError,

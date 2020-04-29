@@ -78,9 +78,7 @@ def registration():
             if hasattr(UserModel, data) and data != "password":
                 data_to_save[data] = request_data[data]
 
-        data_to_save["password"] = UserModel.generate_hash(
-            request_data["password"]
-        )
+        data_to_save["password"] = UserModel.generate_hash(request_data["password"])
 
         data_to_save["admin"] = False
 
@@ -91,9 +89,7 @@ def registration():
             current_app.logger.critical(e)
             # raise GeonatureApiError(e)
             return (
-                {
-                    "message": "les informations d'enregistrement sont erronées."
-                },
+                {"message": "les informations d'enregistrement sont erronées."},
                 400,
             )
 
@@ -198,13 +194,9 @@ def login():
                 {"message": "Les informations d'identification sont erronées"},
                 400,
             )
-        current_app.logger.critical(
-            "login failure: non-existant user `%s`", username
-        )
+        current_app.logger.critical("login failure: non-existant user `%s`", username)
         return (
-            {
-                "message": f"""L'utilisateur "{username}" n'est pas enregistré."""
-            },
+            {"message": f"""L'utilisateur "{username}" n'est pas enregistré."""},
             400,
         )
     except Exception as e:
@@ -327,9 +319,7 @@ def user_info():
                 200,
             )
         return (
-            {
-                "message": "Connectez vous pour obtenir vos données personnelles."
-            },
+            {"message": "Connectez vous pour obtenir vos données personnelles."},
             400,
         )
     except Exception as e:
@@ -337,9 +327,7 @@ def user_info():
             "[user_info] error with method `%s` %s:", request.method, str(e)
         )
         return (
-            {
-                "message": "Connectez vous pour obtenir vos données personnelles."
-            },
+            {"message": "Connectez vous pour obtenir vos données personnelles."},
             400,
         )
 
@@ -363,9 +351,7 @@ def delete_account():
     username = get_jwt_identity()
     if username:
         try:
-            db.session.query(UserModel).filter(
-                UserModel.username == username
-            ).delete()
+            db.session.query(UserModel).filter(UserModel.username == username).delete()
             db.session.commit()
             jti = get_raw_jwt()["jti"]
             revoked_token = RevokedTokenModel(jti=jti)
@@ -380,9 +366,7 @@ def delete_account():
                 "[delete account] `%s` deletion failure: %s", username, str(e)
             )
             return (
-                {
-                    "message": "Une erreur est survenue: contactez l'administrateur."
-                },
+                {"message": "Une erreur est survenue: contactez l'administrateur."},
                 500,
             )
 
@@ -411,8 +395,7 @@ def reset_password():
         user = UserModel.query.filter_by(username=username, email=email).one()
     except Exception:
         current_app.logger.critical(
-            "reset password failure: invalid email for user `%s`",
-            username or "__?__",
+            "reset password failure: invalid email for user `%s`", username or "__?__",
         )
         return (
             {
@@ -460,17 +443,13 @@ def reset_password():
                 str(current_app.config["MAIL"]["MAIL_AUTH_PASSWD"]),
             )
             server.sendmail(
-                current_app.config["MAIL"]["MAIL_FROM"],
-                user.email,
-                msg.as_string(),
+                current_app.config["MAIL"]["MAIL_FROM"], user.email, msg.as_string(),
             )
             server.quit()
         user.password = passwd_hash
         db.session.commit()
         return (
-            {
-                "message": "Check your email: your credentials have been updated."
-            },
+            {"message": "Check your email: your credentials have been updated."},
             200,
         )
     except Exception as e:

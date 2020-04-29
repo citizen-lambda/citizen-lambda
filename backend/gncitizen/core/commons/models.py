@@ -1,5 +1,4 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 import logging
 import queue
@@ -66,23 +65,16 @@ class ProgramsModel(
     image = db.Column(db.String(250))
     logo = db.Column(db.String(250))
     module = db.Column(
-        db.Integer,
-        ForeignKey(ModulesModel.id_module),
-        nullable=False,
-        default=1,
+        db.Integer, ForeignKey(ModulesModel.id_module), nullable=False, default=1,
     )
     taxonomy_list = db.Column(
         db.Integer, ForeignKey(BibListes.id_liste), nullable=True  # todo: rm
     )
-    is_active = db.Column(
-        db.Boolean(), server_default=expression.true(), default=True
-    )
+    is_active = db.Column(db.Boolean(), server_default=expression.true(), default=True)
     geom = db.Column(Geometry("GEOMETRY", 4326))
 
     def get_geofeature(self, recursive=True, columns=None):
-        return self.as_geofeature(
-            "geom", "id_program", recursive, columns=columns
-        )
+        return self.as_geofeature("geom", "id_program", recursive, columns=columns)
 
 
 @serializable

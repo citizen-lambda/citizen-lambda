@@ -168,9 +168,7 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
         self.api = HttpClient()
 
     @lru_cache(maxsize=MnhnTaxRefRest.CACHE_ITEMS)
-    def get(  # pylint: disable=arguments-differ
-        self, ref: int
-    ) -> Optional[Taxon]:
+    def get(self, ref: int) -> Optional[Taxon]:  # pylint: disable=arguments-differ
         data = self.get_info(ref)
         if data:
             media: List[TaxonMedium] = []
@@ -189,7 +187,7 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
         return None
 
     def get_info(self, ref: int) -> Optional[Dict]:
-        logger.info(ref)
+        logger.info("Fetching MNHN `%s` taxon", str(ref))
         # assert url == f"{super().TAXA_URL}/{ref}"
         return self.api.call(f"{super().TAXA_URL}/{ref}", None)
 
@@ -199,9 +197,7 @@ class MnhnTaxRefRestAdapter(MnhnTaxRefRest, ReadRepoAdapter[Taxon]):
         if data and "_embedded" in data and "media" in data["_embedded"]:
             media = data["_embedded"]["media"]
             return [
-                TaxonMedium(
-                    *mapper(transformer, extractor, self.MEDIA_ATTR, medium)
-                )
+                TaxonMedium(*mapper(transformer, extractor, self.MEDIA_ATTR, medium))
                 for medium in media
                 # if medium["taxon"]["referenceId"] == ref
             ]
@@ -228,20 +224,46 @@ setup_default_repo()
 # CREATE SERVER taxref FOREIGN DATA WRAPPER file_fdw;
 # CREATE SCHEMA mnhn;
 # CREATE FOREIGN TABLE mnhn.TAXREFv12 (
-# regne character varying, phylum character varying, classe character varying,
-# ordre character varying, famille character varying, sous_famille character varying,
-# tribu character varying, group1_inpn character varying, group2_inpn character varying,
-# cd_nom character varying, cd_taxsup character varying, cd_sup character varying,
-# cd_ref character varying, rang character varying, lb_nom character varying,
-# lb_auteur character varying, nom_complet character varying,
-# nom_complet_html character varying, nom_valide character varying,
-# nom_vern character varying, nom_vern_eng character varying, habitat character varying,
-# fr character varying, gf character varying, mar character varying,
-# gua character varying, sm character varying, sb character varying,
-# spm character varying, may character varying, epa character varying,
-# reu character varying, sa character varying, ta character varying,
-# taaf character varying, pf character varying, nc character varying,
-# wf character varying, cli character varying, url character varying
+#   regne character varying,
+#   phylum character varying,
+#   classe character varying,
+#   ordre character varying,
+#   famille character varying,
+#   sous_famille character varying,
+#   tribu character varying,
+#   group1_inpn character varying,
+#   group2_inpn character varying,
+#   cd_nom character varying,
+#   cd_taxsup character varying,
+#   cd_sup character varying,
+#   cd_ref character varying,
+#   rang character varying,
+#   lb_nom character varying,
+#   lb_auteur character varying,
+#   nom_complet character varying,
+#   nom_complet_html character varying,
+#   nom_valide character varying,
+#   nom_vern character varying,
+#   nom_vern_eng character varying,
+#   habitat character varying,
+#   fr character varying,
+#   gf character varying,
+#   mar character varying,
+#   gua character varying,
+#   sm character varying,
+#   sb character varying,
+#   spm character varying,
+#   may character varying,
+#   epa character varying,
+#   reu character varying,
+#   sa character varying,
+#   ta character varying,
+#   taaf character varying,
+#   pf character varying,
+#   nc character varying,
+#   wf character varying,
+#   cli character varying,
+#   url character varying
 # ) SERVER inpn OPTIONS (
 # format 'csv', header 'true', filename '/tmp/TAXREFv12.txt', delimiter E'\t', null ''
 # );

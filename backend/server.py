@@ -34,7 +34,7 @@ class ReverseProxied:
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
+                environ["PATH_INFO"] = path_info[len(script_name):]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -74,7 +74,8 @@ def get_app(  # pylint: disable=too-many-locals
             if hasattr(l, "handlers"):
                 l.handlers = [handler]
 
-    # else:
+    else:
+        logging.getLogger("werkzeug").setLevel(logging.WARNING)
     #     # TODO: sourced from app.config['LOGGING']
     #     logging.basicConfig()
     #     logger = logging.getLogger()

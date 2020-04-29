@@ -1,5 +1,5 @@
 # coding: utf-8
-# within venv and backend dir, run python3 setup.py install
+# within venv and backend dir, run python3 setup.py develop
 from pathlib import Path
 
 import pkg_resources
