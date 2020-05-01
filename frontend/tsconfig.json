@@ -1,24 +1,23 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "importHelpers": true,
     "paths": {
-      "@nguniversal/*": [
-        "./modules/*"
-      ]
+      "@nguniversal/*": ["./modules/*"]
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": true,
     "module": "esnext",
+    "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "downlevelIteration": true,
+    "noFallthroughCasesInSwitch": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -26,16 +25,9 @@
     "strict": true,
     "noEmitOnError": true,
     "target": "es2015",
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom"]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
