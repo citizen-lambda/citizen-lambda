@@ -124,12 +124,9 @@ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 # pat@vps-123:~$
 source ~/.local/share/venv/citizen_prod/bin/activate
 # (citizen_prod) pat@vps-123:~$
-nvm install node
-nvm use node
+nvm install 14.1.0
 # …
-# Now using node v14.0.0 (npm v6.14.4)
-nvm alias default node
-# default -> node (-> v14.0.0)
+# Now using node v14.0.1 (npm v6.14.4)
 ```
 
 ### le dépôt du code source
@@ -436,9 +433,7 @@ sudo a2enmod brotli
         \.(gif|jpe?g|png|swf|woff|woff2) no-brotli dont-vary
 
     Header append Vary User-Agent env=!dont-vary
-    #Header set Content-Security-Policy "default-src 'self'; form-action 'self'; img-src data: mediastream: blob: https://*; object-src 'self'; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
-    # swaggwe-ui3 needs some relaxed directives: "script-src 'self' 'unsafe-inline'; font-src 'self' fonts.gstatic.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' fonts.googleapis.com;"
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; form-action 'self'; img-src data: mediastream: blob: https://*; object-src 'self'; font-src 'self' fonts.gstatic.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' fonts.googleapis.com; frame-ancestors 'none'; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
+    Header set Content-Security-Policy "default-src 'none'; base-uri 'self'; child-src 'self'; connect-src 'self'; font-src 'self' fonts.gstatic.com; form-action 'self'; frame-ancestors 'none'; img-src https: data: 'self'; manifest-src 'self'; object-src 'none'; prefetch-src 'self'; require-trusted-types-for 'script'; sandbox allow-scripts; script-src 'none'; script-src-elem 'self' 'unsafe-inline'; script-src-attr 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; worker-src 'self'; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
     Header set X-Frame-Options "DENY" "expr=%{CONTENT_TYPE} =~ m#text/html#i"
     Header set X-Content-Type-Options "nosniff"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
@@ -531,9 +526,9 @@ $EDITOR ~/citizen/frontend/src/app/home/home.component.css
 cd frontend
 # regenerate the translation files if, somehow, the templates got edited
 npm run xi18n  # and diffedit to sync
-# TODO: remaining apache rewrite
-cp dist/browser/fr/robots.txt dist/browser/
-cp dist/browser/fr/favicon.ico dist/browser/
+# TODO: apache rewrite
+# cp dist/browser/fr/robots.txt dist/browser/
+# cp dist/browser/fr/favicon.ico dist/browser/
 # copy/edit sitemap.xml
 # $EDITOR dist/browser/sitemap.xml
 cp ~/sitemap-citizen.xml dist/browser/sitemap.xml
@@ -542,7 +537,6 @@ cp ~/sitemap-citizen.xml dist/browser/sitemap.xml
 sudo supervisorctl restart citizen
 # restart apache after a frontend rebuild: a simple reload won't do
 # (angular differential loading and/or apache cache … ?)
-npm run brotli
 sudo systemctl restart apache2
 ```
 
