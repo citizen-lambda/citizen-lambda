@@ -9,17 +9,19 @@ import {
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-import { GncProgramsService } from './gnc-programs.service';
+import { ProgramsService } from './programs.service';
 import { Program } from './programs.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UniqueProgramGuard implements CanActivate, CanActivateChild {
-  constructor(private programService: GncProgramsService, private router: Router) {}
+  constructor(private programService: ProgramsService, private router: Router) {}
 
   canActivate(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: ActivatedRouteSnapshot,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     // console.warn("UniqueProgramGuard::getAllPrograms");
@@ -27,13 +29,8 @@ export class UniqueProgramGuard implements CanActivate, CanActivateChild {
     return this.programService.getAllPrograms().pipe(
       map((programs: Program[] | null) => {
         const count = programs ? programs.length : 0;
-        if (!!programs && count === 1) {
-          this.router.navigate([
-            'programs',
-            // tslint:disable-next-line: no-non-null-assertion
-            programs![0].id_program,
-            'observations'
-          ]);
+        if (programs && count === 1) {
+          this.router.navigate(['programs', programs?.[0].id_program, 'observations']);
           return false;
         }
         return true;

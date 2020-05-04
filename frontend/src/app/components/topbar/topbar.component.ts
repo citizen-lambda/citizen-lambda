@@ -20,8 +20,8 @@ import { LoginComponent } from '../login/login.component';
 import { LogoutComponent } from '../logout/logout.component';
 import { RegisterComponent } from '../register/register.component';
 import { Program } from '../../features/programs/programs.models';
-import { GncProgramsService } from '../../features/programs/gnc-programs.service';
-import { ProgramsComponent } from '../../features/programs/programs.component';
+import { ProgramsService } from '../../features/programs/programs.service';
+import { ProgramsModalComponent } from '../../shared/programs-shared/programs-modal/programs-modal.component';
 
 @Component({
   selector: 'app-topbar',
@@ -69,7 +69,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     @Inject(LOCALE_ID) public localeId: string,
     private router: Router,
     private route: ActivatedRoute,
-    private programService: GncProgramsService,
+    private programService: ProgramsService,
     private auth: AuthService,
     private modalService: NgbModal
   ) {}
@@ -85,7 +85,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     );
   }
 
-  login() {
+  login(): void {
     this.collapsed = true;
     this.modalRef = this.modalService.open(LoginComponent, {
       size: 'lg',
@@ -93,7 +93,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  register() {
+  register(): void {
     this.collapsed = true;
     this.modalRef = this.modalService.open(RegisterComponent, {
       size: 'lg',
@@ -101,7 +101,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  logout() {
+  logout(): void {
     this.collapsed = true;
     this.modalRef = this.modalService.open(LogoutComponent, {
       size: 'lg',
@@ -109,32 +109,31 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  programs() {
+  programs(): void {
     this.collapsed = true;
-    this.modalRef = this.modalService.open(ProgramsComponent, {
+    this.modalRef = this.modalService.open(ProgramsModalComponent, {
       size: 'xl',
       centered: true
     });
   }
 
   ngOnInit(): void {
-    // tslint:disable-next-line: no-non-null-assertion
-    this.base_href = document.getElementsByTagName('base').item(0)!.href || '/';
+    this.base_href = document.getElementsByTagName('base').item(0)?.href || '/';
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
       this.location = (event as NavigationEnd).url;
     });
   }
 
   ngAfterViewInit(): void {
-    const access_token = window.localStorage.getItem('access_token');
-    if (access_token) {
+    const accessToken = window.localStorage.getItem('access_token');
+    if (accessToken) {
       this.auth
         .ensureAuthorized()
         .pipe(
           tap(user => {
-            if (user && user['features'] && user['features'].id_role) {
-              this.username = user['features'].username;
-              this.isAdmin$.next(user['features'].admin);
+            if (!!user && !!user.features && !!user.features.id_role) {
+              this.username = user.features.username;
+              this.isAdmin$.next(user.features.admin === true);
             }
           }),
           catchError(err => {
@@ -142,7 +141,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
             this.auth
               .logout()
               .then(logout => {
-                console.log('Logout Status:', logout.status);
+                console.log('Logout message:', logout.message);
               })
               .catch(error => {
                 console.error('Logout error:', error);
@@ -157,7 +156,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
 
     this.auth.authorized$
       .pipe(
-        filter(status => !!!status),
+        filter(status => !status),
         map(_ => this.isAdmin$.next(false))
       )
       .subscribe();
@@ -173,7 +172,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  close(d: string) {
+  close(d: string): void {
     this.modalRef.close(d);
   }
 }

@@ -18,7 +18,6 @@ import { ObservationData } from '../../../features/observations/observation.mode
 import { TaxonomyService } from '../../../services/taxonomy.service';
 import { of, BehaviorSubject } from 'rxjs';
 
-
 @Component({
   selector: 'app-marker-popup',
   templateUrl: 'popup.template.html',
@@ -37,10 +36,10 @@ export class MarkerPopupComponent implements OnInit, OnDestroy {
     @Inject(LOCALE_ID) public localeId: string,
     protected router: Router,
     private route: ActivatedRoute,
-    public taxonService: TaxonomyService,
+    public taxonService: TaxonomyService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     of(this.data).subscribe(data => {
       if (!!data && data.cd_nom) {
         this.taxonService.getTaxon(data.cd_nom).subscribe(t => {
@@ -50,12 +49,12 @@ export class MarkerPopupComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     // should adapt strategy to leaflet current setting: singleton ?
     console.debug('popup destroyed:', this.data.id_observation);
   }
 
-  onObservationDetails() {
+  onObservationDetails(): void {
     this.detailsRequest.emit(this.data.id_observation);
   }
 }

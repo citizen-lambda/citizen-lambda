@@ -1,7 +1,7 @@
 <!-- Observation ajoutée -->
 <div class="modal-body obs-added">
   <div>
-    <!-- FIXME: hardcoded backend media url -->
+    <!-- FIXME: hardcoded backend media url + img minmax height-->
     <img
       [src]="
         obs.images[0]
@@ -14,9 +14,17 @@
   <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
     Votre observation a bien été ajoutée !
   </h6>
-  <p>{{ (!localeId.startsWith('fr') && !!obs?.taxref?.nom_vern_eng) ? obs?.taxref?.nom_vern_eng : obs?.taxref?.nom_vern ? obs?.taxref?.nom_vern : obs?.taxref?.nom_valide }}</p>
+  <p>
+    {{
+      !localeId.startsWith('fr') && obs?.taxref?.nom_vern_eng
+        ? obs?.taxref?.nom_vern_eng
+        : obs?.taxref?.nom_vern
+        ? obs?.taxref?.nom_vern
+        : obs?.taxref?.nom_valide
+    }}
+  </p>
   <span i18n
-    >Observé par {{ username || "Anonyme" }} <br />
+    >Observé par {{ username }} <br />
     le {{ obs.date }}</span
   >
 </div>

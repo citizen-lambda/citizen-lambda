@@ -30,7 +30,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { SpeciesComponent } from './components/species/species.component';
 import { GncService } from './services/gnc.service';
-import { GncProgramsService } from './features/programs/gnc-programs.service';
+import { ProgramsService } from './features/programs/programs.service';
 import { ProgramsResolve } from './features/programs/programs-resolve.service';
 import { TaxonomyService } from './services/taxonomy.service';
 import { ErrorHandler } from './services/error_handler';
@@ -81,7 +81,7 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
   providers: [
     AuthService,
     GncService,
-    GncProgramsService,
+    ProgramsService,
     TaxonomyService,
     ErrorHandler,
     ProgramsResolve,

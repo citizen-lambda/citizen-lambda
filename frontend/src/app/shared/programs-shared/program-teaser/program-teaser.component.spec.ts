@@ -3,7 +3,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AnchorNavigationDirective } from '../../../helpers/anav';
 import { ProgramTeaserComponent } from './program-teaser.component';
 
 describe('ProgramTeaserComponent', () => {
@@ -13,7 +12,7 @@ describe('ProgramTeaserComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, NgbTooltipModule],
-      declarations: [ProgramTeaserComponent],
+      declarations: [ProgramTeaserComponent]
     }).compileComponents();
   }));
 

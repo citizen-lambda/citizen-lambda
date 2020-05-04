@@ -3,9 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class ErrorHandler {
-  constructor() {}
-
-  public handleError(error: Error | HttpErrorResponse) {
+  public handleError(error: Error | HttpErrorResponse): void {
     // notification system, once elected, goes here
     let errorMessage = '';
     if (error instanceof HttpErrorResponse) {
@@ -13,9 +11,10 @@ export class ErrorHandler {
         // Handle offline error .. to test
         errorMessage = `OffLineError: No connectivity.`;
       } else if (error.status >= 500 && error.status < 600) {
-          // Unavailable
-          errorMessage = `UnavailableError: ${error.status} - ${error.message}`;
+        // Unavailable
+        errorMessage = `UnavailableError: ${error.status} - ${error.message}`;
       } else if (error.status !== 0) {
+        // tslint:disable-next-line: prefer-conditional-expression
         if (error.error && error.error.message) {
           // api or network-side
           errorMessage = `${error.error.message}`;

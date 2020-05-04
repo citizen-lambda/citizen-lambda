@@ -1,3 +1,3 @@
-export interface IFlowComponent {
+export interface FlowComponentInterface {
   data: any;
 }

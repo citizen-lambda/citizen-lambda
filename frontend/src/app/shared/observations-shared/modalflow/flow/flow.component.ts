@@ -11,13 +11,11 @@ import {
 
 import { FlowDirective } from './flow.directive';
 import { FlowItem } from './flow-item';
-import { IFlowComponent } from './flow';
+import { FlowComponentInterface } from './flow';
 
 @Component({
   selector: 'app-flow',
-  template: `
-    <ng-template appFlow></ng-template>
-  `,
+  template: ` <ng-template appFlow></ng-template> `,
   styleUrls: ['./flow.component.css'],
   encapsulation: ViewEncapsulation.None
 })
@@ -33,7 +31,7 @@ export class FlowComponent implements OnInit {
     this.loadComponent();
   }
 
-  loadComponent(data?: any) {
+  loadComponent(data?: any): void {
     // really, cycle ?
     this.currentFlowIndex = (this.currentFlowIndex + 1) % this.flowItems.length;
     // resolve factory for current flow-item component
@@ -47,15 +45,15 @@ export class FlowComponent implements OnInit {
     // fill app-flow view with flow-item content
     const componentRef = viewContainerRef.createComponent(componentFactory);
     // have data/state follow
-    (<IFlowComponent>componentRef.instance).data = data || flowItem.data;
+    (componentRef.instance as FlowComponentInterface).data = data || flowItem.data;
     // ding !
     this.step.emit(this.flowItems[this.currentFlowIndex].component.name);
     // tie current flow-item to the next until last ...
     if (
-      !(<IFlowComponent>componentRef.instance).data.next &&
-      !(<IFlowComponent>componentRef.instance).data.final
+      !(componentRef.instance as FlowComponentInterface).data.next &&
+      !(componentRef.instance as FlowComponentInterface).data.final
     ) {
-      (<IFlowComponent>componentRef.instance).data.next = (ctx: any) => {
+      (componentRef.instance as FlowComponentInterface).data.next = (ctx: any): void => {
         console.debug('FlowComponent.loadComponent:', ctx || flowItem.data);
         this.loadComponent(ctx || flowItem.data);
       };

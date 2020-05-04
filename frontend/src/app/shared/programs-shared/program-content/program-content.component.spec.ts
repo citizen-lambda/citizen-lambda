@@ -9,12 +9,9 @@ describe('ProgramContentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [ ProgramContentComponent ]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule],
+      declarations: [ProgramContentComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

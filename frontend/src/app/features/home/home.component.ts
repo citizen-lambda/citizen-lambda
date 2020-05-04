@@ -2,11 +2,11 @@ import { Component, ViewEncapsulation, Inject, LOCALE_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { AppConfig } from '../../../conf/app.config';
-import { IAppConfig } from '../../core/models';
+import { AppConfigInterface } from '../../core/models';
 import { SeoService } from './../../services/seo.service';
 import { Program } from '../programs/programs.models';
 
-type AppConfigHome = Pick<IAppConfig, 'appName' | 'SEO' | 'platform_participate'>;
+type AppConfigHome = Pick<AppConfigInterface, 'appName' | 'SEO' | 'platform_participate'>;
 
 @Component({
   selector: 'app-home',
@@ -20,7 +20,6 @@ export class HomeComponent {
     this.localeId
   ];
   programs: Program[] = [];
-
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     protected route: ActivatedRoute,

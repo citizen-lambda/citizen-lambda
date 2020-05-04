@@ -1,6 +1,6 @@
 import L from 'leaflet';
 
-export const markerInPolygon = (marker: L.Marker) => (polygon: L.Polygon) => {
+export const markerInPolygon = (marker: L.Marker) => (polygon: L.Polygon): boolean => {
   /*
     https://en.wikipedia.org/wiki/Point_in_polygon#cite_note-6
     http://geomalgorithms.com/a03-_inclusion.html
@@ -23,7 +23,7 @@ export const markerInPolygon = (marker: L.Marker) => (polygon: L.Polygon) => {
   }
   const n = V.length - 1;
   let wn = 0;
-  const isLeft = (P0: L.Point, P1: L.Point, P2: L.Point) =>
+  const isLeft = (P0: L.Point, P1: L.Point, P2: L.Point): number =>
     (P1.x - P0.x) * (P2.y - P0.y) - (P2.x - P0.x) * (P1.y - P0.y);
 
   for (let i = 0; i < n; i++) {

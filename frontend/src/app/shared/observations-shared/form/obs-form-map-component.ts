@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   Component,
   ViewEncapsulation,
@@ -30,7 +31,7 @@ export const obsFormMarkerIcon = L.icon({
 });
 
 export function geometryValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
+  return (control: AbstractControl): { geometry: { value: AbstractControl['value'] } } | null => {
     const validGeometry = /Point\(\d{1,3}(|\.\d{1,7}),(|\s)\d{1,3}(|\.\d{1,7})\)$/.test(
       control.value
     );
@@ -79,7 +80,7 @@ export function geometryValidator(): ValidatorFn {
 })
 export class ObsFormMapComponent implements OnInit, OnChanges {
   MAP_CONFIG = MAP_CONFIG;
-  @Input() coords!: L.Point;
+  @Input() coords?: L.Point;
   @Input() input!: FeatureCollection;
   @Output() output: EventEmitter<{
     coords?: L.Point;
@@ -115,21 +116,19 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     center: L.latLng({ lat: 44.6041984880559, lng: 4.305528958557883 }),
     gestureHandling: true
   };
-  programArea: L.GeoJSON<any> | null = null;
+  programArea: L.GeoJSON<object> | null = null;
   newObsMarker: L.Marker | null = null;
   program_id: number | undefined;
-  zoomAlertTimeout: any;
+  zoomAlertTimeout: number | undefined;
 
-  constructor() {}
-
-  ngOnInit() {
+  ngOnInit(): void {
     console.debug({ layers: [conf.DEFAULT_BASE_MAP()] }, this.options);
     // tslint:disable-next-line: no-non-null-assertion
-    this.map = L.map(this.mapRef!.nativeElement, { ...this.options });
+    this.map = L.map(this.mapRef?.nativeElement, { ...this.options });
     this.map.whenReady(() => this.onMapReady());
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes.input && changes.input.currentValue) {
       if (this.input.features && this.map) {
         this.loadProgramArea(this.input);
@@ -145,11 +144,11 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     }
   }
 
-  onMapReady() {
+  onMapReady(): void {
     this.map.zoomControl.setPosition(conf.CONTROL_ZOOM_POSITION as L.ControlPosition);
 
-    (L.control as any)
-      ['fullscreen']({
+    L.control
+      .fullscreen({
         position: 'topright',
         title: {
           false: 'View Fullscreen',
@@ -189,9 +188,9 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
       L.DomUtil.addClass(this.map.getContainer(), 'observation-zoom-statement-warning');
       if (this.zoomAlertTimeout) {
-        clearTimeout(this.zoomAlertTimeout);
+        window.clearTimeout(this.zoomAlertTimeout);
       }
-      this.zoomAlertTimeout = setTimeout(() => {
+      this.zoomAlertTimeout = window.setTimeout(() => {
         L.DomUtil.removeClass(this.map.getContainer(), 'observation-zoom-statement-warning');
       }, 2000);
       return false;
@@ -227,7 +226,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     }
   }
 
-  programAreaClickHandler(event: L.LeafletEvent) {
+  programAreaClickHandler(event: L.LeafletEvent): void {
     if (this.newObsMarker) {
       this.output.emit({ coords: undefined });
       this.map.removeLayer(this.newObsMarker);
@@ -242,13 +241,13 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
     }
   }
 
-  addMarker(latLng: L.LatLng) {
+  addMarker(latLng: L.LatLng): void {
     this.newObsMarker = L.marker(latLng, {
       icon: obsFormMarkerIcon,
       draggable: true
     }).addTo(this.map);
 
-    this.newObsMarker.on('dragend', _e => {
+    this.newObsMarker.on('dragend', () => {
       const feature = this.input.features[0];
       const geom = feature.geometry;
       let result = null;
@@ -259,6 +258,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
           - interior rings clockwise.
         */
         case 'MultiPolygon':
+          // eslint-disable-next-line no-case-declarations
           const polys: {
             outer: L.Polygon;
             inners: L.Polygon[];
@@ -296,6 +296,7 @@ export class ObsFormMapComponent implements OnInit, OnChanges {
           break;
 
         case 'Polygon':
+          // eslint-disable-next-line no-case-declarations
           const [outer, inners] = [
             L.polygon(
               (geom.coordinates[0] as [number, number][]).map(([lng, lat]) => [

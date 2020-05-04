@@ -17,73 +17,40 @@
   /* pic width + min line length in char unit */
   --obs-cell-width: calc(80px + 1em + 28ch);
   --obs-list-width: calc(var(--obs-cell-width) + var(--list-toggler-width) + 1px);
-  --obs-list-height: calc(
-    100vh - var(--router-outlet-offset) - var(--obs-list-toolbar-height) - 2px
-  );
-
+  --obs-list-height: calc( 100vh - var(--router-outlet-offset) - var(--obs-list-toolbar-height) - 2px);
   --light-primary-color: #fff;
   --light-secondary-color: #eee;
   --light-ternary-color: #fefefe;
-
   --dark-primary-color: #333;
   --dark-secondary-color: #444;
   --dark-ternary-color: #343434;
-
   --primary-color: var(--light-primary-color);
   --secondary-color: var(--light-secondary-color);
   --ternary-color: var(--light-ternary-color);
-
   --light-obs-card-bg: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23f9f9f9" fill-opacity="0.9" /></svg>');
   --dark-obs-card-bg: url('data:image/svg+xml;charset=utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><polygon points="100, 78 0, 100 100, 100" fill="%23373737" fill-opacity="0.9" /></svg>');
-
   --obs-card-bg: var(--light-obs-card-bg);
-
   --list-toggler-width: 1.2rem;
-
   --color: #5d6970;
   --valid: #42a948;
   --invalid: #a94442;
-
-  --primary: #00a99d; /* rgb(0, 170, 158) */
+  --primary: #00a99d;
+  /* rgb(0, 170, 158) */
   --dark-primary: #0a998f;
   --secondary: #60b15c;
   --secondary-gradient: #57a154;
   --ternary: #45765c;
-  --modal-header-bg-moz: moz-linear-gradient(
-    179.4deg,
-    var(--secondary) 0%,
-    var(--secondary) 50%,
-    var(--secondary-gradient) 51%,
-    var(--secondary-gradient) 100%
-  );
-  --modal-header-bg-webkit: moz-linear-gradient(
-    179.4deg,
-    var(--secondary) 0%,
-    var(--secondary) 50%,
-    var(--secondary-gradient) 51%,
-    var(--secondary-gradient) 100%
-  );
-  --modal-header-bg-linear: linear-gradient(
-    179.4deg,
-    var(--secondary) 0%,
-    var(--secondary) 50%,
-    var(--secondary-gradient) 51%,
-    var(--secondary-gradient) 100%
-  );
+  --modal-header-bg-moz: moz-linear-gradient( 179.4deg, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
+  --modal-header-bg-webkit: moz-linear-gradient( 179.4deg, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
+  --modal-header-bg-linear: linear-gradient( 179.4deg, var(--secondary) 0%, var(--secondary) 50%, var(--secondary-gradient) 51%, var(--secondary-gradient) 100%);
 }
 
-html,
-body {
+html, body {
   height: 100%;
   color: var(--color);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
 
@@ -326,8 +293,7 @@ app-footer .container {
   }
 }
 
-button,
-.btn {
+button, .btn {
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
 
@@ -361,8 +327,7 @@ ul {
   list-style-type: none;
 }
 
-button,
-*:focus {
+button, *:focus {
   color: var(--primary-color);
 }
 
@@ -374,32 +339,24 @@ a:visited {
   color: var(--dark-primary);
 }
 
-a,
-button,
-*:focus {
+a, button, *:focus {
   box-shadow: none !important;
   cursor: pointer;
   outline: none;
 }
 
-a:hover,
-a:focus,
-a:active {
+a:hover, a:focus, a:active {
   text-decoration: none !important;
   color: #555;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
+input:focus, textarea:focus, select:focus {
   outline: none !important;
   box-shadow: none !important;
   border: solid 2px var(--primary) !important;
 }
 
-.ng-valid[required],
-.ng-valid.required,
-.ng-valid:not(form) {
+.ng-valid[required], .ng-valid.required, .ng-valid:not(form) {
   border-left: 5px solid var(--valid);
   /* green */
 }
@@ -414,21 +371,33 @@ select:focus {
   border: none !important;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1023.98px) {
   .btn-big {
     padding: 10px 20px !important;
   }
 }
 
+/*
+.species b, .infos b, .obs-added p:first-of-type(1), #photo.inputfile {
+  overflow: hidden;
+  white-space: nowrap;
+} */
+
+/* needs px constraints, pfff
+text-overflow: ellipsis !important;
+*/
+
 /* scroll bar theming */
 
 /* firefox */
+
 * {
   scrollbar-color: var(--primary) var(--secondary-color);
   /* scrollbar-width: thin; */
 }
 
 /* blink scroll bar custom design */
+
 ::-webkit-scrollbar-thumb {
   background: var(--primary);
   width: 10px;
@@ -447,12 +416,11 @@ select:focus {
 /* FIREFOX FIX OF UGLY SELECT BOXES
   kudos https://github.com/twbs/bootstrap/issues/16201#issuecomment-498358474
  */
+
 @supports (-moz-appearance: none) {
   select {
     -moz-appearance: none !important;
-    background: transparent
-      url('data:image/gif;base64,R0lGODlhBgAGAKEDAFVVVX9/f9TU1CgmNyH5BAEKAAMALAAAAAAGAAYAAAIODA4hCDKWxlhNvmCnGwUAOw==')
-      right center no-repeat !important;
+    background: transparent url('data:image/gif;base64,R0lGODlhBgAGAKEDAFVVVX9/f9TU1CgmNyH5BAEKAAMALAAAAAAGAAYAAAIODA4hCDKWxlhNvmCnGwUAOw==') right center no-repeat !important;
     background-position: calc(100% - 5px) center !important;
   }
 }

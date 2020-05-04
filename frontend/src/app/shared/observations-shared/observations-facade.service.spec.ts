@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
 
 import { ObservationsFacade } from './observations-facade.service';
@@ -10,7 +10,7 @@ describe('ObservationsFacade', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [BrowserTransferStateModule, HttpClientTestingModule],
-      providers: [ObservationsFacade],
+      providers: [ObservationsFacade]
     }).compileComponents();
   });
 

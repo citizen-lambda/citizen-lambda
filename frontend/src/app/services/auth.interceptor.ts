@@ -26,7 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private router: Router
   ) {}
 
-  addToken(request: HttpRequest<any>, token: string): HttpRequest<any> {
+  addToken(request: HttpRequest<any>, token: string | null): HttpRequest<any> {
     if (token) {
       return request.clone({
         setHeaders: {
@@ -46,20 +46,25 @@ export class AuthInterceptor implements HttpInterceptor {
 
       return this.auth.performTokenRefresh().pipe(
         mergeMap((data: TokenRefresh) => {
-          if (data && !!data.access_token) {
+          if (data?.access_token.length > 0) {
             localStorage.setItem('access_token', data.access_token);
             this.token$.next(data.access_token);
             const clone = this.addToken(request, data.access_token);
             return next.handle(clone);
           }
           this.router.navigate(['/home']);
+          console.error('InvalidTokenError');
           return from(this.auth.logout());
         }),
         catchError(error => {
-          console.error(`[AuthInterceptor.performTokenRefresh] error "${error}"`);
+          console.error('[AuthInterceptor.performTokenRefresh] error', error);
           // this.errorHandler.handleError(error);
-          this.router.navigate(['/home']);
-          return from(this.auth.logout());
+          try {
+            this.auth.logout();
+          } catch (error) {
+            this.auth.clearIdentity();
+          }
+          return of(error);
         }),
         finalize(() => {
           this.refreshing = false;
@@ -80,7 +85,8 @@ export class AuthInterceptor implements HttpInterceptor {
       error
     );
     this.errorHandler.handleError(error);
-    return from(this.router.navigateByUrl('/home'));
+    this.router.navigateByUrl('/home');
+    return of(error).toPromise();
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -96,49 +102,42 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     // access_token renewal 2min before expiration if interacting with backend api.
-    const secondsToExpiration = this.auth.tokenExpiration(
-      // tslint:disable-next-line: no-non-null-assertion
-      this.auth.getAccessToken()!
-    );
+    const secondsToExpiration = this.auth.tokenExpiration(this.auth.getAccessToken());
     // console.debug(`secs to exp: ${secondsToExpiration}`);
     if (secondsToExpiration && secondsToExpiration <= 120.0) {
       return this.handle401(request, next);
     }
 
-    return (
-      next
-        // tslint:disable-next-line: no-non-null-assertion
-        .handle(this.addToken(request, this.auth.getAccessToken()!))
-        .pipe(
-          catchError((error: HttpErrorResponse) => {
-            if (error.error instanceof ProgressEvent) {
-              this.errorHandler.handleError(error);
-            } else if (!(error.error instanceof ErrorEvent)) {
-              // api call failure response
-              switch (error.status) {
-                case 400:
-                case 422:
-                  return this.handle400(error);
-                case 401:
-                  return this.handle401(request, next);
-                default:
-                  /*
+    return next.handle(this.addToken(request, this.auth.getAccessToken())).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.error instanceof ProgressEvent) {
+          this.errorHandler.handleError(error);
+        }
+        if (!(error.error instanceof ErrorEvent)) {
+          // api call failure response
+          switch (error.status) {
+            case 400:
+            case 422:
+              return this.handle400(error);
+            case 401:
+              return this.handle401(request, next);
+            default:
+              /*
                   When the flask backend is in debug mode ,
                   no cors header is returned upon error so
                   error.status=0, error.statusText="Unknown Error" and
                   error.message="Http failure response for (unknown url): 0 Unknown Error".
                   See comment in backend/server.py below flask_cors init.
                   */
-                  if (error.status !== 0) {
-                    this.errorHandler.handleError(error);
-                  }
+              if (error.status !== 0) {
+                this.errorHandler.handleError(error);
               }
-            }
-            console.error(error);
-            // return from(this.router.navigateByUrl('/404'));
-            return of(error);
-          })
-        )
+          }
+        }
+        console.error(error);
+        // return from(this.router.navigateByUrl('/404'));
+        return of(error);
+      })
     );
   }
 }

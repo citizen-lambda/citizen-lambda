@@ -1,27 +1,27 @@
 import {
   Component,
-  OnInit,
   ViewEncapsulation,
   ChangeDetectionStrategy,
   AfterViewInit,
   OnDestroy,
-  Input,
+  Input
 } from '@angular/core';
 
 import { AnchorNavigationDirective } from '../../../helpers/anav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, fromEvent } from 'rxjs';
 import { throttleTime, map, filter, takeUntil } from 'rxjs/operators';
+
 import { Program } from '../../../features/programs/programs.models';
 
 @Component({
   selector: 'app-program-content',
   templateUrl: './program-content.component.html',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProgramContentComponent extends AnchorNavigationDirective
-  implements OnInit, AfterViewInit, OnDestroy {
+  implements AfterViewInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
   @Input() program!: Program;
 
@@ -29,9 +29,7 @@ export class ProgramContentComponent extends AnchorNavigationDirective
     super(router, route);
   }
 
-  ngOnInit() {}
-
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     // todo: move to directive and make the <p> tag an <article>
     const element: HTMLElement | null = document.querySelector(
       'app-program-content .program-content > article'
@@ -46,11 +44,11 @@ export class ProgramContentComponent extends AnchorNavigationDirective
             ? 'top'
             : null
         ),
-        filter((reached) => reached !== null),
+        filter(reached => reached !== null),
         takeUntil(this.unsubscribe$)
       );
 
-      const swapClasses = (state: 'top' | 'bottom', e: HTMLElement) => {
+      const swapClasses = (state: 'top' | 'bottom', e: HTMLElement): void => {
         switch (state) {
           case 'bottom':
             e.classList.remove('bottom-edge-shadow');
@@ -63,11 +61,11 @@ export class ProgramContentComponent extends AnchorNavigationDirective
         }
       };
 
-      scroll$.subscribe((reached) => swapClasses(<'top' | 'bottom'>reached, element));
+      scroll$.subscribe(reached => swapClasses(reached as 'top' | 'bottom', element));
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

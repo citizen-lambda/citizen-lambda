@@ -2,7 +2,7 @@
   --section-margin-bottom: 20px;
 }
 
-app-greeter > section {
+app-greeter>section {
   display: grid !important;
   grid-template-rows: min-content max-content min-content;
   height: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
@@ -10,50 +10,34 @@ app-greeter > section {
   margin-bottom: var(--section-margin-bottom);
 }
 
-app-greeter > section > :before {
+app-greeter>section> :before {
   content: ' ';
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
   left: 0;
-  background: -moz-linear-gradient(
-    top,
-    rgba(0, 0, 0, 0) 3%,
-    rgba(0, 0, 0, 0.393) 99%,
-    rgba(0, 0, 0, 0.452) 100%
-  );
-  background: -webkit-linear-gradient(
-    top,
-    rgba(0, 0, 0, 0) 3%,
-    rgba(0, 0, 0, 0.393) 99%,
-    rgba(0, 0, 0, 0.452) 100%
-  );
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 3%,
-    rgba(0, 0, 0, 0.393) 99%,
-    rgba(0, 0, 0, 0.452) 100%
-  );
+  background: -moz-linear-gradient( top, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
+  background: -webkit-linear-gradient( top, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
+  background: linear-gradient( to bottom, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.393) 99%, rgba(0, 0, 0, 0.452) 100%);
 }
 
-app-greeter > section > a[role='button'] {
+app-greeter>section>a[role='button'] {
   position: absolute;
   bottom: 100px;
   right: 100px;
   background-color: var(--primary);
 }
 
-section#programs,
-section#program {
+section#programs, section#program {
   width: 100%;
   position: relative;
   background-color: var(--secondary-color);
 }
 
-section#program {
+/* section#programs {
   height: calc(100vh - var(--router-outlet-offset));
-}
+} */
 
 section.row {
   width: 100%;
@@ -61,13 +45,7 @@ section.row {
   margin-right: 0px;
 }
 
-#slide {
-  min-height: inherit !important;
-  /* section.row:not(:last-of-type) {} */
-  margin-bottom: var(--section-margin-bottom);
-}
-
-#slider h2 {
+#programs-carousel h2 {
   position: absolute;
   top: 10px;
   left: 50px;
@@ -78,7 +56,7 @@ section.row {
   font-size: 20px;
 }
 
-#slider h2:before {
+#programs-carousel h2:before {
   content: ' ';
   position: absolute;
   width: 40px;
@@ -87,36 +65,21 @@ section.row {
   background-color: var(--ternary-color);
 }
 
-#slider .carousel-text-container {
-  position: relative !important;
-  width: 100%;
-  max-width: inherit !important;
-  /* position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0; */
-  /* display: flex;
-  align-items: center;
-  max-width: 80ch; */
-}
-
-#slider .carousel-text {
+#programs-carousel {
   background-color: var(--primary-color);
-  padding: 35px 20px 35px 35px;
-  min-width: 450px;
-  max-height: 80%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
-#slider .carousel-text h3 {
+.programs-carousel-img-wrapper img {
+  height: calc(100vh - var(--router-outlet-offset));
+  object-fit: cover;
+}
+
+#programs-carousel .carousel-caption h3 {
   font-family: 'Satisfy';
-  color: var(--ternary);
+  color: var(--ternary-color);
 }
 
-#slider .carousel-text > p {
+#programs-carousel .carousel-caption>p {
   font-style: italic;
   font-size: 1em;
 }
@@ -131,13 +94,6 @@ section.row {
   -webkit-box-shadow: inset 0 3px 3px -3px #00a99d48;
   -moz-box-shadow: inset 0 3px 3px -3px #00a99d48;
   box-shadow: inset 0 3px 3px -3px #00a99d48;
-}
-
-#slider .carousel-text a {
-  background-color: var(--secondary);
-  width: fit-content;
-  text-align: center;
-  margin: 0 auto;
 }
 
 .mobile-hidden {

@@ -15,7 +15,6 @@ import { CommittedComponent } from './steps/committed/committed.component';
 import { CongratsComponent } from './steps/congrats/congrats.component';
 import { RewardComponent } from './steps/reward/reward.component';
 
-
 export const MODAL_DEFAULTS = {
   size: 'xl',
   centered: true
@@ -28,14 +27,14 @@ export class ModalFlowService implements FlowService {
   modalRef!: NgbModalRef;
 
   constructor(private location: PlatformLocation, private modalService: NgbModal) {
-    location.onPopState(event => {
+    location.onPopState(() => {
       if (this.modalRef !== undefined) {
-          this.modalRef.close('HISTORYBACK');
+        this.modalRef.close('HISTORYBACK');
       }
-});
+    });
   }
 
-  open(content: ElementRef<any>, options: NgbModalOptions = {}) {
+  open(content: ElementRef<any>, options: NgbModalOptions = {}): void {
     this.modalRef = this.modalService.open(content, {
       ...MODAL_DEFAULTS,
       ...options
@@ -62,13 +61,14 @@ export class ModalFlowService implements FlowService {
     );
   }
 
-  next_(data: any) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  next_(data: any): void {}
 
-  close(data: string) {
+  close(data: string): void {
     this.modalRef.close(data);
   }
 
-  getFlowItems(initialState: any) {
+  getFlowItems(initialState: any): FlowItem[] {
     console.debug('getFlowItems', initialState);
     return [
       new FlowItem(OnboardComponent, { ...initialState, service: this }),

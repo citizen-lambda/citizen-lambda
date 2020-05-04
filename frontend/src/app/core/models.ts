@@ -1,16 +1,14 @@
 import { SafeHtml } from '@angular/platform-browser';
 
-export interface IAppConfig {
+export type CallbackFunctionVariadicAnyReturn = (...args: any[]) => any;
+
+export interface AppConfigInterface {
   appName: string;
   API_ENDPOINT: string;
-  // API_TAXHUB: "http://localhost:5000/api",
   URL_APPLICATION: string;
   FRONTEND: {
     PROD_MOD: boolean;
-    // MULTILINGUAL: false,
     DISPLAY_FOOTER: boolean;
-    DISPLAY_TOPBAR: boolean;
-    DISPLAY_SIDEBAR: boolean;
   };
   ALLOWED_EXTENSIONS: string[]; // TODO: validate media (ext?) for obs submission
   REWARDS?: true;
@@ -22,7 +20,7 @@ export interface IAppConfig {
     keywords?: {
       fr: string;
       en: string;
-    }
+    };
     author: string;
     [key: string]: any;
   };
@@ -53,12 +51,12 @@ export interface IAppConfig {
   };
   taxonSelectInputThreshold: number;
   taxonAutocompleteInputThreshold: number;
-  taxonAutocompleteFields: string[];
+  taxonAutocompleteFields: Partial<[keyof Taxon]>;
   program_list_sort: string;
   OBSERVATIONS_FEATURES?: {
     TAXONOMY: {
-      GROUP: Function;
-    }
+      GROUP: string | CallbackFunctionVariadicAnyReturn;
+    };
   };
 }
 
@@ -94,13 +92,12 @@ export interface LoggedUser {
   access_token: string;
   refresh_token: string;
   username: string;
-  status: string;
 }
 
 export type LoginPayload = Partial<LoggedUser>;
 
 export interface LogoutPayload {
-  msg: string;
+  message: string;
 }
 
 export interface JWT {
@@ -125,9 +122,25 @@ export interface TokenRefresh {
   access_token: string;
 }
 
+// TODO: rename, clashes with framework definition
 export interface UserInfo {
   message: string;
-  features?: any;
+  features?: {
+    id_role: number;
+    username: string;
+    stats: { [name: string]: string | number };
+    admin?: boolean;
+  };
+}
+
+export interface Badge {
+  alt: string;
+  img: string;
+}
+
+export interface RewardsApiPayload {
+  badges: Badge[];
+  rewards: string[];
 }
 
 // export class APIPayload<T> {
@@ -173,4 +186,3 @@ export interface Taxon {
 export interface Taxonomy {
   [key: string]: Taxon;
 }
-

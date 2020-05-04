@@ -1,16 +1,22 @@
-import { Component, Input, ViewEncapsulation, OnDestroy, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewEncapsulation,
+  OnDestroy,
+  OnInit,
+  Inject,
+  LOCALE_ID
+} from '@angular/core';
 
-import { IFlowComponent } from '../../flow/flow';
+import { FlowComponentInterface } from '../../flow/flow';
 import { AppConfig } from '../../../../../../conf/app.config';
-
-const anonymous = 'Anonyme';
 
 @Component({
   templateUrl: './congrats.component.html',
   styleUrls: ['./congrats.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class CongratsComponent implements IFlowComponent, OnInit, OnDestroy {
+export class CongratsComponent implements FlowComponentInterface, OnInit, OnDestroy {
   @Input() data: any;
   timeout: any;
   username = 'anonyme';
@@ -26,8 +32,10 @@ export class CongratsComponent implements IFlowComponent, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.username = localStorage.getItem('username') || 'anonymous';
+    this.username =
+      localStorage.getItem('username') || this.localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous';
     this.obs = this.data.obs.properties;
+    console.debug(this.obs, this.data);
     this.timeout = setTimeout(() => {
       this.data.next(this.data);
     }, 2000);

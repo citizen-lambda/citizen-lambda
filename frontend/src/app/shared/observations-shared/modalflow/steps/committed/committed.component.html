@@ -12,10 +12,7 @@
 </div>
 
 <div class="modal-body add-obs pb-0">
-  <app-obs-form
-    [data]="data"
-    (newObservation)="onNewObservation($event)"
-  ></app-obs-form>
+  <app-obs-form [data]="data" (newObservation)="observationSubmitted($event)"></app-obs-form>
 </div>
 
 <div class="modal-footer">

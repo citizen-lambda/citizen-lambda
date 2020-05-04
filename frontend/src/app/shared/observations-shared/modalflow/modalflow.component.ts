@@ -15,7 +15,6 @@ import { FlowItem } from './flow/flow-item';
 import { ModalFlowService } from './modalflow.service';
 import { Taxonomy } from '../../../core/models';
 
-
 @Component({
   selector: 'app-modalflow',
   templateUrl: './modalflow.component.html',
@@ -38,11 +37,12 @@ export class ModalFlowComponent {
 
   constructor(@Inject(LOCALE_ID) readonly localeId: string, public flowService: ModalFlowService) {}
 
-  clicked() {
+  clicked(): void {
     // console.debug('before getFlowitems:', this.data);
     this.flowitems = this.flowService.getFlowItems({ ...this.data });
     this.flowService.open(this.content);
   }
 
-  step(data: any) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  step(data: any): void {}
 }

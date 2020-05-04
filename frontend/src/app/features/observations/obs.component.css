@@ -1,5 +1,4 @@
 @import '../../../base.css';
-
 :root {
   --step: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
 }
@@ -15,21 +14,19 @@ app-observations div.container-fluid {
   background-size: cover;
 }
 
-section#program-teaser,
-section#program-content {
+section#program-teaser, section#program-content {
   margin-bottom: var(--section-margin-bottom);
   height: var(--step);
 }
 
-section#program-teaser > app-program-teaser,
-section#program-content > app-program-content {
+section#program-teaser>app-program-teaser, section#program-content>app-program-content {
   background-color: var(--primary-color);
   display: flex;
   height: 100%;
   width: 100%;
 }
 
-section#program-teaser > app-program-teaser > figure {
+section#program-teaser>app-program-teaser>figure {
   height: var(--step);
   display: grid;
   grid-template-columns: 1fr 1fr auto 1fr;
@@ -39,7 +36,7 @@ section#program-teaser > app-program-teaser > figure {
   width: inherit;
 }
 
-section#program-teaser > app-program-teaser > figure > img {
+section#program-teaser>app-program-teaser>figure>img {
   grid-column-start: 1;
   grid-column-end: 5;
   grid-row-start: 1;
@@ -50,7 +47,7 @@ section#program-teaser > app-program-teaser > figure > img {
   width: auto;
 }
 
-section#program-teaser > app-program-teaser > figure figcaption {
+section#program-teaser>app-program-teaser>figure figcaption {
   background: transparent;
   color: var(--primary-color);
   font-size: 1.5em;
@@ -63,7 +60,7 @@ section#program-teaser > app-program-teaser > figure figcaption {
   text-transform: uppercase;
 }
 
-section#program-teaser > app-program-teaser > figure > p {
+section#program-teaser>app-program-teaser>figure>p {
   background-color: var(--primary-color);
   color: var(--ternary);
   font-family: 'Satisfy';
@@ -75,7 +72,7 @@ section#program-teaser > app-program-teaser > figure > p {
   padding: 1.6em;
 }
 
-section#program-teaser > app-program-teaser > a.scroll {
+section#program-teaser>app-program-teaser>a.scroll {
   position: absolute;
   bottom: calc(var(--fold) - 40px);
   background-color: transparent !important;
@@ -88,7 +85,7 @@ section#program-teaser > app-program-teaser > a.scroll {
   width: fit-content;
 }
 
-section#program-teaser > app-program-teaser > a.scroll img {
+section#program-teaser>app-program-teaser>a.scroll img {
   height: auto;
   margin: auto;
   width: 15px;
@@ -98,7 +95,7 @@ section#program-content {
   background-color: var(--secondary-color);
 }
 
-section#program-content > app-program-content > article {
+section#program-content>app-program-content>article {
   font-size: calc(80% + 1vw);
   overflow: auto;
   padding: 1.2em;
@@ -107,7 +104,7 @@ section#program-content > app-program-content > article {
   margin: auto;
 }
 
-section#program-content > app-program-content > a.btn-big {
+section#program-content>app-program-content>a.btn-big {
   background-color: var(--secondary);
   border-radius: 0;
   opacity: 0.8;
@@ -118,7 +115,7 @@ section#program-content > app-program-content > a.btn-big {
   transform: translateX(-50%);
 }
 
-section#program-content > app-program-content > a.btn-big:hover {
+section#program-content>app-program-content>a.btn-big:hover {
   opacity: 1;
 }
 
@@ -178,24 +175,24 @@ input#slide-sidebar[type='checkbox'] {
   display: none;
 }
 
-input:checked ~ #obslist {
+input:checked~#obslist {
   display: none !important;
 }
 
-input:checked ~ #map app-obs-map #thematicMap {
+input:checked~#map app-obs-map #thematicMap {
   /* 10px scrollbar width ? */
   width: calc(100vw - var(--list-toggler-width) - 10px);
   grid-column-start: 2;
 }
 
-input:checked ~ label.toggle {
+input:checked~label.toggle {
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 1;
   grid-row-end: 1;
 }
 
-input:not(:checked) ~ #obslist {
+input:not(:checked)~#obslist {
   min-width: fit-content;
 }
 
@@ -227,7 +224,7 @@ input:not(:checked) ~ #obslist {
   transition: all 0.5s ease;
 }
 
-input:checked ~ .toggle i {
+input:checked~.toggle i {
   transform: rotate(180deg);
 }
 
@@ -239,8 +236,7 @@ input:checked ~ .toggle i {
   color: var(--primary-color);
 }
 
-.observations #map,
-.observations #obslist {
+.observations #map, .observations #obslist {
   padding: 0px;
 }
 
@@ -249,8 +245,7 @@ input:checked ~ .toggle i {
   right: 0px;
 }
 
-.observations #map .btn-group button,
-.observations #map .btn-group app-modalflow {
+.observations #map .btn-group button, .observations #map .btn-group app-modalflow {
   margin-left: 20px;
   opacity: 0.8;
   padding: 10px 30px;
@@ -259,8 +254,7 @@ input:checked ~ .toggle i {
 }
 
 @media screen and (max-width: 991px) {
-  .observations #map .btn-group button,
-  .observations #map .btn-group app-modalflow button {
+  .observations #map .btn-group button, .observations #map .btn-group app-modalflow button {
     border-radius: 50% !important;
     padding: 10px 15px !important;
   }
@@ -281,9 +275,7 @@ input:checked ~ .toggle i {
 #thematicMap {
   height: calc(100vh - var(--router-outlet-offset));
   /* supplementary 80px & 55px ? */
-  min-width: calc(
-    100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px + 55px
-  );
+  min-width: calc( 100vw - var(--list-toggler-width) - 80px - 40px - 36ch - 10px - 1px - 80px + 55px);
 }
 
 @media screen and (max-width: 768px) {
@@ -357,8 +349,7 @@ input:checked ~ .toggle i {
   background-color: rgba(254, 250, 245, 0.1);
 }
 
-.leaflet-popup-tip,
-.leaflet-popup-content-wrapper {
+.leaflet-popup-tip, .leaflet-popup-content-wrapper {
   border-radius: 0px !important;
 }
 
@@ -476,20 +467,17 @@ app-marker-popup .species {
   /* .leaflet-popup-content */
   line-height: 1.5 !important;
   /* .leaflet-container */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji' !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
   font-size: 1rem !important;
 }
 
-.species div b {
+.species b {
   font-size: 1em;
   font-weight: bolder;
   margin-bottom: 0px;
 }
 
-.species div p,
-.species div span {
+.species div p, .species div span {
   color: var(--primary);
   font-style: italic;
   margin-bottom: 0px;
@@ -517,13 +505,11 @@ a.leaflet-control-layers-toggle {
   height: 30px !important;
 }
 
-.leaflet-bottom.leaflet-left,
-.leaflet-bottom.leaflet-right {
+.leaflet-bottom.leaflet-left, .leaflet-bottom.leaflet-right {
   margin-bottom: 0;
 }
 
-.leaflet-bottom .leaflet-control-zoomviewer,
-.leaflet-bottom .leaflet-control-scale {
+.leaflet-bottom .leaflet-control-zoomviewer, .leaflet-bottom .leaflet-control-scale {
   margin-bottom: 0;
   margin-left: 0;
   max-height: fit-content;
@@ -533,8 +519,7 @@ a.leaflet-control-layers-toggle {
   font-size: 0.9em;
 }
 
-.leaflet-control-layers-base,
-.leaflet-control-layers-overlays {
+.leaflet-control-layers-base, .leaflet-control-layers-overlays {
   max-height: 12em;
   overflow-y: auto;
   padding: 0.4em;
@@ -562,8 +547,7 @@ a.leaflet-control-layers-toggle {
   overflow-y: auto;
 }
 
-.modal-body,
-.modal-content {
+.modal-body, .modal-content {
   border-radius: 0px !important;
 }
 
@@ -572,8 +556,7 @@ app-observations span.input-group-text {
   color: var(--primary-color);
 }
 
-.modal-body input.ng-valid,
-.modal-body input.pristine {
+.modal-body input.ng-valid, .modal-body input.pristine {
   border: solid 1px rgb(206, 212, 218);
 }
 
@@ -581,13 +564,11 @@ app-observations span.input-group-text {
   margin: 0 !important;
 }
 
-.modal-content .col-lg-6,
-.modal-content .col-lg-12 {
+.modal-content .col-lg-6, .modal-content .col-lg-12 {
   padding: 5px 5px;
 }
 
-.modal-body input::placeholder,
-.modal-body textarea::placeholder {
+.modal-body input::placeholder, .modal-body textarea::placeholder {
   color: #ccc;
 }
 
@@ -601,8 +582,7 @@ app-observations span.input-group-text {
   padding: 6px 30px;
 }
 
-.modal-footer button:hover,
-.modal-footer button:active {
+.modal-footer button:hover, .modal-footer button:active {
   background: transparent;
   color: var(--secondary);
   border: solid 1px;
@@ -663,8 +643,7 @@ form .d-inline-flex {
   margin-bottom: 0;
 }
 
-.add-obs select,
-.add-obs .d-inline-flex input {
+.add-obs select, .add-obs .d-inline-flex input {
   border: solid 1px var(--primary) !important;
 }
 
@@ -676,8 +655,7 @@ form .d-inline-flex {
   opacity: 0.7;
 }
 
-.obs-img:hover img,
-.obs-img.selected img {
+.obs-img:hover img, .obs-img.selected img {
   opacity: 1;
   cursor: pointer;
   box-shadow: 0 0 0 3px var(--secondary);
@@ -704,10 +682,7 @@ form .d-inline-flex {
   background: #a1a1a1;
 }
 
-.obs-add-img input:hover,
-.obs-add-img i:hover,
-.obs-add-img label:hover,
-.obs-add-img:hover {
+.obs-add-img input:hover, .obs-add-img i:hover, .obs-add-img label:hover, .obs-add-img:hover {
   cursor: pointer !important;
 }
 
@@ -738,6 +713,7 @@ form .d-inline-flex {
 }
 
 /* MODALE CONNEXION OU NON */
+
 .modal-body {
   color: var(--color);
 }
@@ -893,16 +869,12 @@ form .d-inline-flex {
   .sign {
     padding: 0px 40px 20px 40px !important;
   }
-
-  .obs-img span,
-  .obs-img img {
+  .obs-img span, .obs-img img {
     opacity: 1;
   }
-
   .observations {
     height: inherit;
   }
-
   .leaflet-touch .leaflet-control-attribution {
     display: none;
   }
@@ -912,15 +884,12 @@ form .d-inline-flex {
   :root {
     --obs-cell-width: calc(80px + 1em + 18ch);
   }
-
-  #list .species > .infos > p:last-of-type > span:last-of-type {
+  #list .species>.infos>p:last-of-type>span:last-of-type {
     display: none;
   }
-
   .observations #map .btn-groups {
     right: 0px;
   }
-
   app-obs-map #thematicMap {
     width: 100%;
   }

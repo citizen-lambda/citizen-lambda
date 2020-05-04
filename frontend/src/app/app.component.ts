@@ -1,11 +1,11 @@
 import { Component, ViewEncapsulation, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 
-import { IAppConfig } from './core/models';
+import { AppConfigInterface } from './core/models';
 import { AppConfig } from '../conf/app.config';
 import { SeoService } from './services/seo.service';
 
-type AppConfigApp = Pick<IAppConfig, 'FRONTEND' | 'appName' | 'SEO'>;
+type AppConfigApp = Pick<AppConfigInterface, 'FRONTEND' | 'appName' | 'SEO'>;
 
 @Component({
   selector: 'app-root',
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.swUpdate.isEnabled) {
       this.swUpdate.available.subscribe(() => {
         if (confirm('New version available. Load new version ?')) {

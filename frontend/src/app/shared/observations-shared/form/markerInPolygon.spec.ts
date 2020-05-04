@@ -61,17 +61,21 @@ function testMarkerInPolygon() {
 
   const geom = testPolygon.features[0].geometry as Polygon;
   const [outer, inners] = [
-    L.polygon((geom.coordinates[0] as [number, number][]).map(([lng, lat]) => [
-      lat,
-      lng
-    ]) as L.LatLngExpression[]),
+    L.polygon(
+      (geom.coordinates[0] as [number, number][]).map(([lng, lat]) => [
+        lat,
+        lng
+      ]) as L.LatLngExpression[]
+    ),
     geom.coordinates
       .slice(1)
       .map(coords =>
-        L.polygon(((coords as [number, number][]).map(([lng, lat]) => [
-          lat,
-          lng
-        ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
+        L.polygon(
+          ((coords as [number, number][]).map(([lng, lat]) => [
+            lat,
+            lng
+          ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[]
+        )
       )
   ];
   return points.map(feature => {
@@ -86,9 +90,9 @@ function testMarkerInPolygon() {
       inners.some(markerInPolygon(marker))
     );
     */
-    // tslint:disable-next-line: no-non-null-assertion
-    return `${feature.properties!.inside} === ${markerInPolygon(marker)(outer) &&
-      !inners.some(markerInPolygon(marker))}`;
+    return `${feature.properties?.inside} === ${
+      markerInPolygon(marker)(outer) && !inners.some(markerInPolygon(marker))
+    }`;
   });
 }
 
@@ -161,24 +165,24 @@ function testMarkerInMultiPolygon() {
   const geom = testPolygon.features[0].geometry as MultiPolygon;
   const polySet = geom.coordinates.map(polys => [
     {
-      outer: L.polygon((polys[0] as [number, number][]).map(([lng, lat]) => [
-        lat,
-        lng
-      ]) as L.LatLngExpression[]),
+      outer: L.polygon(
+        (polys[0] as [number, number][]).map(([lng, lat]) => [lat, lng]) as L.LatLngExpression[]
+      ),
       inners: polys
         .slice(1)
         .map(coords =>
-          L.polygon(((coords as [number, number][]).map(([lng, lat]) => [
-            lat,
-            lng
-          ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[])
+          L.polygon(
+            ((coords as [number, number][]).map(([lng, lat]) => [
+              lat,
+              lng
+            ]) as L.LatLngExpression[]).reverse() as L.LatLngExpression[]
+          )
         )
     }
   ]);
 
   return points.map(feature => {
-    // tslint:disable-next-line: no-non-null-assertion
-    const inside = feature.properties!.inside;
+    const inside = feature.properties?.inside;
     const marker = L.marker([
       (feature.geometry as Point).coordinates[1],
       (feature.geometry as Point).coordinates[0]

@@ -6,6 +6,7 @@ import 'zone.js/dist/zone-node';
 
 import { ngExpressEngine } from '@nguniversal/express-engine';
 // import * as express from 'express';
+// tslint:disable-next-line: no-var-requires
 const express = require('express');
 import { join } from 'path';
 
@@ -63,9 +64,10 @@ export function app() {
 
   // All regular routes use the Universal engine
   server.get('*', (req: any, res: any) => {
-    const index = req.baseUrl !== '' && existsSync(join(distFolder, req.baseUrl))
-    ? join(distFolder, req.baseUrl, 'index.html')
-    : join(distFolder, 'index.html');
+    const index =
+      req.baseUrl !== '' && existsSync(join(distFolder, req.baseUrl))
+        ? join(distFolder, req.baseUrl, 'index.html')
+        : join(distFolder, 'index.html');
     res.render(index, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
   });
 

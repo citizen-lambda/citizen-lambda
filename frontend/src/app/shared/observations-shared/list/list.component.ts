@@ -9,18 +9,16 @@ import {
   ViewEncapsulation,
   Inject,
   LOCALE_ID
-  // HostListener
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { Taxonomy } from '../../../core/models';
-import { IAppConfig } from '../../../core/models';
+import { AppConfigInterface, Taxonomy } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
 import { TaxonomyService } from '../../../services/taxonomy.service';
 
-type AppConfigObsList = Pick<IAppConfig, 'API_ENDPOINT'>;
+type AppConfigObsList = Pick<AppConfigInterface, 'API_ENDPOINT'>;
 
 @Component({
   selector: 'app-obs-list',
@@ -40,23 +38,20 @@ export class ObsListComponent implements OnChanges {
 
   constructor(@Inject(LOCALE_ID) public localeId: string, public taxonService: TaxonomyService) {}
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (this.observations && changes.observations && changes.observations.currentValue) {
       this.observations$.next(this.observations.features);
     }
     if (this.taxonomy && changes.taxonomy && changes.taxonomy.currentValue) {
-      // console.debug(this.taxonomy[60038]);
-      // this.taxonService.getTaxon(60038).subscribe(t => console.debug(`taxon: ${t.nom_vern}`));
       this.taxonService.taxa = { ...this.taxonService.taxa, ...this.taxonomy };
     }
   }
 
-  onSelected(feature: any): void {
+  onSelected(feature: Feature): void {
     this.obsSelected.emit(feature);
   }
 
-  trackByObs(_index: number, obs: Feature & { properties: { [key: string]: any } }): number {
-    return obs.properties.id_observation;
+  trackByObs(_index: number, obs: Feature): number {
+    return obs.properties?.id_observation;
   }
-
 }

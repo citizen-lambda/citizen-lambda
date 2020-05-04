@@ -1,7 +1,12 @@
-export const groupBy = (arr: any[], criteria: Function | string): {[key: string]: any} => {
+import type { CallbackFunctionVariadicAnyReturn } from '../core/models';
+
+export const groupBy = (
+  arr: any[],
+  criteria: string | CallbackFunctionVariadicAnyReturn
+): { [key: string]: any } => {
   return arr.reduce((obj, item) => {
     const key = typeof criteria === 'function' ? criteria(item) : item[criteria];
-    if (!obj.hasOwnProperty(key)) {
+    if (!(key in obj)) {
       obj[key] = [];
     }
     obj[key].push(item);

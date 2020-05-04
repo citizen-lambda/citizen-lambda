@@ -8,9 +8,8 @@ describe('WebshareComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WebshareComponent ]
-    })
-    .compileComponents();
+      declarations: [WebshareComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

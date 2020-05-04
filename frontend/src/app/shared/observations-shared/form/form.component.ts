@@ -12,9 +12,9 @@ import {
   OnChanges,
   AfterViewInit
 } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged } from 'rxjs/operators';
 
@@ -25,24 +25,27 @@ import EXIF from 'exif-js';
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { AppConfig } from '../../../../conf/app.config';
-import { IAppConfig } from '../../../core/models';
+import { AppConfigInterface, Taxonomy, Taxon } from '../../../core/models';
 import {
   ObsPostResponse,
   ObsPostResponsePayload
 } from '../../../features/observations/observation.model';
-import { Taxonomy, Taxon } from '../../../core/models';
 import { geometryValidator, ObsFormMapComponent } from './obs-form-map-component';
 
+type AppConfigObsForm = Pick<AppConfigInterface, 'API_ENDPOINT'>;
+type CompletionResults = {
+  [name: string]: string;
+}[];
 
 export function ngbDateMaxIsToday(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
+  return (control: AbstractControl): { [key: string]: boolean } | null => {
     const today = new Date();
     const selected = NgbDate.from(control.value);
     if (!selected) {
       return { 'Null date': true };
     }
-    const date_impl = new Date(selected.year, selected.month - 1, selected.day);
-    return date_impl > today ? { 'Parsed a date in the future': true } : null;
+    const dateImplementation = new Date(selected.year, selected.month - 1, selected.day);
+    return dateImplementation > today ? { 'Parsed a date in the future': true } : null;
   };
 }
 
@@ -59,8 +62,6 @@ export const normalizeNgbDateControlValue = (date: NgbDate): string => {
     throw new Error('invalid date value');
   }
 };
-
-type AppConfigObsForm = Pick<IAppConfig, 'API_ENDPOINT'>;
 
 @Component({
   selector: 'app-obs-form',
@@ -86,7 +87,7 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
   taxa: Taxon[] = [];
   species: { [name: string]: string }[] = [];
   taxaCount = 0;
-  selectedTaxon: any;
+  selectedTaxon: { item: Partial<Taxon> & { icon: string } } | Partial<Taxon> | undefined;
   today = new Date();
   obsForm = new FormGroup({
     cd_nom: new FormControl('', Validators.required),
@@ -115,15 +116,14 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
   taxonAutocompleteMaxResults = 10;
   autocomplete = 'isOff';
   hasZoomAlert: boolean | undefined;
-  zoomAlertTimeout: any;
 
+  disabledDates = (date: NgbDate): boolean => {
+    const dateImplementation = new Date(date.year, date.month - 1, date.day);
+    return dateImplementation > this.today;
+    // tslint:disable-next-line: semicolon
+  };
 
-  disabledDates = (date: NgbDate, _current: { month: number }) => {
-    const date_impl = new Date(date.year, date.month - 1, date.day);
-    return date_impl > this.today;
-  }
-
-  inputAutoCompleteSearch = (text$: Observable<string>) =>
+  inputAutoCompleteSearch = (text$: Observable<string>): Observable<CompletionResults> =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
@@ -131,36 +131,42 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
         term === '' // term.length < n
           ? []
           : this.species
-            .filter(
-              value => new RegExp(term, 'gi').test(value['name'])
-              // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
-            )
-            .slice(0, this.taxonAutocompleteMaxResults)
+              .filter(
+                value => new RegExp(term, 'gi').test(value['name'])
+                // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
+              )
+              .slice(0, this.taxonAutocompleteMaxResults)
       )
       // tslint:disable-next-line: semicolon
     );
 
-  inputAutoCompleteFormatter = (x: { name: string }) => x.name;
+  inputAutoCompleteFormatter = (x: { name: string }): string => x.name;
 
-  inputAutoCompleteSetup() {
+  inputAutoCompleteSetup(): void {
+    function prop<T, K extends keyof T>(obj: T, key: K): T[K] {
+      return obj[key];
+    }
     for (const taxon of this.taxa) {
-      if (!!!taxon) {
-        console.debug('no taxon for inputAutoCompleteSetup().');
+      if (!taxon) {
+        const msg = 'No taxon for inputAutoCompleteSetup().';
+        console.error(msg);
+        alert(msg);
         return;
       }
       let str = '';
-      const fields: { [key: string]: string } = {};
-      for (const field of this.taxonAutocompleteFields) {
+      const fields: { [key: string]: Partial<Taxon[keyof Taxon]> } = {};
+      for (const field of this.taxonAutocompleteFields as [keyof Taxon]) {
         if (field in taxon) {
-          fields[field] = (taxon as any)[field] as string;
-          str += ` \n${ (taxon as any)[field] }`;
+          const val = prop(taxon, field);
+          fields[field] = val;
+          str += ` \n${val}`;
         }
       }
       this.species.push({
         ...fields,
         name: str,
         cd_nom: taxon.cd_nom.toString(),
-        icon: !!taxon.media.length ? taxon.media[0].thumb_url : 'assets/default_taxon.jpg'
+        icon: taxon.media?.length > 0 ? taxon.media[0].thumb_url : 'assets/default_taxon.jpg'
       });
     }
     this.autocomplete = 'isOn';
@@ -170,24 +176,14 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     @Inject(LOCALE_ID) readonly localeId: string,
     private sanitizer: DomSanitizer,
     private client: HttpClient
-  ) { }
+  ) {}
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes.data && changes.data.currentValue && this.data) {
       console.debug('form onChanges:', this.data);
 
-      if (
-        this.data.program &&
-        this.data.program.features &&
-        !!this.data.program.features.length &&
-        this.data.program.features[0] &&
-        this.data.program.features[0].properties &&
-        // tslint:disable-next-line: no-non-null-assertion
-        !!this.data.program.features[0].properties!.id_program
-      ) {
-        // tslint:disable-next-line: no-non-null-assertion
-        this.program_id = this.data.program.features[0].properties!.id_program;
-        // console.debug('program_id:', this.program_id);
+      if (this.data.program?.features[0].properties?.id_program) {
+        this.program_id = this.data.program.features[0].properties.id_program;
       }
 
       if (this.data.taxa) {
@@ -203,40 +199,37 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (this.data && this.data.coords) {
       this.obsForm.patchValue({ geometry: this.data.coords });
     }
   }
 
-  onTaxonSelected(taxon: Taxon | any): void {
-    console.debug(taxon);
-    this.selectedTaxon = taxon;
-    let patch = 0;
-    if (Object.keys(taxon).indexOf('taxref') >= 0) {
-      patch = taxon.taxref.cd_nom;
-    } else if (Object.keys(taxon).indexOf('cd_nom') >= 0) {
-      // still need this?!
-      patch = taxon.cd_nom;
-    }
-    if (!!patch) {
-      this.obsForm.controls['cd_nom'].patchValue(taxon.taxref['cd_nom']);
+  onTaxonSelected(selected: { item: Partial<Taxon> & { icon: string } } | Partial<Taxon>): void {
+    console.debug('onTaxonSelected', typeof selected, selected);
+    if ('item' in selected) {
+      // Taxon autocompleted input
+      this.selectedTaxon = selected.item;
+      this.obsForm.controls['cd_nom'].patchValue(selected.item.cd_nom);
+      // console.debug(selected.item.cd_nom);
+    } else {
+      // Taxon picker / image gallery
+      this.selectedTaxon = selected;
+      this.obsForm.controls['cd_nom'].patchValue(selected.cd_nom);
     }
   }
 
-  async onPhotoUpdate() {
+  async onPhotoUpdate(): Promise<void> {
     if (this.photo) {
       const files: FileList = this.photo.nativeElement.files;
-      if (!!files.length) {
+      if (files.length > 0) {
         this.photoFilename$.next(files[0].name);
-        // console.debug(files[0].name)
-        const file: Blob = files[0];
         this.imageBlobURL = this.sanitizer.bypassSecurityTrustResourceUrl(
           window.URL.createObjectURL(files[0])
         );
 
         const reader = new FileReader();
-        reader.addEventListener('load', event => {
+        reader.addEventListener('load', () => {
           try {
             const exifData = EXIF.readFromBinaryFile(reader.result);
             if (exifData.latitude && exifData.longitude) {
@@ -271,11 +264,10 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     );
   }
 
-  onMapClick(e: any) {
-    if (!!e.coords) {
-      this.obsForm.patchValue({ geometry: e.coords });
-    }
-    if (e.coords === undefined) {
+  onMapClick(event: { coords?: L.Point }): void {
+    if (event.coords) {
+      this.obsForm.patchValue({ geometry: event.coords });
+    } else {
       this.obsForm.patchValue({ geometry: undefined });
     }
   }
@@ -300,26 +292,26 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
 
     const geometry = this.obsForm.get('geometry');
     if (!geometry) {
-      throw new Error('form is missing required field geometry');
+      throw new Error('The required field "geometry" is missing.');
     }
     formData.append('geometry', JSON.stringify(geometry.value));
 
     const taxon = this.obsForm.get('cd_nom');
     if (!taxon) {
-      throw new Error('form is missing required field taxon');
+      throw new Error('The required field "taxon" is missing.');
     }
-    let cd_nom = Number.parseInt(taxon.value, 10);
-    if (isNaN(cd_nom)) {
-      cd_nom = Number.parseInt(taxon.value.cd_nom, 10);
-      if (!cd_nom) {
-        throw new Error('taxon value corrupted');
+    let taxonID = Number.parseInt(taxon.value, 10);
+    if (isNaN(taxonID)) {
+      taxonID = Number.parseInt(taxon.value.cd_nom, 10);
+      if (!taxonID) {
+        throw new Error('The taxon identifier is corrupt.');
       }
     }
-    formData.append('cd_nom', cd_nom.toString());
+    formData.append('cd_nom', taxonID.toString());
 
     const obsDateControlValue = NgbDate.from(this.obsForm.controls.date.value);
     if (!obsDateControlValue) {
-      throw new Error('form is missing required field date');
+      throw new Error('The required field "date" is missing.');
     }
     const obsDate = normalizeNgbDateControlValue(obsDateControlValue);
     if (!obsDate) {
@@ -330,18 +322,14 @@ export class ObsFormComponent implements OnChanges, AfterViewInit {
     for (const item of ['count', 'comment', 'id_program']) {
       const c = this.obsForm.get(item);
       if (!c) {
-        throw new Error(`form is missing field ${ c }`);
+        throw new Error(`The required field "${c}" is missing.`);
       }
-      if (item !== 'comment' && !!!c.value) {
-        throw new Error(`form is missing required field ${ c }`);
+      if (item !== 'comment' && !c.value) {
+        throw new Error(`The required field "${c}" is missing.`);
       }
       formData.append(item, c.value);
     }
 
-    return this.client.post<ObsPostResponse>(
-      `${ this.URL }/observations`,
-      formData,
-      httpOptions
-    );
+    return this.client.post<ObsPostResponse>(`${this.URL}/observations`, formData, httpOptions);
   }
 }

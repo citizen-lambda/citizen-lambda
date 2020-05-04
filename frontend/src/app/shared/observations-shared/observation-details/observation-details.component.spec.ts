@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
 
-import { NgbModule, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ObservationDetailsComponent } from './observation-details.component';
 import { ObservationsFacade } from '../observations-facade.service';
@@ -18,10 +18,10 @@ describe('ObservationDetailsComponent', () => {
         RouterTestingModule,
         BrowserTransferStateModule,
         HttpClientTestingModule,
-        NgbModule,
+        NgbModule
       ],
       declarations: [ObservationDetailsComponent],
-      providers: [ObservationsFacade],
+      providers: [ObservationsFacade]
     }).compileComponents();
   }));
 

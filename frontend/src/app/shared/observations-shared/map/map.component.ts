@@ -23,9 +23,8 @@ import 'leaflet-fullscreen';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
 import 'leaflet.locatecontrol';
-import localForage from 'localforage';
 import 'leaflet-offline';
-// L.Control.MousePosition
+import localForage from 'localforage';
 
 import { MAP_CONFIG } from '../../../../conf/map.config';
 import { Taxonomy, Taxon } from '../../../core/models';
@@ -33,40 +32,73 @@ import { ObservationData } from '../../../features/observations/observation.mode
 import { MarkerPopupComponent } from './marker-popup.component';
 
 declare module 'leaflet' {
+  /*
+    "leaflet-gesture-handling": "^1.1.8"
+  */
   interface MapOptions {
     gestureHandling?: boolean;
   }
-  export class TileLayerOffline extends L.TileLayer {
-    constructor(urlTemplate: string, tilesDb: Object, options?: L.TileLayerOptions);
-    initialize(url: String, tilesDb: Object, options: Object): void;
-    createTile(coords: Object, done: Function): HTMLElement;
-    getTileUrl(coords: L.Coords): string;
-    getTileUrls(bounds: Object, zoom: Number): Array<any>;
-  }
-  // export function tileLayer(urlTemplate: string, options?: L.TileLayerOptions): L.TileLayer;
-  export namespace tileLayer {
-    function offline(url: String, tilesDb: Object, options: Object): TileLayerOffline;
-    /* export class Offline extends L.TileLayer {
-      constructor(urlTemplate: string, tilesDb: Object, options?: L.TileLayerOptions);
-      initialize(url: String, tilesDb: Object, options: Object): void;
-      createTile(coords: Object, done: Function): HTMLElement;
-      getTileUrl(coords: Object): String;
-      getTileUrls(bounds: Object, zoom: Number): Array<any>;
-    } */
-  }
-  export class ControlOffline extends L.Control {
-    constructor(baseLayer: Object, tilesDb: Object, options: Object);
-    initialize(baseLayer: Object, tilesDb: Object, options: Object): void;
-    onAdd(map: Object): HTMLElement;
-  }
+
+  /*
+    "@types/leaflet.locatecontrol": "^0.60.7"
+    "leaflet.locatecontrol": "^0.71.1"
+  */
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Control {
     interface LocateOptions {
-      getLocationBounds?: Function;
+      getLocationBounds?: (locationEvent: L.LocationEvent) => void;
     }
   }
-  export function control(): L.ControlOffline;
+  /*
+    "@types/leaflet-fullscreen": "^1.0.4"
+    "leaflet-fullscreen": "^1.0.2"
+  */
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Control {
+    interface Fullscreen {
+      addTo(map: object): L.Control.Fullscreen;
+    }
+    interface FullscreenOptions extends ControlOptions {
+      pseudoFullscreen?: boolean;
+      title?: {
+        false?: string;
+        true?: string;
+      };
+    }
+  }
+  export class Fullscreen extends L.Control {
+    constructor(options?: L.Control.FullscreenOptions);
+    onAdd(map: object): HTMLElement;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   export namespace control {
-    function offline(baseLayer: Object, tilesDb: Object, options: Object): ControlOffline;
+    function fullscreen(options: L.Control.FullscreenOptions): L.Control.Fullscreen;
+  }
+
+  /*
+    "leaflet-offline": "^1.1.0"
+  */
+  // tslint:disable-next-line: max-classes-per-file
+  export class TileLayerOffline extends L.TileLayer {
+    constructor(urlTemplate: string, tilesDb: object, options?: L.TileLayerOptions);
+    initialize(url: string, tilesDb: object, options: object): void;
+    createTile(coords: object, done: () => void): HTMLElement;
+    getTileUrl(coords: L.Coords): string;
+    getTileUrls(bounds: object, zoom: number): string[];
+  }
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  export namespace tileLayer {
+    function offline(url: string, tilesDb: object, options: object): TileLayerOffline;
+  }
+  // tslint:disable-next-line: max-classes-per-file
+  export class ControlOffline extends L.Control {
+    constructor(baseLayer: object, tilesDb: object, options: object);
+    initialize(baseLayer: object, tilesDb: object, options: object): void;
+    onAdd(map: object): HTMLElement;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  export namespace control {
+    function offline(baseLayer: object, tilesDb: object, options: object): ControlOffline;
   }
 }
 
@@ -78,11 +110,11 @@ export const ZoomViewer = L.Control.extend({
     container.style.background = 'rgba(255,255,255,0.5)';
     container.style.textAlign = 'center';
     container.className = 'leaflet-control-zoomviewer';
-    map.on('zoomstart zoom zoomend', _e => {
+    map.on('zoomstart zoom zoomend', () => {
       const z = Math.round(map.getZoom());
       gauge.innerHTML = `<span style="color:${
         z >= MAP_CONFIG.ZOOM_LEVEL_RELEVE ? 'var(--valid)' : 'var(--invalid)'
-        };">Zoom: ${ z }</span>`;
+      };">Zoom: ${z}</span>`;
     });
     container.appendChild(gauge);
 
@@ -91,25 +123,25 @@ export const ZoomViewer = L.Control.extend({
 });
 
 export const tilesDb = {
-  getItem: function (key: string) {
+  getItem(key: string): Promise<unknown> {
     return localForage.getItem(key);
   },
 
-  saveTiles: function (tileUrls: { key: string; url: string }[]) {
-    const self = this;
+  saveTiles(tileUrls: { key: string; url: string }[]): Promise<unknown[]> {
+    // const self = this;
 
     const promises = [];
 
     for (let i = 0; i < tileUrls.length; i++) {
       const tileUrl = tileUrls[i];
-      promises[i] = new Promise(function (resolve, reject) {
+      promises[i] = new Promise((resolve, reject) => {
         const request = new XMLHttpRequest();
         request.open('GET', tileUrl.url, true);
         request.responseType = 'blob';
-        request.onreadystatechange = function () {
+        request.onreadystatechange = (): void => {
           if (request.readyState === XMLHttpRequest.DONE) {
             if (request.status === 200) {
-              resolve(self._saveTile(tileUrl.key, request.response));
+              resolve(this._saveTile(tileUrl.key, request.response));
             } else {
               reject({
                 status: request.status,
@@ -125,17 +157,16 @@ export const tilesDb = {
     return Promise.all(promises);
   },
 
-  clear: function () {
+  clear: (): Promise<void> => {
     return localForage.clear();
   },
 
-  _saveTile: function (key: string, value: any) {
-    return this._removeItem(key).then(function () {
-      return localForage.setItem(key, value);
-    });
+  async _saveTile<T>(key: string, value: T): Promise<T> {
+    await this._removeItem(key);
+    return localForage.setItem(key, value);
   },
 
-  _removeItem: function (key: string) {
+  _removeItem(key: string): Promise<void> {
     return localForage.removeItem(key);
   }
 };
@@ -149,18 +180,18 @@ export const conf = {
       subdomains: baseLayer['subdomains'] || '',
       maxZoom: baseLayer['maxZoom']
       // bounds?: <[number, number][]>baseLayer['bounds']
-    }) as any;
+    });
     return acc;
   }, {}),
-  DEFAULT_BASE_MAP: () => {
-    return !!MAP_CONFIG['DEFAULT_PROVIDER']
+  DEFAULT_BASE_MAP: (): L.TileLayer => {
+    return MAP_CONFIG['DEFAULT_PROVIDER']
       ? (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[MAP_CONFIG['DEFAULT_PROVIDER']]
       : (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[
-      Object.keys(conf.BASE_LAYERS)[
-      // tslint:disable-next-line: no-bitwise
-      (Math.random() * MAP_CONFIG['BASEMAPS'].length) >> 0
-      ]
-      ];
+          Object.keys(conf.BASE_LAYERS)[
+            // tslint:disable-next-line: no-bitwise
+            (Math.random() * MAP_CONFIG['BASEMAPS'].length) >> 0
+          ]
+        ];
   },
   CONTROL_ZOOM_POSITION: 'topright',
   CONTROL_BASE_LAYER_POSITION: 'topright',
@@ -169,30 +200,30 @@ export const conf = {
   CONTROL_GEOLOCATION_POSITION: 'topright',
   CONTROL_SCALE_POSITION: 'bottomleft',
   CONTROL_ZOOMVIEW_POSITION: 'bottomleft',
-  MARKER_ICON_NEW_OBS: () =>
+  MARKER_ICON_NEW_OBS: (): L.Icon =>
     L.icon({
       iconUrl: 'assets/pointer-blue2.png',
       iconSize: [33, 42],
       iconAnchor: [16, 42]
     }),
-  MARKER_ICON_OBS: () =>
+  MARKER_ICON_OBS: (): L.Icon =>
     L.icon({
       iconUrl: 'assets/pointer-green.png',
       iconSize: [33, 42],
       iconAnchor: [16, 42]
     }),
-  OBSERVATION_LAYER: () =>
+  OBSERVATION_LAYER: (): L.MarkerClusterGroup =>
     L.markerClusterGroup({
       iconCreateFunction: clusters => {
         const childCount = clusters.getChildCount();
         return conf.MARKER_ICON_CLUSTER(childCount);
       }
     }),
-  MARKER_ICON_CLUSTER: (childCount: number) => {
+  MARKER_ICON_CLUSTER: (childCount: number): L.DivIcon => {
     // preferences ?
     const qs = 10;
     const qm = 10;
-    const quantiles = (count: number) => {
+    const quantiles = (count: number): string => {
       let c = ' marker-cluster-';
       if (count < qs) {
         c += 'small';
@@ -204,12 +235,12 @@ export const conf = {
       return c;
     };
     return new L.DivIcon({
-      html: `<div><span>${ childCount }</span></div>`,
+      html: `<div><span>${childCount}</span></div>`,
       className: 'marker-cluster' + quantiles(childCount),
       iconSize: new L.Point(40, 40)
     });
   },
-  PROGRAM_AREA_STYLE: (_feature: Feature) => {
+  PROGRAM_AREA_STYLE: (): object => {
     return {
       fillColor: 'transparent',
       weight: 2,
@@ -220,6 +251,7 @@ export const conf = {
   }
 };
 
+// tslint:disable-next-line: max-classes-per-file
 @Component({
   selector: 'app-obs-map',
   template: `
@@ -240,7 +272,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input() program!: FeatureCollection;
   @Output() click: EventEmitter<L.Point> = new EventEmitter();
   @Output() obsSelected: EventEmitter<Feature> = new EventEmitter();
-  @Output() detailsRequested: EventEmitter<Feature> = new EventEmitter();
+  @Output() detailsRequested: EventEmitter<number> = new EventEmitter();
   options: any;
   layerControl!: L.Control.Layers;
   observationMap!: L.Map;
@@ -251,15 +283,15 @@ export class ObsMapComponent implements OnInit, OnChanges {
   newObsMarker: L.Marker | null = null;
   featureMarkers: {
     feature: Feature;
-    marker: L.Marker<any>;
+    marker: L.Marker;
   }[] = [];
   obsOnFocus: Feature | null = null;
-  zoomAlertTimeout: any;
+  zoomAlertTimeout: number | undefined;
   popupRef?: ComponentRef<MarkerPopupComponent>;
 
-  constructor(private injector: Injector, private resolver: ComponentFactoryResolver) { }
+  constructor(private injector: Injector, private resolver: ComponentFactoryResolver) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.options = conf;
     this.observationMap = L.map(this.map.nativeElement, {
       layers: [this.options.DEFAULT_BASE_MAP()], // TODO: add program overlay
@@ -268,7 +300,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     this.observationMap.whenReady(() => this.onMapReady());
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (this.observationMap && changes.program && changes.program.currentValue) {
       this.loadProgramArea();
     }
@@ -289,14 +321,14 @@ export class ObsMapComponent implements OnInit, OnChanges {
     // TODO: handle controls with conf & runtime
     this.observationMap.zoomControl.setPosition(this.options.CONTROL_ZOOM_POSITION);
 
-    (L.control as any)
-    ['fullscreen']({
-      position: this.options.CONTROL_FULLSCREEN_POSITION,
-      title: {
-        false: 'View Fullscreen',
-        true: 'Exit Fullscreen'
-      }
-    })
+    L.control
+      .fullscreen({
+        position: this.options.CONTROL_FULLSCREEN_POSITION,
+        title: {
+          false: 'View Fullscreen',
+          true: 'Exit Fullscreen'
+        }
+      })
       .addTo(this.observationMap);
 
     L.control
@@ -320,7 +352,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       tilesDb,
       {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
         subdomains: 'abc',
         minZoom: 13,
         maxZoom: 20,
@@ -332,12 +365,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
     const offlineControl = L.control.offline(offlineLayer, tilesDb, {
       saveButtonHtml: '<i class="fa fa-download" aria-hidden="true"></i>',
       removeButtonHtml: '<i class="fa fa-trash" aria-hidden="true"></i>',
-      confirmSavingCallback: function (nTilesToSave: number, continueSaveTiles: Function) {
+      confirmSavingCallback(nTilesToSave: number, continueSaveTiles: () => void) {
         if (window.confirm('Save ' + nTilesToSave + '?')) {
           continueSaveTiles();
         }
       },
-      confirmRemovalCallback: function (continueRemoveTiles: Function) {
+      confirmRemovalCallback(continueRemoveTiles: () => void) {
         if (window.confirm('Remove all the tiles?')) {
           continueRemoveTiles();
         }
@@ -349,33 +382,33 @@ export class ObsMapComponent implements OnInit, OnChanges {
     offlineLayer.addTo(this.observationMap);
     offlineControl.addTo(this.observationMap);
 
-    offlineLayer.on('offline:below-min-zoom-error', function () {
+    offlineLayer.on('offline:below-min-zoom-error', () => {
       alert('Can not save tiles below minimum zoom level.');
     });
 
-    offlineLayer.on('offline:save-start', function (data) {
+    offlineLayer.on('offline:save-start', data => {
       console.log(
         'Saving ' + (data as L.LeafletEvent & { nTilesToSave: number }).nTilesToSave + ' tiles.'
       );
     });
 
-    offlineLayer.on('offline:save-end', function () {
+    offlineLayer.on('offline:save-end', () => {
       alert('All the tiles were saved.');
     });
 
-    offlineLayer.on('offline:save-error', function (err) {
+    offlineLayer.on('offline:save-error', err => {
       console.error('Error when saving tiles: ' + err);
     });
 
-    offlineLayer.on('offline:remove-start', function () {
+    offlineLayer.on('offline:remove-start', () => {
       console.log('Removing tiles.');
     });
 
-    offlineLayer.on('offline:remove-end', function () {
+    offlineLayer.on('offline:remove-end', () => {
       alert('All the tiles were removed.');
     });
 
-    offlineLayer.on('offline:remove-error', function (err) {
+    offlineLayer.on('offline:remove-error', err => {
       console.error('Error when removing tiles: ' + err);
     });
   }
@@ -433,22 +466,22 @@ export class ObsMapComponent implements OnInit, OnChanges {
     }
   }
 
-  layerOptions() {
+  layerOptions(): L.GeoJSONOptions {
     this.featureMarkers = [];
     const observationLayerOptions: L.GeoJSONOptions = {
       // onEachFeature: (feature, layer) => {},
       pointToLayer: (feature, latlng): L.Marker => {
-        const marker: L.Marker<any> = L.marker(latlng, {
+        const marker: L.Marker = L.marker(latlng, {
           icon: conf.MARKER_ICON_OBS()
         });
-        marker.on('click', _ => {
+        marker.on('click', () => {
           this.obsSelected.emit(feature);
           this.showPopup(feature);
         });
         this.featureMarkers.push({
           // TODO: simplify marker collection refs handling
-          feature: feature,
-          marker: marker
+          feature,
+          marker
         });
         return marker;
       }
@@ -457,7 +490,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     return observationLayerOptions;
   }
 
-  getPopupContent(feature: Feature): any {
+  getPopupContent(feature: Feature): HTMLElement {
     if (this.popupRef) {
       this.popupRef.destroy();
       console.debug('destroyed popup');
@@ -466,8 +499,12 @@ export class ObsMapComponent implements OnInit, OnChanges {
     // tslint:disable-next-line: no-use-before-declare
     const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
     const component = factory.create(this.injector);
-    component.instance.data = { ...feature.properties } as Taxon & Partial<ObservationData>;
-    component.instance.detailsRequest.subscribe((data: any) => this.detailsRequested.emit(data));
+    component.instance.data = {
+      ...(feature.properties as Partial<Taxon> & Partial<ObservationData>)
+    };
+    component.instance.detailsRequest.subscribe((observationID: number) =>
+      this.detailsRequested.emit(observationID)
+    );
     component.changeDetectorRef.detectChanges();
     this.popupRef = component;
     return this.popupRef.location.nativeElement;
@@ -476,8 +513,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   showPopup(obs: Feature): void {
     this.obsOnFocus = obs;
     const marker = this.featureMarkers.find(
-      // tslint:disable-next-line: no-non-null-assertion
-      m => m.feature.properties!.id_observation === obs.properties!.id_observation || undefined
+      m => m.feature.properties?.id_observation === obs.properties?.id_observation || undefined
     );
     // console.debug(obs, marker, event);
     let visibleParent: L.Marker | null = null;
@@ -523,9 +559,9 @@ export class ObsMapComponent implements OnInit, OnChanges {
     if (z < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
       L.DomUtil.addClass(this.observationMap.getContainer(), 'observation-zoom-statement-warning');
       if (this.zoomAlertTimeout) {
-        clearTimeout(this.zoomAlertTimeout);
+        window.clearTimeout(this.zoomAlertTimeout);
       }
-      this.zoomAlertTimeout = setTimeout(() => {
+      this.zoomAlertTimeout = window.setTimeout(() => {
         L.DomUtil.removeClass(
           this.observationMap.getContainer(),
           'observation-zoom-statement-warning'

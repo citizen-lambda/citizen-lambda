@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,13 +13,9 @@ describe('RewardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [ AuthService ],
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
-        NgbTooltipModule
-      ],
-      declarations: [ RewardComponent ]
+      providers: [AuthService],
+      imports: [RouterTestingModule, HttpClientTestingModule, NgbTooltipModule],
+      declarations: [RewardComponent]
     }).compileComponents();
   }));
 

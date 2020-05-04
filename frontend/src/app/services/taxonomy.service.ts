@@ -20,12 +20,12 @@ export class TaxonomyService {
 
   constructor(protected client: HttpClient, protected domSanitizer: DomSanitizer) {}
 
-  getTaxon(cd_nom: number): Observable<Taxon> {
-    if (!!this.taxa[cd_nom]) {
-      return of(this.taxa[cd_nom]);
+  getTaxon(cdNom: number): Observable<Taxon> {
+    if (this.taxa[cdNom]) {
+      return of(this.taxa[cdNom]);
     }
-    if (!this.offList[cd_nom]) {
-      this.offList[cd_nom] = this.client.get<UnsafeTaxon>(`${this.URL}/taxref/${cd_nom}`).pipe(
+    if (!this.offList[cdNom]) {
+      this.offList[cdNom] = this.client.get<UnsafeTaxon>(`${this.URL}/taxref/${cdNom}`).pipe(
         map(unsafeTaxon => {
           return {
             ...unsafeTaxon,
@@ -39,10 +39,11 @@ export class TaxonomyService {
         tap(taxon => (this.taxa[taxon.cd_nom] = taxon)),
         // tap(taxon => console.debug(`fetched Taxon::${taxon.cd_nom}`)),
         share(),
-        catchError(this.handleError<Taxon>(`getTaxon::${cd_nom}`, {} as Taxon))
+        // tslint:disable-next-line: no-object-literal-type-assertion
+        catchError(this.handleError<Taxon>(`getTaxon::${cdNom}`, {} as Taxon))
       );
     }
-    return this.offList[cd_nom];
+    return this.offList[cdNom];
   }
 
   private handleError<T>(operation = 'operation', defaultValue?: T) {

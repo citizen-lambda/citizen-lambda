@@ -1,5 +1,5 @@
 import { Feature, FeatureCollection } from 'geojson';
-import { IAppConfig, Taxon, TaxonMedium } from '../../core/models';
+import { AppConfigInterface, Taxon, TaxonMedium } from '../../core/models';
 import { Program } from '../programs/programs.models';
 
 export interface ObservationData {
@@ -55,8 +55,11 @@ export type ObsPostResponsePayload = Feature & {
   };
 };
 
-export type ConfigObsFeatures = Pick<IAppConfig, 'OBSERVATIONS_FEATURES'>;
-export type ConfigModalFlow = Pick<IAppConfig, 'appName' | 'SEO' | 'program_add_an_observation'>;
+export type ConfigObsFeatures = Pick<AppConfigInterface, 'OBSERVATIONS_FEATURES'>;
+export type ConfigModalFlow = Pick<
+  AppConfigInterface,
+  'appName' | 'SEO' | 'program_add_an_observation'
+>;
 
 export interface ObsState {
   program: Program;

@@ -11,19 +11,19 @@ export abstract class AnchorNavigationDirective implements AfterViewInit {
     combineLatest([
       route.fragment.pipe(take(1)),
       this.router.events.pipe(
-        filter((event) => event instanceof NavigationEnd),
+        filter(event => event instanceof NavigationEnd),
         take(1)
-      ),
+      )
     ])
       .pipe(
-        map(([fragment, _]) => {
+        map(([fragment]) => {
           return fragment;
         })
       )
-      .subscribe((fragment) => this.fragment$.next(fragment));
+      .subscribe(fragment => this.fragment$.next(fragment));
   }
 
-  jumpTo(fragment: string, delay: number = 200) {
+  jumpTo(fragment: string, delay: number = 200): void {
     const anchor = document.getElementById(fragment);
     if (anchor) {
       const offset = parseInt(
@@ -36,7 +36,7 @@ export abstract class AnchorNavigationDirective implements AfterViewInit {
       setTimeout(() => {
         window.scrollTo({
           top: anchor.getBoundingClientRect().top + window.pageYOffset - offset,
-          behavior: 'smooth',
+          behavior: 'smooth'
         });
       }, delay);
     }
@@ -44,12 +44,12 @@ export abstract class AnchorNavigationDirective implements AfterViewInit {
 
   // abstract AfterViewInit(): void;
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.fragment$.pipe(take(1)).subscribe((fragment: string) => this.jumpTo(fragment));
   }
 
-  @HostListener('window:scroll', ['$event'])
-  scrollHandler(_event: Event) {
+  @HostListener('window:scroll')
+  scrollHandler(): void {
     if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
       const tallSize = getComputedStyle(document.documentElement)
         .getPropertyValue('--tall-topbar-height')

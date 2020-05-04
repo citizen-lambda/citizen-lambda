@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation, Inject, LOCALE_ID } from '@angular/core';
-import { IAppConfig } from '../../../core/models';
+import { AppConfigInterface } from '../../../core/models';
 import { AppConfig } from '../../../../conf/app.config';
 import { SeoService } from '../../../services/seo.service';
 
-type AppConfigAbout = Pick<IAppConfig, 'appName'>;
+type AppConfigAbout = Pick<AppConfigInterface, 'appName'>;
 
 @Component({
   selector: 'app-about-custom',
@@ -15,8 +15,6 @@ export class AboutCustomComponent {
   readonly appConfig: AppConfigAbout = AppConfig;
 
   constructor(@Inject(LOCALE_ID) public localeId: string, protected seo: SeoService) {
-    this.seo.setTitle(
-      `${this.localeId.startsWith('fr') ? 'A Propos' : 'About'}`
-    );
+    this.seo.setTitle(`${this.localeId.startsWith('fr') ? 'A Propos' : 'About'}`);
   }
 }

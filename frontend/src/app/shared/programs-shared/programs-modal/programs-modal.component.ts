@@ -4,24 +4,24 @@ import { Subject } from 'rxjs';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Program } from './programs.models';
-import { GncProgramsService } from './gnc-programs.service';
-import { ProgramsResolve } from './programs-resolve.service';
+import { Program } from '../../../features/programs/programs.models';
+import { ProgramsService } from '../../../features/programs/programs.service';
+import { ProgramsResolve } from '../../../features/programs/programs-resolve.service';
 
 @Component({
-  selector: 'app-programs',
-  templateUrl: './programs.component.html',
-  styleUrls: ['./programs.component.css'],
+  selector: 'app-programs-modal',
+  templateUrl: './programs-modal.component.html',
+  styleUrls: ['./programs-modal.component.css'],
   encapsulation: ViewEncapsulation.None,
-  providers: [ ProgramsResolve ]
+  providers: [ProgramsResolve]
 })
-export class ProgramsComponent {
+export class ProgramsModalComponent {
   programs$ = new Subject<Program[] | null>();
 
   constructor(
     private route: ActivatedRoute,
     public activeModal: NgbActiveModal,
-    private programService: GncProgramsService
+    private programService: ProgramsService
   ) {
     this.route.data.subscribe(data => {
       if (data.programs as Program[]) {

@@ -5,8 +5,9 @@ import {
   LOCALE_ID,
   Input,
   ViewChild,
-  ViewEncapsulation,
+  ViewEncapsulation
 } from '@angular/core';
+import { PlatformLocation } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
@@ -15,7 +16,7 @@ import {
   NgbModal,
   ModalDismissReasons,
   NgbActiveModal,
-  NgbModalRef,
+  NgbModalRef
 } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppConfig } from '../../../../conf/app.config';
@@ -43,12 +44,12 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
         <!-- FIXME: hardcoded backend media url -->
         <img
           [src]="
-            !!data?.images && !!data?.images?.length
+            data?.images?.length
               ? AppConfig.API_ENDPOINT + '/media/' + data?.images![0]
               : data?.image
-              ? data?.image
-              : taxon?.media && !!taxon?.media.length
-              ? (taxon?.media)[0].thumb_url
+              ? data!.image
+              : taxon?.media && taxon!.media.length > 0
+              ? taxon!.media![0]!.thumb_url
               : 'assets/default_taxon.jpg'
           "
           [alt]="
@@ -143,13 +144,13 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
         >
       </ng-container>
     </div>
-  `,
+  `
 })
 export class ObsDetailsModalContentComponent implements OnInit {
   AppConfig = AppConfig;
   navigator: Navigator | null = null;
   @ViewChild(WebshareComponent) shareButton?: WebshareComponent;
-  sharedData = {};
+  sharedData: ShareData = {};
   @Input() data: Partial<ObservationData> | undefined;
   taxon$ = new BehaviorSubject<(Partial<ObservationData> & Taxon) | undefined>(undefined);
 
@@ -161,22 +162,22 @@ export class ObsDetailsModalContentComponent implements OnInit {
     this.navigator = window.navigator;
   }
 
-  ngOnInit() {
-    of(this.data).subscribe((data) => {
+  ngOnInit(): void {
+    of(this.data).subscribe(data => {
       if (!!data && data.cd_nom) {
-        this.taxonService.getTaxon(data.cd_nom).subscribe((t) => {
+        this.taxonService.getTaxon(data.cd_nom).subscribe(t => {
           this.taxon$.next({ ...t, ...data });
         });
       }
     });
   }
 
-  canShare() {
+  canShare(): boolean {
     return !!this.navigator && 'share' in this.navigator;
   }
 
-  setupShare() {
-    if (!!this.data) {
+  setupShare(): void {
+    if (this.data) {
       let url = document.location.href;
       const canonicalElement = document.querySelector('link[rel=canonical]');
       if (canonicalElement !== null) {
@@ -185,14 +186,15 @@ export class ObsDetailsModalContentComponent implements OnInit {
       this.sharedData = {
         title: `${document.title} Details Observation #${this.data.id_observation}`,
         text: this.data.comment,
-        url: url,
-      } as ShareData;
+        url
+      };
     }
   }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 @Component({
-  template: '',
+  template: ''
 })
 export class ObservationDetailsComponent implements OnInit {
   modalRef?: NgbModalRef;
@@ -202,22 +204,29 @@ export class ObservationDetailsComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private location: PlatformLocation,
     private modalService: NgbModal,
     public facade: ObservationsFacade
-  ) {}
+  ) {
+    location.onPopState(() => {
+      if (this.modalRef !== undefined) {
+        this.modalRef.close('HISTORYBACK');
+      }
+    });
+  }
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(take(1)).subscribe((params) => {
+    this.route.paramMap.pipe(take(1)).subscribe(params => {
       const obsID = parseInt(params.get('obsid') || '1', 10);
       this.facade.features$
         .pipe(
-          map((features) =>
+          map(features =>
             // tslint:disable-next-line: no-non-null-assertion
-            features.filter((feature) => !!feature && feature.properties!.id_observation === obsID)
+            features.filter(feature => !!feature && feature.properties?.id_observation === obsID)
           ),
           take(1)
         )
-        .subscribe((feature) => {
+        .subscribe(feature => {
           try {
             this.data = feature[0].properties as Partial<ObservationData>;
             this.facade.selected = feature[0];
@@ -229,7 +238,7 @@ export class ObservationDetailsComponent implements OnInit {
     });
   }
 
-  onError(error: any) {
+  onError(error: any): void {
     let msg = error.toString();
     if (error instanceof TypeError) {
       msg = 'Unknown observation';
@@ -240,28 +249,28 @@ export class ObservationDetailsComponent implements OnInit {
     this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
   }
 
-  close(msg: string) {
+  close(msg: string): void {
     if (this.modalRef) {
       this.modalRef.close(msg);
     }
   }
 
-  open() {
+  open(): void {
     this.modalRef = this.modalService.open(ObsDetailsModalContentComponent);
     this.modalRef.componentInstance.data = this.data;
     this.modalRef.result.then(
-      (result) => {
+      result => {
         this.closeResult = `Closed with: ${result}`;
         this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
       },
-      (reason) => {
+      reason => {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
         this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
       }
     );
   }
 
-  private getDismissReason(reason: any): string {
+  private getDismissReason(reason: ModalDismissReasons): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {

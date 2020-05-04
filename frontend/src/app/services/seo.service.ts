@@ -17,13 +17,10 @@ type MetaNames = keyof typeof MetaNamesStrings;
 export class SeoService {
   readonly appConfig = AppConfig;
 
-  constructor(
-    private readonly metaService: Meta,
-    private readonly titleService: Title,
-  ) {}
+  constructor(private readonly metaService: Meta, private readonly titleService: Title) {}
 
-  setMetaTag(metaTag: { name: MetaNames, content: string }): void {
-    if (!!metaTag.content) {
+  setMetaTag(metaTag: { name: MetaNames; content: string }): void {
+    if (metaTag.content) {
       this.metaService.updateTag(metaTag);
     } else {
       const selector = `${MetaNamesStrings[name]}='${metaTag.content}'`;
@@ -31,16 +28,19 @@ export class SeoService {
     }
   }
 
-  setMetaTags(metaTags: { name: MetaNames, content: string }[]): void {
+  setMetaTags(metaTags: { name: MetaNames; content: string }[]): void {
     for (const metaTag of metaTags) {
       this.setMetaTag(metaTag);
     }
   }
 
-  setTitle(title: string = '') {
+  setTitle(title: string = ''): void {
     this.titleService.setTitle(`${title} - ${this.appConfig.appName}`);
-    if (!!title) {
-      this.metaService.updateTag({ name: 'title', content: `${title} - ${this.appConfig.appName}` });
+    if (title.length > 0) {
+      this.metaService.updateTag({
+        name: 'title',
+        content: `${title} - ${this.appConfig.appName}`
+      });
     } else {
       this.metaService.removeTag(`name='title'`);
     }

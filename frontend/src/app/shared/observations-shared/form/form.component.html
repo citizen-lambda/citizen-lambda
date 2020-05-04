@@ -7,28 +7,35 @@
     <div class="form-group col-lg-8">
       <input formControlName="id_program" type="hidden" />
       <h5 class="m-0">
-        <label for="cd_nom" i18n class="m-0">{ autocomplete, select, isOn {Rechercher une esp&egrave;ce} isOff
-          {S&eacute;lectionnez
-          une esp&egrave;ce}}</label>
+        <label for="cd_nom" i18n class="m-0"
+          >{ autocomplete, select, isOn {Rechercher une esp&egrave;ce} isOff {S&eacute;lectionnez
+          une esp&egrave;ce}}</label
+        >
       </h5>
       <!-- TAXON SELECT -->
       <div *ngIf="taxaCount < taxonSelectInputThreshold" class="d-inline-flex toolbar">
         <select formControlName="cd_nom" class="form-control rounded-0">
           <option *ngFor="let s of taxa" [value]="s.cd_nom">
-            {{ s?.nom_vern }} (<i>{{ s?.nom_complet }}</i>)
+            {{ s?.nom_vern }} (<i>{{ s?.nom_complet }}</i
+            >)
           </option>
         </select>
       </div>
     </div>
 
     <!-- TAXON PICKER -->
-    <div *ngIf="taxaCount >= taxonSelectInputThreshold && taxaCount < taxonAutocompleteInputThreshold"
-      class="form-group col-lg-12 d-inline-flex obs-images">
+    <div
+      *ngIf="taxaCount >= taxonSelectInputThreshold && taxaCount < taxonAutocompleteInputThreshold"
+      class="form-group col-lg-12 d-inline-flex obs-images"
+    >
       <div class="scroll-img" [class.ng-valid]="selectedTaxon" [class.ng-invalid]="!selectedTaxon">
         <div *ngFor="let s of taxa">
           <div class="obs-img" [class.selected]="isSelectedTaxon(s)">
-            <img [src]="!!s?.media ? s.media[0].thumb_url : 'assets/default_taxon.jpg'" [alt]="s?.nom_vern"
-              (click)="onTaxonSelected(s)" />
+            <img
+              [src]="s.media?.length > 0 ? s.media[0].thumb_url : 'assets/default_taxon.jpg'"
+              [alt]="s?.nom_vern"
+              (click)="onTaxonSelected(s)"
+            />
             <span>{{ s?.nom_vern }}</span>
           </div>
         </div>
@@ -41,13 +48,24 @@
         <img [src]="r.icon" class="float-left mr-1 autocomplete-thumbs" />
         <ng-container *ngFor="let field of taxonAutocompleteFields; first as isFirst">
           <!-- FIXME: on input focus: show default autocomplete values -->
-          <ngb-highlight [result]="r[field]" [term]="t"></ngb-highlight><br *ngIf="isFirst; else elseBlock" />
+          <ngb-highlight [result]="r[field]" [term]="t"></ngb-highlight
+          ><br *ngIf="isFirst; else elseBlock" />
           <ng-template #elseBlock> • </ng-template>
         </ng-container>
       </ng-template>
-      <input id="cd_nom" type="text" class="form-control rounded-0" formControlName="cd_nom" i18n-placeholder
-        placeholder="Nom latin ou vernaculaire ou cd_ref" [editable]="false" [ngbTypeahead]="inputAutoCompleteSearch"
-        [resultTemplate]="rt" [inputFormatter]="inputAutoCompleteFormatter" (selectItem)="onTaxonSelected($event)" />
+      <input
+        id="cd_nom"
+        type="text"
+        class="form-control rounded-0"
+        formControlName="cd_nom"
+        i18n-placeholder
+        placeholder="Nom latin ou vernaculaire ou cd_ref"
+        [editable]="false"
+        [ngbTypeahead]="inputAutoCompleteSearch"
+        [resultTemplate]="rt"
+        [inputFormatter]="inputAutoCompleteFormatter"
+        (selectItem)="onTaxonSelected($event)"
+      />
     </div>
     <!-- END TAXON SELECTION -->
     <div class="form-group col-lg-6 col-md-12 half">
@@ -56,37 +74,75 @@
         <div class="form-group col-lg-6">
           <label for="date" i18n>Date d'observation</label>
           <!-- type="date" is redondant with ngbDatepicker directive -->
-          <input type="text" formControlName="date" class="form-control rounded-0" i18n-placeholder
-            placeholder="jj/mm/aaaa" ngbDatepicker #d="ngbDatepicker" [markDisabled]="disabledDates"
-            (click)="d.toggle()" />
+          <input
+            type="text"
+            formControlName="date"
+            class="form-control rounded-0"
+            i18n-placeholder
+            placeholder="jj/mm/aaaa"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            [markDisabled]="disabledDates"
+            (click)="d.toggle()"
+          />
         </div>
         <div class="form-group col-lg-6">
           <label for="counting" i18n>Dénombrement</label>
-          <input type="number" min="1" i18n-placeholder placeholder="Nombre" data-bind="value:replyNumber"
-            class="form-control rounded-0" formControlName="count" id="counting" required />
+          <input
+            type="number"
+            min="1"
+            i18n-placeholder
+            placeholder="Nombre"
+            data-bind="value:replyNumber"
+            class="form-control rounded-0"
+            formControlName="count"
+            id="counting"
+            required
+          />
         </div>
       </div>
       <div class="row">
         <div class="form-group col-lg-6">
           <label for="comment" i18n>Commentaire</label>
-          <textarea i18n-placeholder placeholder="Votre commentaire" class="form-control rounded-0" rows="4"
-            id="comment" formControlName="comment"></textarea>
+          <textarea
+            i18n-placeholder
+            placeholder="Votre commentaire"
+            class="form-control rounded-0"
+            rows="4"
+            id="comment"
+            formControlName="comment"
+          ></textarea>
         </div>
 
         <div class="form-group col-lg-6">
           <!-- TODO: mv to controller method -->
-          <label for="photo">{{
-                !!(photoFilename$ | async)?.length
-                  ? (photoFilename$ | async)!.length > 18
-                    ? (photoFilename$ | async)!.slice(0, 18) + '…'
-                    : (photoFilename$ | async)
-                  : localeId.startsWith('fr') ? 'Ajouter la photo' : 'Add the picture'
-              }}
-            <input #photo id="photo" name="photo" formControlName="photo" class="inputfile formcontrol  rounded-0"
-              type="file" accept="image/*" capture="environment" (change)="onPhotoUpdate()" />
+          <label for="photo"
+            >{{
+              (photoFilename$ | async)?.length > 0
+                ? (photoFilename$ | async)!.length > 18
+                  ? (photoFilename$ | async)!.slice(0, 18) + '…'
+                  : (photoFilename$ | async)
+                : localeId.startsWith('fr')
+                ? 'Ajouter la photo'
+                : 'Add the picture'
+            }}
+            <input
+              #photo
+              id="photo"
+              name="photo"
+              formControlName="photo"
+              class="inputfile formcontrol rounded-0"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              (change)="onPhotoUpdate()"
+            />
             <div class="img-thumbnail mx-auto text-center fileinput-substitute">
-              <ng-container *ngIf="!!(photoFilename$ | async)?.length; else camera">
-                <img [src]="imageBlobURL" class="img-fluid img-thumbnail d-flex justify-content-center" />
+              <ng-container *ngIf="(photoFilename$ | async)?.length > 0; else camera">
+                <img
+                  [src]="imageBlobURL"
+                  class="img-fluid img-thumbnail d-flex justify-content-center"
+                />
               </ng-container>
               <ng-template #camera>
                 <i class="fa fa-camera position-absolute"></i>
@@ -99,9 +155,22 @@
     <div class="form-group col-lg-6 col-md-12 half">
       <h5 i18n>Où avez-vous observé cette espèce ?</h5>
       <div class="position-relative" style="display: flex; flex-direction: row;">
-        <input formControlName="geometry" type="hidden" id="geometry" name="geometry" #geometry class="col-lg-12" />
-        <app-obs-form-map [coords]="data.coords" [input]="data.program" (output)="onMapClick($event)" class="col-lg-12"
-          [class.ng-invalid]="obsForm.get('geometry')?.invalid" [class.ng-valid]="obsForm.get('geometry')?.valid">
+        <input
+          formControlName="geometry"
+          type="hidden"
+          id="geometry"
+          name="geometry"
+          #geometry
+          class="col-lg-12"
+        />
+        <app-obs-form-map
+          [coords]="data.coords"
+          [input]="data.program"
+          (output)="onMapClick($event)"
+          class="col-lg-12"
+          [class.ng-invalid]="obsForm.get('geometry')?.invalid"
+          [class.ng-valid]="obsForm.get('geometry')?.valid"
+        >
         </app-obs-form-map>
         <div class="zoom-alert" *ngIf="hasZoomAlert">
           <div class="mb-2 text-center" i18n>

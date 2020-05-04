@@ -9,11 +9,11 @@ const routes: Routes = [
     path: '',
     component: HomeComponent,
     resolve: { programs: ProgramsResolve }
-  },
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class HomeRoutingModule { }
+export class HomeRoutingModule {}

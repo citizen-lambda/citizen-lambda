@@ -1,21 +1,21 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Subject, throwError } from 'rxjs';
+import { Subject, throwError, Observable } from 'rxjs';
 import { debounceTime, catchError, map } from 'rxjs/operators';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { RegisteringUser, LoggedUser, IAppConfig } from '../../core/models';
+import { RegisteringUser, LoggedUser, AppConfigInterface } from '../../core/models';
 import { AppConfig } from '../../../conf/app.config';
 import { AuthService } from '../../services/auth.service';
 
-type AppConfigRegister = Pick<IAppConfig, 'termsOfUse'>;
+type AppConfigRegister = Pick<AppConfigInterface, 'termsOfUse'>;
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
   readonly AppConfig: AppConfigRegister = AppConfig;
@@ -51,7 +51,7 @@ export class RegisterComponent {
             localStorage.setItem('username', user.username);
             this.auth.authenticated$.next(true);
             const message = user.message;
-            this._success.subscribe((msg) => (this.successMessage = msg));
+            this._success.subscribe(msg => (this.successMessage = msg));
             this._success.pipe(debounceTime(1500)).subscribe(() => {
               this.successMessage = null;
               this.activeModal.close();
@@ -66,8 +66,8 @@ export class RegisterComponent {
         catchError(this.handleError)
       )
       .subscribe(
-        (_data) => {},
-        (errorMessage) => {
+        () => ({}),
+        errorMessage => {
           console.error('errorMessage', errorMessage);
           this.errorMessage = errorMessage;
           this.displayErrorMessage(errorMessage);
@@ -75,7 +75,7 @@ export class RegisterComponent {
       );
   }
 
-  handleError(error: HttpErrorResponse) {
+  handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       console.error('client-side error');
@@ -95,12 +95,12 @@ export class RegisterComponent {
     return throwError(errorMessage);
   }
 
-  displayErrorMessage(message: string) {
+  displayErrorMessage(message: string): void {
     this._error.next(message);
     console.error('errorMessage:', message);
   }
 
-  displaySuccessMessage(message: string) {
+  displaySuccessMessage(message: string): void {
     this._success.next(message);
     console.info('successMessage:', message);
   }

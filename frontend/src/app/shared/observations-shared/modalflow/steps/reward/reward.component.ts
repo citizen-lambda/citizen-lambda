@@ -1,10 +1,11 @@
 import { Component, Input, ViewEncapsulation, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { throwError, BehaviorSubject, Observable } from 'rxjs';
+import { throwError, BehaviorSubject, Observable, OperatorFunction } from 'rxjs';
 import { tap, catchError, map, distinctUntilChanged, share, pluck, filter } from 'rxjs/operators';
 
+import type { CallbackFunctionVariadicAnyReturn } from '../../../../../core/models';
 import { AppConfig } from '../../../../../../conf/app.config';
-import { IFlowComponent } from '../../flow/flow';
+import { FlowComponentInterface } from '../../flow/flow';
 import { AuthService } from '../../../../../services/auth.service';
 
 export interface Badge {
@@ -18,17 +19,23 @@ export interface BadgeState {
   loading: boolean;
 }
 
-function differenceWith<T>(leftItems: T[], rightItems: T[], comparator: Function) {
-  return rightItems.filter(a => leftItems.findIndex(b => comparator(rightItems, leftItems)) === -1);
+function differenceWith<T>(
+  leftItems: T[],
+  rightItems: T[],
+  comparator: CallbackFunctionVariadicAnyReturn
+): T[] {
+  return rightItems.filter(
+    _a => leftItems.findIndex(_b => comparator(rightItems, leftItems)) === -1
+  );
 }
 
-const getNewBadges = (oldBadges: Badge[]) =>
+const getNewBadges = (oldBadges: Badge[]): OperatorFunction<Badge[], Partial<BadgeState>> =>
   map((badges: Badge[]) => {
     if (!oldBadges || (oldBadges.length === 0 && badges && !!badges.length)) {
       return { badges, changes: [] };
     }
 
-    if (!badges || (badges && badges.length === 0)) {
+    if (!badges || badges?.length === 0) {
       return { badges: [], changes: [] };
     }
 
@@ -38,7 +45,7 @@ const getNewBadges = (oldBadges: Badge[]) =>
       (a: Badge, b: Badge) => a.alt === b.alt
     );
 
-    return { badges, changes: onlyInNewState } as Partial<BadgeState>;
+    return { badges, changes: onlyInNewState };
   });
 
 let _state: BadgeState = {
@@ -73,14 +80,14 @@ export class BadgeFacade {
   }
 
   getChanges(): void {
-    const access_token = localStorage.getItem('access_token');
-    if (access_token && this.AppConfig['REWARDS']) {
+    const accessToken = localStorage.getItem('access_token');
+    if (accessToken && this.AppConfig.REWARDS) {
       this.authService.ensureAuthorized().subscribe(
         user => {
-          if (user.features['id_role']) {
-            this.role_id = user['features']['id_role'];
+          if (!!user && !!user.features && user.features['id_role']) {
+            this.role_id = user.features.id_role;
             this.client
-              .get<Object>(`${ this.AppConfig.API_ENDPOINT }/dev_rewards/${ this.role_id }`)
+              .get<object>(`${this.AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
               .pipe(
                 pluck('badges'),
                 // FIXME: untested
@@ -90,8 +97,8 @@ export class BadgeFacade {
                   if (changes && !!changes.length && !!badges) {
                     this.updateState({
                       ..._state,
-                      badges: badges,
-                      changes: changes,
+                      badges,
+                      changes,
                       loading: false
                     });
                     localStorage.setItem('badges', JSON.stringify(badges));
@@ -120,11 +127,12 @@ export class BadgeFacade {
     return this.role_id;
   }
 
-  private updateState(state: BadgeState) {
+  private updateState(state: BadgeState): void {
     this.store.next((_state = state));
   }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 @Component({
   selector: 'app-reward',
   template: `
@@ -151,19 +159,19 @@ export class BadgeFacade {
   encapsulation: ViewEncapsulation.None,
   providers: [BadgeFacade]
 })
-export class RewardComponent implements IFlowComponent {
+export class RewardComponent implements FlowComponentInterface {
   readonly AppConfig = AppConfig;
-  private _timeout: any;
+  private _timeout: number | undefined;
   // private _init = 0;
   @Input() data: any;
   reward$: Observable<Badge[]> | null = null;
 
   constructor(public badges: BadgeFacade) {
-    if (!badges.username || !this.AppConfig['REWARDS']) {
+    if (!badges.username || !this.AppConfig.REWARDS) {
       if (this._timeout) {
-        clearTimeout(this._timeout);
+        window.clearTimeout(this._timeout);
       }
-      this._timeout = setTimeout(() => this.close('REWARDS_DISABLED'), 0);
+      this._timeout = window.setTimeout(() => this.close('REWARDS_DISABLED'), 0);
     } else {
       this.reward$ = this.badges.changes$.pipe(
         tap(reward => {
@@ -175,7 +183,7 @@ export class RewardComponent implements IFlowComponent {
             if (this._timeout) {
               clearTimeout(this._timeout);
             }
-            this._timeout = setTimeout(() => this.close('NOREWARD'), 0);
+            this._timeout = window.setTimeout(() => this.close('NOREWARD'), 0);
           }
         }),
         filter(reward => reward && !!reward.length /*&& this._init > 1*/)
@@ -183,13 +191,13 @@ export class RewardComponent implements IFlowComponent {
     }
   }
 
-  close(d: string) {
+  close(d: string): void {
     if (this.data) {
       this.data.service.close(d);
     }
   }
 
-  clicked(d: string) {
+  clicked(d: string): void {
     this.close(d);
   }
 }

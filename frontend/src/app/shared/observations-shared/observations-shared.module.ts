@@ -9,8 +9,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ObsFormModule } from './form/obs-form.module';
 import { WebshareModule } from '../webshare/webshare.module';
 
-import { ProgramContentComponent } from './program-content/program-content.component';
-import { ProgramTeaserComponent } from './program-teaser/program-teaser.component';
+import { ProgramContentComponent } from '../programs-shared/program-content/program-content.component';
+import { ProgramTeaserComponent } from '../programs-shared/program-teaser/program-teaser.component';
 import { ObsListComponent } from './list/list.component';
 import { ObsMapComponent } from './map/map.component';
 import { MarkerPopupComponent } from './map/marker-popup.component';

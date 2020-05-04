@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { IFlowComponent } from '../../flow/flow';
+import { FlowComponentInterface } from '../../flow/flow';
 import { RegisterComponent } from '../../../../../components/register/register.component';
 import { LoginComponent } from '../../../../../components/login/login.component';
 import { AuthService } from '../../../../../services/auth.service';
@@ -13,7 +13,7 @@ import { AuthService } from '../../../../../services/auth.service';
   styleUrls: ['./onboard.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class OnboardComponent implements IFlowComponent, OnInit {
+export class OnboardComponent implements FlowComponentInterface, OnInit {
   RegistrationModalRef!: NgbModalRef;
   LoginModalRef!: NgbModalRef;
   timeout: any;
@@ -27,7 +27,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     console.debug('OnboardComponent.OnInit', this.data);
     this.authService.authorized$.subscribe(value => {
       if (value) {
@@ -38,11 +38,11 @@ export class OnboardComponent implements IFlowComponent, OnInit {
   }
 
   // Actions
-  register() {
+  register(): void {
     this.RegistrationModalRef = this.modalService.open(RegisterComponent, {
       centered: true
     });
-    this.RegistrationModalRef.result.then(_ => {
+    this.RegistrationModalRef.result.then(() => {
       this.authService.isLoggedIn().subscribe(
         value => !!value,
         reason => {
@@ -52,7 +52,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     });
   }
 
-  login() {
+  login(): void {
     this.LoginModalRef = this.modalService.open(LoginComponent, {
       centered: true
     });
@@ -67,7 +67,7 @@ export class OnboardComponent implements IFlowComponent, OnInit {
     });
   }
 
-  continue() {
+  continue(): void {
     console.debug('OnboardComponent.next', this.data);
     this.data.next(this.data);
   }

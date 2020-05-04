@@ -1,14 +1,5 @@
 import { Injectable, OnDestroy, Inject, LOCALE_ID } from '@angular/core';
-import {
-  ObsState,
-  ConfigObsFeatures,
-  Municipality,
-} from 'src/app/features/observations/observation.model';
-import { Program } from 'src/app/features/programs/programs.models';
-import { FeatureCollection, Feature } from 'geojson';
-import { AppConfig } from 'src/conf/app.config';
 import { Subject, BehaviorSubject, Observable, zip, forkJoin } from 'rxjs';
-import { Taxonomy, Taxon } from 'src/app/core/models';
 import {
   map,
   distinctUntilChanged,
@@ -18,22 +9,36 @@ import {
   flatMap,
   takeUntil,
   switchMap,
-  take,
+  take
 } from 'rxjs/operators';
-import { sorted } from 'src/app/helpers/sorted';
-import { GncProgramsService } from 'src/app/features/programs/gnc-programs.service';
-import { TaxonomyService } from 'src/app/services/taxonomy.service';
-import { composeAsync } from 'src/app/helpers/compose';
-import { groupBy } from 'src/app/helpers/groupby';
+
+import { FeatureCollection, Feature } from 'geojson';
+
+import { AppConfig } from '../../../conf/app.config';
+import { Program } from '../../features/programs/programs.models';
+import { ProgramsService } from '../../features/programs/programs.service';
+import { Taxonomy, Taxon } from '../../core/models';
+import { TaxonomyService } from '../../services/taxonomy.service';
+import {
+  ObsState,
+  ConfigObsFeatures,
+  Municipality
+} from '../../features/observations/observation.model';
+import { composeAsync } from '../../helpers/compose';
+import { groupBy } from '../../helpers/groupby';
+import { sorted } from '../../helpers/sorted';
 
 let _state: ObsState = {
+  // tslint:disable-next-line: no-object-literal-type-assertion
   program: {} as Program,
+  // tslint:disable-next-line: no-object-literal-type-assertion
   observations: {} as FeatureCollection,
-  selected: {} as Feature,
+  // tslint:disable-next-line: no-object-literal-type-assertion
+  selected: {} as Feature
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ObservationsFacade implements OnDestroy {
   ConfigObsFeatures = (AppConfig as ConfigObsFeatures).OBSERVATIONS_FEATURES;
@@ -43,33 +48,33 @@ export class ObservationsFacade implements OnDestroy {
 
   sharedContext: {
     [name: string]: any;
-    coords?: L.Point;
+    coords?: L.Point | undefined;
     program?: FeatureCollection;
     taxa?: Taxonomy;
   } = {};
 
   observations$ = this.state$.pipe(
-    map((state) => state.observations),
+    map(state => state.observations),
     distinctUntilChanged(),
     share()
   );
 
   selected$ = this.state$.pipe(
-    map((state) => state.selected),
+    map(state => state.selected),
     distinctUntilChanged(),
     share()
   );
 
   program$ = this.state$.pipe(
-    map((state) => state.program),
+    map(state => state.program),
     distinctUntilChanged(),
     share()
   );
 
   private _programID = new BehaviorSubject<number>(0);
   programID$ = this._programID.asObservable();
-  set programID(program_id: number) {
-    this._programID.next(program_id);
+  set programID(pid: number) {
+    this._programID.next(pid);
   }
 
   private _programs = new BehaviorSubject<Program[]>([]);
@@ -82,49 +87,40 @@ export class ObservationsFacade implements OnDestroy {
 
   features$ = this.state$.pipe(
     pluck<ObsState, Feature[]>('observations', 'features'),
-    filter((features) => !!features)
+    filter(features => features != null)
   );
 
   sampledTaxonomy$ = this.features$.pipe(
-    map((items) => {
+    map(items => {
       return Array.from(
-        // tslint:disable-next-line: no-non-null-assertion
-        new Map(items.map((item) => [+`${item.properties!.cd_nom}`, item])).values()
+        new Map(items.map(item => [+`${item.properties?.cd_nom}`, item])).values()
       ).reduce((acc: Observable<Taxon>[], item: Feature) => {
-        return [
-          ...acc,
-          // tslint:disable-next-line: no-non-null-assertion
-          this.taxonomyService.getTaxon(item.properties!.cd_nom),
-        ];
+        return [...acc, this.taxonomyService.getTaxon(item.properties?.cd_nom)];
       }, []);
     }),
-    flatMap((items) => zip(...items)),
-    map((taxa) => {
+    flatMap(items => zip(...items)),
+    map(taxa => {
       const prop = this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng';
       const r = taxa.sort(sorted(prop));
       if (!!this.ConfigObsFeatures && !!this.ConfigObsFeatures.TAXONOMY.GROUP) {
         if (typeof this.ConfigObsFeatures.TAXONOMY.GROUP === 'function') {
-          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP(this.localeId)) as {
-            [key: string]: Taxon[];
-          };
+          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP(this.localeId));
         }
         if (typeof this.ConfigObsFeatures.TAXONOMY.GROUP === 'string') {
-          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP) as { [key: string]: Taxon[] };
+          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP);
         }
       }
-      return null;
+      return {};
     })
   );
 
   municipalities$ = this.features$.pipe(
-    map((items) => {
+    map(items => {
       return Array.from(
         new Map(
-          items.map((item) => [
-            // tslint:disable-next-line: no-non-null-assertion
-            +`${item.properties!.municipality.code}`,
-            // tslint:disable-next-line: no-non-null-assertion
-            item.properties!.municipality,
+          items.map(item => [
+            +`${item.properties?.municipality.code}`,
+            item.properties?.municipality
           ])
         ).values() as IterableIterator<Municipality>
       ).sort(sorted('name'));
@@ -135,41 +131,41 @@ export class ObservationsFacade implements OnDestroy {
   set selected(selected: Feature) {
     this.updateState({
       ..._state,
-      selected: selected,
+      selected
     });
   }
 
   _filteredObservations = new BehaviorSubject<Feature[]>([]);
   filteredObservations$ = this._filteredObservations.asObservable();
 
-  selectedMunicipality: any = null;
-  selectedTaxonID: string | null = null;
+  selectedMunicipality: Municipality | null = null;
+  selectedTaxonID: string | null = null; // ''
 
   filterTaxon = (obs: Feature[]): Feature[] =>
-    !!obs && !!this.selectedTaxonID
-      ? // tslint:disable-next-line: no-non-null-assertion
-        obs.filter((o) => o.properties!.cd_nom === parseInt(this.selectedTaxonID!, 10))
+    obs?.length > 0 && this.selectedTaxonID != null
+      ? obs.filter(
+          o => this.selectedTaxonID && o.properties?.cd_nom === parseInt(this.selectedTaxonID, 10)
+        )
       : // tslint:disable-next-line: semicolon
         obs;
   filterMunicipality = (obs: Feature[]): Feature[] =>
-    !!obs && !!this.selectedMunicipality
-      ? // tslint:disable-next-line: no-non-null-assertion
-        obs.filter((o) => o.properties!.municipality.code === this.selectedMunicipality.code)
+    obs?.length > 0 && this.selectedMunicipality != null
+      ? obs.filter(o => o.properties?.municipality.code === this.selectedMunicipality?.code)
       : // tslint:disable-next-line: semicolon
         obs;
 
   constructor(
     @Inject(LOCALE_ID) public localeId: string,
-    private programService: GncProgramsService,
+    private programService: ProgramsService,
     public taxonomyService: TaxonomyService
   ) {
     this.programID$
       .pipe(
-        filter((id) => id >= 1),
-        flatMap((program_id: number) =>
+        filter(id => id >= 1),
+        flatMap((pid: number) =>
           forkJoin([
-            this.programService.getProgramTaxonomyList(program_id),
-            this.programService.getProgram(program_id),
+            this.programService.getProgramTaxonomyList(pid),
+            this.programService.getProgram(pid)
           ])
         ),
         takeUntil(this.unsubscribe$)
@@ -177,7 +173,7 @@ export class ObservationsFacade implements OnDestroy {
       .subscribe(([taxa, program]) => {
         this.updateState({
           ..._state,
-          program: this.programService.convertFeature2Program(program.features[0]),
+          program: this.programService.convertFeature2Program(program.features[0])
         });
         this.sharedContext.taxa = taxa;
         this.sharedContext.program = program;
@@ -186,13 +182,13 @@ export class ObservationsFacade implements OnDestroy {
     this.programID$
       .pipe(
         takeUntil(this.unsubscribe$),
-        filter((id) => id > 0),
-        switchMap((id) => this.programService.getProgramObservations(id))
+        filter(id => id > 0),
+        switchMap(id => this.programService.getProgramObservations(id))
       )
-      .subscribe((observations) => {
+      .subscribe(observations => {
         this.updateState({
           ..._state,
-          observations: observations,
+          observations
         });
       });
 
@@ -200,18 +196,18 @@ export class ObservationsFacade implements OnDestroy {
       .pipe(
         pluck<FeatureCollection, Feature[]>('features'),
         takeUntil(this.unsubscribe$),
-        map((observations) => composeAsync(this.filterTaxon, this.filterMunicipality)(observations))
+        map(observations => composeAsync(this.filterTaxon, this.filterMunicipality)(observations))
       )
-      .subscribe(async (observations) => {
+      .subscribe(async observations => {
         this._filteredObservations.next(await observations);
       });
   }
 
-  private updateState(state: ObsState) {
+  private updateState(state: ObsState): void {
     this.store.next((_state = state));
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
@@ -220,20 +216,20 @@ export class ObservationsFacade implements OnDestroy {
     this.features$
       .pipe(
         take(1),
-        map((observations) => composeAsync(this.filterTaxon, this.filterMunicipality)(observations))
+        map(observations => composeAsync(this.filterTaxon, this.filterMunicipality)(observations))
       )
-      .subscribe(async (observations) => {
+      .subscribe(async observations => {
         this._filteredObservations.next(await observations);
       });
   }
 
-  onNewObservation(feature: Feature) {
+  onNewObservation(feature: Feature): void {
     this.updateState({
       ..._state,
       observations: {
         type: 'FeatureCollection',
-        features: [feature, ...(_state.observations.features as Feature[])],
-      } as FeatureCollection,
+        features: [feature, ...(_state.observations.features as Feature[])]
+      }
     });
   }
 }

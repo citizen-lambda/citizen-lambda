@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { FormControl, FormGroup, FormGroupName, Form, Validators } from '@angular/forms';
-import { Subject, throwError } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subject, throwError, Observable } from 'rxjs';
 import { debounceTime, map, catchError } from 'rxjs/operators';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -18,8 +18,8 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent {
   AppConfig = AppConfig;
-  private _error = new Subject<string | null>();
-  private _success = new Subject<string | null>();
+  private error$ = new Subject<string | null>();
+  private success$ = new Subject<string | null>();
   errorMessage: string | null = null;
   successMessage: string | null = null;
   staticAlertClosed = false;
@@ -48,8 +48,8 @@ export class LoginComponent {
       .pipe(
         map((user: Partial<LoggedUser>) => {
           const message = user.message || '';
-          this._success.subscribe(msg => (this.successMessage = msg));
-          this._success.pipe(debounceTime(1800)).subscribe(() => {
+          this.success$.subscribe(msg => (this.successMessage = msg));
+          this.success$.pipe(debounceTime(1800)).subscribe(() => {
             this.activeModal.close();
           });
           this.displaySuccessMessage(message);
@@ -63,7 +63,7 @@ export class LoginComponent {
         catchError(error => this.handleError(error))
       )
       .subscribe(
-        _data => {},
+        _data => ({}),
         errorMessage => {
           console.error('errorMessage', errorMessage);
           this.successMessage = null;
@@ -79,12 +79,18 @@ export class LoginComponent {
       .pipe(catchError(error => this.handleError(error)))
       .subscribe(
         response => {
-          const message = response['message'];
-          this._success.subscribe(msg => (this.successMessage = msg));
-          this._success.pipe(debounceTime(5000)).subscribe(() => {
-            this.activeModal.close();
-          });
-          this.displaySuccessMessage(message);
+          if (!(typeof response === 'string')) {
+            const message = response.message;
+            this.success$.subscribe(msg => (this.successMessage = msg));
+            this.success$.pipe(debounceTime(5000)).subscribe(() => {
+              this.activeModal.close();
+            });
+            this.displaySuccessMessage(message);
+          }
+          console.error('error', response);
+          this.successMessage = null;
+          this.errorMessage = response.toString();
+          this.displayErrorMessage(response.toString());
         },
         errorMessage => {
           console.error('error', errorMessage);
@@ -95,10 +101,11 @@ export class LoginComponent {
       );
   }
 
-  handleError(error: HttpErrorResponse) {
+  handleError(error: HttpErrorResponse): Observable<string> {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       // client-side or network error
+      return throwError(errorMessage);
     } else {
       // server-side error
       if (error.error && error.error.message) {
@@ -113,11 +120,11 @@ export class LoginComponent {
     return throwError(errorMessage);
   }
 
-  displayErrorMessage(message: string) {
-    this._error.next(message);
+  displayErrorMessage(message: string): void {
+    this.error$.next(message);
   }
 
-  displaySuccessMessage(message: string) {
-    this._success.next(message);
+  displaySuccessMessage(message: string): void {
+    this.success$.next(message);
   }
 }

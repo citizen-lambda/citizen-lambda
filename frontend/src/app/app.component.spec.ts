@@ -1,15 +1,14 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
-import { environment } from 'src/environments/environment';
+import { environment } from '../environments/environment';
 
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 
-import { AppConfig } from '../conf/app.config';
 import { AppComponent } from './app.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { AuthService } from './services/auth.service';
@@ -21,7 +20,7 @@ import { FooterComponent } from './components/footer/footer.component';
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [AuthService, ],
+      providers: [AuthService],
       declarations: [AppComponent, TopbarComponent, SidebarComponent, FooterComponent],
       imports: [
         BrowserTransferStateModule,

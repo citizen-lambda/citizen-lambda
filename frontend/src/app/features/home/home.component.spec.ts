@@ -4,8 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HomeCustomComponent } from './custom/custom.component';
 import { HomeComponent } from './home.component';
 import { GreeterModule } from '../../shared/greeter/greeter.module';
-import { GncProgramsService } from '../programs/gnc-programs.service';
-
+import { ProgramsService } from '../programs/programs.service';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -14,11 +13,8 @@ describe('HomeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent, HomeCustomComponent],
-      providers: [GncProgramsService],
-      imports: [
-        RouterTestingModule,
-        GreeterModule
-      ]
+      providers: [ProgramsService],
+      imports: [RouterTestingModule, GreeterModule]
     }).compileComponents();
   }));
 

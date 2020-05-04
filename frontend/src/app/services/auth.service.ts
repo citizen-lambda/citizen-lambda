@@ -6,13 +6,14 @@ import { share, map, catchError } from 'rxjs/operators';
 
 import { AppConfig } from '../../conf/app.config';
 import {
-  LoggingUser,
+  UserInfo,
   RegisteringUser,
-  JWT,
-  TokenRefresh,
+  LoggedUser,
   LoginPayload,
+  LoggingUser,
   LogoutPayload,
-  UserInfo
+  JWT,
+  TokenRefresh
 } from '../core/models';
 
 @Injectable()
@@ -24,60 +25,65 @@ export class AuthService {
   redirectUrl: string | undefined;
   authenticated$ = new BehaviorSubject<boolean>(this.hasRefreshToken());
   authorized$ = new BehaviorSubject<boolean>(
-    // tslint:disable-next-line: no-non-null-assertion
-    this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()!) > 1
+    this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()) > 1
   );
-  timeoutID: any = null;
 
-  constructor(private client: HttpClient, private router: Router) { }
+  constructor(private client: HttpClient, private router: Router) {}
 
   login(user: LoggingUser): Observable<LoginPayload> {
-    const url = `${ AppConfig.API_ENDPOINT }/login`;
-    return this.client.post<LoginPayload>(url, user, { headers: this.headers }).pipe(
-      map(u => {
-        if (u && u.refresh_token) {
-          localStorage.setItem('refresh_token', u.refresh_token);
-          if (u.access_token) {
-            localStorage.setItem('access_token', u.access_token);
-            this.authorized$.next(true);
+    const url = `${AppConfig.API_ENDPOINT}/login`;
+    return this.client
+      .post<LoginPayload>(url, user, { headers: this.headers })
+      .pipe(
+        map(u => {
+          if (u && u.refresh_token) {
+            localStorage.setItem('refresh_token', u.refresh_token);
+            if (u.access_token) {
+              localStorage.setItem('access_token', u.access_token);
+              this.authorized$.next(true);
+            }
+            if (u.username) {
+              localStorage.setItem('username', u.username);
+              this.authenticated$.next(true);
+            }
+            if (localStorage.getItem('badges') !== null) {
+              localStorage.removeItem('badges');
+            }
           }
-          if (u.username) {
-            localStorage.setItem('username', u.username);
-            this.authenticated$.next(true);
-          }
-          if (localStorage.getItem('badges') !== null) {
-            localStorage.removeItem('badges');
-          }
-        }
-        return u;
-      })
-    );
+          return u;
+        })
+      );
   }
 
-  register(user: RegisteringUser): Observable<any> {
-    const url = `${ AppConfig.API_ENDPOINT }/registration`;
-    return this.client.post(url, user, { headers: this.headers });
+  register(user: RegisteringUser): Observable<LoggedUser | never> {
+    const url = `${AppConfig.API_ENDPOINT}/registration`;
+    return this.client.post<LoggedUser>(url, user, { headers: this.headers });
   }
 
-  logout(): Promise<any> {
-    const url = `${ AppConfig.API_ENDPOINT }/logout`;
+  clearIdentity(): void {
+    this.router.navigateByUrl('/home');
+    this.authorized$.next(false);
+    localStorage.removeItem('access_token');
+    this.authenticated$.next(false);
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('badges');
+  }
+
+  logout(): Promise<LogoutPayload> {
+    const url = `${AppConfig.API_ENDPOINT}/logout`;
     return this.client
       .post<LogoutPayload>(url, { headers: this.headers })
       .pipe(
         map(payload => {
-          this.router.navigateByUrl('/home');
-          this.authorized$.next(false);
-          localStorage.removeItem('access_token');
-          this.authenticated$.next(false);
-          localStorage.removeItem('refresh_token');
-          localStorage.removeItem('username');
-          if (localStorage.getItem('badges') !== null) {
-            localStorage.removeItem('badges');
-          }
+          this.clearIdentity();
+          this.router.navigate(['/home']);
           return payload;
         }),
         catchError(error => {
-          console.error(`[logout] error "${ error }"`);
+          console.error('[logout] error', error);
+          this.clearIdentity();
+          this.router.navigate(['/home']);
           return throwError(error);
         })
       )
@@ -85,22 +91,25 @@ export class AuthService {
   }
 
   ensureAuthorized(): Observable<UserInfo> {
-    const url = `${ AppConfig.API_ENDPOINT }/user/info`;
+    const url = `${AppConfig.API_ENDPOINT}/user/info`;
     return this.client.get<UserInfo>(url, { headers: this.headers });
   }
 
   performTokenRefresh(): Observable<TokenRefresh> {
-    const url = `${ AppConfig.API_ENDPOINT }/token_refresh`;
-    const refresh_token = this.getRefreshToken();
-    const headers = this.headers.set('Authorization', `Bearer ${ refresh_token }`);
+    const url = `${AppConfig.API_ENDPOINT}/token_refresh`;
+    const refreshToken = this.getRefreshToken();
+    const headers = this.headers.set('Authorization', `Bearer ${refreshToken}`);
     return this.client.post<TokenRefresh>(url, '', {
-      headers: headers
+      headers
     });
   }
 
-  selfDeleteAccount(_access_token: string): Promise<any> {
-    const url = `${ AppConfig.API_ENDPOINT }/user/delete`;
-    return this.client.delete(url, { headers: this.headers }).toPromise();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  selfDeleteAccount(_accessToken: string): Promise<LogoutPayload> {
+    const url = `${AppConfig.API_ENDPOINT}/user/delete`;
+    return this.client
+      .delete<LogoutPayload>(url, { headers: this.headers })
+      .toPromise();
   }
 
   isLoggedIn(): Observable<boolean> {
@@ -127,7 +136,7 @@ export class AuthService {
     if (!token) {
       return;
     }
-    const parts: any[] = token.split('.');
+    const parts: string[] = token.split('.');
     if (parts.length !== 3) {
       return;
     }
@@ -142,7 +151,7 @@ export class AuthService {
     }
   }
 
-  tokenExpiration(token: string): number | void {
+  tokenExpiration(token: string | null): number | void {
     if (!token) {
       return;
     }

@@ -15,20 +15,20 @@ const PROGRAMS_KEY = makeStateKey('programs');
 
 @Injectable({
   deps: [
-    [new Optional(), new SkipSelf(), GncProgramsService],
+    [new Optional(), new SkipSelf(), ProgramsService],
     HttpClient,
     TransferState,
     DomSanitizer
   ],
   providedIn: 'root',
   useFactory: (
-    instance: GncProgramsService | null,
+    instance: ProgramsService | null,
     client: HttpClient,
     state: TransferState,
     domSanitizer: DomSanitizer
-  ) => instance || new GncProgramsService(client, state, domSanitizer)
+  ) => instance || new ProgramsService(client, state, domSanitizer)
 })
-export class GncProgramsService {
+export class ProgramsService {
   private readonly URL = AppConfig.API_ENDPOINT;
   programs: Program[] | null;
   programs$ = new Subject<Program[] | null>();
@@ -55,7 +55,7 @@ export class GncProgramsService {
         // FIXME: handle empty|null case -> handleError
         pluck<FeatureCollection, Feature[]>('features'),
         map(features => features.map(feature => this.convertFeature2Program(feature))),
-        map(programs => programs.sort(sorted(AppConfig['program_list_sort']))),
+        map(programs => programs.sort(sorted(AppConfig.program_list_sort))),
         tap(programs => {
           this.state.set(PROGRAMS_KEY, programs as Program[]);
           this.programs$.next(programs);
@@ -89,38 +89,37 @@ export class GncProgramsService {
     );
   }
 
-  getProgramStream(): Observable<any[]> {
+  getProgramStream(): Observable<any> {
     return new Observable(observer => {
       const eventSource = new EventSource(`${this.URL}/programs/stream?ngsw-bypass=1`);
       eventSource.addEventListener('message', event => observer.next(event.data));
       eventSource.addEventListener('update', event => {
         console.log(event);
       });
-      eventSource.addEventListener('error', _error => {
+      eventSource.addEventListener('error', error => {
         if (eventSource.readyState !== eventSource.CONNECTING) {
-          observer.error('An error occurred.');
+          observer.error('An error occurred: ' + error);
         }
         eventSource.close();
         observer.complete();
       });
 
-      return () => {
+      return (): void => {
         eventSource.close();
       };
     });
   }
 
-  getProgramTaxonomyList(program_id: number): Observable<Taxonomy> {
+  getProgramTaxonomyList(programID: number): Observable<Taxonomy> {
     return this.getAllPrograms().pipe(
-      // tslint:disable-next-line: no-non-null-assertion
-      map(programs => programs!.find(p => p.id_program === program_id)),
+      map(programs => programs?.find(p => p.id_program === programID)),
       mergeMap(program =>
         this.client.get<Taxonomy>(
           // tslint:disable-next-line: no-non-null-assertion
           `${this.URL}/taxonomy/lists/${program!.taxonomy_list}/species`
         )
       ),
-      catchError(this.handleError<Taxonomy>(`getProgramTaxonomyList::[${program_id}]`, {}))
+      catchError(this.handleError<Taxonomy>(`getProgramTaxonomyList::[${programID}]`, {}))
     );
   }
 

@@ -2,12 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WebshareComponent } from './webshare.component';
 
-
 @NgModule({
   declarations: [WebshareComponent],
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   exports: [WebshareComponent]
 })
-export class WebshareModule { }
+export class WebshareModule {}

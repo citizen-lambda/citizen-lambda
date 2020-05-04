@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 
+import { FlowItem } from './flow-item';
+
 /*
-import { FlowItem } from './flow-item'
 import { SomeComponent1 } from '../some/components/comp.component';
 
 
@@ -13,7 +14,7 @@ const Context = {
 
 @Injectable()
 export class FlowService {
-  getFlowItems(_initialState: any) {
+  getFlowItems(_initialState: any): FlowItem[] {
     throw new Error('not implemented');
     // return [
     //   new FlowItem(SomeComponent1, Context),

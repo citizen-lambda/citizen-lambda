@@ -9,12 +9,9 @@ describe('GreeterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [ GreeterComponent ]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule],
+      declarations: [GreeterComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
