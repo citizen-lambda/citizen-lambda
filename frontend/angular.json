@@ -4,17 +4,17 @@
   "newProjectRoot": "projects",
   "projects": {
     "frontend": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
       "i18n": {
+        "sourceLocale": "fr",
         "locales": {
-          "fr": "src/locale/messages.fr.xlf",
           "en": "src/locale/messages.en.xlf"
         }
       },
-      "root": "",
-      "sourceRoot": "src",
-      "projectType": "application",
-      "prefix": "app",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -52,7 +52,8 @@
               "node_modules/leaflet.heat/dist/leaflet-heat.js",
               "node_modules/leaflet-offline/dist/leaflet-offline.js",
               "node_modules/localforage/dist/localforage.js"
-            ]
+            ],
+            "i18nMissingTranslation": "error"
           },
           "configurations": {
             "production": {
@@ -90,22 +91,21 @@
               "localize": [
                 "fr"
               ],
-              "aot": true,
-              "i18nMissingTranslation": "error"
+              "deleteOutputPath": false
             },
             "en": {
               "localize": [
                 "en"
               ],
-              "aot": true,
-              "i18nMissingTranslation": "error"
+              "deleteOutputPath": false
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "frontend:build"
+            "browserTarget": "frontend:build",
+            "proxyConfig": "src/conf/proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -122,7 +122,8 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "frontend:build"
+            "browserTarget": "frontend:build",
+            "outputPath": "src/locale"
           }
         },
         "test": {
@@ -144,18 +145,6 @@
             "codeCoverage": true
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "frontend:serve:fr"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "frontend:serve:production"
-            }
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
@@ -167,6 +156,34 @@
             "exclude": [
               "**/node_modules/**"
             ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "frontend:serve",
+            // "webdriverUpdate": false,
+            "specs": [
+              "./e2e/app.e2e-spec.ts"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "frontend:serve:production"
+            },
+            "fr": {
+              "devServerTarget": "frontend:serve:fr",
+              "specs": [
+                "./e2e/app.e2e-spec.ts"
+              ]
+            },
+            "en": {
+              "devServerTarget": "frontend:serve:en",
+              "specs": [
+                "./e2e/app.en.e2e-spec.ts"
+              ]
+            }
           }
         },
         "server": {

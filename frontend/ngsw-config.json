@@ -34,9 +34,9 @@
         "https://taxref.mnhn.fr/api/media/*"
       ],
       "cacheConfig": {
-        "maxSize": 128,
-        "maxAge": "10m",
-        "timeout": "7s",
+        "maxSize": 32,
+        "maxAge": "1d",
+        "timeout": "30s",
         "strategy": "performance"
       }
     },

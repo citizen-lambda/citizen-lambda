@@ -1,15 +1,15 @@
+import { environment } from '../environments/environment';
+
+
 export const AppConfig = {
-  appName: 'GeoNature-citizen',
-  API_ENDPOINT: 'http://localhost:5002/api',
-  API_TAXHUB: 'http://localhost:5000/api',
+  appName: 'Citizen-lambda',
+  // API_ENDPOINT: 'http://localhost:5002/api',
+  API_ENDPOINT: environment.production ? 'http://localhost:5002/api' : 'http://localhost:4200/api',
   FRONTEND: {
     PROD_MOD: true,
-    MULTILINGUAL: false,
-    DISPLAY_FOOTER: true,
-    DISPLAY_TOPBAR: false,
-    DISPLAY_SIDEBAR: true
+    DISPLAY_FOOTER: true
   },
-  URL_APPLICATION: 'http://127.0.0.1:4200',
+  URL_APPLICATION: 'http://localhost:4200',
   REWARDS: true,
   SEO: {
     description: {  // up to 156 characters
@@ -50,8 +50,8 @@ export const AppConfig = {
     fr: 'AJOUTER UNE OBSERVATION',
     en: 'CONTRIBUTE AN OBSERVATION'
   },
-  taxonSelectInputThreshold: 7,
-  taxonAutocompleteInputThreshold: 12,
+  taxonSelectInputThreshold: 0,
+  taxonAutocompleteInputThreshold: 0,
   taxonAutocompleteFields: ['nom_complet', 'nom_vern', 'nom_vern_eng', 'cd_nom'],
   program_list_sort: '-timestamp_create',
   OBSERVATIONS_FEATURES: {
