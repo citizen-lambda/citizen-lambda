@@ -2,6 +2,7 @@ from passlib.hash import pbkdf2_sha256 as sha256
 from gncitizen.core.commons.models import (
     ModulesModel,
     ProgramsModel,
+    TimestampCreateMixinModel,
     TimestampMixinModel,
 )
 from gncitizen.utils.sqlalchemy import serializable
@@ -10,7 +11,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm.exc import NoResultFound
 
 
-class RevokedTokenModel(db.Model):  # type: ignore
+class RevokedTokenModel(TimestampCreateMixinModel, db.Model):  # type: ignore
     __tablename__ = "t_revoked_tokens"
     __table_args__ = {"schema": "gnc_core"}
 
@@ -125,9 +126,7 @@ class UserRightsModel(TimestampMixinModel, db.Model):  # type: ignore
     __tablename__ = "t_users_rights"
     __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(
-        db.Integer, db.ForeignKey(UserModel.id_user), nullable=False
-    )
+    id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_module = db.Column(
         db.Integer, db.ForeignKey(ModulesModel.id_module), nullable=True
     )
@@ -147,9 +146,7 @@ class UserGroupsModel(TimestampMixinModel, db.Model):  # type: ignore
     __tablename__ = "cor_users_groups"
     __table_args__ = {"schema": "gnc_core"}
     id_user_right = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(
-        db.Integer, db.ForeignKey(UserModel.id_user), nullable=False
-    )
+    id_user = db.Column(db.Integer, db.ForeignKey(UserModel.id_user), nullable=False)
     id_group = db.Column(
         db.Integer, db.ForeignKey(GroupsModel.id_group), nullable=False
     )

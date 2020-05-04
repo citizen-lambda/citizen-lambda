@@ -173,8 +173,8 @@ def login():
         request_data = dict(request.get_json())
         username = request_data["username"]
         password = request_data["password"]
-        current_user = UserModel.find_by_username(username)
-        if current_user:
+        try:
+            current_user = UserModel.find_by_username(username)
             if UserModel.verify_hash(password, current_user.password):
                 access_token = create_access_token(identity=username)
                 refresh_token = create_refresh_token(identity=username)
@@ -194,11 +194,14 @@ def login():
                 {"message": "Les informations d'identification sont erronées"},
                 400,
             )
-        current_app.logger.critical("login failure: non-existant user `%s`", username)
-        return (
-            {"message": f"""L'utilisateur "{username}" n'est pas enregistré."""},
-            400,
-        )
+        except Exception:
+            current_app.logger.critical(
+                "login failure: non-existant user `%s`", username
+            )
+            return (
+                {"message": f"""L'utilisateur "{username}" n'est pas enregistré."""},
+                400,
+            )
     except Exception as e:
         current_app.logger.critical("login failure: %s", str(e))
         return {"message": "Tentative de login auditée"}, 400
@@ -233,11 +236,11 @@ def logout():
         200:
             description: user disconnected
     """
-    jti = get_raw_jwt()["jti"]
     try:
+        jti = get_raw_jwt()["jti"]
         revoked_token = RevokedTokenModel(jti=jti)
         revoked_token.add()
-        return {"msg": "Successfully logged out"}, 200
+        return {"message": "Successfully logged out"}, 200
     except Exception:
         return {"message": "Something went wrong"}, 500
 

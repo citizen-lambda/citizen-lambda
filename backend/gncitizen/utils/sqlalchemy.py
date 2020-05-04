@@ -29,6 +29,7 @@ def create_schemas(db):
     db.session.execute("CREATE SCHEMA IF NOT EXISTS gnc_obstax")
     db.session.execute("CREATE SCHEMA IF NOT EXISTS ref_geo")
     db.session.commit()
+    current_app.logger.debug("[create_schemas] Schemas created")
 
 
 def geom_from_geojson(geojson: str) -> Optional[bytes]:
@@ -37,7 +38,10 @@ def geom_from_geojson(geojson: str) -> Optional[bytes]:
     geojson commonly used in PostGIS geometry fields """
     try:
         shape = asShape(geojson)
-        return from_shape(shape, srid=4326)
+        wkb = bytes(from_shape(shape, srid=4326))
+        if len(wkb) > 0:
+            return wkb
+        raise Exception("Failed to produce WKBElement from shape")
     except Exception as e:
         current_app.logger.error(
             "[geom_from_geojson] Can't convert geojson geometry to wkb: %s", str(e),

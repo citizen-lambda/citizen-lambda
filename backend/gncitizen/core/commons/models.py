@@ -14,14 +14,20 @@ from gncitizen.utils.env import db
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
 
 
-class TimestampMixinModel:
-    """Structure commune de suivi des modifications d'une table"""
+class TimestampCreateMixinModel:
+    """Structure commune de suivi des modifications d'une table: creation d'un enregistrement
+    Common structure for tracking changes to a table: record created"""  # noqa: E501
 
     @declared_attr
     def timestamp_create(self):
         return db.Column(
             db.DateTime, nullable=False, default=datetime.now(tz=timezone.utc)
         )
+
+
+class TimestampMixinModel(TimestampCreateMixinModel):
+    """Structure commune de suivi des modifications d'une table: màj d'un enregistrement
+    Common structure for tracking changes to a table: record updated"""
 
     @declared_attr
     def timestamp_update(self):
