@@ -551,4 +551,4 @@ sudo goaccess /var/log/apache2/access.log --log-format=COMBINED
 
 ### Frontend code coverage (not yet enforceable)
 
-open `citizen/frontend/coverage/index.html` in your favorite browser after running `npm run test`
+open `citizen/frontend/coverage/index.html` in your favorite browser after `npm run test`
