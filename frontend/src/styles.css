@@ -393,7 +393,7 @@ text-overflow: ellipsis !important;
 
 * {
   scrollbar-color: var(--primary) var(--secondary-color);
-  /* scrollbar-width: thin; */
+  scrollbar-width: thin;
 }
 
 /* blink scroll bar custom design */

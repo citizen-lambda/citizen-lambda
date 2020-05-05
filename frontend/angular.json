@@ -40,6 +40,7 @@
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
               "node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css",
               "src/styles.css",
+              "src/base.css",
               "src/custom/custom.css"
             ],
             "scripts": [
@@ -87,16 +88,11 @@
               "serviceWorker": true,
               "ngswConfigPath": "ngsw-config.json"
             },
-            "fr": {
-              "localize": [
-                "fr"
-              ],
-              "deleteOutputPath": false
-            },
             "en": {
               "localize": [
                 "en"
               ],
+              "aot": true,
               "deleteOutputPath": false
             }
           }
@@ -105,7 +101,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "frontend:build",
-            "proxyConfig": "src/conf/proxy.conf.json"
+            "proxyConfig": "src/conf/proxy.conf.js"
           },
           "configurations": {
             "production": {
@@ -163,7 +159,6 @@
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
             "devServerTarget": "frontend:serve",
-            // "webdriverUpdate": false,
             "specs": [
               "./e2e/app.e2e-spec.ts"
             ]
