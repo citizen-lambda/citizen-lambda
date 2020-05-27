@@ -4,9 +4,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { map, catchError, tap, share } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-import { AppConfig } from '../../conf/app.config';
+import { AppConfig } from '@conf/app.config';
 
-import { Taxon } from '../core/models';
+import { Taxon } from '@core/models';
 
 export type UnsafeTaxon = Taxon & { nom_complet_html: string };
 

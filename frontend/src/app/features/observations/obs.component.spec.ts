@@ -9,16 +9,16 @@ import { of } from 'rxjs';
 
 import { NgbModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { GreeterModule } from '../../shared/greeter/greeter.module';
-import { ProgramTeaserComponent } from '../../shared/programs-shared/program-teaser/program-teaser.component';
-import { ProgramContentComponent } from '../../shared/programs-shared/program-content/program-content.component';
-import { ObsFormComponent } from '../../shared/observations-shared/form/form.component';
-import { ObsFormMapComponent } from '../../shared/observations-shared/form/obs-form-map-component';
-import { ObsListComponent } from '../../shared/observations-shared/list/list.component';
-import { ObsMapComponent } from '../../shared/observations-shared/map/map.component';
+import { GreeterModule } from '@shared/greeter/greeter.module';
+import { ProgramTeaserComponent } from '@shared/programs-shared/program-teaser/program-teaser.component';
+import { ProgramContentComponent } from '@shared/programs-shared/program-content/program-content.component';
+import { ObsFormComponent } from '@shared/observations-shared/form/form.component';
+import { FormMapComponent } from '@shared/observations-shared/form/map/map-component';
+import { ObsListComponent } from '@shared/observations-shared/list/list.component';
+import { ObsMapComponent } from '@shared/observations-shared/map/map.component';
 import { ObsComponent } from './obs.component';
-import { ModalFlowComponent } from '../../shared/observations-shared/modalflow/modalflow.component';
-import { FlowComponent } from '../../shared/observations-shared/modalflow/flow/flow.component';
+import { ModalFlowComponent } from '@shared/observations-shared/modalflow/modalflow.component';
+import { FlowComponent } from '@shared/observations-shared/modalflow/flow/flow.component';
 
 describe('ObsComponent', () => {
   let component: ObsComponent;
@@ -54,7 +54,7 @@ describe('ObsComponent', () => {
         ObsListComponent,
         ObsMapComponent,
         ModalFlowComponent,
-        ObsFormMapComponent,
+        FormMapComponent,
         FlowComponent
       ]
     }).compileComponents();
@@ -63,7 +63,7 @@ describe('ObsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ObsComponent);
     component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

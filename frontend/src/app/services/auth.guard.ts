@@ -1,39 +1,59 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router,
+  Route,
+  CanActivateChild,
+  CanLoad
+} from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
-import { UserInfo } from '../core/models';
+import { UserFeatures, UserFeaturesPayload } from '@core/models';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
-  user: UserInfo | undefined;
+export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
+  user: UserFeatures | undefined;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private auth: AuthService) {}
 
-  canActivate(
-    _next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    this.authService.redirectUrl = state.url;
-    const token = localStorage.getItem('access_token');
+  canActivate(_next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    const url = state.url;
+    return this.checkLogin(url);
+  }
+
+  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    return this.canActivate(route, state);
+  }
+
+  canLoad(route: Route): Observable<boolean> {
+    const url = `/${route.path}`;
+
+    return this.checkLogin(url);
+  }
+
+  checkLogin(url: string): Observable<boolean> {
+    this.auth.redirectUrl = url;
+    const token = this.auth.haveAuthorization();
     if (token) {
-      return this.authService.ensureAuthorized().pipe(
-        map((user: UserInfo) => !!user),
+      return this.auth.ensureAuthorized().pipe(
+        map((user: UserFeaturesPayload) => !!user === true),
         catchError(error => {
-          console.error('[AuthGuard] canActivate error', error);
-          this.authService.logout();
+          console.error('[AuthGuard] checkLogin error', error);
+          this.auth.logout();
           this.router.navigate(['/home']);
           return of(false);
         })
       );
     }
 
-    this.authService.logout();
+    this.auth.logout();
     this.router.navigate(['/home']);
-    return false;
+    return of(false);
   }
 }

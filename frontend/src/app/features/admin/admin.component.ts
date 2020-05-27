@@ -5,11 +5,10 @@ import {
   // Inject,
   // LOCALE_ID
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
-import { AppConfig } from '../../../conf/app.config';
-import { AuthService } from '../../services/auth.service';
+import { AppConfig } from '@conf/app.config';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-admin',
@@ -31,11 +30,10 @@ export class AdminComponent implements OnInit {
   constructor(
     // @Inject(LOCALE_ID) readonly localeId: string,
     private auth: AuthService,
-    private sanitizer: DomSanitizer,
-    // protected http: HttpClient
+    private sanitizer: DomSanitizer // protected http: HttpClient
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const ADMIN_ENDPOINT = [
       AppConfig.API_ENDPOINT,
       // this.localeId,
@@ -44,7 +42,7 @@ export class AdminComponent implements OnInit {
     ].join('/');
     const PROGRAM_ENDPOINT = ADMIN_ENDPOINT + 'programsmodel/';
     this.adminUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      PROGRAM_ENDPOINT + '?jwt=' + this.auth.getAccessToken()
+      PROGRAM_ENDPOINT + '?jwt=' + this.auth.getAuthorization()
     );
   }
 }

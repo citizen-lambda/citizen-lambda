@@ -1,9 +1,8 @@
 # coding:utf-8
-from flask import stream_with_context
 import logging
 import json
 import urllib.parse
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request, current_app, stream_with_context
 from flask_jwt_extended import jwt_optional, get_jwt_identity  # , jwt_required
 from flask_admin.form import SecureForm
 from flask_admin.contrib.sqla import ModelView
@@ -29,6 +28,7 @@ from flask_jwt_extended.utils import (
 )
 from flask_jwt_extended.exceptions import UserLoadError
 
+logger = current_app.logger
 
 routes = Blueprint("commons", __name__)
 
@@ -174,6 +174,7 @@ def get_programs():
         feature_collection["count"] = count
         return feature_collection
     except Exception as e:
+        logger.critical("[get_programs] Error: %s", str(e))
         return {"message": str(e)}, 400
 
 
@@ -186,6 +187,15 @@ frontend_broadcast.addHandler(frontend_handler)
 @jwt_optional
 @routes.route("/programs/stream")
 def program_stream():
+    # add get param … `since datetime` for (offline) reconnection
+    # and handle the (todo) event log accordingly
     return current_app.response_class(
         stream_with_context(frontend_handler.subscribe()), mimetype="text/event-stream",
     )
+
+
+@routes.route("/csp_report", methods=["POST"])
+def csp_report():
+    with open("csp_reports", "a") as fh:
+        fh.write(request.data.decode() + "\n")
+    return {"message": "done"}, 200

@@ -34,7 +34,7 @@ class ReverseProxied:
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name):]
+                environ["PATH_INFO"] = path_info[len(script_name) :]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -44,9 +44,8 @@ class ReverseProxied:
         return self.app(environ, start_response)
 
 
-def get_app(  # pylint: disable=too-many-locals
-    config, _app=None, with_external_mods=True, url_prefix="/api"
-):
+# pylint: disable=too-many-locals
+def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
     # Make sure app is a singleton
     if _app is not None:
         return _app

@@ -7,7 +7,7 @@ import {
   Router
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { ProgramsService } from './programs.service';
 import { Program } from './programs.models';
@@ -20,22 +20,26 @@ export class UniqueProgramGuard implements CanActivate, CanActivateChild {
 
   canActivate(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    next: ActivatedRouteSnapshot,
+    _next: ActivatedRouteSnapshot,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
-    // console.warn("UniqueProgramGuard::getAllPrograms");
-
-    return this.programService.getAllPrograms().pipe(
+    _state: RouterStateSnapshot
+  ): Observable<boolean> {
+    return this.programService.programs$.pipe(
       map((programs: Program[] | null) => {
-        const count = programs ? programs.length : 0;
-        if (programs && count === 1) {
+        if (programs?.length === 0) {
+          console.error('UniqueProgramGuard: no program found');
+          return true;
+        }
+        if (programs?.length === 1) {
           this.router.navigate(['programs', programs?.[0].id_program, 'observations']);
           return false;
         }
         return true;
       }),
-      catchError(_e => of(true))
+      catchError(error => {
+        console.error('UniqueProgramGuard:', error);
+        return of(true);
+      })
     );
   }
 

@@ -3,6 +3,7 @@
 import logging
 import queue
 from datetime import datetime, timezone
+from flask import current_app, json
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
@@ -97,6 +98,20 @@ class MediaModel(
 
 
 class FrontendBroadcastHandler(logging.Handler):
+    """
+    https://html.spec.whatwg.org/multipage/server-sent-events.html
+
+    testing in the browser console:
+        var source = new EventSource('http://localhost:4200/api/programs/stream?ngsw-bypass=1');
+            source.onmessage = function(e) {
+            console.log(e);
+            console.log(e.data);
+        };
+        …
+        source.close()
+    limitation: max-number of open connection per browser & domain is 6
+    """  # noqa: E501
+
     def __init__(self):
         logging.Handler.__init__(self)
         self.subscriptions = []
@@ -120,10 +135,31 @@ class FrontendBroadcastHandler(logging.Handler):
     def subscribe(self):
         q = queue.Queue()
         self.subscriptions.append(q)
+
+        welcome_event = self.mk_event(
+            json.dumps(
+                {"type": "message", "data": {"message": "hello , welcome on citizenλ!"}}
+            )
+        )
         try:
-            yield f"hello\n\n"
+            yield welcome_event
             while True:
                 result = q.get()
-                yield f"{result}\n\n"
-        except GeneratorExit:
+                yield self.mk_event(result)
+        except GeneratorExit as exc:
+            current_app.logger.warn("SSE: %s", str(exc))
             self.subscriptions.remove(q)
+        current_app.logger.warn("SSE exit: %s", str(self.subscriptions))
+
+    def mk_event(self, json_encoded_message: str) -> str:
+        message = json.loads(json_encoded_message)
+        event_type = message["type"]
+        event_data = message["data"]
+        # print("message", message, "type", event_type, "data", event_data)
+        return f"""\
+event: {event_type}
+retry: 1000
+id: {datetime.now(tz=timezone.utc).timestamp()}
+data: {json.dumps(event_data)}
+
+"""

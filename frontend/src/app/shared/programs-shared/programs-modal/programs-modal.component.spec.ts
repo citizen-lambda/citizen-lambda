@@ -4,8 +4,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgbModule, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { GncService } from '../../../services/gnc.service';
-import { ProgramsService } from '../../../features/programs/programs.service';
+import { GncService } from '@services/gnc.service';
+import { ProgramsService } from '@features/programs/programs.service';
 
 import { ProgramsModalComponent } from './programs-modal.component';
 

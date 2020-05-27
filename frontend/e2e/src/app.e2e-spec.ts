@@ -1,7 +1,7 @@
 // tslint:disable-next-line: no-implicit-dependencies
-import { browser, logging } from 'protractor';
 import { AppPage } from './app.po';
-import { AppConfig } from '../../src/conf/app.config';
+import { browser, logging } from 'protractor';
+import { AppConfig } from '@conf/app.config';
 
 const platformIntro = AppConfig.platform_intro.fr;
 

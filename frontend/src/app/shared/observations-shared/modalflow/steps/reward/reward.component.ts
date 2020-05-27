@@ -3,15 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { throwError, BehaviorSubject, Observable, OperatorFunction } from 'rxjs';
 import { tap, catchError, map, distinctUntilChanged, share, pluck, filter } from 'rxjs/operators';
 
-import type { CallbackFunctionVariadicAnyReturn } from '../../../../../core/models';
-import { AppConfig } from '../../../../../../conf/app.config';
-import { FlowComponentInterface } from '../../flow/flow';
-import { AuthService } from '../../../../../services/auth.service';
-
-export interface Badge {
-  img: string;
-  alt: string;
-}
+import type { CallbackFunctionVariadicAnyReturn, Badge } from '@core/models';
+import { AppConfig } from '@conf/app.config';
+import { FlowComponentInterface } from '@shared/observations-shared/modalflow/flow/flow';
+import { AuthService } from '@services/auth.service';
 
 export interface BadgeState {
   badges: Badge[];
@@ -74,15 +69,15 @@ export class BadgeFacade {
   );
   loading$ = this.state$.pipe(map(state => state.loading));
 
-  constructor(private authService: AuthService, private client: HttpClient) {
+  constructor(private auth: AuthService, private client: HttpClient) {
     this.username = localStorage.getItem('username') || 'undefined';
     this.getChanges();
   }
 
   getChanges(): void {
-    const accessToken = localStorage.getItem('access_token');
-    if (accessToken && this.AppConfig.REWARDS) {
-      this.authService.ensureAuthorized().subscribe(
+    const authorization = this.auth.haveAuthorization();
+    if (authorization && this.AppConfig.REWARDS) {
+      this.auth.ensureAuthorized().subscribe(
         user => {
           if (!!user && !!user.features && user.features['id_role']) {
             this.role_id = user.features.id_role;

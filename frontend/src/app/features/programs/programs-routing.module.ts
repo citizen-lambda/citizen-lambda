@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ProgramsModalComponent } from '../../shared/programs-shared/programs-modal/programs-modal.component';
+import { ProgramsModalComponent } from '@shared/programs-shared/programs-modal/programs-modal.component';
 import { ProgramsResolve } from './programs-resolve.service';
 
 const routes: Routes = [
@@ -12,7 +12,6 @@ const routes: Routes = [
   },
   {
     path: 'programs/:id/observations',
-    // loadChildren: () => import('./programs/observations/observations.module').then(m => m.ObservationsModule),
     loadChildren: (): Promise<any> =>
       import('../observations/observations.module').then(m => m.ObservationsModule),
     resolve: { programs: ProgramsResolve }

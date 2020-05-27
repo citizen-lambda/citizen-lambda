@@ -9,9 +9,9 @@ import {
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { AppConfig } from '../../../conf/app.config';
-import { AppConfigInterface } from '../../core/models';
-import { AnchorNavigationDirective } from '../../helpers/anav';
+import { AppConfig } from '@conf/app.config';
+import { AppConfigInterface } from '@core/models';
+import { AnchorNavigationDirective } from '@helpers/anav';
 
 type AppConfigGreeter = Pick<
   AppConfigInterface,
@@ -31,6 +31,7 @@ export class GreeterComponent extends AnchorNavigationDirective implements OnIni
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
+
     protected router: Router,
     protected route: ActivatedRoute,
     protected domSanitizer: DomSanitizer
@@ -40,10 +41,14 @@ export class GreeterComponent extends AnchorNavigationDirective implements OnIni
 
   ngOnInit(): void {
     this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
-      (AppConfig.platform_intro as { [name: string]: string })[this.localeId]
+      (AppConfig.platform_intro as { [name: string]: string })[
+        this.localeId.startsWith('fr') ? 'fr' : 'en'
+      ]
     );
     this.platform_greeter = this.domSanitizer.bypassSecurityTrustHtml(
-      (AppConfig.platform_greeter as { [name: string]: string })[this.localeId]
+      (AppConfig.platform_greeter as { [name: string]: string })[
+        this.localeId.startsWith('fr') ? 'fr' : 'en'
+      ]
     );
   }
 }

@@ -5,7 +5,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 // import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@services/auth.service';
 import { LogoutComponent } from './logout.component';
 
 describe('LogoutComponent', () => {

@@ -7,6 +7,10 @@ import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import L from 'leaflet';
 
 import { ObsFormComponent } from './form.component';
+import { FormMapComponent } from './map/map-component';
+import { CommentComponent } from './comment/comment.component';
+import { DateComponent } from './date/date.component';
+import { PhotoComponent } from './photo/photo.component';
 
 describe('ObsFormComponent', () => {
   let component: ObsFormComponent;
@@ -22,14 +26,20 @@ describe('ObsFormComponent', () => {
         FormsModule
       ],
       providers: [NgbActiveModal],
-      declarations: [ObsFormComponent]
+      declarations: [
+        ObsFormComponent,
+        FormMapComponent,
+        CommentComponent,
+        DateComponent,
+        PhotoComponent
+      ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ObsFormComponent);
     component = fixture.componentInstance;
-    component.data = { coords: L.point(5, 44) };
+    component.data = { coords: L.latLng(5, 44) };
   });
 
   it('should create', () => {

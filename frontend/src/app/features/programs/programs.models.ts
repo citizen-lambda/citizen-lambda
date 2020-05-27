@@ -11,5 +11,5 @@ export interface Program {
   logo: string;
   module: number;
   taxonomy_list: number;
-  on_sidebar: Boolean;
+  on_sidebar: boolean;
 }

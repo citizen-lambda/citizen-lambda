@@ -1,5 +1,12 @@
 import { Feature, FeatureCollection } from 'geojson';
-import { AppConfigInterface, Taxon, TaxonMedium } from '../../core/models';
+import {
+  AppConfigInterface,
+  Taxon,
+  TaxonMedium,
+  AnonymousUser,
+  APIPayload,
+  Taxonomy
+} from '@core/models';
 import { Program } from '../programs/programs.models';
 
 export interface ObservationData {
@@ -7,21 +14,20 @@ export interface ObservationData {
   cd_nom: number;
   images?: string; // posted new obs
   image?: string; // posted obs
-  media?: TaxonMedium[]; // TODO: fallback ? do we still use this field ? migrate && rm otherwise
+  media?: TaxonMedium[];
   comment?: string;
   observer?: {
     username: string;
   };
   municipality?: {
     name: string;
-    code: string;
   };
   date: Date;
-  count: Number;
+  count: number;
 }
 
-export type AnonymousObserver = Partial<{ username: 'Anonyme' }>;
-export type Observer = Pick<ObservationData, 'observer'> | AnonymousObserver;
+// TODO: check new Anonymous(this.localeId) from models
+export type Observer = Pick<ObservationData, 'observer'> | AnonymousUser;
 export interface Municipality {
   name: string;
   code: string;
@@ -39,9 +45,9 @@ export type ObsSummary = Pick<
   Observer;
 export type ObsDetails = Pick<ObservationData, 'comment'> & ObsSummary;
 
-export interface ObsPostResponse extends FeatureCollection {
+export interface ObsPostResponse extends APIPayload {
   message: string;
-  features: ObsPostResponsePayload[];
+  features: ObsPostResponsePayload;
 }
 
 // TODO: migrate component to taxo service/obs facade
@@ -65,4 +71,12 @@ export interface ObsState {
   program: Program;
   observations: FeatureCollection;
   selected: Feature;
+}
+
+export interface SharedContext {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [name: string]: any;
+  coords?: L.LatLng | undefined;
+  program?: FeatureCollection;
+  taxa?: Taxonomy;
 }

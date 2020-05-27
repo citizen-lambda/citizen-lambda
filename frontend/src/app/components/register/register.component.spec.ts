@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@services/auth.service';
 import { RegisterComponent } from './register.component';
 
 describe('RegisterComponent', () => {

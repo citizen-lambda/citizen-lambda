@@ -19,17 +19,16 @@ import {
   NgbModalRef
 } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppConfig } from '../../../../conf/app.config';
-import { Taxon } from '../../../core/models';
-import { ObservationData } from '../../../features/observations/observation.model';
-import { TaxonomyService } from '../../../services/taxonomy.service';
-import { ObservationsFacade } from '../observations-facade.service';
-import { WebshareComponent, ShareData } from '../../webshare/webshare.component';
+import { AppConfig } from '@conf/app.config';
+import { Taxon } from '@core/models';
+import { ObservationData } from '@features/observations/observation.model';
+import { TaxonomyService } from '@services/taxonomy.service';
+import { ObservationsFacade } from '@shared/observations-shared/observations-facade.service';
+import { WebshareComponent, ShareData } from '@shared/webshare/webshare.component';
 
 @Component({
   selector: 'app-obs-details-modal-content',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: [],
   template: `
     <div class="modal-header">
       <h4 class="modal-title" id="modal-obs-details">
@@ -39,96 +38,95 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body obs-added" *ngIf="taxon$ | async as taxon">
-      <div>
-        <!-- FIXME: hardcoded backend media url -->
-        <img
-          [src]="
-            data?.images?.length
-              ? AppConfig.API_ENDPOINT + '/media/' + data?.images![0]
-              : data?.image
-              ? data!.image
-              : taxon?.media && taxon!.media.length > 0
-              ? taxon!.media![0]!.thumb_url
-              : 'assets/default_taxon.jpg'
-          "
-          [alt]="
-            !localeId.startsWith('fr') && !!taxon?.nom_vern_eng
-              ? taxon?.nom_vern_eng
-              : taxon?.nom_vern
-              ? taxon?.nom_vern
-              : taxon?.nom_valide
-          "
-        />
-      </div>
-      <p>
-        {{
-          !localeId.startsWith('fr')
-            ? !!taxon?.nom_vern_eng
-              ? [taxon?.nom_vern_eng, taxon?.nom_vern].join(', ')
-              : taxon?.nom_vern
-            : [taxon?.nom_vern, taxon?.nom_vern_eng].join(', ')
-        }}
-      </p>
-      <p i18n>Nom complet: {{ taxon?.nom_complet }}</p>
-      <p i18n>Dénombrement: {{ data?.count }}</p>
-      <p i18n>Date: {{ data?.date | date }}</p>
-      <p *ngIf="data?.observer?.username" i18n>Observateur: {{ data?.observer?.username }}</p>
-      <p *ngIf="!!data?.comment">{{ data?.comment }}</p>
-      <!-- <p i18n>Statut: {{ taxon?.id_statut }}</p> -->
-      <br />
-      <ul style="text-align: left;">
-        <li>
-          <span i18n>Phylum: {{ taxon?.phylum }}</span>
-        </li>
-        <li>
-          <ul>
-            <li>
-              <span i18n>Classe: {{ taxon?.classe }}</span>
-            </li>
-            <li>
-              <ul>
-                <li>
-                  <span i18n>Ordre: {{ taxon?.ordre }}</span>
-                </li>
-                <li>
-                  <ul>
-                    <li>
-                      <span i18n>Famille: {{ taxon?.famille }}</span>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <!-- <p i18n>cd_nom: {{ taxon?.cd_nom }}</p>
+    <div class="modal-body d-flex flex-column" *ngIf="taxon$ | async as taxon">
+      <!-- FIXME: hardcoded backend media url -->
+      <app-image-top
+        [src]="
+          data?.images?.length
+            ? AppConfig.API_ENDPOINT + '/media/' + data?.images![0]
+            : data?.image
+            ? data!.image
+            : taxon?.media && taxon!.media.length > 0
+            ? taxon!.media![0]!.thumb_url
+            : 'assets/default_taxon.jpg'
+        "
+        [alt]="
+          !localeId.startsWith('fr') && !!taxon?.nom_vern_eng
+            ? taxon?.nom_vern_eng
+            : taxon?.nom_vern
+            ? taxon?.nom_vern
+            : taxon?.nom_valide
+        "
+      ></app-image-top>
+      <div class="obs-added">
+        <p>
+          {{
+            !localeId.startsWith('fr')
+              ? !!taxon?.nom_vern_eng
+                ? [taxon?.nom_vern_eng, taxon?.nom_vern].join(', ')
+                : taxon?.nom_vern
+              : [taxon?.nom_vern, taxon?.nom_vern_eng].join(', ')
+          }}
+        </p>
+        <p i18n>Nom complet: {{ taxon?.nom_complet }}</p>
+        <p i18n>Dénombrement: {{ data?.count }}</p>
+        <p i18n>Date: {{ data?.date | date }}</p>
+        <p *ngIf="data?.observer?.username" i18n>Observateur: {{ data?.observer?.username }}</p>
+        <p *ngIf="!!data?.comment">{{ data?.comment }}</p>
+        <!-- <p i18n>Statut: {{ taxon?.id_statut }}</p> -->
+        <br />
+        <ul style="text-align: left;">
+          <li>
+            <span i18n>Phylum: {{ taxon?.phylum }}</span>
+          </li>
+          <li>
+            <ul>
+              <li>
+                <span i18n>Classe: {{ taxon?.classe }}</span>
+              </li>
+              <li>
+                <ul>
+                  <li>
+                    <span i18n>Ordre: {{ taxon?.ordre }}</span>
+                  </li>
+                  <li>
+                    <ul>
+                      <li>
+                        <span i18n>Famille: {{ taxon?.famille }}</span>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <!-- <p i18n>cd_nom: {{ taxon?.cd_nom }}</p>
     <p i18n>cd_ref: {{ taxon?.cd_ref }}</p>
     <p i18n>cd_sup: {{ taxon?.cd_sup }}</p> -->
-      <!-- <p>{{ taxon | json }}</p> -->
-      <br />
-      <p i18n>Découvrir sur INPN:</p>
-      <ul>
-        <li>
-          <a
-            rel="noopener"
-            target="_blank"
-            [href]="['https://inpn.mnhn.fr/espece/cd_nom', taxon?.cd_nom].join('/')"
-            i18n
-            >le taxon</a
-          >
-        </li>
-        <li *ngIf="taxon?.cd_nom != taxon?.cd_ref">
-          <a
-            rel="noopener"
-            target="_blank"
-            [href]="['https://inpn.mnhn.fr/espece/cd_nom', taxon?.cd_ref].join('/')"
-            i18n
-            >le taxon de référence</a
-          >
-        </li>
-        <!-- <li>
+        <!-- <p>{{ taxon | json }}</p> -->
+        <br />
+        <p i18n>Découvrir sur INPN:</p>
+        <ul>
+          <li>
+            <a
+              rel="noopener"
+              target="_blank"
+              [href]="['https://inpn.mnhn.fr/espece/cd_nom', taxon?.cd_nom].join('/')"
+              i18n
+              >le taxon</a
+            >
+          </li>
+          <li *ngIf="taxon?.cd_nom != taxon?.cd_ref">
+            <a
+              rel="noopener"
+              target="_blank"
+              [href]="['https://inpn.mnhn.fr/espece/cd_nom', taxon?.cd_ref].join('/')"
+              i18n
+              >le taxon de référence</a
+            >
+          </li>
+          <!-- <li>
         <a
           rel="noopener" target="_blank"
           [href]="['https://inpn.mnhn.fr/espece/cd_nom', taxon?.cd_sup].join('/')"
@@ -136,13 +134,14 @@ import { WebshareComponent, ShareData } from '../../webshare/webshare.component'
           >le taxon supérieur</a
         >
       </li> -->
-      </ul>
-      <ng-container *ngIf="canShare()">
-        <br />
-        <app-webshare [data]="sharedData" (click)="setupShare()" i18n>
-          <i class="fa fa-share-alt" aria-hidden="true"></i> Partager</app-webshare
-        >
-      </ng-container>
+        </ul>
+        <ng-container *ngIf="canShare()">
+          <br />
+          <app-webshare [data]="sharedData" (click)="setupShare()" i18n>
+            <i class="fa fa-share-alt" aria-hidden="true"></i> Partager</app-webshare
+          >
+        </ng-container>
+      </div>
     </div>
   `
 })
@@ -256,7 +255,10 @@ export class ObservationDetailsComponent implements OnInit {
   }
 
   open(): void {
-    this.modalRef = this.modalService.open(ObsDetailsModalContentComponent);
+    this.modalRef = this.modalService.open(ObsDetailsModalContentComponent, {
+      centered: true,
+      scrollable: true
+    });
     this.modalRef.componentInstance.data = this.data;
     this.modalRef.result.then(
       result => {

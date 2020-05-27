@@ -27,6 +27,7 @@ import {
   ObservationDetailsComponent,
   ObsDetailsModalContentComponent
 } from './observation-details/observation-details.component';
+import { ImageTopComponent } from './image-top/image-top.component';
 
 @NgModule({
   imports: [RouterModule, CommonModule, ScrollingModule, ObsFormModule, NgbModule, WebshareModule],
@@ -44,22 +45,8 @@ import {
     ObsMapComponent,
     MarkerPopupComponent,
     ObsDetailsModalContentComponent,
-    ObservationDetailsComponent
-  ],
-  entryComponents: [
-    ProgramTeaserComponent,
-    ProgramContentComponent,
-    FlowComponent,
-    ModalFlowComponent,
-    OnboardComponent,
-    CommittedComponent,
-    CongratsComponent,
-    RewardComponent,
-    ObsMapComponent,
-    ObsListComponent,
-    MarkerPopupComponent,
-    ObsDetailsModalContentComponent,
-    ObservationDetailsComponent
+    ObservationDetailsComponent,
+    ImageTopComponent
   ],
   exports: [
     NgbModule,
@@ -79,7 +66,8 @@ import {
     ObsListComponent,
     MarkerPopupComponent,
     ScrollingModule,
-    ObservationDetailsComponent
+    ObservationDetailsComponent,
+    ImageTopComponent
   ]
 })
 export class ObservationsSharedModule {

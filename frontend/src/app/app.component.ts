@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation, Inject, LOCALE_ID, OnInit } from '@angula
 import { SwUpdate } from '@angular/service-worker';
 
 import { AppConfigInterface } from './core/models';
-import { AppConfig } from '../conf/app.config';
+import { AppConfig } from '@conf/app.config';
 import { SeoService } from './services/seo.service';
 
 type AppConfigApp = Pick<AppConfigInterface, 'FRONTEND' | 'appName' | 'SEO'>;
@@ -10,7 +10,6 @@ type AppConfigApp = Pick<AppConfigInterface, 'FRONTEND' | 'appName' | 'SEO'>;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
@@ -38,7 +37,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     if (this.swUpdate.isEnabled) {
       this.swUpdate.available.subscribe(() => {
-        if (confirm('New version available. Load new version ?')) {
+        if (confirm('New version available. Load new version?')) {
           window.location.reload();
         }
       });

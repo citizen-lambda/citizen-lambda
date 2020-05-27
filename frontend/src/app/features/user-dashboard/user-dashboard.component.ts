@@ -6,9 +6,9 @@ import { tap, catchError } from 'rxjs/operators';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppConfig } from '../../../conf/app.config';
-import { AuthService } from '../../services/auth.service';
-import { UserInfo, Badge, RewardsApiPayload } from '../../core/models';
+import { AppConfig } from '@conf/app.config';
+import { AuthService } from '@services/auth.service';
+import { UserFeatures, Badge, RewardsApiPayload } from '@core/models';
 import { FeatureCollection } from 'geojson';
 
 @Component({
@@ -39,8 +39,8 @@ export class UserDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const accessToken = localStorage.getItem('access_token');
-    if (accessToken) {
+    const authorization = this.auth.haveAuthorization();
+    if (authorization) {
       this.auth
         .ensureAuthorized()
         .pipe(
@@ -63,10 +63,10 @@ export class UserDashboardComponent implements OnInit {
   }
 
   deletePersonalData(): void {
-    const accessToken = localStorage.getItem('access_token');
-    if (accessToken) {
+    const authorization = this.auth.getIdentification();
+    if (authorization) {
       this.auth
-        .selfDeleteAccount(accessToken)
+        .selfDeleteAccount(authorization)
         .then(data => {
           this.auth.logout();
           const getBackHome = confirm(`${data.message}\nRevenir à l'accueil ?`);
@@ -78,9 +78,9 @@ export class UserDashboardComponent implements OnInit {
     }
   }
 
-  getPersonalInfo(): Observable<UserInfo> {
+  getPersonalInfo(): Observable<UserFeatures> {
     const url = `${AppConfig.API_ENDPOINT}/user/info`;
-    return this.client.get<UserInfo>(url, { headers: this.headers });
+    return this.client.get<UserFeatures>(url, { headers: this.headers });
   }
 
   exportPersonalData(): void {
@@ -100,14 +100,17 @@ export class UserDashboardComponent implements OnInit {
   exportPersonalObs(): void {
     this.getPersonalObs().subscribe(data => {
       const date = new Date();
-      const geoJSon: string[] = [];
-      geoJSon.push(data.toString());
+      const geoJSon: BlobPart[] = [];
+      geoJSon.push(data as any);
+      const blob = new Blob(geoJSon, { type: data.type });
+      const objectURL = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(new Blob(geoJSon, { type: data.type }));
+      link.href = objectURL;
       link.setAttribute('download', `export-${date.toISOString()}.geojson`);
       document.body.appendChild(link);
       link.click();
       link.parentNode?.removeChild(link);
+      URL.revokeObjectURL(objectURL);
     });
   }
 

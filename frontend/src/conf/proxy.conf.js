@@ -10,7 +10,9 @@ const PROXY_CONFIG = {
     target: 'http://localhost:5002',
     secure: false,
     bypass: function (req, res, proxyOptions) {
-      return 'http://localhost:5002/api/programs/stream';
+      if (req.headers.accept.indexOf('text/event-stream') !== -1) {
+        return 'http://localhost:5002/api/programs/stream';
+      }
     }
   },
   logLevel: 'debug'

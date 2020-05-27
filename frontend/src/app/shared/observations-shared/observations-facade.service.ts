@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy, Inject, LOCALE_ID } from '@angular/core';
-import { Subject, BehaviorSubject, Observable, zip, forkJoin } from 'rxjs';
+import { Injectable, Inject, LOCALE_ID } from '@angular/core';
+import { BehaviorSubject, Observable, zip, forkJoin } from 'rxjs';
 import {
   map,
   distinctUntilChanged,
@@ -7,26 +7,27 @@ import {
   pluck,
   filter,
   flatMap,
-  takeUntil,
   switchMap,
-  take
+  take,
+  takeUntil
 } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { AppConfig } from '../../../conf/app.config';
-import { Program } from '../../features/programs/programs.models';
-import { ProgramsService } from '../../features/programs/programs.service';
-import { Taxonomy, Taxon } from '../../core/models';
-import { TaxonomyService } from '../../services/taxonomy.service';
+import { AppConfig } from '@conf/app.config';
+import { Program } from '@features/programs/programs.models';
+import { ProgramsService } from '@features/programs/programs.service';
+import { Taxonomy, Taxon } from '@core/models';
+import { TaxonomyService } from '@services/taxonomy.service';
 import {
   ObsState,
   ConfigObsFeatures,
   Municipality
-} from '../../features/observations/observation.model';
-import { composeAsync } from '../../helpers/compose';
-import { groupBy } from '../../helpers/groupby';
-import { sorted } from '../../helpers/sorted';
+} from '@features/observations/observation.model';
+import { composeFnsAsync } from '@helpers/compose';
+import { groupBy } from '@helpers/groupby';
+import { sorted } from '@helpers/sorted';
+import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
 
 let _state: ObsState = {
   // tslint:disable-next-line: no-object-literal-type-assertion
@@ -40,15 +41,16 @@ let _state: ObsState = {
 @Injectable({
   providedIn: 'root'
 })
-export class ObservationsFacade implements OnDestroy {
+export class ObservationsFacade extends UnsubscribeOnDestroy /* implements OnDestroy */ {
   ConfigObsFeatures = (AppConfig as ConfigObsFeatures).OBSERVATIONS_FEATURES;
-  private unsubscribe$ = new Subject<void>();
   private store = new BehaviorSubject<ObsState>(_state);
   private state$ = this.store.asObservable();
+  configGroupBy = this.ConfigObsFeatures?.TAXONOMY.GROUP;
 
   sharedContext: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [name: string]: any;
-    coords?: L.Point | undefined;
+    coords?: L.LatLng | undefined;
     program?: FeatureCollection;
     taxa?: Taxonomy;
   } = {};
@@ -71,10 +73,10 @@ export class ObservationsFacade implements OnDestroy {
     share()
   );
 
-  private _programID = new BehaviorSubject<number>(0);
-  programID$ = this._programID.asObservable();
-  set programID(pid: number) {
-    this._programID.next(pid);
+  private _programId = new BehaviorSubject<number>(0);
+  programId$ = this._programId.asObservable();
+  set programId(pid: number) {
+    this._programId.next(pid);
   }
 
   private _programs = new BehaviorSubject<Program[]>([]);
@@ -87,13 +89,14 @@ export class ObservationsFacade implements OnDestroy {
 
   features$ = this.state$.pipe(
     pluck<ObsState, Feature[]>('observations', 'features'),
-    filter(features => features != null)
+    filter(features => features?.length > 0),
+    distinctUntilChanged()
   );
 
   sampledTaxonomy$ = this.features$.pipe(
     map(items => {
       return Array.from(
-        new Map(items.map(item => [+`${item.properties?.cd_nom}`, item])).values()
+        new Map<number, Feature>(items.map(item => [+`${item.properties?.cd_nom}`, item])).values()
       ).reduce((acc: Observable<Taxon>[], item: Feature) => {
         return [...acc, this.taxonomyService.getTaxon(item.properties?.cd_nom)];
       }, []);
@@ -102,30 +105,18 @@ export class ObservationsFacade implements OnDestroy {
     map(taxa => {
       const prop = this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng';
       const r = taxa.sort(sorted(prop));
-      if (!!this.ConfigObsFeatures && !!this.ConfigObsFeatures.TAXONOMY.GROUP) {
-        if (typeof this.ConfigObsFeatures.TAXONOMY.GROUP === 'function') {
-          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP(this.localeId));
-        }
-        if (typeof this.ConfigObsFeatures.TAXONOMY.GROUP === 'string') {
-          return groupBy(r, this.ConfigObsFeatures.TAXONOMY.GROUP);
-        }
-      }
-      return {};
+      return this.configGroupBy ? this.applyConfigGroupBy(r) : r;
     })
   );
 
   municipalities$ = this.features$.pipe(
     map(items => {
       return Array.from(
-        new Map(
-          items.map(item => [
-            +`${item.properties?.municipality.code}`,
-            item.properties?.municipality
-          ])
+        new Map<string, Municipality>(
+          items.map(item => [item.properties?.municipality.code, item.properties?.municipality])
         ).values() as IterableIterator<Municipality>
       ).sort(sorted('name'));
-    }),
-    share()
+    })
   );
 
   set selected(selected: Feature) {
@@ -139,51 +130,54 @@ export class ObservationsFacade implements OnDestroy {
   filteredObservations$ = this._filteredObservations.asObservable();
 
   selectedMunicipality: Municipality | null = null;
-  selectedTaxonID: string | null = null; // ''
+  selectedTaxonId = 0;
+
+  private updateState(state: ObsState): void {
+    this.store.next((_state = state));
+  }
 
   filterTaxon = (obs: Feature[]): Feature[] =>
-    obs?.length > 0 && this.selectedTaxonID != null
-      ? obs.filter(
-          o => this.selectedTaxonID && o.properties?.cd_nom === parseInt(this.selectedTaxonID, 10)
-        )
-      : // tslint:disable-next-line: semicolon
-        obs;
+    this.selectedTaxonId !== 0
+      ? obs.filter(o => o.properties?.cd_nom === +this.selectedTaxonId)
+      : obs;
+
   filterMunicipality = (obs: Feature[]): Feature[] =>
-    obs?.length > 0 && this.selectedMunicipality != null
+    this.selectedMunicipality != null
       ? obs.filter(o => o.properties?.municipality.code === this.selectedMunicipality?.code)
-      : // tslint:disable-next-line: semicolon
-        obs;
+      : obs;
 
   constructor(
     @Inject(LOCALE_ID) public localeId: string,
     private programService: ProgramsService,
     public taxonomyService: TaxonomyService
   ) {
-    this.programID$
+    super();
+
+    this.programId$
       .pipe(
-        filter(id => id >= 1),
+        filter(id => id > 0),
         flatMap((pid: number) =>
           forkJoin([
             this.programService.getProgramTaxonomyList(pid),
             this.programService.getProgram(pid)
           ])
         ),
-        takeUntil(this.unsubscribe$)
+        takeUntil(this.onDestroy$)
       )
       .subscribe(([taxa, program]) => {
         this.updateState({
           ..._state,
-          program: this.programService.convertFeature2Program(program.features[0])
+          program: this.programService.feature2Program(program.features[0])
         });
         this.sharedContext.taxa = taxa;
         this.sharedContext.program = program;
       });
 
-    this.programID$
+    this.programId$
       .pipe(
-        takeUntil(this.unsubscribe$),
         filter(id => id > 0),
-        switchMap(id => this.programService.getProgramObservations(id))
+        switchMap(id => this.programService.getProgramObservations(id)),
+        takeUntil(this.onDestroy$)
       )
       .subscribe(observations => {
         this.updateState({
@@ -195,28 +189,23 @@ export class ObservationsFacade implements OnDestroy {
     this.observations$
       .pipe(
         pluck<FeatureCollection, Feature[]>('features'),
-        takeUntil(this.unsubscribe$),
-        map(observations => composeAsync(this.filterTaxon, this.filterMunicipality)(observations))
+        map(observations =>
+          composeFnsAsync(this.filterTaxon, this.filterMunicipality)(observations)
+        ),
+        takeUntil(this.onDestroy$)
       )
       .subscribe(async observations => {
         this._filteredObservations.next(await observations);
       });
   }
 
-  private updateState(state: ObsState): void {
-    this.store.next((_state = state));
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
   onFilterChange(): void {
     this.features$
       .pipe(
         take(1),
-        map(observations => composeAsync(this.filterTaxon, this.filterMunicipality)(observations))
+        map(observations =>
+          composeFnsAsync(this.filterTaxon, this.filterMunicipality)(observations)
+        )
       )
       .subscribe(async observations => {
         this._filteredObservations.next(await observations);
@@ -231,5 +220,15 @@ export class ObservationsFacade implements OnDestroy {
         features: [feature, ...(_state.observations.features as Feature[])]
       }
     });
+  }
+
+  applyConfigGroupBy(r: Taxon[]): { [key: string]: Taxon[] } {
+    if (typeof this.configGroupBy === 'function') {
+      return groupBy(r, this.configGroupBy(this.localeId));
+    }
+    if (typeof this.configGroupBy === 'string') {
+      return groupBy(r, this.configGroupBy);
+    }
+    throw Error('configGroupBy is neither a function or property string');
   }
 }

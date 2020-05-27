@@ -45,6 +45,7 @@ sudo apt install postgresql postgresql-client postgis \
   supervisor \
   git \
   apache2 letsencrypt
+
 ```
 
 <cite>it works !</cite> La familière <cite>Apache2 Debian Default Page</cite>
@@ -119,6 +120,8 @@ python3 -m venv ~/.local/share/venv/citizen_prod
 source ~/.local/share/venv/citizen_prod/bin/activate
 # (citizen_prod) pat@vps-123:~$
 python3 -m pip install --upgrade pip setuptools wheel
+# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+# python3 get-pip.py
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 # logout et re-login
 # pat@vps-123:~$

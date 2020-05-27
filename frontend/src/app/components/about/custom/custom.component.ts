@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation, Inject, LOCALE_ID } from '@angular/core';
-import { AppConfigInterface } from '../../../core/models';
-import { AppConfig } from '../../../../conf/app.config';
-import { SeoService } from '../../../services/seo.service';
+import { AppConfigInterface } from '@core/models';
+import { AppConfig } from '@conf/app.config';
+import { SeoService } from '@services/seo.service';
 
 type AppConfigAbout = Pick<AppConfigInterface, 'appName'>;
 

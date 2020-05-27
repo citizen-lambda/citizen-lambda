@@ -1,4 +1,4 @@
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@services/auth.service';
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -11,8 +11,8 @@ export class LogoutComponent {
   constructor(private auth: AuthService, public activeModal: NgbActiveModal) {}
 
   onLogout(): void {
-    const accessToken = localStorage.getItem('access_token');
-    if (accessToken) {
+    const authorization = this.auth.haveAuthorization();
+    if (authorization) {
       this.auth
         .logout()
         .then(logout => {

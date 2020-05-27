@@ -1,5 +1,5 @@
 <div class="container-fluid">
   <app-greeter></app-greeter>
   <!-- LES PROGRAMMES -->
-  <app-programs [programs]="programs"></app-programs>
+  <app-programs-carousel [programs]="programs$ | async"></app-programs-carousel>
 </div>

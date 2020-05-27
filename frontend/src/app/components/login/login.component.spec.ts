@@ -12,7 +12,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@services/auth.service';
 import { LoginComponent } from './login.component';
 import { By } from '@angular/platform-browser';
 

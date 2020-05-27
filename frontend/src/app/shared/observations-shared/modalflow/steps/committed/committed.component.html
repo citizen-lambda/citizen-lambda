@@ -11,15 +11,15 @@
   </button>
 </div>
 
-<div class="modal-body add-obs pb-0">
+<div class="modal-body pb-0">
   <app-obs-form [data]="data" (newObservation)="observationSubmitted($event)"></app-obs-form>
 </div>
 
 <div class="modal-footer">
   <button
     type="submit"
-    [disabled]="!form.obsForm.valid"
-    class="btn btn-default btn-big btn-outline-primary rounded-0"
+    class="btn btn-default btn-big rounded-0"
+    [disabled]="!form?.obsForm.valid"
     (click)="committed()"
     i18n="Valider l'observation"
   >

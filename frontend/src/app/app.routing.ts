@@ -17,13 +17,13 @@ const appRoutes: Routes = [
     path: 'mydashboard',
     loadChildren: (): Promise<any> =>
       import('./features/user-dashboard/user-dashboard.module').then(m => m.UserDashboardModule),
-    canActivate: [AuthGuard]
+    canLoad: [AuthGuard]
   },
   {
     path: 'api/admin',
     loadChildren: (): Promise<any> =>
       import('./features/admin/admin.module').then(m => m.AdminModule),
-    canActivate: [AuthGuard]
+    canLoad: [AuthGuard]
   },
   {
     path: 'programs',

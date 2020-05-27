@@ -1,0 +1,23 @@
+<div [formGroup]="parentForm">
+  <label for="date" i18n>Date d'observation</label>
+  <div class="input-group">
+    <input
+      formControlName="date"
+      class="required form-control rounded-0"
+      i18n-placeholder
+      placeholder="dd/mm/yyyy"
+      ngbDatepicker
+      #d="ngbDatepicker"
+      [markDisabled]="disabledNgbDates"
+      [dayTemplate]="specialDay"
+      [outsideDays]="'hidden'"
+      (click)="d.toggle()"
+      required
+    />
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+        <i class="fa fa-calendar"></i>
+      </button>
+    </div>
+  </div>
+</div>

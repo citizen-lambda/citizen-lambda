@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@services/auth.service';
 import { UserDashboardComponent } from './user-dashboard.component';
 
 describe('UserDashboardComponent', () => {

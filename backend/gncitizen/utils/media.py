@@ -24,18 +24,11 @@ def allowed_file(filename):
 
     :rtype: bool
     """
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    )
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def save_uploaded_files(  # pylint: disable=too-many-locals
-    request_file,
-    prefix="none",
-    cdnom="0",
-    id_data_source=None,
-    matching_model=None,
+    request_file, prefix="none", cdnom="0", id_data_source=None, matching_model=None,
 ):
     """Save files on server and filenames in db from POST request
 
@@ -65,7 +58,7 @@ def save_uploaded_files(  # pylint: disable=too-many-locals
     files = []
     try:
         i = 0
-        for file in request_file.getlist("file"):
+        for file in request_file.getlist("files"):
             i = i + 1
             filename = file.filename
             current_app.logger.debug(
@@ -77,13 +70,12 @@ def save_uploaded_files(  # pylint: disable=too-many-locals
             if allowed_file(filename):
                 # save file
                 current_app.logger.debug(
-                    '[save_uploaded_files] Preparing file "%s" saving',
-                    filename,
+                    '[save_uploaded_files] Preparing file "%s" saving', filename,
                 )
                 ext = filename.rsplit(".", 1)[1].lower()
-                timestamp = datetime.datetime.now(
-                    tz=datetime.timezone.utc
-                ).strftime("%Y%m%d_%H%M%S")
+                timestamp = datetime.datetime.now(tz=datetime.timezone.utc).strftime(
+                    "%Y%m%d_%H%M%S"
+                )
                 filename = f"{prefix}_{str(cdnom)}_{i}_{timestamp}.{ext}"
                 current_app.logger.debug(
                     "[save_uploaded_files] new filename : %s", filename
@@ -130,9 +122,7 @@ def save_uploaded_files(  # pylint: disable=too-many-locals
                 files.append(filename)
 
     except Exception as e:
-        current_app.logger.debug(
-            "[save_uploaded_files] ERROR save_upload_file : %s", e
-        )
+        current_app.logger.debug("[save_uploaded_files] ERROR save_upload_file : %s", e)
         raise GeonatureApiError(e)
 
     return files

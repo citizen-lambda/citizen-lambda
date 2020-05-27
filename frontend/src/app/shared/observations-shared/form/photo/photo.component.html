@@ -1,0 +1,28 @@
+<label for="photo" class="d-block text-truncate mb-0"
+  >{{ photoFilename.length > 0 ? photoFilename : localeId.startsWith('fr') ? 'Photo' : 'Photo' }}
+  <input
+    #photo
+    id="photo"
+    name="photo"
+    class="d-none form-control"
+    type="file"
+    accept="image/*{{ acceptExtensionList() }}"
+    capture="environment"
+    [multiple]="multiple || multiple === 'multiple' ? 'multiple' : null"
+    (change)="onPhotoUpdate()"
+  />
+  <div class="form-control fileinput-substitute">
+    <ng-container *ngIf="photoTrustedURL; else camera">
+      <img
+        #thumb
+        [src]="photoTrustedURL"
+        class="img-fluid img-thumbnail d-flex justify-content-center"
+      />
+    </ng-container>
+    <ng-template #camera>
+      <div class="camera-input-icon">
+        <i class="fa {{ !active ? 'fa-camera' : 'fa-hand-spock-o' }}"></i>
+      </div>
+    </ng-template>
+  </div>
+</label>

@@ -2,62 +2,78 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
-  AfterViewInit,
   LOCALE_ID,
-  Inject
+  Inject,
+  HostListener,
+  ChangeDetectionStrategy
 } from '@angular/core';
-import { ActivatedRoute, Data, Router, NavigationEnd } from '@angular/router';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Router, NavigationEnd } from '@angular/router';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { Observable, Subject, throwError, BehaviorSubject } from 'rxjs';
-import { tap, map, catchError, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppConfig } from '../../../conf/app.config';
-import { AuthService } from '../../services/auth.service';
+import { AppConfig } from '@conf/app.config';
+import { AuthService } from '@services/auth.service';
 import { LoginComponent } from '../login/login.component';
 import { LogoutComponent } from '../logout/logout.component';
 import { RegisterComponent } from '../register/register.component';
-import { Program } from '../../features/programs/programs.models';
-import { ProgramsService } from '../../features/programs/programs.service';
-import { ProgramsModalComponent } from '../../shared/programs-shared/programs-modal/programs-modal.component';
+import { ProgramsService } from '@features/programs/programs.service';
+import { ProgramsModalComponent } from '@shared/programs-shared/programs-modal/programs-modal.component';
+import { UserFeatures, AnonymousUser } from '@core/models';
+import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
-  styleUrls: ['./topbar.component.css'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
-    trigger('collapse', [
+    trigger('collapsing', [
       state(
         'open',
         style({
+          height: '*',
           opacity: '1'
         })
       ),
       state(
         'closed',
         style({
+          // display: 'none',
+          height: '0',
           opacity: '0',
-          display: 'none'
+          overflow: 'hidden'
         })
       ),
-      transition('closed => open', animate('400ms ease-in')),
-      transition('open => closed', animate('100ms ease-out'))
+      transition(
+        'closed => open',
+        animate(
+          '2000ms',
+          keyframes([
+            style({ opacity: 0.1, offset: 0.1 }),
+            style({ opacity: 0.6, offset: 0.2 }),
+            style({ opacity: 1, offset: 0.5 }),
+            style({ opacity: 0.6, offset: 0.8 })
+          ])
+        )
+      ),
+      transition('open => closed', [
+        style({ height: '*' }),
+        animate('800ms', style({ height: 0, opacity: '0' }))
+      ])
     ])
   ],
   providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }]
 })
-export class TopbarComponent implements OnInit, AfterViewInit {
+export class TopbarComponent extends UnsubscribeOnDestroy implements OnInit {
   title: string = AppConfig.appName;
   collapsed = true;
-  username = 'Anonymous';
-  modalRef!: NgbModalRef;
-  programs$ = new Subject<Program[] | null>();
-  // FIXME: isAdmin$ topbar updates
-  isAdmin$ = new BehaviorSubject<boolean>(false);
-  // TODO: mv locales array declaration to AppConfig
+  username = new AnonymousUser(this.localeId).username;
+  modalRef: NgbModalRef | undefined;
+  // TODO: get locales array from AppConfig
   languages = [
     { code: 'en', label: 'English' },
     { code: 'fr', label: 'Français' }
@@ -65,24 +81,16 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   location = '';
   base_href = '';
 
+  userAuthState$: Observable<AnonymousUser | UserFeatures> = this.auth.userAuthState$;
+
   constructor(
     @Inject(LOCALE_ID) public localeId: string,
     private router: Router,
-    private route: ActivatedRoute,
-    private programService: ProgramsService,
+    private modalService: NgbModal,
     private auth: AuthService,
-    private modalService: NgbModal
-  ) {}
-
-  isLoggedIn$(): Observable<boolean> {
-    return this.auth.authorized$.pipe(
-      map(value => {
-        if (value === true) {
-          this.username = window.localStorage.getItem('username') || this.username;
-        }
-        return value;
-      })
-    );
+    public programService: ProgramsService
+  ) {
+    super();
   }
 
   login(): void {
@@ -109,7 +117,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  programs(): void {
+  programsModal(): void {
     this.collapsed = true;
     this.modalRef = this.modalService.open(ProgramsModalComponent, {
       size: 'xl',
@@ -124,55 +132,34 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    const accessToken = window.localStorage.getItem('access_token');
-    if (accessToken) {
-      this.auth
-        .ensureAuthorized()
-        .pipe(
-          tap(user => {
-            if (!!user && !!user.features && !!user.features.id_role) {
-              this.username = user.features.username;
-              this.isAdmin$.next(user.features.admin === true);
-            }
-          }),
-          catchError(err => {
-            console.error(err);
-            this.auth
-              .logout()
-              .then(logout => {
-                console.log('Logout message:', logout.message);
-              })
-              .catch(error => {
-                console.error('Logout error:', error);
-              });
-            return throwError(err);
-          })
-        )
-        .subscribe();
-    } else {
-      this.username = window.localStorage.getItem('username') || 'Anonymous';
-    }
-
-    this.auth.authorized$
-      .pipe(
-        filter(status => !status),
-        map(_ => this.isAdmin$.next(false))
-      )
-      .subscribe();
-
-    this.route.data.pipe(catchError(error => throwError(error))).subscribe((data: Data) => {
-      if (data && data.programs) {
-        this.programs$.next(data.programs);
-      } else {
-        this.programService.getAllPrograms().subscribe(programs => {
-          this.programs$.next(programs);
-        });
-      }
-    });
+  close(d: string): void {
+    this.modalRef?.close(d);
   }
 
-  close(d: string): void {
-    this.modalRef.close(d);
+  @HostListener('window:scroll')
+  scrollHandler(): void {
+    if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+      const tallSize = getComputedStyle(document.documentElement)
+        .getPropertyValue('--tall-topbar-height')
+        .trim();
+      const narrowSize = getComputedStyle(document.documentElement)
+        .getPropertyValue('--narrow-topbar-height')
+        .trim();
+      const offset = getComputedStyle(document.documentElement)
+        .getPropertyValue('--router-outlet-margin-top')
+        .trim();
+      const barSize = parseInt(offset, 10) - document.documentElement.scrollTop;
+      const minSize = parseInt(narrowSize, 10);
+      const maxSize = parseInt(tallSize, 10);
+      document.documentElement.style.setProperty(
+        '--router-outlet-margin-top',
+        Math.min(Math.max(barSize, minSize), maxSize) + 'px'
+      );
+    } else {
+      document.documentElement.style.setProperty(
+        '--router-outlet-margin-top',
+        'var(--tall-topbar-height)'
+      );
+    }
   }
 }

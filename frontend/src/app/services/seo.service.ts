@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { AppConfig } from '.././../conf/app.config';
+import { AppConfig } from '@conf/app.config';
 
 enum MetaNamesStrings {
   'application-name',

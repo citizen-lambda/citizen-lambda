@@ -1,30 +1,38 @@
 <!-- Observation ajoutée -->
-<div class="modal-body obs-added">
-  <div>
-    <!-- FIXME: hardcoded backend media url + img minmax height-->
-    <img
+<!-- FIXME: hardcoded backend media url -->
+<ng-container *ngIf="obs; else congratsdata">
+  <!-- <div name="congrats" class="modal-body"> -->
+  <div name="congrats" class="modal-body congrats-container">
+    <app-image-top
       [src]="
-        obs.images[0]
-          ? AppConfig.API_ENDPOINT + '/media/' + obs.images[0]
+        obs?.images.length > 0
+          ? AppConfig.API_ENDPOINT + '/media/' + (obs?.images)[0]
           : 'assets/default_taxon.jpg'
       "
-    />
+    ></app-image-top>
   </div>
-  <h5 i18n="Congrats|Félicitations !">Félicitations !</h5>
-  <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
-    Votre observation a bien été ajoutée !
-  </h6>
-  <p>
-    {{
-      !localeId.startsWith('fr') && obs?.taxref?.nom_vern_eng
-        ? obs?.taxref?.nom_vern_eng
-        : obs?.taxref?.nom_vern
-        ? obs?.taxref?.nom_vern
-        : obs?.taxref?.nom_valide
-    }}
-  </p>
-  <span i18n
-    >Observé par {{ username }} <br />
-    le {{ obs.date }}</span
-  >
-</div>
+  <!-- <div class="obs-added"> -->
+  <div class="congrats-description obs-added">
+    <h5 i18n="Congrats|Félicitations !">Félicitations !</h5>
+    <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
+      Votre observation a bien été ajoutée !
+    </h6>
+    <p>
+      {{
+        !localeId.startsWith('fr') && obs?.taxref?.nom_vern_eng
+          ? obs?.taxref?.nom_vern_eng
+          : obs?.taxref?.nom_vern
+          ? obs?.taxref?.nom_vern
+          : obs?.taxref?.nom_valide
+      }}
+    </p>
+    <span *ngIf="username" i18n>Observé par {{ username }} </span>
+    <span>le {{ obs?.date }}</span>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-big rounded-0 bg-primary d-flex mx-auto" i18n (click)="next()">
+      OK
+    </button>
+  </div>
+</ng-container>
+<ng-template #congratsdata>{{ data.obs.properties | json }}</ng-template>

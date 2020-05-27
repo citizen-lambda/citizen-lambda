@@ -131,7 +131,7 @@ def post_observation() -> Tuple[Dict, int]:
           - name: geometry
             in: formData
             description: Simple coordinates {"x"&colon; 5.4156, "y"&colon; 43.285}.
-            exemple: {"x": 5.4156, "y": 43.285}
+            exemple: {"lng":5.415, "lat":43.285} or {"x": 5.415, "y": 43.285}
             required: true
           - name: file
             in: formData
@@ -321,7 +321,10 @@ def post_observation() -> Tuple[Dict, int]:
         try:
             coord = json.loads(request_data["geometry"])
             logger.debug(coord)
-            point = Point(coord["x"], coord["y"])
+            if "x" in coord and "y" in coord:
+                point = Point(coord["x"], coord["y"])
+            elif "lat" in coord and "lng" in coord:
+                point = Point(coord["lng"], coord["lat"])
             shape = asShape(point)
             newobs.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
@@ -350,13 +353,13 @@ def post_observation() -> Tuple[Dict, int]:
             logger.debug("[post_observation] uploaded image files %s", str(files))
             feature["properties"]["images"] = files
 
-            json_data = json.dumps(
+            event_stream_message = json.dumps(
                 {
-                    "type": "update",
+                    "type": "message",
                     "data": {"program": newobs.id_program, "NewObservation": feature},
                 }
             )
-            frontend_broadcast.info("data:%s\n\n", json_data)
+            frontend_broadcast.info(event_stream_message)
 
             return (
                 {"message": "Nouvelle observation créée.", "features": feature},

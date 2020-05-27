@@ -2,42 +2,56 @@ import {
   Component,
   Input,
   ViewEncapsulation,
-  OnDestroy,
   OnInit,
   Inject,
-  LOCALE_ID
+  LOCALE_ID,
+  ChangeDetectionStrategy,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 
-import { FlowComponentInterface } from '../../flow/flow';
-import { AppConfig } from '../../../../../../conf/app.config';
+import { FlowComponentInterface } from '@shared/observations-shared/modalflow/flow/flow';
+import { AppConfig } from '@conf/app.config';
+import { ObsPostResponsePayload, SharedContext } from '@features/observations/observation.model';
 
 @Component({
   templateUrl: './congrats.component.html',
-  styleUrls: ['./congrats.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CongratsComponent implements FlowComponentInterface, OnInit, OnDestroy {
-  @Input() data: any;
-  timeout: any;
-  username = 'anonyme';
-  obs: any;
+export class CongratsComponent implements FlowComponentInterface, OnInit {
+  username = '';
   AppConfig = AppConfig;
+  @ViewChild('img') img?: ElementRef;
+  @ViewChild('fullViewPortContainer') fullViewPortContainer?: ElementRef;
+  @Input() data!: SharedContext & { obs: ObsPostResponsePayload };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  obs: { [name: string]: any } | undefined = undefined;
 
   constructor(@Inject(LOCALE_ID) public localeId: string) {}
 
-  ngOnDestroy(): void {
-    if (this.timeout) {
-      clearTimeout(this.timeout);
+  ngOnInit(): void {
+    console.debug(this.data.obs.properties);
+    this.obs = this.data.obs.properties;
+
+    // new Anonymous(this.localeId)
+    this.username =
+      localStorage.getItem('username') || this.localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous';
+  }
+
+  fullViewPortToggle(): void {
+    if (
+      this.fullViewPortContainer?.nativeElement.classList.value.includes('full-viewport-hidden')
+    ) {
+      this.fullViewPortContainer?.nativeElement.classList.remove('full-viewport-hidden');
+      this.fullViewPortContainer?.nativeElement.classList.add('full-viewport-show');
+    } else {
+      this.fullViewPortContainer?.nativeElement.classList.remove('full-viewport-show');
+      this.fullViewPortContainer?.nativeElement.classList.add('full-viewport-hidden');
     }
   }
 
-  ngOnInit(): void {
-    this.username =
-      localStorage.getItem('username') || this.localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous';
-    this.obs = this.data.obs.properties;
-    console.debug(this.obs, this.data);
-    this.timeout = setTimeout(() => {
-      this.data.next(this.data);
-    }, 2000);
+  next(): void {
+    this.data?.next(this.data);
   }
 }

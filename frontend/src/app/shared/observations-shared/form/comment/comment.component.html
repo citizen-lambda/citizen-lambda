@@ -1,0 +1,11 @@
+<div [formGroup]="parentForm">
+  <label for="comment" i18n>Commentaire</label>
+  <textarea
+    i18n-placeholder
+    placeholder="Votre commentaire"
+    class="form-control rounded-0"
+    rows="4"
+    id="comment"
+    [formControlName]="'comment'"
+  ></textarea>
+</div>

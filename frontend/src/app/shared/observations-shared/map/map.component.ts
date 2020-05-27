@@ -26,9 +26,9 @@ import 'leaflet.locatecontrol';
 import 'leaflet-offline';
 import localForage from 'localforage';
 
-import { MAP_CONFIG } from '../../../../conf/map.config';
-import { Taxonomy, Taxon } from '../../../core/models';
-import { ObservationData } from '../../../features/observations/observation.model';
+import { MAP_CONFIG } from '@conf/map.config';
+import { Taxonomy, Taxon } from '@core/models';
+import { ObservationData } from '@features/observations/observation.model';
 import { MarkerPopupComponent } from './marker-popup.component';
 
 declare module 'leaflet' {
@@ -112,9 +112,11 @@ export const ZoomViewer = L.Control.extend({
     container.className = 'leaflet-control-zoomviewer';
     map.on('zoomstart zoom zoomend', () => {
       const z = Math.round(map.getZoom());
-      gauge.innerHTML = `<span style="color:${
-        z >= MAP_CONFIG.ZOOM_LEVEL_RELEVE ? 'var(--valid)' : 'var(--invalid)'
-      };">Zoom: ${z}</span>`;
+      gauge.innerHTML = `<span style="${
+        z >= MAP_CONFIG.ZOOM_LEVEL_RELEVE
+          ? 'color:var(--valid); font-weight: normal;'
+          : 'color: var(--invalid); font-weight: bold;'
+      }">Zoom: ${z}</span>`;
     });
     container.appendChild(gauge);
 
@@ -202,13 +204,13 @@ export const conf = {
   CONTROL_ZOOMVIEW_POSITION: 'bottomleft',
   MARKER_ICON_NEW_OBS: (): L.Icon =>
     L.icon({
-      iconUrl: 'assets/pointer-blue2.png',
+      iconUrl: 'assets/marker-blue.svg',
       iconSize: [33, 42],
       iconAnchor: [16, 42]
     }),
   MARKER_ICON_OBS: (): L.Icon =>
     L.icon({
-      iconUrl: 'assets/pointer-green.png',
+      iconUrl: 'assets/marker-green.svg',
       iconSize: [33, 42],
       iconAnchor: [16, 42]
     }),
@@ -270,7 +272,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input() observations!: FeatureCollection;
   @Input() taxonomy!: Taxonomy;
   @Input() program!: FeatureCollection;
-  @Output() click: EventEmitter<L.Point> = new EventEmitter();
+  @Output() click: EventEmitter<L.LatLng> = new EventEmitter();
   @Output() obsSelected: EventEmitter<Feature> = new EventEmitter();
   @Output() detailsRequested: EventEmitter<number> = new EventEmitter();
   options: any;
@@ -544,8 +546,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
     if (!this.checkMinZoomLevel()) {
       return;
     }
-
-    this.click.emit(L.point(e.latlng.lng, e.latlng.lat));
+    console.debug('mark on ', L.latLng(e.latlng));
+    this.click.emit(L.latLng(e.latlng));
 
     this.newObsMarker = L.marker(e.latlng, {
       icon: this.options.MARKER_ICON_NEW_OBS(),

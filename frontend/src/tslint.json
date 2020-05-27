@@ -13,6 +13,16 @@
       "app",
       "kebab-case"
     ],
-    "no-console": false
+    "no-console": false,
+    "component-class-suffix": [
+      true,
+      "Component",
+      "Page"
+    ],
+    "semicolon": [
+      true,
+      "always",
+      "ignore-bound-class-methods"
+    ]
   }
 }

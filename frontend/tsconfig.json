@@ -2,7 +2,13 @@
   "compileOnSave": true,
   "compilerOptions": {
     "paths": {
-      "@nguniversal/*": ["./modules/*"]
+      "@conf/*": ["src/conf/*"],
+      "@core/*": ["src/app/core/*"],
+      "@services/*": ["src/app/services/*"],
+      "@helpers/*": ["src/app/helpers/*"],
+      "@components/*": ["src/app/components/*"],
+      "@features/*": ["src/app/features/*"],
+      "@shared/*": ["src/app/shared/*"]
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
@@ -25,12 +31,13 @@
     "strict": true,
     "noEmitOnError": true,
     "target": "es2015",
-    "types": ["node"],
+    "types": ["node", "jasmine"],
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
+    "strictTemplates": false,
     "strictInjectionParameters": true,
     "enableIvy": true
   }

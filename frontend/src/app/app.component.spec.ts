@@ -1,5 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
@@ -20,7 +21,7 @@ import { FooterComponent } from './components/footer/footer.component';
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [AuthService],
+      providers: [AuthService, { provide: APP_BASE_HREF, useValue: '/my/app' }],
       declarations: [AppComponent, TopbarComponent, SidebarComponent, FooterComponent],
       imports: [
         BrowserTransferStateModule,

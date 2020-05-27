@@ -9,7 +9,6 @@ import { ProgramsResolve } from './programs-resolve.service';
   imports: [CommonModule, ProgramsRoutingModule],
   providers: [ProgramsService, ProgramsResolve],
   declarations: [],
-  entryComponents: [],
   exports: []
 })
 export class ProgramsModule {}

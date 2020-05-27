@@ -5,13 +5,12 @@ import { CommonModule } from '@angular/common';
 import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ProgramsModalComponent } from './programs-modal/programs-modal.component';
-import { ProgramsComponent } from './programs.component/programs.component';
+import { ProgramsCarouselComponent } from './programs-carousel/programs-carousel.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, NgbModule],
   providers: [NgbActiveModal],
-  declarations: [ProgramsModalComponent, ProgramsComponent],
-  entryComponents: [ProgramsModalComponent, ProgramsComponent],
-  exports: [ProgramsComponent, ProgramsModalComponent]
+  declarations: [ProgramsModalComponent, ProgramsCarouselComponent],
+  exports: [ProgramsCarouselComponent, ProgramsModalComponent]
 })
 export class ProgramsSharedModule {}

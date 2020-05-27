@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProgramsResolve } from '../programs/programs-resolve.service';
 import { ObsComponent } from './obs.component';
 // tslint:disable-next-line: max-line-length
-import { ObservationDetailsComponent } from '../../shared/observations-shared/observation-details/observation-details.component';
+import { ObservationDetailsComponent } from '@shared/observations-shared/observation-details/observation-details.component';
 
 const routes: Routes = [
   {
@@ -15,7 +15,7 @@ const routes: Routes = [
     children: [
       {
         path: 'details/:obsid',
-        component: ObservationDetailsComponent,
+        component: ObservationDetailsComponent
       }
     ]
   }
@@ -23,6 +23,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class ObservationsRoutingModule { }
+export class ObservationsRoutingModule {}

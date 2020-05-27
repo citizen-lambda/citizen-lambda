@@ -3,13 +3,13 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, throwError, Observable } from 'rxjs';
-import { debounceTime, map, catchError } from 'rxjs/operators';
+import { map, catchError, take } from 'rxjs/operators';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppConfig } from '../../../conf/app.config';
-import { LoggingUser, LoggedUser } from '../../core/models';
-import { AuthService } from '../../services/auth.service';
+import { AppConfig } from '@conf/app.config';
+import { UserLogin, RegistrationPayload } from '@core/models';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +23,7 @@ export class LoginComponent {
   errorMessage: string | null = null;
   successMessage: string | null = null;
   staticAlertClosed = false;
-  user: LoggingUser = { username: '', password: '' };
+  user: UserLogin = { username: '', password: '' };
   recovery = { username: '', email: '' };
   recoveringPassword = false;
   loginForm: FormGroup = new FormGroup({
@@ -46,11 +46,13 @@ export class LoginComponent {
     this.auth
       .login(this.user)
       .pipe(
-        map((user: Partial<LoggedUser>) => {
+        map((user: Partial<RegistrationPayload>) => {
           const message = user.message || '';
-          this.success$.subscribe(msg => (this.successMessage = msg));
-          this.success$.pipe(debounceTime(1800)).subscribe(() => {
-            this.activeModal.close();
+          this.success$.pipe(take(1)).subscribe(msg => {
+            this.successMessage = msg;
+            if (this.activeModal) {
+              this.activeModal.close(msg);
+            }
           });
           this.displaySuccessMessage(message);
 
@@ -63,7 +65,7 @@ export class LoginComponent {
         catchError(error => this.handleError(error))
       )
       .subscribe(
-        _data => ({}),
+        () => ({}),
         errorMessage => {
           console.error('errorMessage', errorMessage);
           this.successMessage = null;
@@ -81,8 +83,8 @@ export class LoginComponent {
         response => {
           if (!(typeof response === 'string')) {
             const message = response.message;
-            this.success$.subscribe(msg => (this.successMessage = msg));
-            this.success$.pipe(debounceTime(5000)).subscribe(() => {
+            this.success$.pipe(take(1)).subscribe(msg => (this.successMessage = msg));
+            this.success$.pipe(take(1)).subscribe(() => {
               this.activeModal.close();
             });
             this.displaySuccessMessage(message);

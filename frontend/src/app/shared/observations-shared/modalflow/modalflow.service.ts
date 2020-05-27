@@ -17,7 +17,8 @@ import { RewardComponent } from './steps/reward/reward.component';
 
 export const MODAL_DEFAULTS = {
   size: 'xl',
-  centered: true
+  centered: true,
+  scrollable: true
 };
 
 @Injectable({

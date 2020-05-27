@@ -8,18 +8,18 @@
     <!-- TODO: mv complex template expressions to controller method -->
     <img
       [src]="
-    data.images?.length > 0
+    data.images && data.images?.length > 0
         ? AppConfig.API_ENDPOINT + '/media/' + (data.images)![0]
         : data.image
         ? data.image
-        : taxon?.media && taxon?.media.length > 0
+        : taxon && taxon?.media && taxon?.media.length > 0
         ? taxon?.media[0].thumb_url
         : 'assets/default_taxon.jpg'
         "
       [alt]="!localeId.startsWith('fr') && taxon?.nom_vern_eng?.length > 0 ? taxon?.nom_vern_eng : taxon?.nom_vern ? taxon?.nom_vern : taxon?.nom_valide"
       loading="lazy"
-      width="80px"
-      height="80px"
+      width="80"
+      height="80"
     />
     <div class="infos">
       <b
@@ -40,7 +40,7 @@
     </div>
     <div class="hide">
       <button (click)="onObservationDetails()">
-        <i class="fa fa-search" style="font-size: 20px;"></i>
+        <img src="assets/search.svg" alt="magnifying glass" />
       </button>
     </div>
   </div>

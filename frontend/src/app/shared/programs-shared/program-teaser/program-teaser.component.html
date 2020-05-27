@@ -6,7 +6,13 @@
   </figcaption>
   <p [innerHTML]="program?.html_short_desc"></p>
 </figure>
-<a [routerLink]="" fragment="program-content" class="scroll" (click)="jumpTo('program-content')">
+<a
+  *ngIf="program"
+  [routerLink]="['/programs', program.id_program, 'observations']"
+  fragment="program-content"
+  class="scroll"
+  (click)="jumpTo('program-content')"
+>
   <span i18n="Scrollez pour en voir plus !">Scrollez pour en voir plus !</span>
   <img class="d-block" src="assets/scroll.svg" i18n-alt alt="Scrollez pour en voir plus !" />
 </a>

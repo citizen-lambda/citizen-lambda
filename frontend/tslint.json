@@ -130,6 +130,18 @@
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
     "directive-class-suffix": true,
-    "no-submodule-imports": false
+    "no-submodule-imports": false,
+    "no-implicit-dependencies": [
+      true,
+      [
+        "@conf",
+        "@core",
+        "@services",
+        "@helpers",
+        "@components",
+        "@features",
+        "@shared"
+      ]
+    ]
   }
 }

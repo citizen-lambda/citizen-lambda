@@ -1,0 +1,29 @@
+<input #cdnom id="cdnom" type="hidden" value="" class="required form-control" />
+<!-- (input)="onChange($event.target.value)" -->
+<input
+  #taxonAutoCompleteInput
+  id="taxonAutoCompleteInput"
+  type="text"
+  [class.is-invalid]="taxonSearchFailed"
+  i18n-placeholder
+  placeholder="Nom latin ou vernaculaire ou cd_ref"
+  [editable]="false"
+  [ngbTypeahead]="inputAutoCompleteSearch"
+  [resultTemplate]="rt"
+  [inputFormatter]="inputAutoCompleteFormatter"
+  (focus)="inputAutoCompleteFocus$.next($any($event).target.value)"
+  (selectItem)="onTaxonSelected($event)"
+  required
+/>
+<small *ngIf="searchingTaxon" class="form-text text-muted">searching…</small>
+<div class="invalid-feedback" *ngIf="taxonSearchFailed">
+  Sorry, suggestions could not be loaded.
+</div>
+<ng-template #rt let-r="result" let-t="term">
+  <img [src]="r.icon" class="float-left mr-1 autocomplete-thumbs" />
+  <ng-container *ngFor="let field of autoCompleteFields; first as isFirst">
+    <ngb-highlight [result]="r[field]" [term]="t"></ngb-highlight
+    ><br *ngIf="isFirst; else separator" />
+    <ng-template #separator> • </ng-template>
+  </ng-container>
+</ng-template>

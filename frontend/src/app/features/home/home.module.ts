@@ -5,8 +5,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { HomeRoutingModule } from './home-routing.module';
 
-import { GreeterModule } from '../../shared/greeter/greeter.module';
-import { ProgramsSharedModule } from '../../shared/programs-shared/programs-shared.module';
+import { GreeterModule } from '@shared/greeter/greeter.module';
+import { ProgramsSharedModule } from '@shared/programs-shared/programs-shared.module';
 
 import { HomeComponent } from './home.component';
 import { HomeCustomComponent } from './custom/custom.component';

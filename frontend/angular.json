@@ -24,6 +24,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
+            "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets",
@@ -40,7 +41,6 @@
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
               "node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css",
               "src/styles.css",
-              "src/base.css",
               "src/custom/custom.css"
             ],
             "scripts": [
@@ -81,8 +81,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "16kb"
+                  "maximumWarning": "0kb",
+                  "maximumError": "4kb"
                 }
               ],
               "serviceWorker": true,
@@ -91,9 +91,7 @@
             "en": {
               "localize": [
                 "en"
-              ],
-              "aot": true,
-              "deleteOutputPath": false
+              ]
             }
           }
         },
@@ -106,9 +104,6 @@
           "configurations": {
             "production": {
               "browserTarget": "frontend:build:production"
-            },
-            "fr": {
-              "browserTarget": "frontend:build:fr"
             },
             "en": {
               "browserTarget": "frontend:build:en"
@@ -127,8 +122,8 @@
           "options": {
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
             "styles": [
               "src/styles.css"
             ],
@@ -146,7 +141,7 @@
           "options": {
             "tsConfig": [
               "src/tsconfig.app.json",
-              "src/tsconfig.spec.json",
+              "tsconfig.spec.json",
               "e2e/tsconfig.e2e.json"
             ],
             "exclude": [
@@ -179,49 +174,6 @@
                 "./e2e/app.en.e2e-spec.ts"
               ]
             }
-          }
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/server",
-            "main": "server.ts",
-            "tsConfig": "src/tsconfig.server.json"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true
-            }
-          }
-        },
-        "serve-ssr": {
-          "builder": "@nguniversal/builders:ssr-dev-server",
-          "options": {
-            "browserTarget": "frontend:build",
-            "serverTarget": "frontend:server"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "frontend:build:production",
-              "serverTarget": "frontend:server:production"
-            }
-          }
-        },
-        "prerender": {
-          "builder": "@nguniversal/builders:prerender",
-          "options": {
-            "browserTarget": "frontend:build:production",
-            "serverTarget": "frontend:server:production",
-            "routes": []
-          },
-          "configurations": {
-            "production": {}
           }
         }
       }

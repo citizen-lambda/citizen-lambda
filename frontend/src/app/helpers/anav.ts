@@ -1,26 +1,35 @@
 import { AfterViewInit, HostListener, Directive } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, BehaviorSubject } from 'rxjs';
-import { map, take, filter } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { UnsubscribeOnDestroy } from './unsubscribe-on-destroy';
 
 @Directive()
-export abstract class AnchorNavigationDirective implements AfterViewInit {
-  fragment$ = new BehaviorSubject<string>('');
+export abstract class AnchorNavigationDirective extends UnsubscribeOnDestroy
+  implements AfterViewInit {
+  fragment$ = this.route.fragment.pipe(distinctUntilChanged());
+  orient$ = new BehaviorSubject<OrientationType>(
+    window.screen.orientation.type || 'landscape-primary'
+  );
 
   constructor(protected router: Router, protected route: ActivatedRoute) {
-    combineLatest([
-      route.fragment.pipe(take(1)),
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        take(1)
-      )
-    ])
-      .pipe(
-        map(([fragment]) => {
-          return fragment;
-        })
-      )
-      .subscribe(fragment => this.fragment$.next(fragment));
+    super();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  @HostListener('window:orientationchange', ['$event'])
+  orientationHandler($event: Event): void {
+    let orient: OrientationType = window.screen.orientation.type || 'landscape-primary';
+    if ($event.type === 'orientationchange') {
+      orient = window.screen.orientation.type;
+    }
+    if ($event.type === 'resize') {
+      orient =
+        window.innerHeight > window.innerWidth && orient === 'landscape-primary'
+          ? 'portrait-primary'
+          : orient;
+    }
+    this.orient$.next(orient);
   }
 
   jumpTo(fragment: string, delay: number = 200): void {
@@ -43,35 +52,9 @@ export abstract class AnchorNavigationDirective implements AfterViewInit {
   }
 
   // abstract AfterViewInit(): void;
-
   ngAfterViewInit(): void {
-    this.fragment$.pipe(take(1)).subscribe((fragment: string) => this.jumpTo(fragment));
-  }
-
-  @HostListener('window:scroll')
-  scrollHandler(): void {
-    if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
-      const tallSize = getComputedStyle(document.documentElement)
-        .getPropertyValue('--tall-topbar-height')
-        .trim();
-      const narrowSize = getComputedStyle(document.documentElement)
-        .getPropertyValue('--narrow-topbar-height')
-        .trim();
-      const offset = getComputedStyle(document.documentElement)
-        .getPropertyValue('--router-outlet-margin-top')
-        .trim();
-      const barSize = parseInt(offset, 10) - document.documentElement.scrollTop;
-      const minSize = parseInt(narrowSize, 10);
-      const maxSize = parseInt(tallSize, 10);
-      document.documentElement.style.setProperty(
-        '--router-outlet-margin-top',
-        Math.min(Math.max(barSize, minSize), maxSize) + 'px'
-      );
-    } else {
-      document.documentElement.style.setProperty(
-        '--router-outlet-margin-top',
-        'var(--tall-topbar-height)'
-      );
-    }
+    combineLatest([this.fragment$, this.orient$.pipe(distinctUntilChanged())])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(([fragment]) => this.jumpTo(fragment));
   }
 }

@@ -1,0 +1,58 @@
+<section id="programs" class="row">
+  <ng-container *ngIf="programs?.length > 1; else noprogramfound">
+    <!-- TODO: carousel programs length threshold is hard coded, mv to appConfig -->
+    <ng-container *ngIf="!wantGridMediaQuery.matches || programs.length < 7; else programscards">
+      <div id="programs-carousel">
+        <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
+        <ngb-carousel #carousel>
+          [interval]="10000" [pauseOnHover]="pauseOnHover" (slide)="onSlide($event)"
+          <ng-template ngbSlide *ngFor="let p of programs; index as i">
+            <a [routerLink]="['/programs', p.id_program, 'observations']">
+              <div class="programs-carousel-img-wrapper">
+                <!-- ngb-carousel in firefox doesn't like lazy-loaded img
+                  loading="lazy"
+                  width="{{ carouselClientWidth }}"
+                  height="{{ carouselClientHeight }}" -->
+                <img
+                  class="d-block w-100"
+                  [src]="p.image || 'assets/default_taxon.jpg'"
+                  alt="Programme {{ p.title }}"
+                />
+              </div>
+            </a>
+            <div class="carousel-caption">
+              <h3>{{ p.title }}</h3>
+              <p [innerHTML]="p.html_short_desc"></p>
+            </div>
+          </ng-template>
+        </ngb-carousel>
+      </div>
+    </ng-container>
+    <ng-template #programscards>
+      <div id="programs-cards">
+        <div class="card" *ngFor="let p of programs">
+          <div class="card-content">
+            <a [routerLink]="['/programs', p.id_program, 'observations']">
+              <img
+                class="w-100"
+                [src]="p.image || 'assets/default_taxon.jpg'"
+                alt="Programme {{ p.title }}"
+              />
+            </a>
+            <h3>{{ p.title }}</h3>
+            <p [innerHTML]="p.html_long_desc" class="card-body"></p>
+          </div>
+          <a
+            class="btn-big"
+            [routerLink]="['/programs', p.id_program, 'observations']"
+            fragment="observations"
+            >{{ LabelPlatformEngage }}</a
+          >
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+  <ng-template #noprogramfound>
+    <h1>No program found</h1>
+  </ng-template>
+</section>

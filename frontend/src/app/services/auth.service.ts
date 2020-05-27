@@ -1,20 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, LOCALE_ID } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { share, map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
+import { share, map, catchError, pluck, flatMap } from 'rxjs/operators';
 
-import { AppConfig } from '../../conf/app.config';
+import { AppConfig } from '@conf/app.config';
 import {
-  UserInfo,
   RegisteringUser,
-  LoggedUser,
+  RegistrationPayload,
   LoginPayload,
-  LoggingUser,
+  UserLogin,
   LogoutPayload,
   JWT,
-  TokenRefresh
-} from '../core/models';
+  AuthorizationPayload,
+  UserFeaturesPayload,
+  AnonymousUser,
+  UserFeatures
+} from '@core/models';
 
 @Injectable()
 export class AuthService {
@@ -23,48 +25,67 @@ export class AuthService {
   });
 
   redirectUrl: string | undefined;
-  authenticated$ = new BehaviorSubject<boolean>(this.hasRefreshToken());
-  authorized$ = new BehaviorSubject<boolean>(
-    this.hasAccessToken() && this.tokenExpiration(this.getAccessToken()) > 1
+  private _authenticated$ = new BehaviorSubject<boolean>(this.haveIdentification());
+  authenticated$ = this._authenticated$.asObservable();
+
+  private _authorized$ = new BehaviorSubject<boolean>(
+    this.haveAuthorization() && this.getAuthorizationExpiration(this.getAuthorization()) > 1
+  );
+  authorized$ = this._authorized$.asObservable();
+
+  userAuthState$: Observable<AnonymousUser | UserFeatures> = this.authenticated$.pipe(
+    map(authenticated => {
+      if (!authenticated) {
+        return of(new AnonymousUser(this.localeId));
+      }
+      return this.ensureAuthorized().pipe(pluck<UserFeaturesPayload, UserFeatures>('features'));
+    }),
+    flatMap((user: Observable<AnonymousUser | UserFeatures>) => user)
   );
 
-  constructor(private client: HttpClient, private router: Router) {}
+  constructor(
+    @Inject(LOCALE_ID) public localeId: string,
+    private client: HttpClient,
+    private router: Router
+  ) {}
 
-  login(user: LoggingUser): Observable<LoginPayload> {
+  login(userLogin: UserLogin): Observable<LoginPayload> {
     const url = `${AppConfig.API_ENDPOINT}/login`;
     return this.client
-      .post<LoginPayload>(url, user, { headers: this.headers })
+      .post<LoginPayload>(url, userLogin, { headers: this.headers })
       .pipe(
-        map(u => {
-          if (u && u.refresh_token) {
-            localStorage.setItem('refresh_token', u.refresh_token);
-            if (u.access_token) {
-              localStorage.setItem('access_token', u.access_token);
-              this.authorized$.next(true);
-            }
-            if (u.username) {
-              localStorage.setItem('username', u.username);
-              this.authenticated$.next(true);
-            }
-            if (localStorage.getItem('badges') !== null) {
-              localStorage.removeItem('badges');
-            }
+        map(payload => {
+          this.saveCredentials(payload);
+          if (localStorage.getItem('badges') !== null) {
+            localStorage.removeItem('badges');
           }
-          return u;
-        })
+          return payload;
+        }),
+        catchError(this.handleError)
       );
   }
 
-  register(user: RegisteringUser): Observable<LoggedUser | never> {
-    const url = `${AppConfig.API_ENDPOINT}/registration`;
-    return this.client.post<LoggedUser>(url, user, { headers: this.headers });
+  saveCredentials(payload: RegistrationPayload | LoginPayload): void {
+    if (payload?.refresh_token && payload?.access_token && payload?.username) {
+      this.storeIdentification(payload.refresh_token);
+      localStorage.setItem('username', payload.username);
+      this.storeAuthorization(payload.access_token);
+      this._authenticated$.next(true);
+      this._authorized$.next(true);
+    }
+    // handle localStorage Exception
   }
 
-  clearIdentity(): void {
+  register(user: RegisteringUser): Observable<RegistrationPayload | never> {
+    const url = `${AppConfig.API_ENDPOINT}/registration`;
+    return this.client.post<RegistrationPayload>(url, user, { headers: this.headers });
+  }
+
+  clearCredentials(): void {
     this.router.navigateByUrl('/home');
-    this.authorized$.next(false);
+    this._authorized$.next(false);
     localStorage.removeItem('access_token');
-    this.authenticated$.next(false);
+    this._authenticated$.next(false);
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('username');
     localStorage.removeItem('badges');
@@ -76,13 +97,13 @@ export class AuthService {
       .post<LogoutPayload>(url, { headers: this.headers })
       .pipe(
         map(payload => {
-          this.clearIdentity();
+          this.clearCredentials();
           this.router.navigate(['/home']);
           return payload;
         }),
         catchError(error => {
           console.error('[logout] error', error);
-          this.clearIdentity();
+          this.clearCredentials();
           this.router.navigate(['/home']);
           return throwError(error);
         })
@@ -90,22 +111,22 @@ export class AuthService {
       .toPromise();
   }
 
-  ensureAuthorized(): Observable<UserInfo> {
+  ensureAuthorized(): Observable<UserFeaturesPayload> {
     const url = `${AppConfig.API_ENDPOINT}/user/info`;
-    return this.client.get<UserInfo>(url, { headers: this.headers });
+    return this.client.get<UserFeaturesPayload>(url, { headers: this.headers });
   }
 
-  performTokenRefresh(): Observable<TokenRefresh> {
+  renewAuthorization(): Observable<AuthorizationPayload> {
     const url = `${AppConfig.API_ENDPOINT}/token_refresh`;
-    const refreshToken = this.getRefreshToken();
+    const refreshToken = this.getIdentification();
     const headers = this.headers.set('Authorization', `Bearer ${refreshToken}`);
-    return this.client.post<TokenRefresh>(url, '', {
+    return this.client.post<AuthorizationPayload>(url, '', {
       headers
     });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  selfDeleteAccount(_accessToken: string): Promise<LogoutPayload> {
+  selfDeleteAccount(_authorization: string): Promise<LogoutPayload> {
     const url = `${AppConfig.API_ENDPOINT}/user/delete`;
     return this.client
       .delete<LogoutPayload>(url, { headers: this.headers })
@@ -116,20 +137,36 @@ export class AuthService {
     return this.authorized$.pipe(share());
   }
 
-  getRefreshToken(): string | null {
-    return localStorage.getItem('refresh_token');
+  getIdentification(): string | null {
+    return window.localStorage.getItem('refresh_token');
   }
 
-  getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+  getAuthorization(): string | null {
+    return window.localStorage.getItem('access_token');
   }
 
-  private hasRefreshToken(): boolean {
-    return !!window.localStorage.getItem('refresh_token');
+  storeIdentification(token: string): void {
+    if (token.length > 0) {
+      // QuotaExceededError DOMException
+      localStorage.setItem('refresh_token', token);
+    }
   }
 
-  private hasAccessToken(): boolean {
-    return !!window.localStorage.getItem('access_token');
+  storeAuthorization(token: string): void {
+    if (token.length > 0) {
+      // QuotaExceededError DOMException
+      localStorage.setItem('access_token', token);
+    }
+  }
+
+  haveIdentification(): boolean {
+    const token = window.localStorage.getItem('refresh_token');
+    return (token && token.length > 0) || false;
+  }
+
+  haveAuthorization(): boolean {
+    const token = window.localStorage.getItem('access_token');
+    return (token && token.length > 0) || false;
   }
 
   decodeToken(token: string): JWT | void {
@@ -151,7 +188,7 @@ export class AuthService {
     }
   }
 
-  tokenExpiration(token: string | null): number | void {
+  getAuthorizationExpiration(token: string | null): number | void {
     if (!token) {
       return;
     }
@@ -162,5 +199,25 @@ export class AuthService {
     const now: number = new Date().getTime();
     const delta: number = (jwt.payload.exp * 1000 - now) / 1000.0;
     return delta;
+  }
+
+  handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      console.error('client-side error');
+      // client-side or network error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // server-side error
+      if (error.error && error.error.message) {
+        // api error
+        console.error('api error', error);
+        errorMessage = error.error.message;
+      } else {
+        console.error('server-side error', error);
+        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      }
+    }
+    return throwError(errorMessage);
   }
 }

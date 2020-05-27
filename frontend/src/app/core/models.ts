@@ -1,6 +1,5 @@
 import { SafeHtml } from '@angular/platform-browser';
-
-export type CallbackFunctionVariadicAnyReturn = (...args: any[]) => any;
+import { Inject, LOCALE_ID } from '@angular/core';
 
 export interface AppConfigInterface {
   appName: string;
@@ -51,7 +50,8 @@ export interface AppConfigInterface {
   };
   taxonSelectInputThreshold: number;
   taxonAutocompleteInputThreshold: number;
-  taxonAutocompleteFields: Partial<[keyof Taxon]>;
+  // taxonAutocompleteFields: [keyof Partial<Taxon>];
+  taxonAutocompleteFields: NonNullable<(keyof Partial<Taxon>)[]>;
   program_list_sort: string;
   OBSERVATIONS_FEATURES?: {
     TAXONOMY: {
@@ -60,44 +60,93 @@ export interface AppConfigInterface {
   };
 }
 
-type Partial<T> = {
-  [P in keyof T]?: T[P];
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CallbackFunctionVariadicAnyReturn = (...args: any[]) => any;
 
-// TODO: mv auth to feature module
-// export abstract class AuthProvider {
-//   public abstract loggedIn: boolean;
-//   public abstract redirectUrl: string;
-//   public abstract login(): Promise<void>;
-//   public abstract logout(): void;
-// }
+export interface APIPayload /* <T> */ {
+  message: string;
+  /*
+  result: T | T[];
+  status: boolean;
+ */
+}
 
-export interface RegisteredUser {
+export interface User {
   username: string;
-  password: string;
-  email: string;
+}
+
+// export const anonymous = this.localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous';
+export class AnonymousUser implements User {
+  constructor(@Inject(LOCALE_ID) public localeId: string) {}
+  get username(): string {
+    return this.localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous';
+  }
+}
+
+export interface Contact {
   name: string;
   surname: string;
+  email: string;
 }
 
-export type RegisteringUser = Partial<RegisteredUser>;
-
-export interface LoggingUser {
+export interface UserLogin extends User {
   username: string;
   password: string;
 }
 
-export interface LoggedUser {
-  message: string;
-  access_token: string;
-  refresh_token: string;
+export interface UserRegistration extends UserLogin, Contact {
   username: string;
+  password: string;
+  name: string;
+  surname: string;
+  email: string;
 }
 
-export type LoginPayload = Partial<LoggedUser>;
+export type RegisteringUser = Partial<UserRegistration>;
 
-export interface LogoutPayload {
+/* TODO: mv auth to feature module
+  export abstract class AuthProvider {
+    public abstract loggedIn: boolean;
+    public abstract redirectUrl: string;
+    public abstract login(): Promise<void>;
+    public abstract logout(): void;
+  } */
+
+export interface Identification {
+  refresh_token: string;
+}
+
+export interface AuthorizationPayload {
+  access_token: string;
+}
+
+export interface RegistrationPayload
+  extends APIPayload,
+    User,
+    Identification,
+    AuthorizationPayload {
   message: string;
+  username: string;
+  refresh_token: string;
+  access_token: string;
+}
+
+export type LoginPayload = Partial<RegistrationPayload>;
+
+export interface LogoutPayload extends APIPayload {
+  message: string;
+}
+
+export interface UserFeatures {
+  id_role: number;
+  username: string;
+  stats: { [name: string]: string | number };
+  admin: boolean;
+}
+
+export interface UserFeaturesPayload extends APIPayload, UserFeatures {
+  message: string;
+  features?: UserFeatures;
 }
 
 export interface JWT {
@@ -118,21 +167,6 @@ export interface JWTPayload {
   type: string;
 }
 
-export interface TokenRefresh {
-  access_token: string;
-}
-
-// TODO: rename, clashes with framework definition
-export interface UserInfo {
-  message: string;
-  features?: {
-    id_role: number;
-    username: string;
-    stats: { [name: string]: string | number };
-    admin?: boolean;
-  };
-}
-
 export interface Badge {
   alt: string;
   img: string;
@@ -142,12 +176,6 @@ export interface RewardsApiPayload {
   badges: Badge[];
   rewards: string[];
 }
-
-// export class APIPayload<T> {
-//   message: string;
-//   result: T | T[];
-//   status: boolean;
-// }
 
 export interface TaxonMedium {
   cd_nom: number;
@@ -183,6 +211,6 @@ export interface Taxon {
   regne: string;
 }
 
-export interface Taxonomy {
-  [key: string]: Taxon;
-}
+export type Taxonomy = {
+  [key in string | number]: Taxon;
+};

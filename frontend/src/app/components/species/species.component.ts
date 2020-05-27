@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { TaxonomyService } from '../../services/taxonomy.service';
-import { Taxonomy, Taxon } from '../../core/models';
+import { TaxonomyService } from '@services/taxonomy.service';
+import { Taxon } from '@core/models';
 
 @Component({
   selector: 'app-species',

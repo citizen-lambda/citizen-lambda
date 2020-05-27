@@ -13,7 +13,7 @@ import { FeatureCollection } from 'geojson';
 
 import { FlowItem } from './flow/flow-item';
 import { ModalFlowService } from './modalflow.service';
-import { Taxonomy } from '../../../core/models';
+import { Taxonomy } from '@core/models';
 
 @Component({
   selector: 'app-modalflow',
@@ -24,16 +24,16 @@ import { Taxonomy } from '../../../core/models';
 export class ModalFlowComponent {
   @Input()
   data!: {
-    coords?: L.Point;
+    coords?: L.LatLng;
     program?: FeatureCollection;
     taxa?: Taxonomy;
   };
   @Input()
   triggerTemplate!: TemplateRef<HTMLElement>;
-  @ViewChild('content', { static: false })
+  @ViewChild('content')
   content!: ElementRef;
   flowitems: FlowItem[] = [];
-  timeout: any;
+  timeout: number | undefined;
 
   constructor(@Inject(LOCALE_ID) readonly localeId: string, public flowService: ModalFlowService) {}
 

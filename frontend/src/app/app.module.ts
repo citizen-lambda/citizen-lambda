@@ -8,8 +8,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { environment } from '../environments/environment';
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
@@ -47,7 +45,6 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    FontAwesomeModule,
     NgbModule,
     LoadingBarHttpClientModule,
     LoadingBarRouterModule,
@@ -71,13 +68,6 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     AboutCustomComponent,
     AboutFixedComponent
   ],
-  entryComponents: [
-    AppComponent,
-    LoginComponent,
-    LogoutComponent,
-    RegisterComponent,
-    SidebarComponent
-  ],
   providers: [
     AuthService,
     GncService,
@@ -93,6 +83,7 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     }
   ],
   bootstrap: [AppComponent]
+  // exports: [DebugModalComponent]
 })
 export class AppModule {
   constructor(@Inject(LOCALE_ID) localeId: string) {

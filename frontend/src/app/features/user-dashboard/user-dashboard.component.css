@@ -11,16 +11,18 @@
 }
 
 app-user-dashboard #main {
-padding-left: 0;
-padding-right: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
-app-user-dashboard #main .row {
+#main > div.row {
   margin: 0;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .user {
-  background: url(../../../assets/faune-mercantour.jpg) no-repeat;
+  background: url('../../../assets/faune-mercantour.jpg') no-repeat;
   background-size: cover;
   background-position: top;
   /* position: fixed; */

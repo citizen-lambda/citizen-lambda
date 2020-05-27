@@ -5,10 +5,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ObservationsRoutingModule } from './observations-routing.module';
 
-import { GreeterModule } from '../../shared/greeter/greeter.module';
-import { ObservationsSharedModule } from '../../shared/observations-shared/observations-shared.module';
+import { GreeterModule } from '@shared/greeter/greeter.module';
+import { ObservationsSharedModule } from '@shared/observations-shared/observations-shared.module';
 import { ObsComponent } from './obs.component';
-import { ObservationsFacade } from 'src/app/shared/observations-shared/observations-facade.service';
+import { ObservationsFacade } from '@shared/observations-shared/observations-facade.service';
 
 @NgModule({
   imports: [
@@ -16,11 +16,11 @@ import { ObservationsFacade } from 'src/app/shared/observations-shared/observati
     NgbModule,
     ObservationsRoutingModule,
     ObservationsSharedModule.forRoot(),
-    GreeterModule,
+    GreeterModule
   ],
   declarations: [ObsComponent],
   providers: [
-    ObservationsFacade, // non treeshakable, mv to own module
-  ],
+    ObservationsFacade // non treeshakable, mv to own module
+  ]
 })
 export class ObservationsModule {}

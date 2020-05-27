@@ -1,14 +1,13 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Subject, throwError, Observable } from 'rxjs';
-import { debounceTime, catchError, map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { catchError, map, take } from 'rxjs/operators';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { RegisteringUser, LoggedUser, AppConfigInterface } from '../../core/models';
-import { AppConfig } from '../../../conf/app.config';
-import { AuthService } from '../../services/auth.service';
+import { RegisteringUser, RegistrationPayload, AppConfigInterface } from '@core/models';
+import { AppConfig } from '@conf/app.config';
+import { AuthService } from '@services/auth.service';
 
 type AppConfigRegister = Pick<AppConfigInterface, 'termsOfUse'>;
 
@@ -42,28 +41,22 @@ export class RegisterComponent {
     this.auth
       .register(this.user)
       .pipe(
-        map((user: LoggedUser) => {
-          console.log(user);
-          if (user) {
-            localStorage.setItem('access_token', user.access_token);
-            this.auth.authorized$.next(true);
-            localStorage.setItem('refresh_token', user.refresh_token);
-            localStorage.setItem('username', user.username);
-            this.auth.authenticated$.next(true);
-            const message = user.message;
-            this._success.subscribe(msg => (this.successMessage = msg));
-            this._success.pipe(debounceTime(1500)).subscribe(() => {
-              this.successMessage = null;
-              this.activeModal.close();
-            });
-            this.displaySuccessMessage(message);
-            // redirect ?
-            if (this.auth.redirectUrl) {
-              this.router.navigate([this.auth.redirectUrl]);
-            }
+        map((payload: RegistrationPayload) => {
+          // this.auth.login()
+          this.auth.saveCredentials(payload);
+          const message = payload.message;
+          this._success.pipe(take(1)).subscribe(msg => (this.successMessage = msg));
+          this._success.pipe(take(1)).subscribe(() => {
+            this.successMessage = null;
+            this.activeModal.close();
+          });
+          this.displaySuccessMessage(message);
+          // redirect ?
+          if (this.auth.redirectUrl) {
+            this.router.navigate([this.auth.redirectUrl]);
           }
         }),
-        catchError(this.handleError)
+        catchError(this.auth.handleError)
       )
       .subscribe(
         () => ({}),
@@ -73,26 +66,6 @@ export class RegisterComponent {
           this.displayErrorMessage(errorMessage);
         }
       );
-  }
-
-  handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = '';
-    if (error.error instanceof ErrorEvent) {
-      console.error('client-side error');
-      // client-side or network error
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      // server-side error
-      if (error.error && error.error.message) {
-        // api error
-        console.error('api error', error);
-        errorMessage = error.error.message;
-      } else {
-        console.error('server-side error', error);
-        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-      }
-    }
-    return throwError(errorMessage);
   }
 
   displayErrorMessage(message: string): void {

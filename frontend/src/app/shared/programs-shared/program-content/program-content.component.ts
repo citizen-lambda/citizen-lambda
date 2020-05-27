@@ -2,17 +2,44 @@ import {
   Component,
   ViewEncapsulation,
   ChangeDetectionStrategy,
-  AfterViewInit,
-  OnDestroy,
-  Input
+  Input,
+  OnInit
 } from '@angular/core';
-
-import { AnchorNavigationDirective } from '../../../helpers/anav';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, fromEvent } from 'rxjs';
-import { throttleTime, map, filter, takeUntil } from 'rxjs/operators';
+import { Subject, interval, combineLatest } from 'rxjs';
+import { map, audit, distinctUntilKeyChanged, tap } from 'rxjs/operators';
 
-import { Program } from '../../../features/programs/programs.models';
+import { Program } from '@features/programs/programs.models';
+import { AnchorNavigationDirective } from '@helpers/anav';
+
+type EdgeShadow = 'bottom' | 'top' | 'both';
+
+const swapEdgeShadow = (state: EdgeShadow, e: HTMLElement): void => {
+  if (state === 'top') {
+    e.classList.remove('both-edge-shadow');
+    e.classList.remove('bottom-edge-shadow');
+    e.classList.add('top-edge-shadow');
+    return;
+  }
+  if (state === 'bottom') {
+    e.classList.remove('both-edge-shadow');
+    e.classList.remove('top-edge-shadow');
+    e.classList.add('bottom-edge-shadow');
+    return;
+  }
+  if (state === 'both') {
+    e.classList.remove('top-edge-shadow');
+    e.classList.remove('bottom-edge-shadow');
+    e.classList.add('both-edge-shadow');
+  }
+};
+
+const calcEdgeShadowUpdate = (element: HTMLElement): EdgeShadow =>
+  element.offsetHeight + element.scrollTop >= element.scrollHeight - element.scrollHeight * 0.1
+    ? 'top'
+    : element.scrollTop <= element.scrollHeight * 0.1
+    ? 'bottom'
+    : 'both';
 
 @Component({
   selector: 'app-program-content',
@@ -20,53 +47,44 @@ import { Program } from '../../../features/programs/programs.models';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProgramContentComponent extends AnchorNavigationDirective
-  implements AfterViewInit, OnDestroy {
-  private unsubscribe$ = new Subject<void>();
+export class ProgramContentComponent extends AnchorNavigationDirective implements OnInit {
   @Input() program!: Program;
+  scrollableElement$ = new Subject<HTMLElement | null>();
+  scrollTrigger$ = new Subject<Event>();
 
   constructor(protected router: Router, protected route: ActivatedRoute) {
     super(router, route);
+
+    combineLatest([this.scrollableElement$, this.scrollTrigger$.pipe(audit(() => interval(200)))])
+      .pipe(
+        map(([element]) => {
+          const update = element ? calcEdgeShadowUpdate(element) : null;
+          return { element, update };
+        }),
+        distinctUntilKeyChanged('update'),
+        tap(({ element, update }) => {
+          if (element && update) {
+            swapEdgeShadow(update, element);
+          }
+        })
+      )
+      .subscribe();
   }
 
-  ngAfterViewInit(): void {
-    // todo: move to directive and make the <p> tag an <article>
-    const element: HTMLElement | null = document.querySelector(
-      'app-program-content .program-content > article'
-    );
+  ngOnInit(): void {
+    const element = document.querySelector(
+      '#program-content > app-program-content > article'
+    ) as HTMLElement;
     if (element) {
-      const scroll$ = fromEvent(element, 'scroll').pipe(
-        throttleTime(10),
-        map(() =>
-          element.offsetHeight + element.scrollTop === element.scrollHeight
-            ? 'bottom'
-            : element.scrollTop === 0
-            ? 'top'
-            : null
-        ),
-        filter(reached => reached !== null),
-        takeUntil(this.unsubscribe$)
-      );
-
-      const swapClasses = (state: 'top' | 'bottom', e: HTMLElement): void => {
-        switch (state) {
-          case 'bottom':
-            e.classList.remove('bottom-edge-shadow');
-            e.classList.add('top-edge-shadow');
-            break;
-          case 'top':
-            e.classList.remove('top-edge-shadow');
-            e.classList.add('bottom-edge-shadow');
-            break;
-        }
-      };
-
-      scroll$.subscribe(reached => swapClasses(reached as 'top' | 'bottom', element));
+      if (element.offsetHeight === element.scrollHeight) {
+        // not scrollable
+        swapEdgeShadow('both', element);
+      }
+      this.scrollableElement$.next(element);
     }
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+  scrollHandler($event: Event): void {
+    this.scrollTrigger$.next($event);
   }
 }

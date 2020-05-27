@@ -6,11 +6,7 @@
     aria-label="Citizenλ Home"
     (click)="collapsed = true"
   >
-    <img
-      src="assets/logo.png"
-      class="d-inline-block align-top"
-      alt="Citizen lambda logo"
-    />
+    <img src="assets/logo.png" alt="Citizen lambda logo" />
   </a>
   <button
     class="navbar-toggler collapsed"
@@ -24,8 +20,12 @@
   >
     <span class="navbar-toggler-icon"><i class="fa fa-bars"></i></span>
   </button>
-
-  <div class="navbar-collapse align-top" [class.collapse]="collapsed" id="nav-menu">
+  <div
+    [@collapsing]="collapsed ? 'close' : 'open'"
+    class="navbar-collapse collapse"
+    [class.show]="!collapsed"
+    id="nav-menu"
+  >
     <ul class="nav navbar-nav navbar-center mx-auto">
       <li class="nav-item">
         <a
@@ -37,26 +37,24 @@
           >Accueil</a
         >
       </li>
-      <ng-container *ngIf="programs$ | async as $programs">
-        <li *ngIf="$programs?.length > 1" class="nav-item">
+      <ng-container *ngIf="programService.programs$ | async as programs">
+        <li *ngIf="programs?.length > 1" class="nav-item">
+          <a class="nav-link" (click)="programsModal()" i18n>Les programmes</a>
+        </li>
+      </ng-container>
+      <ng-container *ngIf="userAuthState$ | async as userAuthState">
+        <li *ngIf="userAuthState['admin'] === true" class="nav-item">
           <a
+            routerLink="/api/admin"
+            routerLinkActive="active"
             class="nav-link"
-            (click)="programs()"
+            (click)="collapsed = true"
             i18n
-            >Les programmes</a
+            >Admin</a
           >
         </li>
       </ng-container>
-      <li *ngIf="isAdmin$ | async" class="nav-item">
-        <a
-          routerLink="/api/admin"
-          routerLinkActive="active"
-          class="nav-link"
-          (click)="collapsed = true"
-          i18n
-          >Admin</a
-        >
-      </li>
+
       <li class="nav-item">
         <a
           routerLink="about"
@@ -74,7 +72,7 @@
           <a
             *ngIf="lang.code === localeId"
             class="nav-link"
-            style="cursor: pointer"
+            style="cursor: pointer;"
             ngbDropdownToggle
             id="cultureDropDown"
             role="button"
@@ -100,51 +98,39 @@
       </li>
     </ul>
     <ul class="btn-group" id="auth" role="group" aria-label="auth">
-      <ng-container *ngIf="isLoggedIn$() | async; then connected; else disconnected">
+      <ng-container *ngIf="userAuthState$ | async as userAuthState">
+        <ng-container *ngIf="userAuthState['id_role']; else disconnected">
+          <li>
+            <a
+              placement="bottom"
+              i18n-ngbTooltip
+              ngbTooltip="Mon tableau de bord"
+              routerLink="mydashboard"
+              routerLinkActive="active"
+              (click)="collapsed = !collapsed"
+            >
+              <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ (userAuthState$ | async)?.username }}
+            </a>
+          </li>
+          <li>
+            <a class="my-2 my-sm-0" (click)="logout()" i18n>
+              <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
+            </a>
+          </li>
+        </ng-container>
+        <ng-template #disconnected>
+          <li>
+            <a class="btn my-2 my-sm-0 rounded-0" (click)="login()" i18n>
+              Se connecter
+            </a>
+          </li>
+          <li>
+            <a class="btn my-2 my-sm-0 rounded-0" (click)="register()" i18n>
+              S'inscrire
+            </a>
+          </li>
+        </ng-template>
       </ng-container>
-      <ng-template #connected>
-        <li>
-          <a
-            placement="bottom"
-            i18n-ngbTooltip
-            ngbTooltip="Mon tableau de bord"
-            routerLink="mydashboard"
-            routerLinkActive="active"
-            (click)="collapsed = !collapsed"
-          >
-            <i class="fa fa-fw fa-user-circle"></i> &nbsp;{{ username }}
-          </a>
-        </li>
-        <li>
-          <a
-            class="my-2 my-sm-0"
-            (click)="logout()"
-            i18n
-          >
-            <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
-          </a>
-        </li>
-      </ng-template>
-      <ng-template #disconnected>
-        <li>
-          <a
-            class="btn my-2 my-sm-0 rounded-0"
-            (click)="login()"
-            i18n
-          >
-            Se connecter
-          </a>
-        </li>
-        <li>
-          <a
-            class="btn my-2 my-sm-0 rounded-0"
-            (click)="register()"
-            i18n
-          >
-            S'inscrire
-          </a>
-        </li>
-      </ng-template>
     </ul>
   </div>
 </nav>

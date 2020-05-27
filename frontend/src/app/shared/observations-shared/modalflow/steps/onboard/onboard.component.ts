@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { FlowComponentInterface } from '../../flow/flow';
-import { RegisterComponent } from '../../../../../components/register/register.component';
-import { LoginComponent } from '../../../../../components/login/login.component';
-import { AuthService } from '../../../../../services/auth.service';
+import { FlowComponentInterface } from '@shared/observations-shared/modalflow/flow/flow';
+import { RegisterComponent } from '@components/register/register.component';
+import { LoginComponent } from '@components/login/login.component';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   templateUrl: './onboard.component.html',
@@ -18,8 +18,8 @@ export class OnboardComponent implements FlowComponentInterface, OnInit {
   LoginModalRef!: NgbModalRef;
   timeout: any;
   @Input() data: any;
-  @ViewChild('RegisterComponent', { static: false }) RegisterComponent!: ElementRef;
-  @ViewChild('LoginComponent', { static: false }) LoginComponent!: ElementRef;
+  @ViewChild('RegisterComponent') RegisterComponent!: ElementRef;
+  @ViewChild('LoginComponent') LoginComponent!: ElementRef;
 
   constructor(
     private modalService: NgbModal,

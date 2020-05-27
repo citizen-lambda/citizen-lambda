@@ -1,0 +1,16 @@
+<div
+  [formGroup]="parentForm"
+  id="obsFormMap"
+  #obsFormMap
+  i18n-data-observation-zoom-statement-warning
+  data-observation-zoom-statement-warning="Veuillez zoomer pour localiser votre observation."
+>
+  <input formControlName="geometry" type="hidden" id="geometry" name="geometry" #geometry />
+  <div class="zoom-alert" *ngIf="hasZoomAlert">
+    <div class="mb-2 text-center" i18n>
+      Veuillez zoomer pour localiser votre observation.<br />
+      <span>(zoom min: {{ MapConfig.ZOOM_LEVEL_RELEVE }})</span>
+    </div>
+    <button class="btn" (click)="hasZoomAlert = false">OK</button>
+  </div>
+</div>

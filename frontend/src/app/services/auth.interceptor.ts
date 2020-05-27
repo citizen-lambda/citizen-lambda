@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
 import { catchError, switchMap, finalize, filter, mergeMap } from 'rxjs/operators';
 import { Observable, BehaviorSubject, from, of } from 'rxjs';
 
-import { AppConfig } from '../../conf/app.config';
+import { AppConfig } from '@conf/app.config';
 import { AuthService } from './auth.service';
-import { TokenRefresh } from '../core/models';
+import { AuthorizationPayload } from '@core/models';
 import { ErrorHandler } from './error_handler';
 
 @Injectable()
@@ -44,10 +44,10 @@ export class AuthInterceptor implements HttpInterceptor {
       this.refreshing = true;
       this.token$.next('');
 
-      return this.auth.performTokenRefresh().pipe(
-        mergeMap((data: TokenRefresh) => {
+      return this.auth.renewAuthorization().pipe(
+        mergeMap((data: AuthorizationPayload) => {
           if (data?.access_token.length > 0) {
-            localStorage.setItem('access_token', data.access_token);
+            this.auth.storeAuthorization(data.access_token);
             this.token$.next(data.access_token);
             const clone = this.addToken(request, data.access_token);
             return next.handle(clone);
@@ -57,12 +57,12 @@ export class AuthInterceptor implements HttpInterceptor {
           return from(this.auth.logout());
         }),
         catchError(error => {
-          console.error('[AuthInterceptor.performTokenRefresh] error', error);
+          console.error('[AuthInterceptor.renewAuthorization] error', error);
           // this.errorHandler.handleError(error);
           try {
             this.auth.logout();
           } catch (error) {
-            this.auth.clearIdentity();
+            this.auth.clearCredentials();
           }
           return of(error);
         }),
@@ -91,10 +91,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (
-      (request.url.match(AppConfig.API_ENDPOINT) &&
-        (request.url.includes('token_refresh') ||
-          request.url.includes('registration') ||
-          request.url.includes('login'))) ||
+      request.url.match(`${AppConfig.API_ENDPOINT}/token_refresh`) ||
+      request.url.match(`${AppConfig.API_ENDPOINT}/registration`) ||
+      request.url.match(`${AppConfig.API_ENDPOINT}/login`) ||
       !request.url.match(AppConfig.API_ENDPOINT)
     ) {
       // QUESTION: 3rd party request(cookie!) logging ?
@@ -102,13 +101,13 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     // access_token renewal 2min before expiration if interacting with backend api.
-    const secondsToExpiration = this.auth.tokenExpiration(this.auth.getAccessToken());
+    const secondsToExpiration = this.auth.getAuthorizationExpiration(this.auth.getAuthorization());
     // console.debug(`secs to exp: ${secondsToExpiration}`);
     if (secondsToExpiration && secondsToExpiration <= 120.0) {
       return this.handle401(request, next);
     }
 
-    return next.handle(this.addToken(request, this.auth.getAccessToken())).pipe(
+    return next.handle(this.addToken(request, this.auth.getAuthorization())).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.error instanceof ProgressEvent) {
           this.errorHandler.handleError(error);

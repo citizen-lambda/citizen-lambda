@@ -14,16 +14,15 @@ import { BehaviorSubject } from 'rxjs';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { AppConfigInterface, Taxonomy } from '../../../core/models';
-import { AppConfig } from '../../../../conf/app.config';
-import { TaxonomyService } from '../../../services/taxonomy.service';
+import { AppConfigInterface, Taxonomy } from '@core/models';
+import { AppConfig } from '@conf/app.config';
+import { TaxonomyService } from '@services/taxonomy.service';
 
 type AppConfigObsList = Pick<AppConfigInterface, 'API_ENDPOINT'>;
 
 @Component({
   selector: 'app-obs-list',
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
