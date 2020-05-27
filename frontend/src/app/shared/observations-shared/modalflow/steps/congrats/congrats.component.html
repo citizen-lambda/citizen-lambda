@@ -27,7 +27,7 @@
       }}
     </p>
     <span *ngIf="username" i18n>Observé par {{ username }} </span>
-    <span>le {{ obs?.date }}</span>
+    <span i18n>le {{ obs?.date }}</span>
   </div>
   <div class="modal-footer">
     <button class="btn btn-big rounded-0 bg-primary d-flex mx-auto" i18n (click)="next()">

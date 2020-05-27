@@ -619,7 +619,7 @@
           J&apos;accepte les
           <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>conditions d&apos;utilisation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <target>
-          I accept the
+          &nbsp;I accept the
           <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>terms of use<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
@@ -1036,6 +1036,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/congrats/congrats.component.html</context>
           <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f069c52c154757ed117a12f21f21a4769840af37" datatype="html">
+        <source>le <x id="INTERPOLATION" equiv-text="{{ obs?.date }}"/></source>
+        <target>on <x id="INTERPOLATION" equiv-text="{{ obs?.date }}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/congrats/congrats.component.html</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="20fc98888baf65b5ba9fe9622dc036fa8dec6a5f" datatype="html">
