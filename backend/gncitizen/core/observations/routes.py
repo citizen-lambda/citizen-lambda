@@ -130,8 +130,8 @@ def post_observation() -> Tuple[Dict, int]:
             default: '""'
           - name: geometry
             in: formData
-            description: Simple coordinates {"x"&colon; 5.4156, "y"&colon; 43.285}.
-            exemple: {"lng":5.415, "lat":43.285} or {"x": 5.415, "y": 43.285}
+            description: Simple coordinates {"lng"&colon;5.415, "lat"&colon;43.285} or {"x"&colon; 5.4156, "y"&colon; 43.285}.
+            exemple: {"lng":5.415, "lat":43.285}
             required: true
           - name: file
             in: formData
