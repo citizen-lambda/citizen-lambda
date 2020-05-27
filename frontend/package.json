@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.901.7",
+    "@angular-devkit/schematics": "~9.1.7",
     "@angular/cli": "~9.1.7",
     "@angular/compiler-cli": "~9.1.9",
     "@types/jasmine": "~3.5.10",
@@ -88,7 +89,8 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "~3.8.3"
+    "typescript": "~3.8.3",
+    "webpack": "^4.43.0"
   },
   "repository": {
     "type": "git",
