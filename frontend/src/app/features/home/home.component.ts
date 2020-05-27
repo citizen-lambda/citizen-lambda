@@ -16,9 +16,6 @@ type AppConfigHome = Pick<AppConfigInterface, 'appName' | 'SEO' | 'platform_part
 })
 export class HomeComponent {
   readonly appConfig: AppConfigHome = AppConfig;
-  LabelPlatformEngage = (this.appConfig.platform_participate as { [lang: string]: string })[
-    this.localeId
-  ];
   programs$ = this.route.data.pipe(pluck<Data, Program[]>('programs'));
 
   constructor(

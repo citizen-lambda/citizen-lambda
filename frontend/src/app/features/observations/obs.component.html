@@ -11,7 +11,14 @@
   </section>
   <!-- LES OBSERVATIONS -->
   <section id="observations" class="observations row">
-    <input id="slide-sidebar" type="checkbox" role="button" (click)="onListToggle()" />
+    <input
+      id="slide-sidebar"
+      type="checkbox"
+      i18n-aria-label
+      aria-label="cacher/montrer la liste"
+      role="button"
+      (click)="onListToggle()"
+    />
     <label class="toggle" for="slide-sidebar"><i class="fa fa-chevron-left"></i></label>
 
     <div class="side-bar" id="obslist">
@@ -113,7 +120,7 @@
             ><span class="d-md-block d-sm-block d-xs-block d-lg-none d-xl-none">＋</span>
             <span class="d-lg-block d-xl-block d-none">{{ AddAnObservationLabel }}</span>
           </app-modalflow>
-          <!-- <button class="btn-big">Réaliser un programme</button> -->
+          <!-- <button class="btn-big" i18n>Réaliser un programme</button> -->
         </div>
       </div>
     </div>

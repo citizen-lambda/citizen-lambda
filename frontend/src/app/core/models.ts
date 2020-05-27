@@ -53,6 +53,7 @@ export interface AppConfigInterface {
   // taxonAutocompleteFields: [keyof Partial<Taxon>];
   taxonAutocompleteFields: NonNullable<(keyof Partial<Taxon>)[]>;
   program_list_sort: string;
+  programsMasonryThreshold: number;
   OBSERVATIONS_FEATURES?: {
     TAXONOMY: {
       GROUP: string | CallbackFunctionVariadicAnyReturn;

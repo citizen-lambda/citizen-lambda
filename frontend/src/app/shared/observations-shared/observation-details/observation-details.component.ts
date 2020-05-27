@@ -34,7 +34,13 @@ import { WebshareComponent, ShareData } from '@shared/webshare/webshare.componen
       <h4 class="modal-title" id="modal-obs-details">
         Details Observation #{{ data?.id_observation }}
       </h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <button
+        type="button"
+        class="close"
+        i18n-aria-label
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>

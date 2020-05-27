@@ -15,7 +15,13 @@
       required
     />
     <div class="input-group-append">
-      <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+      <button
+        class="btn btn-outline-secondary calendar"
+        i18n-aria-label
+        aria-label="ouvrir/fermer le calendrier"
+        (click)="d.toggle()"
+        type="button"
+      >
         <i class="fa fa-calendar"></i>
       </button>
     </div>

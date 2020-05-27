@@ -1,7 +1,12 @@
 <section id="programs" class="row">
   <ng-container *ngIf="programs?.length > 1; else noprogramfound">
     <!-- TODO: carousel programs length threshold is hard coded, mv to appConfig -->
-    <ng-container *ngIf="!wantGridMediaQuery.matches || programs.length < 7; else programscards">
+    <ng-container
+      *ngIf="
+        !wantGridMediaQuery.matches || programs.length < appConfig.programsMasonryThreshold;
+        else programscards
+      "
+    >
       <div id="programs-carousel">
         <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
         <ngb-carousel #carousel>

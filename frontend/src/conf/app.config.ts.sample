@@ -54,6 +54,7 @@ export const AppConfig = {
   taxonAutocompleteInputThreshold: 0,
   taxonAutocompleteFields: ['nom_complet', 'nom_vern', 'nom_vern_eng', 'cd_nom'],
   program_list_sort: '-timestamp_create',
+  programsMasonryTreshold: 7,
   OBSERVATIONS_FEATURES: {
     TAXONOMY: {
       GROUP: (localeId: string): string => {

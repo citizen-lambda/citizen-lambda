@@ -3,6 +3,7 @@
   <button
     type="button"
     class="close rounded-0"
+    i18n-aria-label
     aria-label="Close"
     (click)="data.service.close('Cross click')"
   >
@@ -11,19 +12,11 @@
 </div>
 
 <div class="modal-body row">
-  <div
-    class="sign col-lg-6 col-md-12"
-    (click)="register()"
-    data-dismiss="modal"
-  >
+  <div class="sign col-lg-6 col-md-12" (click)="register()" data-dismiss="modal">
     <i class="fa fa-user"></i>
     <span i18n>S'incrire <br />et contribuer au site</span>
   </div>
-  <div
-    class="sign col-lg-6 col-md-12"
-    (click)="continue()"
-    data-dismiss="modal"
-  >
+  <div class="sign col-lg-6 col-md-12" (click)="continue()" data-dismiss="modal">
     <i class="fa fa-user"></i>
     <span i18n>Continuer <br />sans s'enregistrer</span>
   </div>

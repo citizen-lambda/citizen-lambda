@@ -268,6 +268,7 @@
       </trans-unit>
       <trans-unit id="442b0d77c52edd20f731d7781e0dc3fe8c833a26" datatype="html">
         <source><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Démo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>citizenλ <x id="START_SMALL_TEXT" ctype="x-small" equiv-text="&lt;small&gt;"/><x id="INTERPOLATION" equiv-text="{{lambdaVersion}}"/><x id="CLOSE_SMALL_TEXT" ctype="x-small" equiv-text="&lt;/small&gt;"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
+  </source>
         <target><x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Démo<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/> <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>citizenλ <x id="START_SMALL_TEXT" ctype="x-small" equiv-text="&lt;small&gt;"/><x id="INTERPOLATION" equiv-text="{{lambdaVersion}}"/><x id="CLOSE_SMALL_TEXT" ctype="x-small" equiv-text="&lt;/small&gt;"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>
   </target>
         <context-group purpose="location">
@@ -277,7 +278,7 @@
       </trans-unit>
       <trans-unit id="8340ba5b505cf54e552cd818f85744866990f31e" datatype="html">
         <source>Se connecter</source>
-        <target>Se connecter</target>
+        <target>Login</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
           <context context-type="linenumber">2</context>
@@ -285,56 +286,88 @@
         <note priority="1" from="description">login</note>
         <note priority="1" from="meaning">login</note>
       </trans-unit>
-      <trans-unit id="2ac6448c552ac79b5d52d4c864194460cabc2e32" datatype="html">
-        <source>Utilisateur</source>
-        <target>Utilisateur</target>
+      <trans-unit id="f4e529ae5ffd73001d1ff4bbdeeb0a72e342e5c8" datatype="html">
+        <source>Close</source>
+        <target>Close</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/logout/logout.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/register/register.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/onboard/onboard.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/committed/committed.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2ac6448c552ac79b5d52d4c864194460cabc2e32" datatype="html">
+        <source>Utilisateur</source>
+        <target>Username</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/login/login.component.html</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="17b72d69f105b4ae27f46ba5837172750c740593" datatype="html">
         <source>Entrez votre nom d&apos;utilisateur</source>
-        <target>Entrez votre nom d&apos;utilisateur</target>
+        <target>Enter your username</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">43</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">111</context>
+          <context context-type="linenumber">112</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">42</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">96</context>
+          <context context-type="linenumber">78</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8cdc901a1feab1397692c71595c3abc31c79ef22" datatype="html">
         <source>Votre Email</source>
-        <target>Votre Email</target>
+        <target>Your Email</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">52</context>
+          <context context-type="linenumber">53</context>
         </context-group>
       </trans-unit>
       <trans-unit id="da6e2120105267979ed07c1d76bfb2686f728c37" datatype="html">
         <source>Entrez votre email</source>
-        <target>Entrez votre email</target>
+        <target>Enter your email</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">69</context>
+          <context context-type="linenumber">70</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">64</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">120</context>
+          <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="0cc4ccb27ad53b20e76fe92978dfbb49aac64f67" datatype="html">
@@ -342,47 +375,47 @@
       Récupérer le compte
     </source>
         <target>
-      Récupérer le compte
+      Recover account
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">85</context>
+          <context context-type="linenumber">86</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f6c5161a7a582f0f977e99cabf956c98a1ca2813" datatype="html">
         <source>Utilisateur</source>
-        <target>Utilisateur</target>
+        <target>Username</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">96</context>
+          <context context-type="linenumber">97</context>
         </context-group>
         <note priority="1" from="description">username</note>
         <note priority="1" from="meaning">login</note>
       </trans-unit>
       <trans-unit id="0c98c0bf1334fa3887a961c764ff88f4028bd672" datatype="html">
         <source>Mot de passe</source>
-        <target>Mot de passe</target>
+        <target>Password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">122</context>
+          <context context-type="linenumber">123</context>
         </context-group>
         <note priority="1" from="description">mdp</note>
         <note priority="1" from="meaning">login</note>
       </trans-unit>
       <trans-unit id="499497b326b23f5c58fe7ba7be5d58b1137161f6" datatype="html">
         <source>Entrez votre mot de passe</source>
-        <target>Entrez votre mot de passe</target>
+        <target>Enter your password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">138</context>
+          <context context-type="linenumber">139</context>
         </context-group>
       </trans-unit>
       <trans-unit id="944e6f5b71d87d9395d61db706b3139f3b587162" datatype="html">
         <source>Mot de passe oublié ?</source>
-        <target>Mot de passe oublié ?</target>
+        <target>Forgotten password?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">148</context>
+          <context context-type="linenumber">149</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d9eeca9f16214492a09881aa5d598a3ca0a06c5" datatype="html">
@@ -390,11 +423,11 @@
       Se connecter
     </source>
         <target>
-      Se connecter
+      Login
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">157</context>
+          <context context-type="linenumber">158</context>
         </context-group>
       </trans-unit>
       <trans-unit id="34ce76a79350dc319bac73eb7bcd8b0c6019a70d" datatype="html">
@@ -402,20 +435,16 @@
     Fermer
   </source>
         <target>
-    Fermer
+    Close
   </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">169</context>
+          <context context-type="linenumber">170</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="abfd4b6af81bfc19272e9f874f6ae45feb17ba52" datatype="html">
-        <source>
-    <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Se déconnecter
-  </source>
-        <target>
-    <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Se déconnecter
-  </target>
+      <trans-unit id="8bb2de7f6921a36489739946966347bc1498b666" datatype="html">
+        <source><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Se déconnecter</source>
+        <target><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Logout</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/logout/logout.component.html</context>
           <context context-type="linenumber">2</context>
@@ -426,16 +455,16 @@
       Se déconnecter
     </source>
         <target>
-      Se déconnecter
+      Logout
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/logout/logout.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="711cc73407745ea6979040dd6f6c258289f07d16" datatype="html">
         <source>Créez votre compte</source>
-        <target>Créez votre compte</target>
+        <target>Sign in</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
           <context context-type="linenumber">2</context>
@@ -446,83 +475,83 @@
       Impossible de valider votre email.
     </source>
         <target>
-      Impossible de valider votre email.
+      Could not validate your email.
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="28719cf472c6508d6bc74795f2c2892a3e08abda" datatype="html">
         <source>Votre nom d&apos;utilisateur</source>
-        <target>Votre nom d&apos;utilisateur</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">18</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">84</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="c0ff9ffa1ebc237a92a2bab1c2c0c2b7b066eb80" datatype="html">
-        <source>Votre email</source>
-        <target>Votre email</target>
+        <target>Your username</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">107</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2812c860480e82ed15a1ba1dc87d50c96ef6bc03" datatype="html">
-        <source>Votre prénom</source>
-        <target>Votre prénom</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">46</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">134</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5666e385b5d6171d56aafef10e44afa0aac5664a" datatype="html">
-        <source>Entrez votre prénom</source>
-        <target>Entrez votre prénom</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">48</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">141</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5c3c2b63bece7215ee7d0217d4101a72eb7bb1b8" datatype="html">
-        <source>Votre nom</source>
-        <target>Votre nom</target>
+      <trans-unit id="c0ff9ffa1ebc237a92a2bab1c2c0c2b7b066eb80" datatype="html">
+        <source>Votre email</source>
+        <target>Your email</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
           <context context-type="linenumber">53</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">151</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2812c860480e82ed15a1ba1dc87d50c96ef6bc03" datatype="html">
+        <source>Votre prénom</source>
+        <target>Firstname</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/register/register.component.html</context>
+          <context context-type="linenumber">78</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5666e385b5d6171d56aafef10e44afa0aac5664a" datatype="html">
+        <source>Entrez votre prénom</source>
+        <target>Enter your firstname</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/register/register.component.html</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">121</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5c3c2b63bece7215ee7d0217d4101a72eb7bb1b8" datatype="html">
+        <source>Votre nom</source>
+        <target>Your lastname</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/register/register.component.html</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
+          <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="83d3d3364301ded37314f0e9307e2edc4b4110f9" datatype="html">
         <source>Entrez votre nom</source>
-        <target>Entrez votre nom</target>
+        <target>Enter your lastname</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">102</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">158</context>
+          <context context-type="linenumber">138</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2e0f16cd8b16e154885409b211c057526a0a4e00" datatype="html">
@@ -530,47 +559,47 @@
       Les mots de passe diffèrent.
     </source>
         <target>
-      Les mots de passe diffèrent.
+      Passwords do not match.
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">63</context>
+          <context context-type="linenumber">118</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a0345ec3898b6b09fdf320d52e2634fb243c3eaf" datatype="html">
         <source>Votre mot de passe</source>
-        <target>Votre mot de passe</target>
+        <target>Your password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">69</context>
+          <context context-type="linenumber">124</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">71</context>
+          <context context-type="linenumber">130</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">180</context>
+          <context context-type="linenumber">158</context>
         </context-group>
       </trans-unit>
       <trans-unit id="83c243fb33445d5db02ab9f9d8df7ee59553c324" datatype="html">
         <source>Confirmez votre mot de passe</source>
-        <target>Confirmez votre mot de passe</target>
+        <target>Confirm your password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">143</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4f5c019e983e5aa1f4b93a3c4aa67ac94cf2ec7d" datatype="html">
         <source>Confirmez le mot de passe</source>
-        <target>Confirmez le mot de passe</target>
+        <target>Confirm your password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">79</context>
+          <context context-type="linenumber">152</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">210</context>
+          <context context-type="linenumber">186</context>
         </context-group>
       </trans-unit>
       <trans-unit id="963816961c6d1a067196dac298708b1ff379057f" datatype="html">
@@ -578,25 +607,23 @@
           Veuillez accepter les conditions d&apos;utilisation.
         </source>
         <target>
-          Veuillez accepter les conditions d&apos;utilisation.
+          Accept terms of use.
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">160</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="144a7933a2760696890fcc60cfcdf00902695380" datatype="html">
+      <trans-unit id="23c2779970c4e4eec110c37a805338509d4766c9" datatype="html">
         <source>
           J&apos;accepte les
-          <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>conditions
-            d&apos;utilisation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+          <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>conditions d&apos;utilisation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <target>
-          J&apos;accepte les
-          <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>conditions
-            d&apos;utilisation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></target>
+          I accept the
+          <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>terms of use<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">87</context>
+          <context context-type="linenumber">166</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a07d84725ccca87d9af1ca9831ab500368066d45" datatype="html">
@@ -604,11 +631,11 @@
       S&apos;enregistrer
     </source>
         <target>
-      S&apos;enregistrer
+      Sign in
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">181</context>
         </context-group>
       </trans-unit>
       <trans-unit id="f5c31d2a56eb0fa68786ff97595ac91661aa97af" datatype="html">
@@ -616,11 +643,11 @@
       Fermer
     </source>
         <target>
-      Fermer
+      Close
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/register/register.component.html</context>
-          <context context-type="linenumber">99</context>
+          <context context-type="linenumber">191</context>
         </context-group>
       </trans-unit>
       <trans-unit id="cfbab7a7b087154ad714d4393a80df0e06d66e3b" datatype="html">
@@ -628,7 +655,7 @@
       PROGRAMMES<x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ programs?.length }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </source>
         <target>
-      PROGRAMMES<x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ programs?.length }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+      PROGRAMS<x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ programs?.length }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/programs-shared/programs-modal/programs-modal.component.html</context>
@@ -637,20 +664,28 @@
         <note priority="1" from="description">PROGRAMMES</note>
         <note priority="1" from="meaning">Programs modal title</note>
       </trans-unit>
-      <trans-unit id="1db6cc9a977f9ab640d4794214922775a6de0785" datatype="html">
-        <source>Accueil</source>
-        <target>Accueil</target>
+      <trans-unit id="319e0745bcbc132451569294fa2fa21bf10f555a" datatype="html">
+        <source>Toggle navigation</source>
+        <target>Toggle navigation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1db6cc9a977f9ab640d4794214922775a6de0785" datatype="html">
+        <source>Accueil</source>
+        <target>Home</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="46b2bd5add5ff29876db4ca3eb3b1bcdad798254" datatype="html">
         <source>Les programmes</source>
-        <target>Les programmes</target>
+        <target>Programs</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="408cb6073e60c5d966296a3207fc596adca75e01" datatype="html">
@@ -658,23 +693,23 @@
         <target>Admin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="87503e5fb4821b88835697b038edda66df5046a7" datatype="html">
         <source>A Propos</source>
-        <target>A Propos</target>
+        <target>About</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6c33375431cc1a1fcd8eb8aa96c88c648d1ce901" datatype="html">
         <source>Mon tableau de bord</source>
-        <target>Mon tableau de bord</target>
+        <target>My dashboard</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">107</context>
+          <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e5c4aa14604e404f735b8845b759693207e98a6f" datatype="html">
@@ -682,11 +717,11 @@
               <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>  Se déconnecter
             </source>
         <target>
-              <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>  Se déconnecter
+              <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>  Logout
             </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">116</context>
+          <context context-type="linenumber">117</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7aafacee956fa4d87206a5e82d5643cdf4017795" datatype="html">
@@ -694,11 +729,11 @@
               Se connecter
             </source>
         <target>
-              Se connecter
+              Login
             </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">123</context>
+          <context context-type="linenumber">124</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5fb5e398de5ba5836b62f12d15e9b93b30806c83" datatype="html">
@@ -706,16 +741,16 @@
               S&apos;inscrire
             </source>
         <target>
-              S&apos;inscrire
+              Sign in
             </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">128</context>
+          <context context-type="linenumber">129</context>
         </context-group>
       </trans-unit>
       <trans-unit id="eeb08dadbe0b45a55a3d1a43021f3e0b9b666281" datatype="html">
         <source>Rechercher ou sélectionner une espèce</source>
-        <target>Rechercher ou sélectionner une espèce</target>
+        <target>Search or select a species</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
           <context context-type="linenumber">7</context>
@@ -723,7 +758,7 @@
       </trans-unit>
       <trans-unit id="f312db469126382e45a6fd27b1dc184dd8874475" datatype="html">
         <source>Informations complémentaires</source>
-        <target>Informations complémentaires</target>
+        <target>Further information</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
           <context context-type="linenumber">24</context>
@@ -731,7 +766,7 @@
       </trans-unit>
       <trans-unit id="67a0a02419575b54eed6b27101ae0a30c635029f" datatype="html">
         <source>Dénombrement</source>
-        <target>Dénombrement</target>
+        <target>Count</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
           <context context-type="linenumber">35</context>
@@ -739,7 +774,7 @@
       </trans-unit>
       <trans-unit id="dd2a11ebc737589080ed400dacc33a8c8c84728b" datatype="html">
         <source>Nombre</source>
-        <target>Nombre</target>
+        <target>Count</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
           <context context-type="linenumber">40</context>
@@ -747,7 +782,7 @@
       </trans-unit>
       <trans-unit id="1ca6b9fd976db3087d536ed5c02e83d4eb791a56" datatype="html">
         <source>Où avez-vous observé cette espèce ?</source>
-        <target>Où avez-vous observé cette espèce ?</target>
+        <target>Where did you observe this species?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
           <context context-type="linenumber">67</context>
@@ -755,7 +790,7 @@
       </trans-unit>
       <trans-unit id="3fae57f442e8152a796290a2b8edc6c52c0c5f8f" datatype="html">
         <source>Cliquez sur la carte pour renseigner le lieu précis de votre observation</source>
-        <target>Cliquez sur la carte pour renseigner le lieu précis de votre observation</target>
+        <target>Click on the map to fill in the precise location of your observation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/form.component.html</context>
           <context context-type="linenumber">82</context>
@@ -763,7 +798,7 @@
       </trans-unit>
       <trans-unit id="688190149c303fc5438d194a57d73b2b16943b6f" datatype="html">
         <source>Commentaire</source>
-        <target>Commentaire</target>
+        <target>Comment</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/comment/comment.component.html</context>
           <context context-type="linenumber">2</context>
@@ -771,7 +806,7 @@
       </trans-unit>
       <trans-unit id="91d25744e097aa7d2be6eb1c90e85bda45d50624" datatype="html">
         <source>Votre commentaire</source>
-        <target>Votre commentaire</target>
+        <target>Your comment</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/comment/comment.component.html</context>
           <context context-type="linenumber">5</context>
@@ -784,7 +819,7 @@
           &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </source>
         <target>
-        Observé par
+        Observed by
         <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data?.observer?.username ? data?.observer?.username : localeId.startsWith(&apos;fr&apos;) ?
           &apos;Anonyme&apos; : &apos;Anonymous&apos; }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </target>
@@ -799,17 +834,25 @@
         <x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span&gt;"/> à <x id="INTERPOLATION_1" equiv-text="{{ data.municipality?.name }}"/> <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </source>
         <target>
-        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> le <x id="INTERPOLATION" equiv-text="{{ data.date | date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
-        <x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span&gt;"/> à <x id="INTERPOLATION_1" equiv-text="{{ data.municipality?.name }}"/> <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+        <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> on <x id="INTERPOLATION" equiv-text="{{ data.date | date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+        <x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span&gt;"/> in <x id="INTERPOLATION_1" equiv-text="{{ data.municipality?.name }}"/> <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
           <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="88c07f83d21234b6756f0aa86ede795c18bbbe0d" datatype="html">
+        <source>détails</source>
+        <target>details</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/map/popup.template.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="37bffdf00ec09441168b52d6e0888a2e076aa2a4" datatype="html">
         <source>Veuillez zoomer pour localiser votre observation.</source>
-        <target>Veuillez zoomer pour localiser votre observation.</target>
+        <target>Please zoom in to locate your observation.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/map/map.component.ts</context>
           <context context-type="linenumber">6</context>
@@ -825,17 +868,25 @@
       <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>(zoom min: <x id="INTERPOLATION" equiv-text="{{ MapConfig.ZOOM_LEVEL_RELEVE }}"/>)<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </source>
         <target>
-      Veuillez zoomer pour localiser votre observation.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
-      <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>(zoom min: <x id="INTERPOLATION" equiv-text="{{ MapConfig.ZOOM_LEVEL_RELEVE }}"/>)<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+      Please zoom in to locate your observation.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+      <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>(min. zoom: <x id="INTERPOLATION" equiv-text="{{ MapConfig.ZOOM_LEVEL_RELEVE }}"/>)<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/map/map.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="7e6c975ebea8b5f8b120905ca7acf9f8edf59d8e" datatype="html">
+        <source>OK</source>
+        <target>OK</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/form/map/map.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="939b6fbe6d6d5466bd7555cfb73169c5279d259f" datatype="html">
         <source>Date d&apos;observation</source>
-        <target>Date d&apos;observation</target>
+        <target>Date of observation</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/date/date.component.html</context>
           <context context-type="linenumber">2</context>
@@ -843,15 +894,23 @@
       </trans-unit>
       <trans-unit id="9aa042acb5c887b812cdf5690fff5713f6386766" datatype="html">
         <source>dd/mm/yyyy</source>
-        <target>dd/mm/yyyy</target>
+        <target>yyyy/mm/dd</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/date/date.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="f4a79ffd76ce564851f4b42fec6c36475c600a1e" datatype="html">
+        <source>ouvrir/fermer le calendrier</source>
+        <target>open/close the calendar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/observations-shared/form/date/date.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="e3ad01baa641db51491a7ba93a3a332decc40d89" datatype="html">
         <source>Nom latin ou vernaculaire ou cd_ref</source>
-        <target>Nom latin ou vernaculaire ou cd_ref</target>
+        <target>Latin or vernacular name or key of the taxonomic referential TaxRef</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/form/taxon-picker/taxon-picker.component.html</context>
           <context context-type="linenumber">9</context>
@@ -862,7 +921,7 @@
     Le programme <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ program?.title }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
   </source>
         <target>
-    Le programme <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ program?.title }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+    <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ program?.title }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> program
   </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/programs-shared/program-teaser/program-teaser.component.html</context>
@@ -871,7 +930,7 @@
       </trans-unit>
       <trans-unit id="f6ae73aff26452b4f5df02d833ac89f81e495d7e" datatype="html">
         <source>Scrollez pour en voir plus !</source>
-        <target>Scrollez pour en voir plus !</target>
+        <target>Scroll to see more!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/programs-shared/program-teaser/program-teaser.component.html</context>
           <context context-type="linenumber">16</context>
@@ -890,9 +949,17 @@
         </context-group>
         <note priority="1" from="description">Scrollez pour en voir plus !</note>
       </trans-unit>
+      <trans-unit id="7b0f31a09855166babec7952be503b69d70c6cdb" datatype="html">
+        <source>CONTRIBUER</source>
+        <target>CONTRIBUTE</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/shared/programs-shared/program-content/program-content.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="88619d86db4d3bd9954ca03bfdc88d69c76d1f4d" datatype="html">
         <source>AJOUTER UNE OBSERVATION</source>
-        <target>AJOUTER UNE OBSERVATION</target>
+        <target>ADD AN OBSERVATION</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/onboard/onboard.component.html</context>
           <context context-type="linenumber">2</context>
@@ -904,26 +971,26 @@
       </trans-unit>
       <trans-unit id="3b805eb3a19ca6426ff7dfd033b412987c8e11ea" datatype="html">
         <source>S&apos;incrire <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>et contribuer au site</source>
-        <target>S&apos;incrire <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>et contribuer au site</target>
+        <target>Register <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>and contribute</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1eeb191c53f2171eb8b0d3a918e7f7d00d4ac9ce" datatype="html">
         <source>Continuer <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>sans s&apos;enregistrer</source>
-        <target>Continuer <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>sans s&apos;enregistrer</target>
+        <target>Continue <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>without registering</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c8763fd2b48453b39bfa3036658f0beb4eac7944" datatype="html">
         <source>Vous avez déjà un compte ? Connectez-vous !</source>
-        <target>Vous avez déjà un compte ? Connectez-vous !</target>
+        <target>Already have an account? Login!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c5c01b73689cc048f371314e26a59272551d5c8b" datatype="html">
@@ -931,17 +998,17 @@
     Valider l&apos;observation
   </source>
         <target>
-    Valider l&apos;observation
+    Submit this observation
   </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/committed/committed.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">26</context>
         </context-group>
         <note priority="1" from="description">Valider l&apos;observation</note>
       </trans-unit>
       <trans-unit id="1c8d9b05b876873063356f953932d23aac9f83d9" datatype="html">
         <source>Félicitations !</source>
-        <target>Félicitations !</target>
+        <target>Congratulations!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/congrats/congrats.component.html</context>
           <context context-type="linenumber">16</context>
@@ -954,7 +1021,7 @@
       Votre observation a bien été ajoutée !
     </source>
         <target>
-      Votre observation a bien été ajoutée !
+      Your observation has been added!
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/congrats/congrats.component.html</context>
@@ -965,7 +1032,7 @@
       </trans-unit>
       <trans-unit id="850b6fb8f73551147b461778102d96dbd18f3d12" datatype="html">
         <source>Observé par <x id="INTERPOLATION" equiv-text="{{ username }}"/> </source>
-        <target>Observé par <x id="INTERPOLATION" equiv-text="{{ username }}"/> </target>
+        <target>Observed by <x id="INTERPOLATION" equiv-text="{{ username }}"/> </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/congrats/congrats.component.html</context>
           <context context-type="linenumber">29</context>
@@ -985,7 +1052,7 @@
       </trans-unit>
       <trans-unit id="74366b4c9c2adae5c9103ba602105bca5da92bc8" datatype="html">
         <source>Félicitations !</source>
-        <target>Félicitations !</target>
+        <target>Congratulations!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/reward/reward.component.ts</context>
           <context context-type="linenumber">5</context>
@@ -1006,8 +1073,7 @@
       <trans-unit id="afe14ed1ec6f5c6998a69dbe8b19a31588854460" datatype="html">
         <source>{VAR_PLURAL, plural, =1 {Vous venez d&apos;obtenir ce badge } other {Vous venez
           d&apos;obtenir ces badges } }</source>
-        <target>{VAR_PLURAL, plural, =1 {Vous venez d&apos;obtenir ce badge } other {Vous venez
-          d&apos;obtenir ces badges } }</target>
+        <target>{VAR_PLURAL, plural, =1 {You have just won this badge } other {You have just won these badges } }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/reward/reward.component.ts</context>
           <context context-type="linenumber">7</context>
@@ -1025,7 +1091,7 @@
             }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
           </source>
         <target>
-            Observé par
+            Observed by
             <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{
               o.properties.observer?.username
                 ? o.properties.observer.username
@@ -1046,9 +1112,9 @@
               à <x id="INTERPOLATION_1" equiv-text="{{ o.properties.municipality?.name }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
           </source>
         <target>
-            <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> le <x id="INTERPOLATION" equiv-text="{{ o.properties.date | date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+            <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> on <x id="INTERPOLATION" equiv-text="{{ o.properties.date | date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
             <x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span&gt;"/>
-              à <x id="INTERPOLATION_1" equiv-text="{{ o.properties.municipality?.name }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
+              in <x id="INTERPOLATION_1" equiv-text="{{ o.properties.municipality?.name }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/list/list.component.html</context>
@@ -1057,18 +1123,18 @@
       </trans-unit>
       <trans-unit id="178d1d8b0f74e677ce4c4a33851f66900ed6ce32" datatype="html">
         <source>Nom complet: <x id="INTERPOLATION" equiv-text="{{ taxon?.nom_complet }}"/></source>
-        <target>Nom complet: <x id="INTERPOLATION" equiv-text="{{ taxon?.nom_complet }}"/></target>
+        <target>Full name: <x id="INTERPOLATION" equiv-text="{{ taxon?.nom_complet }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ea9352fd75c2fa500f7f341edcc1b097d4db56a7" datatype="html">
         <source>Dénombrement: <x id="INTERPOLATION" equiv-text="{{ data?.count }}"/></source>
-        <target>Dénombrement: <x id="INTERPOLATION" equiv-text="{{ data?.count }}"/></target>
+        <target>Count: <x id="INTERPOLATION" equiv-text="{{ data?.count }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7beb56aedc13aab0bd98a24daab4449d2106d763" datatype="html">
@@ -1076,15 +1142,15 @@
         <target>Date: <x id="INTERPOLATION" equiv-text="{{ data?.date | date }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="99307c388eb587ec41b89110df53c6552c7e2e82" datatype="html">
         <source>Observateur: <x id="INTERPOLATION" equiv-text="{{ data?.observer?.username }}"/></source>
-        <target>Observateur: <x id="INTERPOLATION" equiv-text="{{ data?.observer?.username }}"/></target>
+        <target>Observer: <x id="INTERPOLATION" equiv-text="{{ data?.observer?.username }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="89191e30907dbac2f6bcd1a8e69a4c576e4a3d48" datatype="html">
@@ -1092,89 +1158,97 @@
         <target>Phylum: <x id="INTERPOLATION" equiv-text="{{ taxon?.phylum }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="88acf54af075f7cf0bd03e5d7d99042239631199" datatype="html">
         <source>Classe: <x id="INTERPOLATION" equiv-text="{{ taxon?.classe }}"/></source>
-        <target>Classe: <x id="INTERPOLATION" equiv-text="{{ taxon?.classe }}"/></target>
+        <target>Class: <x id="INTERPOLATION" equiv-text="{{ taxon?.classe }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="67ae7d32287d6a844eb3d9a2a815530593a980a8" datatype="html">
         <source>Ordre: <x id="INTERPOLATION" equiv-text="{{ taxon?.ordre }}"/></source>
-        <target>Ordre: <x id="INTERPOLATION" equiv-text="{{ taxon?.ordre }}"/></target>
+        <target>Order: <x id="INTERPOLATION" equiv-text="{{ taxon?.ordre }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">59</context>
+          <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
       <trans-unit id="04626fc2752fde9751e103ba694a2e053c6a770c" datatype="html">
         <source>Famille: <x id="INTERPOLATION" equiv-text="{{ taxon?.famille }}"/></source>
-        <target>Famille: <x id="INTERPOLATION" equiv-text="{{ taxon?.famille }}"/></target>
+        <target>Family: <x id="INTERPOLATION" equiv-text="{{ taxon?.famille }}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="0e1dbf499db480741caaffc77aa913a3bbe4fafe" datatype="html">
         <source>Découvrir sur INPN:</source>
-        <target>Découvrir sur INPN:</target>
+        <target>Discover on INPN:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">78</context>
+          <context context-type="linenumber">84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bfef06b4428b02426923cd5213a49b0dde30ca56" datatype="html">
         <source>le taxon</source>
-        <target>le taxon</target>
+        <target>the species</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">86</context>
+          <context context-type="linenumber">92</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bf2eb757ad3d674c958bbc043e5f64592898fd9b" datatype="html">
         <source>le taxon de référence</source>
-        <target>le taxon de référence</target>
+        <target>species of reference</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1a70d43c448c7469182d356a1798d186222d83d0" datatype="html">
         <source>
             <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> Partager</source>
         <target>
-            <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> Partager</target>
+            <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> Share</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/observation-details/observation-details.component.ts</context>
-          <context context-type="linenumber">109</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="95c6182ec2e43eea6b14a20c62282efc133636e6" datatype="html">
+        <source>cacher/montrer la liste</source>
+        <target>hide/show the list</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/features/observations/obs.component.html</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e0212155de52e79fd3927a7a0cd0b3e64c4d2e2e" datatype="html">
         <source>Toutes espèces</source>
-        <target>Toutes espèces</target>
+        <target>All species</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">36</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d9ec159fb51a28ab5ed26394a718910086471ca" datatype="html">
         <source>Toutes communes</source>
-        <target>Toutes communes</target>
+        <target>All municipalities</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">73</context>
+          <context context-type="linenumber">80</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">71</context>
+          <context context-type="linenumber">78</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7c7005d1b00c320813e707d08afa60d25f1c7648" datatype="html">
@@ -1188,29 +1262,29 @@
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">81</context>
+          <context context-type="linenumber">88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6683a65fe0816ef6753d1be855e622b724f9c968" datatype="html">
         <source>{VAR_PLURAL, plural, =0 {observation trouvée } =1 {observation trouvée !} other {observations trouvées !} }</source>
-        <target>{VAR_PLURAL, plural, =0 {observation trouvée } =1 {observation trouvée !} other {observations trouvées !} }</target>
+        <target>{VAR_PLURAL, plural, =0 {observation found } =1 {observation found!} other {observations found!} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/observations/obs.component.html</context>
-          <context context-type="linenumber">82</context>
+          <context context-type="linenumber">89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ee62171bb5bf618165113912714b8adf22e656b0" datatype="html">
         <source>Les programmes du moment</source>
-        <target>Les programmes du moment</target>
+        <target>Trending programs</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/programs-shared/programs-carousel/programs-carousel.component.html</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="linenumber">11</context>
         </context-group>
         <note priority="1" from="description">Les programmes du moment</note>
       </trans-unit>
       <trans-unit id="e1ba41ca3490f8d77b20d3f5f0fa1765f5572fc9" datatype="html">
         <source>{VAR_PLURAL, plural, =0 {aucune observation} =1 {une observation} other {<x id="INTERPOLATION" equiv-text="{{stats?.platform_attendance}}"/> observations} }</source>
-        <target>{VAR_PLURAL, plural, =0 {aucune observation} =1 {une observation} other {<x id="INTERPOLATION" equiv-text="{{stats?.platform_attendance}}"/> observations} }</target>
+        <target>{VAR_PLURAL, plural, =0 {no observation} =1 {1 observation} other {<x id="INTERPOLATION" equiv-text="{{stats?.platform_attendance}}"/> observations} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
           <context context-type="linenumber">8</context>
@@ -1218,10 +1292,10 @@
       </trans-unit>
       <trans-unit id="abc42d8d941fbee2984dd620f7b713c94626171e" datatype="html">
         <source>Vos badges</source>
-        <target>Vos badges</target>
+        <target>Your badges</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b49d5dec5d4a2bf7792eab18e06e16c141773b83" datatype="html">
@@ -1229,11 +1303,11 @@
           <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Exporter mes observations
         </source>
         <target>
-          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Exporter mes observations
+          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Export my observations
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c15c9af05d17de7c1de2650616868d1a65a2454d" datatype="html">
@@ -1241,19 +1315,19 @@
           <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Supprimer mon compte
         </source>
         <target>
-          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Supprimer mon compte
+          <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>Delete my account
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">45</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5f9cf5b0de9ffb422c279c7a5655b076d2672d29" datatype="html">
         <source>Mettre à jour vos données personnelles</source>
-        <target>Mettre à jour vos données personnelles</target>
+        <target>Update your infos</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="544e1b2927d83e41374f4f4cf448959c4eabe8c6" datatype="html">
@@ -1261,11 +1335,11 @@
         Impossible de valider votre email.
       </source>
         <target>
-        Impossible de valider votre email.
+        Could not validate your email.
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3364501f90cbd51b72a2637c2d17d7b5ac9850f3" datatype="html">
@@ -1273,27 +1347,27 @@
         Les mots de passe diffèrent.
       </source>
         <target>
-        Les mots de passe diffèrent.
+        Passwords differ.
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">174</context>
+          <context context-type="linenumber">152</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b82e2eb5016a22205aeebeefea66412c326d3a6e" datatype="html">
         <source>Votre nouveau mot de passe</source>
-        <target>Votre nouveau mot de passe</target>
+        <target>Your new password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">186</context>
+          <context context-type="linenumber">164</context>
         </context-group>
       </trans-unit>
       <trans-unit id="cb30b7ef5622174b031fcc4a7a83410e6faf6363" datatype="html">
         <source>Confirmez votre nouveau mot de passe</source>
-        <target>Confirmez votre nouveau mot de passe</target>
+        <target>Confirm your new password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">200</context>
+          <context context-type="linenumber">177</context>
         </context-group>
       </trans-unit>
       <trans-unit id="04e76bee9fbf46047f0ee80f84c8483e4fc0c02a" datatype="html">
@@ -1301,11 +1375,11 @@
         Mettre à jour
       </source>
         <target>
-        Mettre à jour
+        Update
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">224</context>
+          <context context-type="linenumber">200</context>
         </context-group>
       </trans-unit>
     </body>

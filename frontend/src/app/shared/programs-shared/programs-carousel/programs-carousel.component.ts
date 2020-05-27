@@ -17,7 +17,10 @@ import { AppConfigInterface } from '@core/models';
 import { AnchorNavigationDirective } from '@helpers/anav';
 import { Program } from '@features/programs/programs.models';
 
-type AppConfigPrograms = Pick<AppConfigInterface, 'platform_participate'>;
+type AppConfigPrograms = Pick<
+  AppConfigInterface,
+  'platform_participate' | 'programsMasonryThreshold'
+>;
 
 const CarouselImgOuterContainerSelector = '#programs-carousel > ngb-carousel > div';
 
