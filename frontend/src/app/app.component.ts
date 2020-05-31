@@ -42,5 +42,8 @@ export class AppComponent implements OnInit {
         }
       });
     }
+    window.addEventListener('beforeinstallprompt', event => {
+      console.debug('beforeinstallprompt caught', event);
+    });
   }
 }
