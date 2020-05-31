@@ -2066,9 +2066,6 @@ app-home div.container-fluid {
   .mobile-hidden {
     display: none;
   }
-  #programs-cards {
-    display: none !important;
-  }
 }
 
 @media screen and (max-width: 767.98px) {

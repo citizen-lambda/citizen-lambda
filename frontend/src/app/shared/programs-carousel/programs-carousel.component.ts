@@ -17,13 +17,15 @@ import { AppConfigInterface } from '@models/app-config.model';
 import { ViewportService } from '@services/viewport.service';
 import { AnchorNavigationDirective } from '@helpers/anav';
 import { Program } from '@models/programs.models';
+import { BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 type AppConfigPrograms = Pick<
   AppConfigInterface,
   'platform_participate' | 'programsMasonryThreshold'
 >;
 
-const CarouselImgOuterContainerSelector = '#programs-carousel > ngb-carousel > div';
+const programsMasonryMediaQuery = '(min-width: 1023.98px)';
 
 @Component({
   selector: 'app-programs-carousel',
@@ -43,7 +45,9 @@ export class ProgramsCarouselComponent extends AnchorNavigationDirective {
   unpauseOnArrow = false;
   pauseOnIndicator = false;
   pauseOnHover = true;
-  wantGridMediaQuery = window.matchMedia('(min-width: 1023.98px)');
+  wantGridMediaQuery = new BehaviorSubject<boolean>(
+    window.matchMedia(programsMasonryMediaQuery).matches
+  );
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -52,15 +56,14 @@ export class ProgramsCarouselComponent extends AnchorNavigationDirective {
     protected viewportService: ViewportService
   ) {
     super(router, route, viewportService);
-  }
-
-  get carouselClientWidth(): number {
-    const element = document.querySelector(CarouselImgOuterContainerSelector);
-    return element ? element.clientWidth : 0;
-  }
-  get carouselClientHeight(): number {
-    const element = document.querySelector(CarouselImgOuterContainerSelector);
-    return element ? element.clientHeight : 0;
+    this.viewportService.viewportWidth
+      .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        tap(_ => {
+          this.wantGridMediaQuery.next(window.matchMedia(programsMasonryMediaQuery).matches);
+        })
+      )
+      .subscribe();
   }
 
   togglePaused(): void {

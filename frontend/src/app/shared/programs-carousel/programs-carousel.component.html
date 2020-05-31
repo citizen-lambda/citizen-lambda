@@ -1,12 +1,10 @@
 <section id="programs" class="row">
   <ng-container *ngIf="programs?.length > 1; else noprogramfound">
-    <!-- TODO: carousel programs length threshold is hard coded, mv to appConfig -->
     <ng-container
-      *ngIf="
-        !wantGridMediaQuery.matches || programs.length < appConfig.programsMasonryThreshold;
-        else programscards
-      "
+      *ngTemplateOutlet="(wantGridMediaQuery | async) ? programscards : programscarousel"
     >
+    </ng-container>
+    <ng-template #programscarousel>
       <div id="programs-carousel">
         <h2 i18n="Les programmes du moment">Les programmes du moment</h2>
         <ngb-carousel #carousel>
@@ -14,10 +12,7 @@
           <ng-template ngbSlide *ngFor="let p of programs; index as i">
             <a [routerLink]="['/programs', p.id_program, 'observations']">
               <div class="programs-carousel-img-wrapper">
-                <!-- ngb-carousel in firefox doesn't like lazy-loaded img
-                  loading="lazy"
-                  width="{{ carouselClientWidth }}"
-                  height="{{ carouselClientHeight }}" -->
+                <!-- cannot lazy-load img in ngb-carousel on firefox -->
                 <img
                   class="d-block w-100"
                   [src]="p.image || 'assets/default_taxon.jpg'"
@@ -32,7 +27,7 @@
           </ng-template>
         </ngb-carousel>
       </div>
-    </ng-container>
+    </ng-template>
     <ng-template #programscards>
       <div id="programs-cards">
         <div class="card" *ngFor="let p of programs">

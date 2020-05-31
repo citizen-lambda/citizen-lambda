@@ -36,6 +36,6 @@ export class ViewportService {
     }
     this.orient$.next(orient);
     this.viewportHeight$.next(window.innerHeight);
-    this.viewportWidth$.next(window.innerHeight);
+    this.viewportWidth$.next(window.innerWidth);
   }
 }

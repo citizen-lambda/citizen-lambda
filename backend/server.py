@@ -45,7 +45,7 @@ class ReverseProxied:
 
 
 # pylint: disable=too-many-locals
-def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
+def get_app(config, _app=None, url_prefix="/api"):
     # Make sure app is a singleton
     if _app is not None:
         return _app
@@ -141,25 +141,25 @@ def get_app(config, _app=None, with_external_mods=True, url_prefix="/api"):
         app.register_blueprint(taxonomy_routes, url_prefix=url_prefix)
 
         # Chargement des modules tiers
-        if with_external_mods:
-            for conf, manifest, module in list_and_import_gnc_modules(app):
-                try:
-                    prefix = url_prefix + conf["api_url"]
-                except Exception as e:
-                    current_app.logger.debug(e)
-                    prefix = url_prefix
-                app.register_blueprint(
-                    module.backend.blueprint.blueprint, url_prefix=prefix
-                )
-                try:
-                    module.backend.models.create_schema(db)
-                except Exception as e:
-                    current_app.logger.debug(e)
+        # if with_external_mods:
+        for conf, manifest, module in list_and_import_gnc_modules(app):
+            try:
+                prefix = url_prefix + conf["api_url"]
+            except Exception as e:
+                current_app.logger.debug(e)
+                prefix = url_prefix
+            app.register_blueprint(
+                module.backend.blueprint.blueprint, url_prefix=prefix
+            )
+            try:
+                module.backend.models.create_schema(db)
+            except Exception as e:
+                current_app.logger.debug(e)
 
-                # chargement de la configuration
-                # du module dans le blueprint.config
-                module.backend.blueprint.blueprint.config = conf
-                app.config[manifest["module_name"]] = conf
+            # chargement de la configuration
+            # du module dans le blueprint.config
+            module.backend.blueprint.blueprint.config = conf
+            app.config[manifest["module_name"]] = conf
 
         _app = app
 

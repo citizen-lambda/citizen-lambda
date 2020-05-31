@@ -6,7 +6,7 @@
   "background_color": "#00a99d",
   "display": "standalone",
   "scope": "https://citizendemo.patkap.tech/",
-  "start_url": "/home",
+  "start_url": "https://citizendemo.patkap.tech/fr/home",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
