@@ -196,6 +196,6 @@ def program_stream():
 
 @routes.route("/csp_report", methods=["POST"])
 def csp_report():
-    with open("csp_reports", "a") as fh:
+    with open(current_app.config["CSP_REPORT_LOG"], "a") as fh:
         fh.write(request.data.decode() + "\n")
     return {"message": "done"}, 200
