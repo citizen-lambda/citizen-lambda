@@ -234,7 +234,7 @@ sudoedit /etc/apache2/sites-available/citizen.conf
     ServerAdmin patkap@no-reply.github.com
     ServerName patkap.tech
     ServerAlias citizendemo.patkap.tech
-    DocumentRoot /home/pat/citizen/frontend/dist/browser/
+    DocumentRoot /home/pat/citizen/frontend/dist/
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
     SSLEngine on
@@ -252,7 +252,7 @@ sudoedit /etc/apache2/sites-available/citizen.conf
 
 # Alias /citizen /home/pat/citizen/frontend/dist/browser
 
-<Directory /home/pat/citizen/frontend/dist/browser/>
+<Directory /home/pat/citizen/frontend/dist/>
   Require all granted
   AllowOverride All
 
@@ -344,7 +344,7 @@ sudo systemctl restart apache2
 ```sh
 sudo apt install brotli
 # TODO: automate optional postbuild brotli packing
-for i in ~/citizen/frontend/dist/browser/*/*.{css,js}; do brotli $i; done
+for i in ~/citizen/frontend/dist/*/*.{css,js}; do brotli $i; done
 sudoedit /etc/apache2/sites-available/citizen.conf
 sudo a2enmod brotli
 ```
@@ -375,7 +375,7 @@ sudo a2enmod brotli
 +  AddEncoding br .br
 +</Files>
 +
- <Directory /home/pat/citizen/frontend/dist/browser/>
+ <Directory /home/pat/citizen/frontend/dist/>
    Require all granted
    AllowOverride All
 @@ -36,6 +53,11 @@
@@ -417,7 +417,7 @@ sudo a2enmod brotli
     ServerName patkap.tech
     ServerAlias citizendemo.patkap.tech
     # DocumentRoot /var/www/html
-    DocumentRoot /home/pat/citizen/frontend/dist/browser/
+    DocumentRoot /home/pat/citizen/frontend/dist/
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
     SSLEngine on
@@ -436,7 +436,8 @@ sudo a2enmod brotli
         \.(gif|jpe?g|png|swf|woff|woff2) no-brotli dont-vary
 
     Header append Vary User-Agent env=!dont-vary
-    Header set Content-Security-Policy "default-src 'none'; base-uri 'self'; child-src 'self'; connect-src 'self'; font-src 'self' fonts.gstatic.com; form-action 'self'; frame-ancestors 'none'; img-src https: data: 'self'; manifest-src 'self'; object-src 'none'; prefetch-src 'self'; require-trusted-types-for 'script'; sandbox allow-scripts; script-src 'none'; script-src-elem 'self' 'unsafe-inline'; script-src-attr 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; worker-src 'self'; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
+    Header set Content-Security-Policy "default-src 'self'; base-uri 'self'; child-src 'self'; connect-src 'self' https://wms.openstreetmap.fr/ https://a.tile.openstreetmap.org/ https://b.tile.openstreetmap.org/ https://c.tile.openstreetmap.org/ https://taxref.mnhn.fr/ https://mt1.google.com/ https://upload.wikimedia.org/ https://cdn.pixabay.com/ https://live.staticflickr.com/ https://www.tourisme-marseille.com/; font-src 'self' https://fonts.gstatic.com/; form-action 'self'; img-src 'self' data: blob: filesystem: https://wms.openstreetmap.fr/ https://a.tile.openstreetmap.org/ https://b.tile.openstreetmap.org/ https://c.tile.openstreetmap.org/ https://taxref.mnhn.fr/ https://mt1.google.com/ https://upload.wikimedia.org/ https://cdn.pixabay.com/ https://live.staticflickr.com/ https://www.tourisme-marseille.com/; manifest-src 'self'; object-src 'none'; script-src 'self'; script-src-elem 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com/; frame-ancestors 'none'; worker-src 'self'; report-uri /api/csp_report; upgrade-insecure-requests" "expr=%{CONTENT_TYPE} =~ m#text\/(html|javascript)|application\/pdf|xml#i"
+
     Header set X-Frame-Options "DENY" "expr=%{CONTENT_TYPE} =~ m#text/html#i"
     Header set X-Content-Type-Options "nosniff"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
@@ -463,7 +464,7 @@ SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
   AddEncoding br .br
 </Files>
 
-<Directory /home/pat/citizen/frontend/dist/browser/>
+<Directory /home/pat/citizen/frontend/dist/>
   Require all granted
   AllowOverride All
 
@@ -530,11 +531,11 @@ cd frontend
 # regenerate the translation files if, somehow, the templates got edited
 npm run xi18n  # and diffedit to sync
 # TODO: apache rewrite
-# cp dist/browser/fr/robots.txt dist/browser/
-# cp dist/browser/fr/favicon.ico dist/browser/
+# cp dist/fr/robots.txt dist/
+# cp dist/fr/favicon.ico dist/
 # copy/edit sitemap.xml
-# $EDITOR dist/browser/sitemap.xml
-cp ~/sitemap-citizen.xml dist/browser/sitemap.xml
+# $EDITOR dist/sitemap.xml
+cp ~/sitemap-citizen.xml dist/sitemap.xml
 # do not forget to:
 # restart backend after backend/python code changes e.g. git pull
 sudo supervisorctl restart citizen
