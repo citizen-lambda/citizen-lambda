@@ -389,8 +389,8 @@ export class ObsMapComponent implements OnInit, OnChanges {
     });
 
     offlineLayer.on('offline:save-start', data => {
-      console.log(
-        'Saving ' + (data as L.LeafletEvent & { nTilesToSave: number }).nTilesToSave + ' tiles.'
+      console.info(
+        `Saving ${(data as L.LeafletEvent & { nTilesToSave: number }).nTilesToSave} tiles.`
       );
     });
 
@@ -399,11 +399,11 @@ export class ObsMapComponent implements OnInit, OnChanges {
     });
 
     offlineLayer.on('offline:save-error', err => {
-      console.error('Error when saving tiles: ' + err);
+      console.error('Error when saving tiles: ', err);
     });
 
     offlineLayer.on('offline:remove-start', () => {
-      console.log('Removing tiles.');
+      console.info('Removing tiles.');
     });
 
     offlineLayer.on('offline:remove-end', () => {
@@ -411,7 +411,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     });
 
     offlineLayer.on('offline:remove-error', err => {
-      console.error('Error when removing tiles: ' + err);
+      console.error('Error when removing tiles: ', err);
     });
   }
 
