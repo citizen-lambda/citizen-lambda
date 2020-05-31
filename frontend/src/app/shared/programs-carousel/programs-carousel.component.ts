@@ -18,7 +18,7 @@ import { ViewportService } from '@services/viewport.service';
 import { AnchorNavigationDirective } from '@helpers/anav';
 import { Program } from '@models/programs.models';
 import { BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, takeUntil } from 'rxjs/operators';
 
 type AppConfigPrograms = Pick<
   AppConfigInterface,
@@ -60,8 +60,12 @@ export class ProgramsCarouselComponent extends AnchorNavigationDirective {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         tap(_ => {
-          this.wantGridMediaQuery.next(window.matchMedia(programsMasonryMediaQuery).matches);
-        })
+          this.wantGridMediaQuery.next(
+            window.matchMedia(programsMasonryMediaQuery).matches &&
+              this.programs.length > this.appConfig.programsMasonryThreshold
+          );
+        }),
+        takeUntil(this.onDestroy$)
       )
       .subscribe();
   }
