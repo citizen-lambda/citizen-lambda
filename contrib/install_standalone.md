@@ -145,8 +145,8 @@ git config user.name "patkap"
 
 ```sh
 cd ~/citizen/backend
-# python3 -m pip install -r requirements.txt
-python3 setup.py develop
+python3 -m pip install -r requirements_deploy.txt
+# python3 setup.py develop
 cp ~/citizen/config/default_config.toml.example ~/citizen/config/default_config.toml
 $EDITOR ~/citizen/config/default_config.toml
 # … éditer à souhait
