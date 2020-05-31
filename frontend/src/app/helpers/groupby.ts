@@ -1,4 +1,4 @@
-import type { CallbackFunctionVariadicAnyReturn } from '@core/models';
+import type { CallbackFunctionVariadicAnyReturn } from '@models/app-config.model';
 
 export const groupBy = (
   arr: any[],

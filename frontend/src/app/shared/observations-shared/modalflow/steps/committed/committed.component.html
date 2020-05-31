@@ -12,7 +12,7 @@
   </button>
 </div>
 
-<div class="modal-body pb-0">
+<div class="modal-body pb-0 obs-form" [style.maxHeight.px]="formBodyHeight">
   <app-obs-form [data]="data" (newObservation)="observationSubmitted($event)"></app-obs-form>
 </div>
 

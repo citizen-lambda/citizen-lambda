@@ -20,8 +20,9 @@ import * as L from 'leaflet';
 
 import { MAP_CONFIG } from '@conf/map.config';
 import { AppConfig } from '@conf/app.config';
-import { AppConfigInterface, Taxonomy, Taxon } from '@core/models';
-import { ObsPostResponse, ObsPostResponsePayload } from '@features/observations/observation.model';
+import { AppConfigInterface } from '@models/app-config.model';
+import { Taxonomy, Taxon } from '@models/taxonomy.model';
+import { ObsPostResponse, ObsPostResponsePayload } from '@models/observation.model';
 
 type AppConfigObsForm = Pick<AppConfigInterface, 'API_ENDPOINT'>;
 

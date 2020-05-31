@@ -8,7 +8,7 @@ import { ObservationsRoutingModule } from './observations-routing.module';
 import { GreeterModule } from '@shared/greeter/greeter.module';
 import { ObservationsSharedModule } from '@shared/observations-shared/observations-shared.module';
 import { ObsComponent } from './obs.component';
-import { ObservationsFacade } from '@shared/observations-shared/observations-facade.service';
+import { ObservationsFacade } from '@services/observations-facade.service';
 
 @NgModule({
   imports: [
@@ -19,8 +19,6 @@ import { ObservationsFacade } from '@shared/observations-shared/observations-fac
     GreeterModule
   ],
   declarations: [ObsComponent],
-  providers: [
-    ObservationsFacade // non treeshakable, mv to own module
-  ]
+  providers: [ObservationsFacade]
 })
 export class ObservationsModule {}

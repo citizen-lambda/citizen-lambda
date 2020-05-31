@@ -135,11 +135,11 @@
       true,
       [
         "@conf",
-        "@core",
         "@services",
         "@helpers",
         "@components",
         "@features",
+        "@models",
         "@shared"
       ]
     ]

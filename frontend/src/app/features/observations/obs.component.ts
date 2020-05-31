@@ -19,8 +19,12 @@ import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
 import { ObsMapComponent } from '@shared/observations-shared/map/map.component';
 import { ObsListComponent } from '@shared/observations-shared/list/list.component';
 import { ModalFlowService } from '@shared/observations-shared/modalflow/modalflow.service';
-import { ObservationsFacade } from '@shared/observations-shared/observations-facade.service';
-import { ConfigObsFeatures, ConfigModalFlow, ObsPostResponsePayload } from './observation.model';
+import { ObservationsFacade } from '@services/observations-facade.service';
+import {
+  ConfigObsFeatures,
+  ConfigModalFlow,
+  ObsPostResponsePayload
+} from '@models/observation.model';
 
 @Component({
   selector: 'app-observations',
@@ -119,9 +123,10 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
 
     this.router.navigate(['details', $event], {
       fragment: 'observations',
+      // preserveFragment: false,
       relativeTo: this.route
     });
-    // set selected if not already set ?
+    // selected is already set
   }
 
   /* @HostListener('document:NewObservationEvent', ['$event'])

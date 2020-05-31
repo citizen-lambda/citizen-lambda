@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { FlowComponentInterface } from '@shared/observations-shared/modalflow/flow/flow';
+import { FlowComponentInterface } from '@shared/flow/flow';
 import { RegisterComponent } from '@components/register/register.component';
 import { LoginComponent } from '@components/login/login.component';
 import { AuthService } from '@services/auth.service';

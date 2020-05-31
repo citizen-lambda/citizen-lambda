@@ -1,38 +1,48 @@
 <!-- Observation ajoutée -->
 <!-- FIXME: hardcoded backend media url -->
-<ng-container *ngIf="obs; else congratsdata">
-  <!-- <div name="congrats" class="modal-body"> -->
-  <div name="congrats" class="modal-body congrats-container">
+<ng-container *ngIf="obs; else congratserror">
+  <div
+    name="congrats"
+    class="modal-body d-flex flex-column pt-0 pb-0 pl-0 pr-0"
+    [style.maxHeight.px]="bodyHeight"
+  >
     <app-image-top
       [src]="
         obs?.images.length > 0
           ? AppConfig.API_ENDPOINT + '/media/' + (obs?.images)[0]
           : 'assets/default_taxon.jpg'
       "
+      [alt]="
+        !localeId.startsWith('fr') && !!taxon?.nom_vern_eng
+          ? taxon?.nom_vern_eng
+          : taxon?.nom_vern
+          ? taxon?.nom_vern
+          : taxon?.nom_valide
+      "
+      [imgMaxHeight]="imgMaxHeight"
     ></app-image-top>
-  </div>
-  <!-- <div class="obs-added"> -->
-  <div class="congrats-description obs-added">
-    <h5 i18n="Congrats|Félicitations !">Félicitations !</h5>
-    <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
-      Votre observation a bien été ajoutée !
-    </h6>
-    <p>
-      {{
-        !localeId.startsWith('fr') && obs?.taxref?.nom_vern_eng
-          ? obs?.taxref?.nom_vern_eng
-          : obs?.taxref?.nom_vern
-          ? obs?.taxref?.nom_vern
-          : obs?.taxref?.nom_valide
-      }}
-    </p>
-    <span *ngIf="username" i18n>Observé par {{ username }} </span>
-    <span i18n>le {{ obs?.date }}</span>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-big rounded-0 bg-primary d-flex mx-auto" i18n (click)="next()">
-      OK
-    </button>
+    <div class="congrats-description obs-added">
+      <h5 i18n="Congrats|Félicitations !">Félicitations !</h5>
+      <h6 i18n="Congrats|Votre observation a bien été ajoutée !">
+        Votre observation a bien été ajoutée !
+      </h6>
+      <p>
+        {{
+          !localeId.startsWith('fr') && obs?.taxref?.nom_vern_eng
+            ? taxon?.nom_vern_eng
+            : taxon?.nom_vern
+            ? taxon?.nom_vern
+            : taxon?.nom_valide
+        }}
+      </p>
+      <span *ngIf="username" i18n>Observé par {{ username }} </span>
+      <span i18n>le {{ obs?.date }}</span>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-big rounded-0 bg-primary d-flex mx-auto" i18n (click)="next()">
+        OK
+      </button>
+    </div>
   </div>
 </ng-container>
-<ng-template #congratsdata>{{ data.obs.properties | json }}</ng-template>
+<ng-template #congratserror>{{ data | json }}</ng-template>

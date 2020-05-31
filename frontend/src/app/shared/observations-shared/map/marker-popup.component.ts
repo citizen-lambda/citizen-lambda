@@ -12,11 +12,12 @@ import {
   OnDestroy
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppConfig } from '@conf/app.config';
-import { Taxon } from '@core/models';
-import { ObservationData } from '@features/observations/observation.model';
-import { TaxonomyService } from '@services/taxonomy.service';
 import { of, BehaviorSubject } from 'rxjs';
+
+import { AppConfig } from '@conf/app.config';
+import { Taxon } from '@models/taxonomy.model';
+import { ObservationData } from '@models/observation.model';
+import { TaxonomyService } from '@services/taxonomy.service';
 
 @Component({
   selector: 'app-marker-popup',

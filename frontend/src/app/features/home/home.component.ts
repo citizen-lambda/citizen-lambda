@@ -1,13 +1,13 @@
 import { Component, ViewEncapsulation, Inject, LOCALE_ID } from '@angular/core';
 import { ActivatedRoute, Data } from '@angular/router';
-
-import { AppConfig } from '@conf/app.config';
-import { AppConfigInterface } from '@core/models';
-import { SeoService } from '@services/seo.service';
-import { Program } from '@features/programs/programs.models';
 import { pluck } from 'rxjs/operators';
 
-type AppConfigHome = Pick<AppConfigInterface, 'appName' | 'SEO' | 'platform_participate'>;
+import { AppConfig } from '@conf/app.config';
+import { AppConfigInterface } from '@models/app-config.model';
+import { SeoService } from '@services/seo.service';
+import { Program } from '@models/programs.models';
+
+type AppConfigHome = Pick<AppConfigInterface, 'appName' | 'SEO'>;
 
 @Component({
   selector: 'app-home',

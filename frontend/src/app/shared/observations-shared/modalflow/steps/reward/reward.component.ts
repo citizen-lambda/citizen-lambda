@@ -3,9 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { throwError, BehaviorSubject, Observable, OperatorFunction } from 'rxjs';
 import { tap, catchError, map, distinctUntilChanged, share, pluck, filter } from 'rxjs/operators';
 
-import type { CallbackFunctionVariadicAnyReturn, Badge } from '@core/models';
+import type { CallbackFunctionVariadicAnyReturn } from '@models/app-config.model';
+import type { Badge } from '@models/api.model';
 import { AppConfig } from '@conf/app.config';
-import { FlowComponentInterface } from '@shared/observations-shared/modalflow/flow/flow';
+import { FlowComponentInterface } from '@shared/flow/flow';
 import { AuthService } from '@services/auth.service';
 
 export interface BadgeState {

@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { ProgramsService } from '../programs/programs.service';
+import { ProgramsService } from '@services/programs.service';
 import { HomeCustomComponent } from './custom/custom.component';
 import { HomeComponent } from './home.component';
 import { GreeterModule } from '@shared/greeter/greeter.module';
-import { ProgramsSharedModule } from '@shared/programs-shared/programs-shared.module';
+import { ProgramsCarouselModule } from '@shared/programs-carousel/programs-carousel.module';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -15,7 +15,7 @@ describe('HomeComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HomeComponent, HomeCustomComponent],
       providers: [ProgramsService],
-      imports: [RouterTestingModule, GreeterModule, ProgramsSharedModule]
+      imports: [RouterTestingModule, GreeterModule, ProgramsCarouselModule]
     }).compileComponents();
   }));
 

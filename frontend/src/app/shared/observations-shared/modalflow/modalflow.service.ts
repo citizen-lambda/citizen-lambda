@@ -8,8 +8,8 @@ import {
   NgbModalOptions
 } from '@ng-bootstrap/ng-bootstrap';
 
-import { FlowService } from './flow/flow.service';
-import { FlowItem } from './flow/flow-item';
+import { FlowService } from '@shared/flow/flow.service';
+import { FlowItem } from '@shared/flow/flow-item';
 import { OnboardComponent } from './steps/onboard/onboard.component';
 import { CommittedComponent } from './steps/committed/committed.component';
 import { CongratsComponent } from './steps/congrats/congrats.component';

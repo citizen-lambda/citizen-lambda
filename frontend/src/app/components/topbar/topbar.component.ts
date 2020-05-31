@@ -20,9 +20,9 @@ import { AuthService } from '@services/auth.service';
 import { LoginComponent } from '../login/login.component';
 import { LogoutComponent } from '../logout/logout.component';
 import { RegisterComponent } from '../register/register.component';
-import { ProgramsService } from '@features/programs/programs.service';
-import { ProgramsModalComponent } from '@shared/programs-shared/programs-modal/programs-modal.component';
-import { UserFeatures, AnonymousUser } from '@core/models';
+import { ProgramsService } from '@services/programs.service';
+import { ProgramsModalComponent } from '@shared/programs-modal/programs-modal.component';
+import { UserFeatures, AnonymousUser } from '@models/user.model';
 import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
 
 @Component({

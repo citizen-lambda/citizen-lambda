@@ -43,20 +43,6 @@
   --secondary: #60b15c;
   --secondary-gradient: #57a154;
   --ternary: #45765c;
-  --modal-header-bg-moz: moz-linear-gradient(
-    179.4deg,
-    var(--secondary) 0%,
-    var(--secondary) 50%,
-    var(--secondary-gradient) 51%,
-    var(--secondary-gradient) 100%
-  );
-  --modal-header-bg-webkit: moz-linear-gradient(
-    179.4deg,
-    var(--secondary) 0%,
-    var(--secondary) 50%,
-    var(--secondary-gradient) 51%,
-    var(--secondary-gradient) 100%
-  );
   --modal-header-bg-linear: linear-gradient(
     179.4deg,
     var(--secondary) 0%,
@@ -801,23 +787,22 @@ section.observations#observations {
   background: rgba(0, 0, 0, 0.99);
 }
 
-/* .full-viewport-show>img {
-    min-width: 100%;
-} */
+.full-viewport-show > img {
+  margin: auto;
+}
+
+.full-viewport-show > img.landscape {
+  width: 100vw;
+}
+
+.full-viewport-show > img.portrait {
+  height: 100vh;
+}
 
 /* POPUP CUSTOM */
 
-/*  */
-
-/* .modal-body div.image-top-container {
-    margin: -16px;
-    margin-bottom: 0px;
-} */
-
 .modal-header {
   background: var(--secondary);
-  background: var(--modal-header-bg-moz);
-  background: var(--modal-header-bg-webkit);
   background: var(--modal-header-bg-linear);
   border-radius: 0px;
   align-items: center;
@@ -831,17 +816,12 @@ section.observations#observations {
   text-align: center;
 }
 
-.modal-content,
+/* .modal-content, */
 .modal-body {
-  /* .modal-content { */
-  /* SCROLLABLEBADFIX */
-  /* max-height: 95vh;
-    overflow-y: auto; */
-  /* } */
-  /* modal height - header - footer - footer button */
+  /* FIXME: SCROLLABLE FORM BADFIX */
+  /* document.querySelector('body > ngb-modal-window > div.modal-dialog > div.modal-content').clientHeight */
+  /* modal height - header - footer padding & border - footer button */
   overflow-y: auto !important;
-  --modal-body-height: calc(95vh - 4em - (2 * 0.75rem + 1px) - (2 * 10px + 1.5 * 18px + 2 * 1px));
-  max-height: var(--modal-body-height);
 }
 
 .modal-body,
@@ -859,17 +839,11 @@ section.observations#observations {
 
 /* MODALE OBSERVATION AJOUTEE */
 
-.congrats-container {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 .image-top-container {
-  background-color: #222;
+  /* background-color: #222; */
+  background-color: var(--primary-color);
   display: flex;
-  height: 100%;
+  /* height: 100%; */
   flex-grow: 1;
   flex-shrink: 2;
   min-height: 20px;
@@ -880,8 +854,11 @@ section.observations#observations {
 .image-top-container > img {
   display: block;
   margin: auto;
-  /* width & height are dependant of img ratio
-    and set dynamically in the component template */
+  /*
+  width & height make the img ratio
+  and are set dynamically
+  in the component template
+  */
 }
 
 .congrats-description {

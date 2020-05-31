@@ -2,33 +2,34 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuard } from './services/auth.guard';
-import { UniqueProgramGuard } from './features/programs/unique-program.guard';
-import { AboutComponent } from './components/about/about.component';
+import { AuthGuard } from '@services/auth.guard';
+import { UniqueProgramGuard } from '@features/programs/unique-program.guard';
+import { AboutComponent } from '@components/about/about.component';
 
 const appRoutes: Routes = [
   {
     path: 'home',
-    loadChildren: (): Promise<any> => import('./features/home/home.module').then(m => m.HomeModule),
+    loadChildren: (): Promise<any> => import('@features/home/home.module').then(m => m.HomeModule),
     canActivate: [UniqueProgramGuard]
   },
   { path: 'about', component: AboutComponent },
   {
     path: 'mydashboard',
     loadChildren: (): Promise<any> =>
-      import('./features/user-dashboard/user-dashboard.module').then(m => m.UserDashboardModule),
+      import('@features/user-dashboard/user-dashboard.module').then(m => m.UserDashboardModule),
+    canActivate: [AuthGuard],
     canLoad: [AuthGuard]
   },
   {
     path: 'api/admin',
     loadChildren: (): Promise<any> =>
-      import('./features/admin/admin.module').then(m => m.AdminModule),
+      import('@features/admin/admin.module').then(m => m.AdminModule),
     canLoad: [AuthGuard]
   },
   {
     path: 'programs',
     loadChildren: (): Promise<any> =>
-      import('./features/programs/programs.module').then(m => m.ProgramsModule)
+      import('@features/programs/programs.module').then(m => m.ProgramsModule)
   },
   {
     path: '',
@@ -38,7 +39,7 @@ const appRoutes: Routes = [
   {
     path: '**',
     loadChildren: (): Promise<any> =>
-      import('./shared/page-not-found/page-not-found.module').then(m => m.PageNotFoundModule)
+      import('@features/page-not-found/page-not-found.module').then(m => m.PageNotFoundModule)
   }
 ];
 

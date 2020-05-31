@@ -3,11 +3,20 @@
   "compilerOptions": {
     "paths": {
       "@conf/*": ["src/conf/*"],
-      "@core/*": ["src/app/core/*"],
-      "@services/*": ["src/app/services/*"],
+      "@services/*": [
+        "src/app/core/services/*",
+        "src/app/services/*",
+        "src/app/features/programs/services/*",
+        "src/app/features/observations/services/*"
+      ],
       "@helpers/*": ["src/app/helpers/*"],
       "@components/*": ["src/app/components/*"],
       "@features/*": ["src/app/features/*"],
+      "@models/*": [
+        "src/app/core/models/*",
+        "src/app/features/programs/models/*",
+        "src/app/features/observations/models/*"
+      ],
       "@shared/*": ["src/app/shared/*"]
     },
     "baseUrl": "./",

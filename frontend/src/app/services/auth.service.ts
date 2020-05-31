@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
 import { share, map, catchError, pluck, flatMap } from 'rxjs/operators';
 
-import { AppConfig } from '@conf/app.config';
+import { AnonymousUser, UserFeatures } from '@models/user.model';
 import {
   RegisteringUser,
   RegistrationPayload,
@@ -13,10 +13,9 @@ import {
   LogoutPayload,
   JWT,
   AuthorizationPayload,
-  UserFeaturesPayload,
-  AnonymousUser,
-  UserFeatures
-} from '@core/models';
+  UserFeaturesPayload
+} from '@models/api.model';
+import { AppConfig } from '@conf/app.config';
 
 @Injectable()
 export class AuthService {

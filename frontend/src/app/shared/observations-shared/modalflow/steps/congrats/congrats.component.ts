@@ -1,53 +1,62 @@
 import {
-  Component,
-  Input,
-  ViewEncapsulation,
-  OnInit,
-  Inject,
-  LOCALE_ID,
   ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Inject,
+  Input,
+  LOCALE_ID,
+  OnInit,
   ViewChild,
-  ElementRef
+  ViewEncapsulation,
+  AfterContentChecked
 } from '@angular/core';
-
-import { FlowComponentInterface } from '@shared/observations-shared/modalflow/flow/flow';
 import { AppConfig } from '@conf/app.config';
-import { ObsPostResponsePayload, SharedContext } from '@features/observations/observation.model';
+import { ObsPostResponsePayload, SharedContext } from '@models/observation.model';
+import { FlowComponentInterface } from '@shared/flow/flow';
 
 @Component({
   templateUrl: './congrats.component.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CongratsComponent implements FlowComponentInterface, OnInit {
+export class CongratsComponent implements FlowComponentInterface, OnInit, AfterContentChecked {
   username = '';
   AppConfig = AppConfig;
   @ViewChild('img') img?: ElementRef;
-  @ViewChild('fullViewPortContainer') fullViewPortContainer?: ElementRef;
   @Input() data!: SharedContext & { obs: ObsPostResponsePayload };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   obs: { [name: string]: any } | undefined = undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  taxon: { [name: string]: any } | undefined = undefined;
+  imgMaxHeight: string | undefined;
+  bodyHeight: number | undefined;
 
   constructor(@Inject(LOCALE_ID) public localeId: string) {}
 
   ngOnInit(): void {
-    console.debug(this.data.obs.properties);
     this.obs = this.data.obs.properties;
+    this.taxon = this.obs?.taxref; // server-side taxo
+
+    console.debug(this.obs);
 
     // new Anonymous(this.localeId)
     this.username =
       localStorage.getItem('username') || this.localeId.startsWith('fr') ? 'Anonyme' : 'Anonymous';
   }
 
-  fullViewPortToggle(): void {
-    if (
-      this.fullViewPortContainer?.nativeElement.classList.value.includes('full-viewport-hidden')
-    ) {
-      this.fullViewPortContainer?.nativeElement.classList.remove('full-viewport-hidden');
-      this.fullViewPortContainer?.nativeElement.classList.add('full-viewport-show');
-    } else {
-      this.fullViewPortContainer?.nativeElement.classList.remove('full-viewport-show');
-      this.fullViewPortContainer?.nativeElement.classList.add('full-viewport-hidden');
+  ngAfterContentChecked(): void {
+    const modalContentHeight = document.querySelector(
+      'body > ngb-modal-window > div > div.modal-content'
+    )?.clientHeight;
+    // const modalFooterHeight = document.querySelector(
+    //   'body > ngb-modal-window > div > div > app-flow > ng-component > div.modal-footer'
+    // )?.clientHeight;
+    if (modalContentHeight /*  && modalFooterHeight */) {
+      this.bodyHeight = modalContentHeight /*  - modalFooterHeight */;
+
+      this.imgMaxHeight = `${this.bodyHeight}px`;
+
+      console.debug(this.bodyHeight);
     }
   }
 

@@ -1,0 +1,16 @@
+<div class="image-top-container">
+  <!-- document.querySelector('app-observation-details > div.modal-body').clientHeight -->
+  <img
+    #img
+    [style.max-width]="img?.height > img?.width ? 'auto' : '100%'"
+    [style.max-height]="imgMaxHeight"
+    [src]="src ? src : 'assets/default_taxon.jpg'"
+    (click)="fullViewPortToggle()"
+  />
+</div>
+<div #fullViewPortContainer class="full-viewport-hidden" (click)="fullViewPortToggle()">
+  <!-- <button type="button" class="close" aria-label="Close" (click)="closeZoom">
+      <span aria-hidden="true">&times;</span>
+    </button> -->
+  <img [src]="img ? img.src : ''" [ngClass]="calcStyle()" />
+</div>

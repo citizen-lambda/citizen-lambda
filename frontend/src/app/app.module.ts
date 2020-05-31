@@ -14,27 +14,28 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 
-import { ProgramsModule } from './features/programs/programs.module';
+import { ProgramsModule } from '@features/programs/programs.module';
 import { AppComponent } from './app.component';
 import { routing } from './app.routing';
-import { SeoService } from './services/seo.service';
-import { AuthService } from './services/auth.service';
-import { AuthInterceptor } from './services/auth.interceptor';
-import { LoginComponent } from './components/login/login.component';
-import { LogoutComponent } from './components/logout/logout.component';
-import { RegisterComponent } from './components/register/register.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { TopbarComponent } from './components/topbar/topbar.component';
-import { SpeciesComponent } from './components/species/species.component';
-import { GncService } from './services/gnc.service';
-import { ProgramsService } from './features/programs/programs.service';
-import { ProgramsResolve } from './features/programs/programs-resolve.service';
-import { TaxonomyService } from './services/taxonomy.service';
-import { ErrorHandler } from './services/error_handler';
-import { AboutComponent } from './components/about/about.component';
-import { AboutCustomComponent } from './components/about/custom/custom.component';
-import { AboutFixedComponent } from './components/about/fixed/fixed.component';
+import { SeoService } from '@services/seo.service';
+import { AuthService } from '@services/auth.service';
+import { AuthInterceptor } from '@services/auth.interceptor';
+import { LoginComponent } from '@components/login/login.component';
+import { LogoutComponent } from '@components/logout/logout.component';
+import { RegisterComponent } from '@components/register/register.component';
+import { FooterComponent } from '@components/footer/footer.component';
+import { SidebarComponent } from '@components/sidebar/sidebar.component';
+import { TopbarComponent } from '@components/topbar/topbar.component';
+import { SpeciesComponent } from '@components/species/species.component';
+import { GncService } from '@services/gnc.service';
+import { ProgramsService } from '@features/programs/services/programs.service';
+import { ProgramsResolve } from '@features/programs/services/programs-resolve.service';
+import { TaxonomyService } from '@services/taxonomy.service';
+import { ErrorHandler } from '@services/error_handler';
+import { AboutComponent } from '@components/about/about.component';
+import { AboutCustomComponent } from '@components/about/custom/custom.component';
+import { AboutFixedComponent } from '@components/about/fixed/fixed.component';
+import { ViewportService } from '@services/viewport.service';
 
 @NgModule({
   imports: [
@@ -76,6 +77,7 @@ import { AboutFixedComponent } from './components/about/fixed/fixed.component';
     ErrorHandler,
     ProgramsResolve,
     SeoService,
+    ViewportService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

@@ -11,9 +11,9 @@ import {
 
 import { FeatureCollection } from 'geojson';
 
-import { FlowItem } from './flow/flow-item';
+import { FlowItem } from '@shared/flow/flow-item';
 import { ModalFlowService } from './modalflow.service';
-import { Taxonomy } from '@core/models';
+import { Taxonomy } from '@models/taxonomy.model';
 
 @Component({
   selector: 'app-modalflow',

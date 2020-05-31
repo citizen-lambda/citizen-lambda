@@ -6,10 +6,12 @@ import { tap, catchError } from 'rxjs/operators';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
+import { FeatureCollection } from 'geojson';
+
 import { AppConfig } from '@conf/app.config';
 import { AuthService } from '@services/auth.service';
-import { UserFeatures, Badge, RewardsApiPayload } from '@core/models';
-import { FeatureCollection } from 'geojson';
+import { UserFeatures } from '@models/user.model';
+import { Badge, RewardsApiPayload } from '@models/api.model';
 
 @Component({
   selector: 'app-user-dashboard',

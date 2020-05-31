@@ -7,10 +7,10 @@ import {
   Router
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
-import { ProgramsService } from './programs.service';
-import { Program } from './programs.models';
+import { ProgramsService } from '@services/programs.service';
+import { Program } from '@models/programs.models';
 
 @Injectable({
   providedIn: 'root'

@@ -5,7 +5,8 @@ import { catchError, map, take } from 'rxjs/operators';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { RegisteringUser, RegistrationPayload, AppConfigInterface } from '@core/models';
+import { RegisteringUser, RegistrationPayload } from '@models/api.model';
+import { AppConfigInterface } from '@models/app-config.model';
 import { AppConfig } from '@conf/app.config';
 import { AuthService } from '@services/auth.service';
 

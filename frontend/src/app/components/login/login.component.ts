@@ -8,7 +8,7 @@ import { map, catchError, take } from 'rxjs/operators';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppConfig } from '@conf/app.config';
-import { UserLogin, RegistrationPayload } from '@core/models';
+import { UserLogin, RegistrationPayload } from '@models/api.model';
 import { AuthService } from '@services/auth.service';
 
 @Component({

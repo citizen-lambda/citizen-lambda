@@ -11,8 +11,9 @@ import {
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-import { AuthService } from './auth.service';
-import { UserFeatures, UserFeaturesPayload } from '@core/models';
+import { AuthService } from '@services/auth.service';
+import { UserFeatures } from '@models/user.model';
+import { UserFeaturesPayload } from '@models/api.model';
 
 @Injectable({
   providedIn: 'root'

@@ -14,7 +14,8 @@ import { BehaviorSubject } from 'rxjs';
 
 import { FeatureCollection, Feature } from 'geojson';
 
-import { AppConfigInterface, Taxonomy } from '@core/models';
+import { AppConfigInterface } from '@models/app-config.model';
+import { Taxonomy } from '@models/taxonomy.model';
 import { AppConfig } from '@conf/app.config';
 import { TaxonomyService } from '@services/taxonomy.service';
 

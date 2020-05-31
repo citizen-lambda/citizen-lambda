@@ -10,8 +10,9 @@ import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { AppConfig } from '@conf/app.config';
-import { AppConfigInterface } from '@core/models';
+import { AppConfigInterface } from '@models/app-config.model';
 import { AnchorNavigationDirective } from '@helpers/anav';
+import { ViewportService } from '@services/viewport.service';
 
 type AppConfigGreeter = Pick<
   AppConfigInterface,
@@ -34,9 +35,10 @@ export class GreeterComponent extends AnchorNavigationDirective implements OnIni
 
     protected router: Router,
     protected route: ActivatedRoute,
+    protected viewportService: ViewportService,
     protected domSanitizer: DomSanitizer
   ) {
-    super(router, route);
+    super(router, route, viewportService);
   }
 
   ngOnInit(): void {

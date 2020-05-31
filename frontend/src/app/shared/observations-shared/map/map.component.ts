@@ -27,8 +27,8 @@ import 'leaflet-offline';
 import localForage from 'localforage';
 
 import { MAP_CONFIG } from '@conf/map.config';
-import { Taxonomy, Taxon } from '@core/models';
-import { ObservationData } from '@features/observations/observation.model';
+import { Taxonomy, Taxon } from '@models/taxonomy.model';
+import { ObservationData } from '@models/observation.model';
 import { MarkerPopupComponent } from './marker-popup.component';
 
 declare module 'leaflet' {
@@ -493,11 +493,6 @@ export class ObsMapComponent implements OnInit, OnChanges {
   }
 
   getPopupContent(feature: Feature): HTMLElement {
-    if (this.popupRef) {
-      this.popupRef.destroy();
-      console.debug('destroyed popup');
-    }
-    console.debug('creating popup');
     // tslint:disable-next-line: no-use-before-declare
     const factory = this.resolver.resolveComponentFactory(MarkerPopupComponent);
     const component = factory.create(this.injector);
@@ -509,6 +504,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
     );
     component.changeDetectorRef.detectChanges();
     this.popupRef = component;
+    console.debug('created popup', this.popupRef.instance.data.id_observation);
     return this.popupRef.location.nativeElement;
   }
 
@@ -532,6 +528,10 @@ export class ObsMapComponent implements OnInit, OnChanges {
         visibleParent = marker.marker;
       }
 
+      if (this.popupRef) {
+        console.debug('destroying popup', this.popupRef.instance.data.id_observation);
+        this.popupRef.destroy();
+      }
       this.observationMap.openPopup(this.getPopupContent(obs), visibleParent.getLatLng());
     }
   }

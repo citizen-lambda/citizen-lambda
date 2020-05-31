@@ -11,9 +11,9 @@ import { catchError, switchMap, finalize, filter, mergeMap } from 'rxjs/operator
 import { Observable, BehaviorSubject, from, of } from 'rxjs';
 
 import { AppConfig } from '@conf/app.config';
-import { AuthService } from './auth.service';
-import { AuthorizationPayload } from '@core/models';
-import { ErrorHandler } from './error_handler';
+import { AuthService } from '@services/auth.service';
+import { AuthorizationPayload } from '@models/api.model';
+import { ErrorHandler } from '@services/error_handler';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

@@ -1,35 +1,23 @@
-import { AfterViewInit, HostListener, Directive } from '@angular/core';
+import { AfterViewInit, Directive } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, BehaviorSubject } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+
 import { UnsubscribeOnDestroy } from './unsubscribe-on-destroy';
+import { ViewportService } from '@services/viewport.service';
 
 @Directive()
 export abstract class AnchorNavigationDirective extends UnsubscribeOnDestroy
   implements AfterViewInit {
   fragment$ = this.route.fragment.pipe(distinctUntilChanged());
-  orient$ = new BehaviorSubject<OrientationType>(
-    window.screen.orientation.type || 'landscape-primary'
-  );
+  orient$ = this.viewportService.orientation;
 
-  constructor(protected router: Router, protected route: ActivatedRoute) {
+  constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
+    protected viewportService: ViewportService
+  ) {
     super();
-  }
-
-  @HostListener('window:resize', ['$event'])
-  @HostListener('window:orientationchange', ['$event'])
-  orientationHandler($event: Event): void {
-    let orient: OrientationType = window.screen.orientation.type || 'landscape-primary';
-    if ($event.type === 'orientationchange') {
-      orient = window.screen.orientation.type;
-    }
-    if ($event.type === 'resize') {
-      orient =
-        window.innerHeight > window.innerWidth && orient === 'landscape-primary'
-          ? 'portrait-primary'
-          : orient;
-    }
-    this.orient$.next(orient);
   }
 
   jumpTo(fragment: string, delay: number = 200): void {
@@ -53,7 +41,7 @@ export abstract class AnchorNavigationDirective extends UnsubscribeOnDestroy
 
   // abstract AfterViewInit(): void;
   ngAfterViewInit(): void {
-    combineLatest([this.fragment$, this.orient$.pipe(distinctUntilChanged())])
+    combineLatest([this.fragment$, this.orient$])
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(([fragment]) => this.jumpTo(fragment));
   }

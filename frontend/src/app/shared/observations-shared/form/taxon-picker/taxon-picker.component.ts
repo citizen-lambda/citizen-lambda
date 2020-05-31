@@ -21,7 +21,7 @@ import { debounceTime, distinctUntilChanged, tap, map, catchError } from 'rxjs/o
 
 import { NgbTypeahead, NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 
-import { Taxon } from '@core/models';
+import { Taxon } from '@models/taxonomy.model';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 type AutoCompletionResults = {
