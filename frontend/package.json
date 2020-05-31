@@ -20,10 +20,10 @@
     "prettier:fix": "prettier --write \"**/*.ts\"",
     "e2e": "ng e2e",
     "e2e:en": "ng e2e --configuration=en",
-    "cp_robots_txt": "test -d dist/browser/fr && cp -v dist/browser/fr/robots.txt dist/browser/",
-    "cp_favicon": "test -d dist/browser/en && cp -v dist/browser/fr/favicon.ico dist/browser/",
-    "sed_webmanifest_desc": "sed -i '0,/^\\s*\"description\"\\:\\s*\"/ s/^\\(\\s*\"description\":\\s*\"\\).*\",$/\\1participatory sciences, biodiversity, share your observations!\",/1' dist/browser/en/manifest.webmanifest",
-    "brotli": "bash -c 'for f in ~/citizen/frontend/dist/browser/*/*.{css,js}; do brotli ${f}; done'",
+    "cp_robots_txt": "test -d dist/fr && cp -v dist/fr/robots.txt dist/",
+    "cp_favicon": "test -d dist/en && cp -v dist/fr/favicon.ico dist/",
+    "sed_webmanifest_desc": "sed -i '0,/^\\s*\"description\"\\:\\s*\"/ s/^\\(\\s*\"description\":\\s*\"\\).*\",$/\\1participatory sciences, biodiversity, share your observations!\",/1' dist/en/manifest.webmanifest",
+    "brotli": "bash -c 'for f in ~/citizen/frontend/dist/*/*.{css,js}; do brotli ${f}; done'",
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
   },
   "dependencies": {
