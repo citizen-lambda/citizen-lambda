@@ -9,6 +9,7 @@ import {
   LOCALE_ID
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { map, takeUntil } from 'rxjs/operators';
 
 import { NgbCarousel, NgbSlideEvent, NgbSlideEventSource } from '@ng-bootstrap/ng-bootstrap';
 
@@ -17,15 +18,10 @@ import { AppConfigInterface } from '@models/app-config.model';
 import { ViewportService } from '@services/viewport.service';
 import { AnchorNavigationDirective } from '@helpers/anav';
 import { Program } from '@models/programs.models';
-import { BehaviorSubject } from 'rxjs';
-import { tap, takeUntil } from 'rxjs/operators';
 
-type AppConfigPrograms = Pick<
-  AppConfigInterface,
-  'platform_participate' | 'programsMasonryThreshold'
->;
+type AppConfigPrograms = Pick<AppConfigInterface, 'platform_participate' | 'programsGridThreshold'>;
 
-const programsMasonryMediaQuery = '(min-width: 1023.98px)';
+const programsGridMediaQuery = '(min-width: 1023.98px)';
 
 @Component({
   selector: 'app-programs-carousel',
@@ -45,8 +41,13 @@ export class ProgramsCarouselComponent extends AnchorNavigationDirective {
   unpauseOnArrow = false;
   pauseOnIndicator = false;
   pauseOnHover = true;
-  wantGridMediaQuery = new BehaviorSubject<boolean>(
-    window.matchMedia(programsMasonryMediaQuery).matches
+  wantGrid = this.viewportService.viewportWidth.pipe(
+    map(
+      () =>
+        window.matchMedia(programsGridMediaQuery).matches &&
+        this.programs.length > this.appConfig.programsGridThreshold
+    ),
+    takeUntil(this.onDestroy$)
   );
 
   constructor(
@@ -56,18 +57,6 @@ export class ProgramsCarouselComponent extends AnchorNavigationDirective {
     protected viewportService: ViewportService
   ) {
     super(router, route, viewportService);
-    this.viewportService.viewportWidth
-      .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        tap(_ => {
-          this.wantGridMediaQuery.next(
-            window.matchMedia(programsMasonryMediaQuery).matches &&
-              this.programs.length > this.appConfig.programsMasonryThreshold
-          );
-        }),
-        takeUntil(this.onDestroy$)
-      )
-      .subscribe();
   }
 
   togglePaused(): void {

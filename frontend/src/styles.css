@@ -50,6 +50,16 @@
     var(--secondary-gradient) 51%,
     var(--secondary-gradient) 100%
   );
+  --section-margin-bottom: 20px;
+  /*
+  ⚠ our programs masonry container needs a minimum height ⚠
+  our card body varying height value has to be clamped.
+  our card width must adapt the number of columns.
+  height = n rows * largest item in height
+*/
+  --section-programs_height_min1366: 2600px;
+  --section-programs_height_max1366: 2800px;
+  --step: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
 }
 
 .btn-link {
@@ -511,20 +521,6 @@ text-overflow: ellipsis !important;
     border-top: solid 1px;
     border-color: var(--primary);
   }
-}
-
-:root {
-  --section-margin-bottom: 20px;
-  /*
-  ⚠ this masonry needs fixed container height ⚠
-  our card body varying height value has to be clamped.
-  our card width must adapt the number of columns.
-  height = n rows * largest item in height
-*/
-  --section-programs_height_min1366: 2600px;
-  --section-programs_height_max1366: 2800px;
-  --step: calc(100vh - var(--router-outlet-offset) - var(--section-margin-bottom) - var(--fold));
-  /* --nav-collapse: 767.98px; */
 }
 
 app-topbar .navbar-brand img {

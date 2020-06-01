@@ -1,8 +1,6 @@
 <section id="programs" class="row">
   <ng-container *ngIf="programs?.length > 1; else noprogramfound">
-    <ng-container
-      *ngTemplateOutlet="(wantGridMediaQuery | async) ? programscards : programscarousel"
-    >
+    <ng-container *ngTemplateOutlet="(wantGrid | async) ? programscards : programscarousel">
     </ng-container>
     <ng-template #programscarousel>
       <div id="programs-carousel">
