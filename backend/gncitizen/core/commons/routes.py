@@ -3,7 +3,7 @@ import logging
 import json
 import urllib.parse
 from flask import Blueprint, request, current_app, stream_with_context
-from flask_jwt_extended import jwt_optional, get_jwt_identity  # , jwt_required
+from flask_jwt_extended import jwt_optional, get_jwt_identity
 from flask_admin.form import SecureForm
 from flask_admin.contrib.sqla import ModelView
 from geojson import FeatureCollection

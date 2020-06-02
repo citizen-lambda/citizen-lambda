@@ -47,7 +47,6 @@ export interface ObsPostResponse extends APIPayload {
   features: ObsPostResponsePayload;
 }
 
-// TODO: migrate component to taxo service/obs facade
 export type ObsPostResponsePayload = Feature & {
   properties: ObsDetails & {
     images?: string[];

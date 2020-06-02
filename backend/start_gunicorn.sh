@@ -25,4 +25,4 @@ elif [[ ! -d $LOG_DIR ]]; then
 fi
 
 echo "Starting gunicorn"
-exec gunicorn -k gevent -w 2 --error-log $APP_DIR/var/log/gn_errors.log --pid="citizen.pid" -b :5002 --reload --preload -n "citizen" wsgi:app
+exec gunicorn -k gevent -w 1 --error-log $APP_DIR/var/log/gn_errors.log --pid="citizen.pid" -b :5002 --reload --preload -n "citizen" wsgi:app

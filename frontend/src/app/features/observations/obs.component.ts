@@ -11,7 +11,7 @@ import { combineLatest } from 'rxjs';
 import { map, take, takeUntil, pluck } from 'rxjs/operators';
 
 import { Feature } from 'geojson';
-import * as L from 'leaflet';
+import L from 'leaflet';
 
 import { AppConfig } from '@conf/app.config';
 import { SeoService } from '@services/seo.service';
@@ -20,11 +20,7 @@ import { ObsMapComponent } from '@shared/observations-shared/map/map.component';
 import { ObsListComponent } from '@shared/observations-shared/list/list.component';
 import { ModalFlowService } from '@shared/observations-shared/modalflow/modalflow.service';
 import { ObservationsFacade } from '@services/observations-facade.service';
-import {
-  ConfigObsFeatures,
-  ConfigModalFlow,
-  ObsPostResponsePayload
-} from '@models/observation.model';
+import { ConfigModalFlow, ObsPostResponsePayload } from '@models/observation.model';
 
 @Component({
   selector: 'app-observations',
@@ -33,7 +29,6 @@ import {
   providers: [ModalFlowService, ObservationsFacade]
 })
 export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit {
-  readonly ConfigObsFeatures = (AppConfig as ConfigObsFeatures).OBSERVATIONS_FEATURES;
   readonly appConfig: ConfigModalFlow = AppConfig;
   AddAnObservationLabel = (this.appConfig.program_add_an_observation as { [name: string]: string })[
     this.localeId.startsWith('fr') ? 'fr' : 'en'
@@ -55,8 +50,6 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
         map(([id]) => id),
         takeUntil(this.onDestroy$)
       )
-      /* When testing: TypeError: You provided 'undefined' where a stream was expected. […]
-    at subscribeTo */
       .subscribe(id => {
         this.facade.programId = +id;
       });
@@ -123,7 +116,6 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
 
     this.router.navigate(['details', $event], {
       fragment: 'observations',
-      // preserveFragment: false,
       relativeTo: this.route
     });
     // selected is already set

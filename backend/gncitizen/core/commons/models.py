@@ -3,7 +3,7 @@
 import logging
 import queue
 from datetime import datetime, timezone
-from flask import current_app, json
+from flask import json
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
@@ -144,12 +144,20 @@ class FrontendBroadcastHandler(logging.Handler):
         try:
             yield welcome_event
             while True:
-                result = q.get()
+                result = ""
+                try:
+                    result = q.get(timeout=30)
+                except queue.Empty:
+                    result = json.dumps(
+                        {
+                            "type": "ping",
+                            "data": {"time": datetime.now(tz=timezone.utc)},
+                        },
+                    )
+
                 yield self.mk_event(result)
-        except GeneratorExit as exc:
-            current_app.logger.warn("SSE: %s", str(exc))
+        except GeneratorExit:
             self.subscriptions.remove(q)
-        current_app.logger.warn("SSE exit: %s", str(self.subscriptions))
 
     def mk_event(self, json_encoded_message: str) -> str:
         message = json.loads(json_encoded_message)

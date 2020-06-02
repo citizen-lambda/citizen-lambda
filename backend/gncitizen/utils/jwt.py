@@ -5,7 +5,7 @@
 
 from functools import wraps
 
-from flask import jsonify
+from flask import current_app
 from flask_jwt_extended import get_jwt_identity
 
 from gncitizen.core.users.models import UserModel
@@ -17,37 +17,29 @@ def get_id_role_if_exists():
     :return: user id
     :rtype: int
     """
-    if get_jwt_identity() is not None:
-        current_user = get_jwt_identity()
-        id_role = (
-            UserModel.query.filter_by(username=current_user).first().id_user
-        )
+    user = get_jwt_identity()
+    if user:
+        id_role = UserModel.query.filter_by(username=user).one().id_user
     else:
         id_role = None
     return id_role
 
 
 def admin_required(func):
-    """Admin required decorator that check if user is an ``admin``
-
-    :param func: decorated function
-    :type func: func
-
-    :return: decorated function
-    :rtype: func
-    """
-
     @wraps(func)
     def decorated_function(*args, **kwargs):
-        current_user = get_jwt_identity()
+        unauthorized_msg = {"message": "Administrative authorization required"}
+        user = get_jwt_identity()
+        if not user:
+            return unauthorized_msg, 403
+        current_app.logger.warn("admin_user:", user)
         try:
-            is_admin = (
-                UserModel.query.filter_by(username=current_user).first().admin
-            )
-            if not is_admin:
-                return {"message": "Special authorization required"}, 403
+            user = UserModel.query.filter_by(username=user)
+            if not user.admin:
+                return unauthorized_msg, 403
             return func(*args, **kwargs)
-        except Exception as e:
-            return jsonify(message=e), 500
+        except Exception as exc:
+            current_app.logger.error("admin_required::%s: %s", user, str(exc))
+            return unauthorized_msg, 500
 
     return decorated_function

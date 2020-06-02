@@ -17,9 +17,14 @@ import { FeatureCollection, Feature } from 'geojson';
 import { AppConfig } from '@conf/app.config';
 import { Program } from '@features/programs/models/programs.models';
 import { ProgramsService } from '@services/programs.service';
-import { Taxonomy, Taxon } from '@models/taxonomy.model';
+import { Taxon } from '@models/taxonomy.model';
 import { TaxonomyService } from '@services/taxonomy.service';
-import { ObsState, ConfigObsFeatures, Municipality } from '@models/observation.model';
+import {
+  ObsState,
+  ConfigObsFeatures,
+  Municipality,
+  SharedContext
+} from '@models/observation.model';
 import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
 import { composeFnsAsync } from '@helpers/compose';
 import { groupBy } from '@helpers/groupby';
@@ -43,13 +48,7 @@ export class ObservationsFacade extends UnsubscribeOnDestroy /* implements OnDes
   private state$ = this.store.asObservable();
   configGroupBy = this.ConfigObsFeatures?.TAXONOMY.GROUP;
 
-  sharedContext: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [name: string]: any;
-    coords?: L.LatLng | undefined;
-    program?: FeatureCollection;
-    taxa?: Taxonomy;
-  } = {};
+  sharedContext: SharedContext = {};
 
   observations$ = this.state$.pipe(
     map(state => state.observations),
