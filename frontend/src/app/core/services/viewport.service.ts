@@ -17,6 +17,11 @@ export class ViewportService {
   private viewportWidth$ = new BehaviorSubject<number>(window.innerHeight);
   viewportWidth = this.viewportWidth$.asObservable();
 
+  private viewportAspectRatio$ = new BehaviorSubject<number>(
+    window.innerWidth / window.innerHeight
+  );
+  viewportAspectRatio = this.viewportAspectRatio$.asObservable();
+
   constructor(private rendererFactory2: RendererFactory2) {
     this.renderer = this.rendererFactory2.createRenderer(null, null);
     this.renderer.listen('window', 'resize', $event => this.orientationHandler($event));
@@ -25,17 +30,21 @@ export class ViewportService {
 
   orientationHandler($event: Event): void {
     let orient: OrientationType = window.screen.orientation.type || 'landscape-primary';
+
     if ($event.type === 'orientationchange') {
       orient = window.screen.orientation.type;
     }
+
     if ($event.type === 'resize') {
       orient =
         window.innerHeight > window.innerWidth && orient === 'landscape-primary'
           ? 'portrait-primary'
           : orient;
     }
+
     this.orient$.next(orient);
     this.viewportHeight$.next(window.innerHeight);
     this.viewportWidth$.next(window.innerWidth);
+    this.viewportAspectRatio$.next(window.innerWidth / window.innerHeight);
   }
 }
