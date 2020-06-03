@@ -7,6 +7,8 @@ import {
   Input
 } from '@angular/core';
 
+import { FullViewportImageComponent } from '@shared/full-viewport-image/full-viewport-image.component';
+
 @Component({
   selector: 'app-image-top',
   templateUrl: './image-top.component.html',
@@ -16,35 +18,11 @@ import {
 export class ImageTopComponent {
   @Input() src?: string | undefined;
   @Input() alt?: string | undefined;
-  @Input() imgMaxHeight?: string; // = '100%';
+  @Input() imgMaxHeight?: string;
   @ViewChild('img') img?: ElementRef<HTMLImageElement>;
-  @ViewChild('fullViewPortContainer') fullViewPortContainer?: ElementRef;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  calcStyle(): { [klass: string]: any } {
-    let result = {};
-    if (this.img) {
-      const imgWidth = this.img?.nativeElement.width;
-      const imgHeight = this.img?.nativeElement.height;
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const imgAspectRatio = imgWidth / imgHeight;
-      const screenAspectRatio = viewportWidth / viewportHeight;
-      // result = screenAspectRatio < imgAspectRatio ? { 'width.vw': 100 } : { 'height.vh': 100 };
-      result = screenAspectRatio < imgAspectRatio ? 'landscape' : 'portrait';
-    }
-    return result;
-  }
+  @ViewChild('fullViewportImage') fullViewportImage!: FullViewportImageComponent;
 
   fullViewPortToggle(): void {
-    if (
-      this.fullViewPortContainer?.nativeElement.classList.value.includes('full-viewport-hidden')
-    ) {
-      this.fullViewPortContainer?.nativeElement.classList.remove('full-viewport-hidden');
-      this.fullViewPortContainer?.nativeElement.classList.add('full-viewport-show');
-    } else {
-      this.fullViewPortContainer?.nativeElement.classList.remove('full-viewport-show');
-      this.fullViewPortContainer?.nativeElement.classList.add('full-viewport-hidden');
-    }
+    this.fullViewportImage.toggle();
   }
 }

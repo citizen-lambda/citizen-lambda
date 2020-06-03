@@ -1,0 +1,6 @@
+<div [ngClass]="{ 'full-viewport-hidden': !show, 'full-viewport-show': show }" (click)="toggle()">
+  <!-- <button type="button" class="full-viewport-close" aria-label="Close" (click)="toggle()">
+      <span aria-hidden="true">&times;</span>
+    </button> -->
+  <img [src]="image?.src" [ngClass]="updatedImgStyle | async" />
+</div>
