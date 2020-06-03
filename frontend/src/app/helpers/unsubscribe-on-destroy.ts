@@ -10,6 +10,5 @@ export abstract class UnsubscribeOnDestroy implements OnDestroy {
 
   ngOnDestroy(): void {
     this._unsubscriptionOnDestroy.next(true);
-    this._unsubscriptionOnDestroy.complete();
   }
 }
