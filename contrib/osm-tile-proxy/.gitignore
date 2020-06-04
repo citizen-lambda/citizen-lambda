@@ -1,0 +1,6 @@
+node_modules/
+package-lock.json
+photos/
+tiles/
+tile-db.json
+*.js

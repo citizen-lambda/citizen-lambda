@@ -1,0 +1,27 @@
+{
+  "name": "osm-tile-proxy",
+  "version": "1.0.1",
+  "description": "Cache OpenStreetMap tiles",
+  "main": "proxy.js",
+  "scripts": {
+    "start": "ts-node tileproxy.ts"
+  },
+  "keywords": [
+    "typescript",
+    "openstreetmap",
+    "proxy"
+  ],
+  "author": "Ricardo + citizenλ",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/lokijs": "^1.5.3",
+    "@types/node": "^10.17.21",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "ts-node": "^8.9.1",
+    "express": "^4.17.1",
+    "lokijs": "^1.5.8"
+  }
+}

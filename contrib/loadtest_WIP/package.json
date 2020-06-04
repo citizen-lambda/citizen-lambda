@@ -1,0 +1,14 @@
+{
+    "name": "citizendemo-loadtest",
+    "private": true,
+    "version": "0.0.1",
+    "description": "loadtest citizendemo using puppeteer-loadtest",
+    "scripts": {
+        "loadtest": "npm run clean && node ./node_modules/puppeteer-loadtest/index.js --s=1 --c=6 --file=citizendemo_puppeteer-loadtest.js",
+        "clean": "rm -f example*.png"
+    },
+    "dependencies": {
+        "puppeteer-loadtest": "~1.0.7",
+        "puppeteer": "~3.3.0"
+    }
+}

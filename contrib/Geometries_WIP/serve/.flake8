@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203,E501,SC100,SC200
+max-complexity = 10
+max-cognitive-complexity = 10
+radon-max-cc = 10
+radon-no-assert = True
+radon-show-closures = True
+dictionaries=en_US,python,technical,django
