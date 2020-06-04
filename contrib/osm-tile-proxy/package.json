@@ -11,7 +11,7 @@
     "openstreetmap",
     "proxy"
   ],
-  "author": "Ricardo + citizenλ",
+  "author": "Ricardo, abonimation and imagery by citizenλ",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.6",
