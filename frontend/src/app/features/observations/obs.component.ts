@@ -6,7 +6,7 @@ import {
   Inject,
   LOCALE_ID
 } from '@angular/core';
-import { ActivatedRoute, Router, Params } from '@angular/router';
+import { ActivatedRoute, Router, Params, NavigationExtras } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { map, take, takeUntil, pluck } from 'rxjs/operators';
 
@@ -35,6 +35,7 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
   ];
   @ViewChild(ObsMapComponent) thematicMap!: ObsMapComponent;
   @ViewChild(ObsListComponent) obsList!: ObsListComponent;
+  childNavigationExtras: NavigationExtras = { relativeTo: this.route, preserveFragment: true };
 
   constructor(
     @Inject(LOCALE_ID) public localeId: string,
@@ -114,11 +115,7 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
         }
       });
 
-    this.router.navigate(['details', $event], {
-      fragment: 'observations',
-      relativeTo: this.route
-    });
-    // selected is already set
+    this.router.navigate(['details', $event], this.childNavigationExtras);
   }
 
   /* @HostListener('document:NewObservationEvent', ['$event'])

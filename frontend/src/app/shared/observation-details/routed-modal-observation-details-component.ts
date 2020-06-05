@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { map, take } from 'rxjs/operators';
 
 import { ModalDismissReasons, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -16,6 +16,7 @@ export class RoutedModalObservationDetailsComponent implements OnInit {
   modalRef?: NgbModalRef;
   closeResult = '';
   data: Partial<ObservationData> = {};
+  parentNavigationExtras: NavigationExtras = { relativeTo: this.route, preserveFragment: false };
 
   constructor(
     private router: Router,
@@ -32,8 +33,13 @@ export class RoutedModalObservationDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.fragment.pipe(take(1)).subscribe(fragment => {
+      if (fragment) {
+        this.parentNavigationExtras.fragment = fragment;
+      }
+    });
     this.route.paramMap.pipe(take(1)).subscribe(params => {
-      const obsId = parseInt(params.get('obsid') || '1', 10);
+      const obsId = parseInt(params.get('id') || '0', 10);
       this.observations.features$
         .pipe(
           map(features => features.filter(feature => feature.properties?.id_observation === obsId)),
@@ -57,10 +63,11 @@ export class RoutedModalObservationDetailsComponent implements OnInit {
     if (error instanceof TypeError) {
       msg = 'Unknown observation';
       window.alert(msg);
+    } else {
+      console.error(error);
     }
-    console.error(error);
     this.close(msg);
-    this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
+    this.router.navigate(['../../'], this.parentNavigationExtras);
   }
 
   close(msg: string): void {
@@ -78,11 +85,11 @@ export class RoutedModalObservationDetailsComponent implements OnInit {
     this.modalRef.result.then(
       result => {
         this.closeResult = `Closed with: ${result}`;
-        this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
+        this.router.navigate(['../../'], this.parentNavigationExtras);
       },
       reason => {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-        this.router.navigate(['../../'], { fragment: 'observations', relativeTo: this.route });
+        this.router.navigate(['../../'], this.parentNavigationExtras);
       }
     );
   }

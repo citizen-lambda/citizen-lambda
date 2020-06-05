@@ -14,8 +14,8 @@ import { ObservationDetailsRoutingModule } from './observation-details-routing.m
 @NgModule({
   declarations: [ObservationDetailsComponent, RoutedModalObservationDetailsComponent],
   imports: [
-    RouterModule,
     CommonModule,
+    RouterModule,
     NgbModule,
     WebshareModule,
     ImageTopModule,

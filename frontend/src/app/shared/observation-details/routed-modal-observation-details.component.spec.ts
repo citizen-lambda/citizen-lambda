@@ -5,7 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { RoutedModalObservationDetailsComponent } from './routed-modal-observation-details-component';
-import { ObservationsFacade } from '@features/observations/services/observations-facade.service';
+import { ObservationsFacade } from '@services/observations-facade.service';
 
 describe('RoutedModalObservationDetailsComponent', () => {
   let component: RoutedModalObservationDetailsComponent;
