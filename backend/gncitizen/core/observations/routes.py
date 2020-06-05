@@ -303,7 +303,7 @@ def post_observation() -> Tuple[Dict, int]:
                 type: array
                 items:
                   $ref: '#/definitions/Feature'
-        """
+        """  # noqa: E501
     try:
         request_data = request.form
         data = dict()
