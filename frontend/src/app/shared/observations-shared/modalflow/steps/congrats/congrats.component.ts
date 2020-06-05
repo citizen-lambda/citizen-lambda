@@ -52,6 +52,7 @@ export class CongratsComponent implements FlowComponentInterface, OnInit, AfterC
     //   'body > ngb-modal-window > div > div > app-flow > ng-component > div.modal-footer'
     // )?.clientHeight;
     if (modalContentHeight /*  && modalFooterHeight */) {
+      // TODO: min(~95% windowHeight , modalBody)
       this.bodyHeight = modalContentHeight /*  - modalFooterHeight */;
 
       this.imgMaxHeight = `${this.bodyHeight}px`;

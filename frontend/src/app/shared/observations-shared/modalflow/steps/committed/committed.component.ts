@@ -24,6 +24,7 @@ export class CommittedComponent implements FlowComponentInterface, AfterContentC
     const modalFooterHeight = document.querySelector('app-flow > ng-component > div.modal-footer')
       ?.clientHeight;
     if (modalContentHeight && modalHeaderHeight && modalFooterHeight) {
+      // TODO: min(~95% windowHeight , modalBody)
       this.formBodyHeight = modalContentHeight - modalHeaderHeight - modalFooterHeight;
     }
   }
@@ -39,15 +40,16 @@ export class CommittedComponent implements FlowComponentInterface, AfterContentC
       });
       document.dispatchEvent(event);
 
+      const submitEvent: CustomEvent = new CustomEvent('ObservationSubmittedEvent', {
+        bubbles: true,
+        cancelable: true,
+        detail: this.newData.obs
+      });
+      document.dispatchEvent(submitEvent);
+
       this.data.next(this.newData);
     }
   }
-  /*
-  document.querySelector('app-flow > ng-component > div.modal-body.pb-0.obs-form').style.maxHeight =
-  document.querySelector('body > ngb-modal-window > div > div.modal-content').clientHeight
-  - document.querySelector('app-flow > ng-component > div.modal-header').clientHeight
-  - document.querySelector('app-flow > ng-component > div.modal-footer').clientHeight
-  */
 
   committed(): void {
     console.debug('submitting');

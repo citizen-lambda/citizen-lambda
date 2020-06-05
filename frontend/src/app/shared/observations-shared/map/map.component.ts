@@ -530,6 +530,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
 
       if (this.popupRef) {
         console.debug('destroying popup', this.popupRef.instance.data.id_observation);
+        // this.renderer(this.popupRef.nativeElement, this.popupRef.nativeElement.~ChildElements~.first.nativeElement)
         this.popupRef.destroy();
       }
       this.observationMap.openPopup(this.getPopupContent(obs), visibleParent.getLatLng());

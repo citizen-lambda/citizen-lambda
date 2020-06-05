@@ -4,7 +4,8 @@ import {
   ViewChild,
   AfterViewInit,
   Inject,
-  LOCALE_ID
+  LOCALE_ID,
+  HostListener
 } from '@angular/core';
 import { ActivatedRoute, Router, Params, NavigationExtras } from '@angular/router';
 import { combineLatest } from 'rxjs';
@@ -116,6 +117,15 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
       });
 
     this.router.navigate(['details', $event], this.childNavigationExtras);
+  }
+
+  @HostListener('document:ObservationSubmittedEvent', ['$event'])
+  newObservationEventHandler(e: CustomEvent): void {
+    e.stopPropagation();
+    if (this.thematicMap.newObsMarker) {
+      // our map needs a service
+      this.thematicMap.observationMap.removeLayer(this.thematicMap.newObsMarker);
+    }
   }
 
   /* @HostListener('document:NewObservationEvent', ['$event'])

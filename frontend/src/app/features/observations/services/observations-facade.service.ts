@@ -212,7 +212,7 @@ export class ObservationsFacade extends UnsubscribeOnDestroy /* implements OnDes
       ..._state,
       observations: {
         type: 'FeatureCollection',
-        features: [feature, ...(_state.observations.features as Feature[])]
+        features: [feature, ..._state.observations.features]
       }
     });
   }
