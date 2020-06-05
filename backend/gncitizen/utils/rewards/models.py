@@ -3,6 +3,8 @@ import re
 from collections import OrderedDict
 from typing import Optional
 
+from gncitizen.utils.env import now
+
 try:
     from flask import current_app
 
@@ -58,11 +60,11 @@ Timestamp = float
 
 def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
     """
-    >>> datetime.date.fromtimestamp(config_duration2timestamp("3 months")) == (datetime.datetime.now() - datetime.timedelta(weeks=3 * 4.345)).date()
+    >>> datetime.date.fromtimestamp(config_duration2timestamp("3 months")) == (now() - datetime.timedelta(weeks=3 * 4.345)).date()
     True
-    >>> datetime.date.fromtimestamp(config_duration2timestamp("28days")) == (datetime.datetime.now() - datetime.timedelta(days=28)).date()
+    >>> datetime.date.fromtimestamp(config_duration2timestamp("28days")) == (now() - datetime.timedelta(days=28)).date()
     True
-    >>> datetime.date.fromtimestamp(config_duration2timestamp("1year")) == (datetime.datetime.now() - datetime.timedelta(weeks=52.143)).date()
+    >>> datetime.date.fromtimestamp(config_duration2timestamp("1year")) == (now() - datetime.timedelta(weeks=52.143)).date()
     True
     >>> config_duration2timestamp("52elephants") is None
     True
@@ -70,7 +72,7 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
     True
     """  # noqa: E501
     if s is None or s == "":
-        return (datetime.datetime.now()).timestamp()
+        return now().timestamp()
 
     # int hours -> years
     dt = None
@@ -104,7 +106,7 @@ def config_duration2timestamp(s: Optional[str]) -> Optional[Timestamp]:
             dt = datetime.timedelta(weeks=float(value) * weeks_in_year)
 
     if dt:
-        return (datetime.datetime.now() - dt).timestamp()
+        return (now() - dt).timestamp()
     try:
         y, m, d, *_rest = map(int, re.findall(r"\d+", str(s)))
         return datetime.datetime(y, m, d).timestamp()
@@ -120,10 +122,7 @@ attendance_model = OrderedDict(
 seniority_model = OrderedDict(
     reversed(
         sorted(
-            [
-                (k, config_duration2timestamp(v))
-                for k, v in conf["seniority"].items()
-            ],
+            [(k, config_duration2timestamp(v)) for k, v in conf["seniority"].items()],
             key=lambda t: t[1],
         )
     )
@@ -149,8 +148,7 @@ recognition_model = [
         "attendance": OrderedDict(
             reversed(
                 sorted(
-                    conf["recognition"][i]["attendance"].items(),
-                    key=lambda t: t[1],
+                    conf["recognition"][i]["attendance"].items(), key=lambda t: t[1],
                 )
             )
         ),

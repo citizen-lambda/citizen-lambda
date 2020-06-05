@@ -2,7 +2,6 @@
 
 import logging
 import queue
-from datetime import datetime, timezone
 from flask import json
 
 from geoalchemy2 import Geometry
@@ -11,7 +10,7 @@ from sqlalchemy.sql import expression
 from sqlalchemy.ext.declarative import declared_attr
 
 from gncitizen.core.taxonomy.models import BibListes  # todo: rm
-from gncitizen.utils.env import db
+from gncitizen.utils.env import db, now
 from gncitizen.utils.sqlalchemy import serializable, geoserializable
 
 
@@ -21,9 +20,7 @@ class TimestampCreateMixinModel:
 
     @declared_attr
     def timestamp_create(self):
-        return db.Column(
-            db.DateTime, nullable=False, default=datetime.now(tz=timezone.utc)
-        )
+        return db.Column(db.DateTime, nullable=False, default=now)
 
 
 class TimestampMixinModel(TimestampCreateMixinModel):
@@ -32,12 +29,7 @@ class TimestampMixinModel(TimestampCreateMixinModel):
 
     @declared_attr
     def timestamp_update(self):
-        return db.Column(
-            db.DateTime,
-            nullable=True,
-            default=datetime.now(tz=timezone.utc),
-            onupdate=datetime.now(tz=timezone.utc),
-        )
+        return db.Column(db.DateTime, nullable=True, default=now, onupdate=now,)
 
 
 @serializable
@@ -148,12 +140,7 @@ class FrontendBroadcastHandler(logging.Handler):
                 try:
                     result = q.get(timeout=30)
                 except queue.Empty:
-                    result = json.dumps(
-                        {
-                            "type": "ping",
-                            "data": {"time": datetime.now(tz=timezone.utc)},
-                        },
-                    )
+                    result = json.dumps({"type": "ping", "data": {"time": now()},},)
 
                 yield self.mk_event(result)
         except GeneratorExit:
@@ -167,7 +154,7 @@ class FrontendBroadcastHandler(logging.Handler):
         return f"""\
 event: {event_type}
 retry: 1000
-id: {datetime.now(tz=timezone.utc).timestamp()}
+id: {now().timestamp()}
 data: {json.dumps(event_data)}
 
 """

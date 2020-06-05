@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
+from datetime import datetime
 
 from flask import current_app
 from flasgger import (  # noqa: F401
@@ -96,3 +97,7 @@ def list_and_import_gnc_modules(_app, mod_path=GNC_EXTERNAL_MODULE):
             )
 
             yield conf_module, manifest, module_blueprint
+
+
+def now() -> datetime:
+    return datetime.utcnow()

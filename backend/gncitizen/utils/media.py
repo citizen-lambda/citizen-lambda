@@ -3,15 +3,13 @@
 
 """A module to manage media"""
 
-import datetime
 import os
 
 from flask import current_app
 
 from gncitizen.core.commons.models import MediaModel
-from gncitizen.utils.env import MEDIA_DIR
+from gncitizen.utils.env import MEDIA_DIR, ALLOWED_EXTENSIONS, db, now
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.env import ALLOWED_EXTENSIONS, db
 
 
 def allowed_file(filename):
@@ -73,9 +71,7 @@ def save_uploaded_files(  # pylint: disable=too-many-locals
                     '[save_uploaded_files] Preparing file "%s" saving', filename,
                 )
                 ext = filename.rsplit(".", 1)[1].lower()
-                timestamp = datetime.datetime.now(tz=datetime.timezone.utc).strftime(
-                    "%Y%m%d_%H%M%S"
-                )
+                timestamp = now().strftime("%Y%m%d_%H%M%S")
                 filename = f"{prefix}_{str(cdnom)}_{i}_{timestamp}.{ext}"
                 current_app.logger.debug(
                     "[save_uploaded_files] new filename : %s", filename

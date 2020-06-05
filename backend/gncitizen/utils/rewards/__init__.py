@@ -1,5 +1,7 @@
 import datetime
 from flask import current_app
+
+from gncitizen.utils.env import now
 from gncitizen.utils.rewards.classifier import Classifier
 from gncitizen.utils.rewards.rules import (
     attendance_rule,
@@ -30,9 +32,7 @@ base_props = {
 
 program_props = {
     # "program_attendance": 3,
-    "submission_date": (
-        datetime.datetime.now() - datetime.timedelta(days=3)
-    ).timestamp(),
+    "submission_date": (now() - datetime.timedelta(days=3)).timestamp(),
     # "reference_taxon": {
     #     "regne": "Animalia",
     #     "phylum": "Chordata",
@@ -99,9 +99,7 @@ def get_rewards(id_):
     stats = get_stats(id_)
     attendance = stats["attendance"](id_)
     results = {
-        "seniority": stats["seniority"](id_)
-        .one()
-        .timestamp_create.timestamp(),
+        "seniority": stats["seniority"](id_).one().timestamp_create.timestamp(),
         "attendance": attendance.count(),
         "program_attendance": [
             item.count() for item in stats["program_attendance"](attendance)
