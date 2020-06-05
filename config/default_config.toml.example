@@ -29,9 +29,7 @@ COOKIE_AUTORENEW = true
 TRAP_ALL_EXCEPTIONS = false
 HTTPS = false
 MEDIA_FOLDER = 'media'
-# File
-# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = 'media'
+ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'tif', 'tiff', 'webp']
 CSP_REPORT_LOG = "/home/pat/citizen/var/log/csp-report.log"
 
 [REWARDS]

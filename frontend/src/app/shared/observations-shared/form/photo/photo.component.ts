@@ -16,10 +16,12 @@ import {
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
+import { AppConfig } from '@conf/app.config';
+import { AppConfigInterface } from '@models/app-config.model';
 import { extractLatLon } from './exif-meta';
 
-// mv to conf
-const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'tif', 'tiff', 'webp']);
+type AppConfig = Pick<AppConfigInterface, 'IMAGE_EXTENSIONS'>;
+const IMAGE_EXTENSIONS = AppConfig.IMAGE_EXTENSIONS;
 
 @Component({
   selector: 'app-form-photo',

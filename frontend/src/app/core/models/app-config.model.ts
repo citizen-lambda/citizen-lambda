@@ -8,7 +8,7 @@ export interface AppConfigInterface {
     PROD_MOD: boolean;
     DISPLAY_FOOTER: boolean;
   };
-  ALLOWED_EXTENSIONS: string[]; // TODO: validate media (ext?) for obs submission
+  IMAGE_EXTENSIONS: Set<string>;
   REWARDS?: true;
   SEO: {
     description: {

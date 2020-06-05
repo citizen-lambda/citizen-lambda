@@ -8,11 +8,11 @@ import os
 from flask import current_app
 
 from gncitizen.core.commons.models import MediaModel
-from gncitizen.utils.env import MEDIA_DIR, ALLOWED_EXTENSIONS, db, now
+from gncitizen.utils.env import MEDIA_DIR, db, now
 from gncitizen.utils.errors import GeonatureApiError
 
 
-def allowed_file(filename):
+def allowed_extension(filename):
     """Check if uploaded file type is allowed
 
     :param filename: file name
@@ -22,7 +22,11 @@ def allowed_file(filename):
 
     :rtype: bool
     """
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    return (
+        "." in filename
+        and filename.rsplit(".", 1)[1].lower()
+        in current_app.config["ALLOWED_IMAGE_EXTENSIONS"]
+    )
 
 
 def save_uploaded_files(  # pylint: disable=too-many-locals
@@ -62,10 +66,10 @@ def save_uploaded_files(  # pylint: disable=too-many-locals
             current_app.logger.debug(
                 "[save_uploaded_files] %s is an allowed filename : %s",
                 filename,
-                allowed_file(filename),
+                allowed_extension(filename),
             )
 
-            if allowed_file(filename):
+            if allowed_extension(filename):
                 # save file
                 current_app.logger.debug(
                     '[save_uploaded_files] Preparing file "%s" saving', filename,

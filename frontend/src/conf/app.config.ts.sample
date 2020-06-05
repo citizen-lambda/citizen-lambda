@@ -10,6 +10,7 @@ export const AppConfig = {
     DISPLAY_FOOTER: true
   },
   URL_APPLICATION: 'http://localhost:4200',
+  IMAGE_EXTENSIONS: new Set(['jpg', 'jpeg', 'png', 'tif', 'tiff', 'webp']),
   REWARDS: true,
   SEO: {
     description: {  // up to 156 characters
