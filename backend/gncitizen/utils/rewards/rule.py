@@ -8,4 +8,4 @@ class Rule:
         self.action = action_fn  # Then assign category badge
 
     def matches(self, fact: Fact) -> bool:
-        return self.condition(fact)
+        return bool(self.condition(fact))

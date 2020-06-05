@@ -3,57 +3,13 @@ import re
 from collections import OrderedDict
 from typing import Optional
 
+from flask import current_app
+
 from gncitizen.utils.env import now
 
-try:
-    from flask import current_app
 
-    conf = current_app.config["REWARDS"]["CONF"]
-    logger = current_app.logger
-except RuntimeError as e:
-    import logging
-
-    logger = logging.getLogger()
-    if str(e.args[0]).startswith("Working outside of application context.\n"):
-        conf = {
-            "attendance": {"Au": 348, "Ar": 347, "CuSn": 345},
-            "seniority": {
-                "oeuf": "1month",
-                "chenille": "6months",
-                "papillon": "7 months",
-            },
-            "program_attendance": {"Au": 64, "Ar": 48, "CuSn": 46},
-            "program_date_bounds": {"start": "2019-03-20", "end": ""},
-            "recognition": [
-                {
-                    "class": "Aves",
-                    "specialization": "Ornitologue",
-                    "attendance": {"Au": 110, "Ar": 109, "CuSn": 10},
-                },
-                {
-                    "class": "Mammalia",
-                    "specialization": "Mammalogiste",
-                    "attendance": {"Au": 500, "Ar": 94, "CuSn": 7},
-                },
-                {
-                    "class": "Reptilia",
-                    "specialization": "Herpétologue",
-                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
-                },
-                {
-                    "order": "Odonata",
-                    "specialization": "Odonatologue",
-                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
-                },
-                {
-                    "order": "Lepidoptera",
-                    "specialization": "Lépidoptériste",
-                    "attendance": {"Au": 500, "Ar": 100, "CuSn": 10},
-                },
-            ],
-        }
-    else:
-        raise
+conf = current_app.config["REWARDS"]["CONF"]
+logger = current_app.logger
 
 Timestamp = float
 

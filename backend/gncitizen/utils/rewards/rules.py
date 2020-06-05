@@ -1,5 +1,7 @@
-import logging
+# import logging
 from typing import Union, List
+from flask import current_app
+
 from gncitizen.utils.rewards.rule import Rule
 from gncitizen.utils.rewards.models import (
     attendance_model,
@@ -9,6 +11,7 @@ from gncitizen.utils.rewards.models import (
     recognition_model,
 )
 
+logger = current_app.logger
 
 # ATTENDANCE
 def attendance_condition(context) -> bool:
@@ -62,9 +65,7 @@ def program_attendance_action(data) -> List[str]:
     ]
 
 
-program_attendance_rule = Rule(
-    program_attendance_condition, program_attendance_action
-)
+program_attendance_rule = Rule(program_attendance_condition, program_attendance_action)
 
 
 # PROGRAM_DATE_BOUNDS
@@ -96,14 +97,12 @@ def recognition_condition(_context) -> bool:
 def recognition_action(data) -> Union[List[str], str]:
     r = []
     q = data["get_occ"]  # data["submitted_taxon"] ?
-    logging.critical("counts: %s", q)
+    logger.debug("counts: %s", q)
     for i, _ in enumerate(recognition_model):
         for category, threshold in recognition_model[i]["attendance"].items():
             if q and q[i] >= threshold:
                 r.append(
-                    "{}.{}".format(
-                        recognition_model[i]["specialization"], category
-                    )
+                    "{}.{}".format(recognition_model[i]["specialization"], category)
                 )
     return r if len(r) > 0 else "Recognition.None"
 

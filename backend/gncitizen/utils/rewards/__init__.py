@@ -12,6 +12,7 @@ from gncitizen.utils.rewards.rules import (
 )
 from gncitizen.utils.rewards.queries import get_stats
 
+logger = current_app.logger
 
 default_ruleset = {
     attendance_rule,
@@ -89,9 +90,9 @@ def badge_image_mapper(item):
     try:
         badge = {"img": theme[domain][status], "alt": item}
     except Exception as e:
-        current_app.logger.info("theme[domain] = %s", theme[domain])
-        current_app.logger.info("item = %s ", item)
-        current_app.logger.error("exception caught: %s", str(e))
+        logger.info("theme[domain] = %s", theme[domain])
+        logger.info("item = %s ", item)
+        logger.error("exception caught: %s", str(e))
     return badge
 
 
