@@ -28,6 +28,7 @@
   },
   "husky": {
     "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "pretty-quick --staged && npm run lint && npm run test:headless:nowatch",
       "pre-push": "branch=\"$(git rev-parse --abbrev-ref HEAD)\"; test \"master\" = \"${branch}\" && npm run build:i18n"
     }
@@ -70,6 +71,8 @@
     "@angular-devkit/schematics": "~9.1.7",
     "@angular/cli": "~9.1.7",
     "@angular/compiler-cli": "~9.1.9",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@types/jasmine": "~3.5.10",
     "@types/jasminewd2": "~2.0.8",
     "@types/leaflet": "~1.5.12",
