@@ -94,7 +94,7 @@ sudo -u postgres psql citizendb  -c 'create extension postgis; create extension 
 # sudo -u postgres psql citizendb  -c 'CREATE EXTENSION postgis; CREATE EXTENSION postgis_raster; CREATE EXTENSION "uuid-ossp";'
 ```
 
-#### 🐛 dépendances à GeoNature et TaxHub qui restent à isoler
+#### 🐛 dépendances à GeoNature et TaxHub qui restent à isoler (contact!?)
 
 ##### restauration des polygones de communes
 
