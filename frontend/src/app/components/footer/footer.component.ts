@@ -1,7 +1,8 @@
-import { Component, OnInit, VERSION } from '@angular/core';
+import { Component, VERSION } from '@angular/core';
 
 // TODO: mv to AppConfig
 declare const require: any;
+// tslint:disable-next-line: no-var-requires
 export const lambdaVersion: string = require('../../../../package.json').version;
 // export const angularVersion: string = require('../../../../package.json').dependencies['@angular/core'].replace(/[\^~=]/, '');
 
@@ -10,12 +11,7 @@ export const lambdaVersion: string = require('../../../../package.json').version
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent {
   lambdaVersion = lambdaVersion;
   ngVersion = VERSION.full;
-
-  constructor() {}
-
-  ngOnInit() {}
-
 }

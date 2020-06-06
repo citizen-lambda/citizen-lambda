@@ -3,8 +3,7 @@
     <ng-content></ng-content>
   </button>
 </ng-template>
-<ng-container *ngTemplateOutlet="triggerTemplate ? triggerTemplate : cta">
-</ng-container>
+<ng-container *ngTemplateOutlet="triggerTemplate ? triggerTemplate : cta"> </ng-container>
 
 <ng-template #content>
   <app-flow [flowItems]="flowitems" (step)="step($event)"></app-flow>

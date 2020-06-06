@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImageTopComponent } from './image-top.component';
+import { FullViewportImageModule } from '@shared/full-viewport-image/full-viewport-image.module';
 
 describe('ImageTopComponent', () => {
   let component: ImageTopComponent;
@@ -8,9 +9,9 @@ describe('ImageTopComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ImageTopComponent ]
-    })
-    .compileComponents();
+      imports: [FullViewportImageModule],
+      declarations: [ImageTopComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

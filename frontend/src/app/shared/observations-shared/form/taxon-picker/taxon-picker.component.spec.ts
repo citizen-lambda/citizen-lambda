@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { TaxonPickerComponent } from './taxon-picker.component';
 
 describe('TaxonPickerComponent', () => {
@@ -8,9 +10,9 @@ describe('TaxonPickerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaxonPickerComponent ]
-    })
-    .compileComponents();
+      imports: [NgbTypeaheadModule],
+      declarations: [TaxonPickerComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -10,13 +10,8 @@ describe('AboutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AboutComponent,
-        AboutCustomComponent,
-        AboutFixedComponent
-      ]
-    })
-    .compileComponents();
+      declarations: [AboutComponent, AboutCustomComponent, AboutFixedComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

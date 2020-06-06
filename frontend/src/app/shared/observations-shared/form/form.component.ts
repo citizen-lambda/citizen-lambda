@@ -129,6 +129,7 @@ export class ObsFormComponent implements OnChanges {
   */
 
   onFormSubmit(): void {
+    // could it be that we need a changeDetection run?
     let obs: ObsPostResponsePayload;
     this.postObservation().subscribe(
       (data: ObsPostResponse) => {

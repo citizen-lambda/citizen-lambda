@@ -7,7 +7,7 @@ import {
   LOCALE_ID,
   HostListener
 } from '@angular/core';
-import { ActivatedRoute, Router, Params, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, Router, Params, NavigationExtras, Data } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { map, take, takeUntil, pluck } from 'rxjs/operators';
 
@@ -47,13 +47,14 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
     public flowService: ModalFlowService
   ) {
     super();
+    // test: TypeError: You provided 'undefined' where a stream was expected. You can provide an Observable, Promise, Array, or Iterable.
     combineLatest([this.route.params.pipe(pluck<Params, 'id'>('id')), this.route.data])
       .pipe(
-        map(([id]) => id),
+        map(([id]: [number, Data]) => id),
         takeUntil(this.onDestroy$)
       )
       .subscribe(id => {
-        this.facade.programId = +id;
+        this.facade.programId = id;
       });
 
     this.facade.program$.subscribe(program => {

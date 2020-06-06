@@ -2,7 +2,21 @@ button:focus {
   outline-color: var(--primary) !important;
 }
 
-body, app-obs-list #list, app-obs-list #list .species, #slider .carousel-text, #programs-cards .card, .leaflet-bar a, .leaflet-control-layers.leaflet-control, .modal-content, .form-control, .form-control:focus, .dropdown-item.active, .bg-light, .leaflet-popup-content-wrapper, .leaflet-popup-tip, app-user-dashboard #badges div {
+body,
+app-obs-list #list,
+app-obs-list #list .species,
+#slider .carousel-text,
+#programs-cards .card,
+.leaflet-bar a,
+.leaflet-control-layers.leaflet-control,
+.modal-content,
+.form-control,
+.form-control:focus,
+.dropdown-item.active,
+.bg-light,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+app-user-dashboard #badges div {
   background-color: #333 !important;
 }
 
@@ -13,7 +27,8 @@ body, app-obs-list #list, app-obs-list #list .species, #slider .carousel-text, #
 
 /* .btn-light, */
 
-ngb-typeahead-window.dropdown-menu, ngb-datepicker.dropdown-menu .ngb-dp-day {
+ngb-typeahead-window.dropdown-menu,
+ngb-datepicker.dropdown-menu .ngb-dp-day {
   background-color: #444 !important;
 }
 
@@ -23,15 +38,29 @@ ngb-datepicker.dropdown-menu .ngb-dp-day:hover {
 
 /* .dropdown-item.active, */
 
-.leaflet-bar a:hover, #slider h2:before {
+.leaflet-bar a:hover,
+#slider h2:before {
   background-color: #666 !important;
 }
 
-.dropdown-item, #slider .carousel-text, app-obs-list .toolbar, .btn-light, *:focus, ngb-datepicker.dropdown-menu .ngb-dp-day, .leaflet-control-layers.leaflet-control, .leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-popup-content div, app-user-dashboard #badges div, #clear {
+.dropdown-item,
+#slider .carousel-text,
+app-obs-list .toolbar,
+.btn-light,
+*:focus,
+ngb-datepicker.dropdown-menu .ngb-dp-day,
+.leaflet-control-layers.leaflet-control,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+.leaflet-popup-content div,
+app-user-dashboard #badges div,
+#clear {
   color: #999 !important;
 }
 
-.form-control, ngb-typeahead-window .dropdown-item.active, .form-control:focus {
+.form-control,
+ngb-typeahead-window .dropdown-item.active,
+.form-control:focus {
   color: var(--dark-primary) !important;
 }
 
@@ -43,7 +72,9 @@ ngb-datepicker.dropdown-menu .ngb-dp-day:hover {
   background-color: #bbb !important;
 }
 
-#slider h2, .text-white, .btn-link:hover {
+#slider h2,
+.text-white,
+.btn-link:hover {
   color: #bbb !important;
 }
 
@@ -51,7 +82,11 @@ ngb-datepicker.dropdown-menu .ngb-dp-day:hover {
   opacity: 0.8 !important;
 }
 
-app-obs-list #list .species, .dropdown-menu, .leaflet-bar a, .leaflet-bar a:hover, app-user-dashboard #badges div {
+app-obs-list #list .species,
+.dropdown-menu,
+.leaflet-bar a,
+.leaflet-bar a:hover,
+app-user-dashboard #badges div {
   border-color: #666 !important;
 }
 
@@ -68,7 +103,18 @@ app-obs-list #list .species:hover {
   cursor: pointer;
 }
 
-.leaflet-control-attribution, .leaflet-control-scale, .leaflet-control-zoomviewer, .leaflet-tile-container img:not([src*="lyrs=s"]):not([src*="dark"]), app-topbar, app-obs-list .obs-found, app-obs-list #list .species .hide, app-footer footer, .marker-cluster, .leaflet-popup-content div img, .user-infos span, ngb-datepicker-navigation-select {
+.leaflet-control-attribution,
+.leaflet-control-scale,
+.leaflet-control-zoomviewer,
+.leaflet-tile-container img:not([src*='lyrs=s']):not([src*='dark']),
+app-topbar,
+app-obs-list .obs-found,
+app-obs-list #list .species .hide,
+app-footer footer,
+.marker-cluster,
+.leaflet-popup-content div img,
+.user-infos span,
+ngb-datepicker-navigation-select {
   filter: brightness(80%) hue-rotate(180deg) invert(1) !important;
 }
 
@@ -99,7 +145,8 @@ app-obs-list #list .species:hover {
   cursor: pointer;
 }
 
-::-webkit-inner-spin-button, ::-webkit-calendar-picker-indicator {
+::-webkit-inner-spin-button,
+::-webkit-calendar-picker-indicator {
   display: none !important;
 }
 
@@ -121,7 +168,8 @@ app-obs-list #list .species {
   }
 }
 
-.leaflet-marker-icon, .leaflet-marker-shadow {
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
   animation: fadein 1s;
 }
 
@@ -137,7 +185,7 @@ app-obs-list #list .species {
   animation: fadein 1s ease-in-out;
 }
 
-.leaflet-container g path:nth-child(n+2) {
+.leaflet-container g path:nth-child(n + 2) {
   /* intended for markercluster coverage polygon,
     I'm afraid the rule catches multipolygon program areas also */
   fill: var(--dark-primary);

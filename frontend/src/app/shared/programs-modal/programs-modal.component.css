@@ -99,7 +99,7 @@
 }
 
 .programs .text-center p:before {
-  content: " ";
+  content: ' ';
   background: #eee;
   position: absolute;
   top: -13px;
