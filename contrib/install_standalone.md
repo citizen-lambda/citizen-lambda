@@ -555,3 +555,15 @@ sudo goaccess /var/log/apache2/access.log --log-format=COMBINED
 ### Frontend code coverage (not yet enforceable)
 
 open `citizen/frontend/coverage/index.html` in your favorite browser after `npm run test`
+
+### Git commit workflow
+
+```sh
+npm install --global commitizen
+# Add your changes
+git add --all
+# Commit with Commitizen
+git cz
+# Bump version and generate a new CHANGELOG
+npm run release
+```
