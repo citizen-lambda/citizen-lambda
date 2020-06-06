@@ -24,7 +24,8 @@
     "cp_favicon": "test -d dist/en && cp -v dist/fr/favicon.ico dist/",
     "sed_webmanifest_desc": "sed -i '0,/^\\s*\"description\"\\:\\s*\"/ s/^\\(\\s*\"description\":\\s*\"\\).*\",$/\\1participatory sciences, biodiversity, share your observations!\",/1' dist/en/manifest.webmanifest",
     "brotli": "bash -c 'for f in ~/citizen/frontend/dist/*/*.{css,js}; do brotli ${f}; done'",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
+    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
+    "release": "standard-version"
   },
   "husky": {
     "hooks": {
@@ -84,6 +85,7 @@
     "@typescript-eslint/eslint-plugin": "~2.33.0",
     "@typescript-eslint/parser": "~2.33.0",
     "codelyzer": "^5.1.2",
+    "cz-conventional-changelog": "^3.2.0",
     "eslint": "~6.0.1",
     "eslint-plugin-no-unsanitized": "~3.1.1",
     "husky": "^4.2.5",
@@ -97,6 +99,7 @@
     "prettier": "~2.0.5",
     "pretty-quick": "^2.0.1",
     "protractor": "~5.4.3",
+    "standard-version": "^8.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "tslint-config-prettier": "^1.18.0",
@@ -127,6 +130,11 @@
     },
     "env": {
       "es6": true
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }
