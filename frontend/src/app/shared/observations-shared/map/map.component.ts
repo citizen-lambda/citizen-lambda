@@ -176,22 +176,22 @@ export const tilesDb = {
 export const conf = {
   MAP_ID: 'thematicMap',
   GEOLOCATION_HIGH_ACCURACY: false, // TODO: geolocation accuracy should be tunable at runtime
-  BASE_LAYERS: MAP_CONFIG['BASEMAPS'].reduce((acc: { [name: string]: L.TileLayer }, baseLayer) => {
-    acc[baseLayer['name'].toString()] = L.tileLayer(baseLayer['layer'], {
-      attribution: baseLayer['attribution'],
-      subdomains: baseLayer['subdomains'] || '',
-      maxZoom: baseLayer['maxZoom']
+  BASE_LAYERS: MAP_CONFIG.BASEMAPS.reduce((acc: { [name: string]: L.TileLayer }, baseLayer) => {
+    acc[baseLayer.name.toString()] = L.tileLayer(baseLayer.layer, {
+      attribution: baseLayer.attribution,
+      subdomains: baseLayer.subdomains || '',
+      maxZoom: baseLayer.maxZoom
       // bounds?: <[number, number][]>baseLayer['bounds']
     });
     return acc;
   }, {}),
   DEFAULT_BASE_MAP: (): L.TileLayer => {
-    return MAP_CONFIG['DEFAULT_PROVIDER']
-      ? (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[MAP_CONFIG['DEFAULT_PROVIDER']]
+    return MAP_CONFIG.DEFAULT_PROVIDER
+      ? (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[MAP_CONFIG.DEFAULT_PROVIDER]
       : (conf.BASE_LAYERS as { [name: string]: L.TileLayer })[
           Object.keys(conf.BASE_LAYERS)[
             // tslint:disable-next-line: no-bitwise
-            (Math.random() * MAP_CONFIG['BASEMAPS'].length) >> 0
+            (Math.random() * MAP_CONFIG.BASEMAPS.length) >> 0
           ]
         ];
   },
@@ -272,7 +272,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
   @Input() observations!: FeatureCollection;
   @Input() taxonomy!: Taxonomy;
   @Input() program!: FeatureCollection;
-  @Output() click: EventEmitter<L.LatLng> = new EventEmitter();
+  @Output() clicked: EventEmitter<L.LatLng> = new EventEmitter();
   @Output() obsSelected: EventEmitter<Feature> = new EventEmitter();
   @Output() detailsRequested: EventEmitter<number> = new EventEmitter();
   options: any;
@@ -425,7 +425,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
         this.observationMap.removeLayer(this.programArea);
       }
       this.programArea = L.geoJSON(this.program, {
-        style: _feature => this.options.PROGRAM_AREA_STYLE(_feature)
+        style: feature => this.options.PROGRAM_AREA_STYLE(feature)
       }).addTo(this.observationMap);
 
       const programBounds = this.programArea.getBounds();
@@ -548,7 +548,7 @@ export class ObsMapComponent implements OnInit, OnChanges {
       return;
     }
     console.debug('mark on ', L.latLng(e.latlng));
-    this.click.emit(L.latLng(e.latlng));
+    this.clicked.emit(L.latLng(e.latlng));
 
     this.newObsMarker = L.marker(e.latlng, {
       icon: this.options.MARKER_ICON_NEW_OBS(),

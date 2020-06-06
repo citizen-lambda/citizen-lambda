@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DebugElement } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -91,8 +92,8 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     const btn = fixture.debugElement.query(By.css('button[type=submit]'));
-    const username = component.loginForm.controls['username'];
-    const password = component.loginForm.controls['password'];
+    const username = component.loginForm.controls.username;
+    const password = component.loginForm.controls.password;
     expect(btn).toBeTruthy();
     expect(btn.nativeElement.disabled).toBeTruthy();
     expect(username).toBeTruthy();

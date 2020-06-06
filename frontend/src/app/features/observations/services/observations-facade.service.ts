@@ -30,6 +30,7 @@ import { composeFnsAsync } from '@helpers/compose';
 import { groupBy } from '@helpers/groupby';
 import { sorted } from '@helpers/sorted';
 
+// tslint:disable-next-line: variable-name
 let _state: ObsState = {
   // tslint:disable-next-line: no-object-literal-type-assertion
   program: {} as Program,
@@ -68,12 +69,14 @@ export class ObservationsFacade extends UnsubscribeOnDestroy /* implements OnDes
     share()
   );
 
+  // tslint:disable-next-line: variable-name
   private _programId = new BehaviorSubject<number>(0);
   programId$ = this._programId.asObservable();
   set programId(pid: number) {
     this._programId.next(pid);
   }
 
+  // tslint:disable-next-line: variable-name
   private _programs = new BehaviorSubject<Program[]>([]);
   programs$ = this._programs.asObservable();
   set programs(programs: Program[]) {
@@ -121,6 +124,7 @@ export class ObservationsFacade extends UnsubscribeOnDestroy /* implements OnDes
     });
   }
 
+  // tslint:disable-next-line: variable-name
   _filteredObservations = new BehaviorSubject<Feature[]>([]);
   filteredObservations$ = this._filteredObservations.asObservable();
 

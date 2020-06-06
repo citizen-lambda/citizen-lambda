@@ -71,7 +71,7 @@ export class TaxonPickerComponent implements ControlValueAccessor, OnChanges {
           ? this.species.slice(0, this.autocompleteMaxResults) // []
           : this.species
               .filter(
-                value => new RegExp(term, 'gi').test(value['name'])
+                value => new RegExp(term, 'gi').test(value.name)
                 // v => v["name"].toLowerCase().indexOf(term.toLowerCase()) > -1
               )
               .slice(0, this.autocompleteMaxResults)
@@ -114,7 +114,7 @@ export class TaxonPickerComponent implements ControlValueAccessor, OnChanges {
     }
   }
 
-  private onChange = (_value: string | null): void => {};
+  private onChange = (value: string | null): void => {};
   private onTouched = (): void => {};
 
   writeValue(value: string | null): void {

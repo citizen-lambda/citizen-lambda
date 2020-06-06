@@ -27,11 +27,11 @@ export interface AppConfigInterface {
     en: string;
   };
   // TODO: platform meta description per locales
-  platform_intro: {
+  platformIntro: {
     fr: string;
     en: string;
   };
-  platform_greeter: {
+  platformGreeter: {
     fr: string;
     en: string;
   };

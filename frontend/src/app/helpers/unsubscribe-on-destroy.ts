@@ -2,13 +2,13 @@ import { OnDestroy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 
 export abstract class UnsubscribeOnDestroy implements OnDestroy {
-  private _unsubscriptionOnDestroy = new Subject<true>();
+  private unsubscriptionOnDestroy = new Subject<true>();
 
   public get onDestroy$(): Observable<true> {
-    return this._unsubscriptionOnDestroy.asObservable();
+    return this.unsubscriptionOnDestroy.asObservable();
   }
 
   ngOnDestroy(): void {
-    this._unsubscriptionOnDestroy.next(true);
+    this.unsubscriptionOnDestroy.next(true);
   }
 }

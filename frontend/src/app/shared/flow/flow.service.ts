@@ -14,7 +14,8 @@ const Context = {
 
 @Injectable()
 export class FlowService {
-  getFlowItems(_initialState: any): FlowItem[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getFlowItems(initialState: any): FlowItem[] {
     throw new Error('not implemented');
     // return [
     //   new FlowItem(SomeComponent1, Context),

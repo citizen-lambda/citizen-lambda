@@ -56,7 +56,7 @@ export class ObsFormComponent implements OnChanges {
     taxa?: Taxonomy;
   };
   @Output() newObservation: EventEmitter<ObsPostResponsePayload> = new EventEmitter();
-  program_id = 0;
+  programId = 0;
   today = new Date();
   todayNgbDate = new NgbDate(
     this.today.getFullYear(),
@@ -71,7 +71,7 @@ export class ObsFormComponent implements OnChanges {
     date: [{ value: this.today, disabled: false }, [Validators.required, ngbDateMaxIsToday()]],
     photo: [{ value: '' /* null */, disabled: false }],
     geometry: [this.data?.coords ? this.data.coords : '', [Validators.required]],
-    id_program: [this.program_id]
+    id_program: [this.programId]
   });
 
   /* map */
@@ -94,7 +94,7 @@ export class ObsFormComponent implements OnChanges {
     return this.data?.taxa ? Object.values(this.data?.taxa) : [];
   }
 
-  _obsFormDebug = (): object => {
+  obsFormDebug = (): object => {
     return {
       ...this.obsForm.value,
       ...{
@@ -111,8 +111,8 @@ export class ObsFormComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data && changes.data.currentValue && this.data) {
       if (this.data.program?.features[0].properties?.id_program) {
-        this.program_id = this.data.program.features[0].properties.id_program;
-        this.obsForm.controls['id_program'].patchValue(this.program_id);
+        this.programId = this.data.program.features[0].properties.id_program;
+        this.obsForm.controls.id_program.patchValue(this.programId);
       }
 
       if (this.data.coords) {
@@ -159,7 +159,7 @@ export class ObsFormComponent implements OnChanges {
 
     const formData: FormData = new FormData();
 
-    formData.set('id_program', this.program_id.toString());
+    formData.set('id_program', this.programId.toString());
 
     const taxon = this.obsForm.get('taxon_id')?.value;
     if (!taxon) {

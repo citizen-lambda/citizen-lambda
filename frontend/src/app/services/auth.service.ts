@@ -24,13 +24,13 @@ export class AuthService {
   });
 
   redirectUrl: string | undefined;
-  private _authenticated$ = new BehaviorSubject<boolean>(this.haveIdentification());
-  authenticated$ = this._authenticated$.asObservable();
+  private authenticated = new BehaviorSubject<boolean>(this.haveIdentification());
+  authenticated$ = this.authenticated.asObservable();
 
-  private _authorized$ = new BehaviorSubject<boolean>(
+  private authorized = new BehaviorSubject<boolean>(
     this.haveAuthorization() && this.getAuthorizationExpiration(this.getAuthorization()) > 1
   );
-  authorized$ = this._authorized$.asObservable();
+  authorized$ = this.authorized.asObservable();
 
   userAuthState$: Observable<AnonymousUser | UserFeatures> = this.authenticated$.pipe(
     map(authenticated => {
@@ -69,8 +69,8 @@ export class AuthService {
       this.storeIdentification(payload.refresh_token);
       localStorage.setItem('username', payload.username);
       this.storeAuthorization(payload.access_token);
-      this._authenticated$.next(true);
-      this._authorized$.next(true);
+      this.authenticated.next(true);
+      this.authorized.next(true);
     }
     // handle localStorage Exception
   }
@@ -82,9 +82,9 @@ export class AuthService {
 
   clearCredentials(): void {
     this.router.navigateByUrl('/home');
-    this._authorized$.next(false);
+    this.authorized.next(false);
     localStorage.removeItem('access_token');
-    this._authenticated$.next(false);
+    this.authenticated.next(false);
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('username');
     localStorage.removeItem('badges');
@@ -125,7 +125,7 @@ export class AuthService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  selfDeleteAccount(_authorization: string): Promise<LogoutPayload> {
+  selfDeleteAccount(authorization: string): Promise<LogoutPayload> {
     const url = `${AppConfig.API_ENDPOINT}/user/delete`;
     return this.client
       .delete<LogoutPayload>(url, { headers: this.headers })

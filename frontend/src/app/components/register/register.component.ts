@@ -23,8 +23,8 @@ export class RegisterComponent {
     this.localeId
   ];
   user: RegisteringUser = {};
-  private _error = new Subject<string | null>();
-  private _success = new Subject<string | null>();
+  private error = new Subject<string | null>();
+  private success = new Subject<string | null>();
   staticAlertClosed = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
@@ -46,8 +46,8 @@ export class RegisterComponent {
           // this.auth.login()
           this.auth.saveCredentials(payload);
           const message = payload.message;
-          this._success.pipe(take(1)).subscribe(msg => (this.successMessage = msg));
-          this._success.pipe(take(1)).subscribe(() => {
+          this.success.pipe(take(1)).subscribe(msg => (this.successMessage = msg));
+          this.success.pipe(take(1)).subscribe(() => {
             this.successMessage = null;
             this.activeModal.close();
           });
@@ -70,12 +70,12 @@ export class RegisterComponent {
   }
 
   displayErrorMessage(message: string): void {
-    this._error.next(message);
+    this.error.next(message);
     console.error('errorMessage:', message);
   }
 
   displaySuccessMessage(message: string): void {
-    this._success.next(message);
+    this.success.next(message);
     console.info('successMessage:', message);
   }
 }

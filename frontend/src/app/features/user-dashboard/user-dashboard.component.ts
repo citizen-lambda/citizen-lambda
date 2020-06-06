@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -25,7 +26,7 @@ export class UserDashboardComponent implements OnInit {
   readonly AppConfig = AppConfig;
   modalRef!: NgbModalRef;
   username = 'not defined';
-  role_id: number | null = null;
+  roleId: number | null = null;
   isLoggedIn = false;
   stats: any;
   personalInfo: { [name: string]: any } = {};
@@ -51,7 +52,7 @@ export class UserDashboardComponent implements OnInit {
               this.isLoggedIn = true;
               this.username = user.features.username;
               this.stats = user.features.stats;
-              this.role_id = user.features.id_role;
+              this.roleId = user.features.id_role;
               // FIXME: source backend conf
               if (AppConfig.REWARDS) {
                 this.getBadgeCategories().subscribe();
@@ -144,14 +145,14 @@ export class UserDashboardComponent implements OnInit {
 
   getBadgeCategories(): Observable<object> {
     return this.client
-      .get<RewardsApiPayload>(`${AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
+      .get<RewardsApiPayload>(`${AppConfig.API_ENDPOINT}/dev_rewards/${this.roleId}`)
       .pipe(
         tap(data => {
-          const categories: { [name: string]: Badge[] } = data['badges'].reduce(
+          const categories: { [name: string]: Badge[] } = data.badges.reduce(
             (acc: { [name: string]: Badge[] }, item: Badge) => {
-              const category: string = item['alt'].split(/\.[^/.]+$/)[0];
+              const category: string = item.alt.split(/\.[^/.]+$/)[0];
               if (!acc[category]) {
-                acc[category] = data['badges'].filter((props: { img: string; alt: string }) =>
+                acc[category] = data.badges.filter((props: { img: string; alt: string }) =>
                   props.alt.startsWith(category + '.')
                 );
               }
@@ -162,7 +163,7 @@ export class UserDashboardComponent implements OnInit {
 
           Object.values(categories).map(value => this.badges.push(value));
           this.badges$.next(this.badges);
-          localStorage.setItem('badges', JSON.stringify(data['badges']));
+          localStorage.setItem('badges', JSON.stringify(data.badges));
         }),
         catchError(error => {
           window.alert(error);

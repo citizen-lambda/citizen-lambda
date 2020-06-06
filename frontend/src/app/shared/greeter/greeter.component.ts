@@ -16,7 +16,7 @@ import { ViewportService } from '@services/viewport.service';
 
 type AppConfigGreeter = Pick<
   AppConfigInterface,
-  'platform_intro' | 'platform_greeter' | 'platform_participate'
+  'platformIntro' | 'platformGreeter' | 'platform_participate'
 >;
 
 @Component({
@@ -27,8 +27,8 @@ type AppConfigGreeter = Pick<
 })
 export class GreeterComponent extends AnchorNavigationDirective implements OnInit {
   readonly AppConfig: AppConfigGreeter = AppConfig;
-  platform_greeter: SafeHtml = '';
-  platform_intro: SafeHtml = '';
+  platformGreeter: SafeHtml = '';
+  platformIntro: SafeHtml = '';
 
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
@@ -42,13 +42,13 @@ export class GreeterComponent extends AnchorNavigationDirective implements OnIni
   }
 
   ngOnInit(): void {
-    this.platform_intro = this.domSanitizer.bypassSecurityTrustHtml(
-      (AppConfig.platform_intro as { [name: string]: string })[
+    this.platformIntro = this.domSanitizer.bypassSecurityTrustHtml(
+      (AppConfig.platformIntro as { [name: string]: string })[
         this.localeId.startsWith('fr') ? 'fr' : 'en'
       ]
     );
-    this.platform_greeter = this.domSanitizer.bypassSecurityTrustHtml(
-      (AppConfig.platform_greeter as { [name: string]: string })[
+    this.platformGreeter = this.domSanitizer.bypassSecurityTrustHtml(
+      (AppConfig.platformGreeter as { [name: string]: string })[
         this.localeId.startsWith('fr') ? 'fr' : 'en'
       ]
     );

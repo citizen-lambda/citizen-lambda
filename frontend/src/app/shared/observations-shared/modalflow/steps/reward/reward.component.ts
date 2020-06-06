@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, Input, ViewEncapsulation, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { throwError, BehaviorSubject, Observable, OperatorFunction } from 'rxjs';
@@ -20,9 +21,7 @@ function differenceWith<T>(
   rightItems: T[],
   comparator: CallbackFunctionVariadicAnyReturn
 ): T[] {
-  return rightItems.filter(
-    _a => leftItems.findIndex(_b => comparator(rightItems, leftItems)) === -1
-  );
+  return rightItems.filter(a => leftItems.findIndex(b => comparator(rightItems, leftItems)) === -1);
 }
 
 const getNewBadges = (oldBadges: Badge[]): OperatorFunction<Badge[], Partial<BadgeState>> =>
@@ -44,6 +43,7 @@ const getNewBadges = (oldBadges: Badge[]): OperatorFunction<Badge[], Partial<Bad
     return { badges, changes: onlyInNewState };
   });
 
+// tslint:disable-next-line: variable-name
 let _state: BadgeState = {
   badges: JSON.parse(localStorage.getItem('badges') || '[]') || [],
   changes: [],
@@ -55,7 +55,7 @@ export class BadgeFacade {
   readonly AppConfig = AppConfig;
   private store = new BehaviorSubject<BadgeState>(_state);
   private state$ = this.store.asObservable();
-  role_id = 0;
+  roleId = 0;
   username = 'undefined';
 
   badges$ = this.state$.pipe(
@@ -80,10 +80,10 @@ export class BadgeFacade {
     if (authorization && this.AppConfig.REWARDS) {
       this.auth.ensureAuthorized().subscribe(
         user => {
-          if (!!user && !!user.features && user.features['id_role']) {
-            this.role_id = user.features.id_role;
+          if (!!user && !!user.features && user.features.id_role) {
+            this.roleId = user.features.id_role;
             this.client
-              .get<object>(`${this.AppConfig.API_ENDPOINT}/dev_rewards/${this.role_id}`)
+              .get<object>(`${this.AppConfig.API_ENDPOINT}/dev_rewards/${this.roleId}`)
               .pipe(
                 pluck('badges'),
                 // FIXME: untested
@@ -120,7 +120,7 @@ export class BadgeFacade {
   }
 
   getId(): number {
-    return this.role_id;
+    return this.roleId;
   }
 
   private updateState(state: BadgeState): void {
@@ -157,17 +157,18 @@ export class BadgeFacade {
 })
 export class RewardComponent implements FlowComponentInterface {
   readonly AppConfig = AppConfig;
-  private _timeout: number | undefined;
+  private timeout: number | undefined;
   // private _init = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() data: any;
   reward$: Observable<Badge[]> | null = null;
 
   constructor(public badges: BadgeFacade) {
     if (!badges.username || !this.AppConfig.REWARDS) {
-      if (this._timeout) {
-        window.clearTimeout(this._timeout);
+      if (this.timeout) {
+        window.clearTimeout(this.timeout);
       }
-      this._timeout = window.setTimeout(() => this.close('REWARDS_DISABLED'), 0);
+      this.timeout = window.setTimeout(() => this.close('REWARDS_DISABLED'), 0);
     } else {
       this.reward$ = this.badges.changes$.pipe(
         tap(reward => {
@@ -176,10 +177,10 @@ export class RewardComponent implements FlowComponentInterface {
           const condition = reward && !!reward.length;
 
           if (!condition /*&& this._init > 1*/) {
-            if (this._timeout) {
-              clearTimeout(this._timeout);
+            if (this.timeout) {
+              clearTimeout(this.timeout);
             }
-            this._timeout = window.setTimeout(() => this.close('NOREWARD'), 0);
+            this.timeout = window.setTimeout(() => this.close('NOREWARD'), 0);
           }
         }),
         filter(reward => reward && !!reward.length /*&& this._init > 1*/)

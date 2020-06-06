@@ -20,9 +20,9 @@ export class UniqueProgramGuard implements CanActivate, CanActivateChild {
 
   canActivate(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _next: ActivatedRouteSnapshot,
+    next: ActivatedRouteSnapshot,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _state: RouterStateSnapshot
+    state: RouterStateSnapshot
   ): Observable<boolean> {
     return this.programService.programs$.pipe(
       map((programs: Program[] | null) => {

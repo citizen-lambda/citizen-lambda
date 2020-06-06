@@ -79,7 +79,7 @@ export class TopbarComponent extends UnsubscribeOnDestroy implements OnInit {
     { code: 'fr', label: 'Français' }
   ];
   location = '';
-  base_href = '';
+  baseHref = '';
 
   userAuthState$: Observable<AnonymousUser | UserFeatures> = this.auth.userAuthState$;
 
@@ -126,7 +126,7 @@ export class TopbarComponent extends UnsubscribeOnDestroy implements OnInit {
   }
 
   ngOnInit(): void {
-    this.base_href = document.getElementsByTagName('base').item(0)?.href || '/';
+    this.baseHref = document.getElementsByTagName('base').item(0)?.href || '/';
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
       this.location = (event as NavigationEnd).url;
     });

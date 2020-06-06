@@ -32,19 +32,19 @@ export const obsFormMarkerIcon = L.icon({
 });
 
 // hotfix
-const BASE_LAYERS = MAP_CONFIG['BASEMAPS'].reduce(
+const BASE_LAYERS = MAP_CONFIG.BASEMAPS.reduce(
   (acc: { [name: string]: L.TileLayer }, baseLayer) => {
-    acc[baseLayer['name'].toString()] = L.tileLayer(baseLayer['layer'], {
-      attribution: baseLayer['attribution'],
-      subdomains: baseLayer['subdomains'] || '',
-      maxZoom: baseLayer['maxZoom']
+    acc[baseLayer.name.toString()] = L.tileLayer(baseLayer.layer, {
+      attribution: baseLayer.attribution,
+      subdomains: baseLayer.subdomains || '',
+      maxZoom: baseLayer.maxZoom
       // bounds?: <[number, number][]>baseLayer['bounds']
     });
     return acc as { [name: string]: L.TileLayer };
   },
   {}
 );
-const DEFAULT_BASE_MAP = (): L.TileLayer => BASE_LAYERS[MAP_CONFIG['DEFAULT_PROVIDER']];
+const DEFAULT_BASE_MAP = (): L.TileLayer => BASE_LAYERS[MAP_CONFIG.DEFAULT_PROVIDER];
 
 export function geometryValidator(): ValidatorFn {
   return (control: AbstractControl): { geometry: { value: AbstractControl['value'] } } | null => {
@@ -89,7 +89,7 @@ export class FormMapComponent implements OnInit, OnChanges {
   };
   programPolygon: L.GeoJSON<object> | undefined;
   newObsMarker: L.Marker | undefined;
-  program_id: number | undefined;
+  programId: number | undefined;
   zoomAlertTimeout: number | undefined;
   geometry = new FormControl({
     geometry: [this.coords, geometryValidator()]

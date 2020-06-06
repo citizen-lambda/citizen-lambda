@@ -13,7 +13,7 @@ describe('frontend App', () => {
   it('should display welcome message', () => {
     page.navigateTo();
 
-    expect(page.getHeading()).toMatch(/`AppConfig.platform_intro.en`/);
+    expect(page.getHeading()).toMatch(/`AppConfig.platformIntro.en`/);
   });
 
   afterEach(async () => {

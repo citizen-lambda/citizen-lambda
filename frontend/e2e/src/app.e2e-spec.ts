@@ -3,7 +3,7 @@ import { AppPage } from './app.po';
 import { browser, logging } from 'protractor';
 import { AppConfig } from '@conf/app.config';
 
-const platformIntro = AppConfig.platform_intro.fr;
+const platformIntro = AppConfig.platformIntro.fr;
 
 describe('frontend App', () => {
   let page: AppPage;

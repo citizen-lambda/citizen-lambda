@@ -44,7 +44,7 @@ export class PhotoComponent implements ControlValueAccessor {
   photoFilename = '';
   photoTrustedURL: SafeUrl | null = null;
 
-  private onChange = (_val: File[] | File | null): void => {};
+  private onChange = (val: File[] | File | null): void => {};
   private onTouched = (): void => {};
 
   writeValue(value: FileList | null): void {

@@ -89,7 +89,7 @@
             <a
               *ngIf="lang.code !== localeId"
               ngbDropdownItem
-              [href]="base_href.replace('/' + localeId + '/', '/' + lang.code) + location"
+              [href]="baseHref.replace('/' + localeId + '/', '/' + lang.code) + location"
               class="nav-link"
               (click)="collapsed = true"
               >{{ lang.label }}</a

@@ -14,9 +14,9 @@ export class ProgramsResolve implements Resolve<Program[]> {
 
   resolve(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _route: ActivatedRouteSnapshot,
+    route: ActivatedRouteSnapshot,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _state: RouterStateSnapshot
+    state: RouterStateSnapshot
   ): Observable<Program[] | never[]> {
     return this.programService.programs$.pipe(
       mergeMap((programs: Program[] | null) => (programs ? of(programs) : of([]))),

@@ -51,7 +51,7 @@ export class ObsListComponent implements OnChanges {
     this.obsSelected.emit(feature);
   }
 
-  trackByObs(_index: number, obs: Feature): number {
+  trackByObs(index: number, obs: Feature): number {
     return obs.properties?.id_observation;
   }
 }

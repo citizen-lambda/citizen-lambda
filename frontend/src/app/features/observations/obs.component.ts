@@ -67,7 +67,7 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
   }
 
   ngAfterViewInit(): void {
-    this.thematicMap.click
+    this.thematicMap.clicked
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((point: L.LatLng) => (this.facade.sharedContext.coords = point));
 
@@ -90,7 +90,7 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
           }
         },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        _error => {
+        error => {
           console.debug('SSE: disconnected');
         }
       );
