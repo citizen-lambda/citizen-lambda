@@ -25,7 +25,6 @@ import { LogoutComponent } from '@components/logout/logout.component';
 import { RegisterComponent } from '@components/register/register.component';
 import { FooterComponent } from '@components/footer/footer.component';
 import { TopbarComponent } from '@components/topbar/topbar.component';
-import { SpeciesComponent } from '@components/species/species.component';
 import { GncService } from '@services/gnc.service';
 import { ProgramsService } from '@features/programs/services/programs.service';
 import { ProgramsResolve } from '@features/programs/services/programs-resolve.service';
@@ -62,7 +61,6 @@ import { ViewportService } from '@services/viewport.service';
     LoginComponent,
     LogoutComponent,
     RegisterComponent,
-    SpeciesComponent,
     AboutComponent,
     AboutCustomComponent,
     AboutFixedComponent
