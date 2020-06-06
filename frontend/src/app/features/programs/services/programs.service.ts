@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, map, mergeMap, pluck, filter, shareReplay } from 'rxjs/operators';
+import { catchError, map, mergeMap, pluck, shareReplay } from 'rxjs/operators';
 
 import { FeatureCollection, Feature } from 'geojson';
 
@@ -93,11 +93,12 @@ export class ProgramsService {
 
   getProgramTaxonomyList(programId: number): Observable<Taxonomy> {
     return this.programs$.pipe(
-      map(programs => programs?.find(program => program.id_program === programId)),
-      filter(program => program?.taxonomy_list !== null),
-      mergeMap(program =>
-        this.client.get<Taxonomy>(`${this.URL}/taxonomy/lists/${program?.taxonomy_list}/species`)
-      ),
+      mergeMap(programs => {
+        const program = programs?.find(p => +p.id_program === +programId);
+        return this.client.get<Taxonomy>(
+          `${this.URL}/taxonomy/lists/${program?.taxonomy_list}/species`
+        );
+      }),
       catchError(this.handleError<Taxonomy>(`getProgramTaxonomyList::[${programId}]`, {}))
     );
   }
