@@ -24,7 +24,6 @@ import { LoginComponent } from '@components/login/login.component';
 import { LogoutComponent } from '@components/logout/logout.component';
 import { RegisterComponent } from '@components/register/register.component';
 import { FooterComponent } from '@components/footer/footer.component';
-import { SidebarComponent } from '@components/sidebar/sidebar.component';
 import { TopbarComponent } from '@components/topbar/topbar.component';
 import { SpeciesComponent } from '@components/species/species.component';
 import { GncService } from '@services/gnc.service';
@@ -58,7 +57,6 @@ import { ViewportService } from '@services/viewport.service';
   ],
   declarations: [
     AppComponent,
-    SidebarComponent,
     FooterComponent,
     TopbarComponent,
     LoginComponent,

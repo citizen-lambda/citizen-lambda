@@ -13,7 +13,6 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { AppComponent } from './app.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { AuthService } from './services/auth.service';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { FooterComponent } from './components/footer/footer.component';
 
 // class MockRouter { public navigate() {}; }
@@ -22,7 +21,7 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [AuthService, { provide: APP_BASE_HREF, useValue: '/my/app' }],
-      declarations: [AppComponent, TopbarComponent, SidebarComponent, FooterComponent],
+      declarations: [AppComponent, TopbarComponent, FooterComponent],
       imports: [
         BrowserTransferStateModule,
         RouterTestingModule,
