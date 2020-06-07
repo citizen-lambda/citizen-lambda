@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation, Inject, LOCALE_ID, OnInit } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
 
 import { AppConfigInterface } from '@models/app-config.model';
 import { AppConfig } from '@conf/app.config';
 import { SeoService } from '@services/seo.service';
+import { UpdateService } from '@services/update.service';
 
 type AppConfigApp = Pick<AppConfigInterface, 'FRONTEND' | 'appName' | 'SEO'>;
 
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   constructor(
     @Inject(LOCALE_ID) readonly localeId: string,
     protected seo: SeoService,
-    private swUpdate: SwUpdate
+    private updates: UpdateService
   ) {
     this.seo.setMetaTag({ name: 'application-name', content: this.AppConfig.appName });
     this.seo.setMetaTag({
@@ -35,13 +35,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.swUpdate.isEnabled) {
-      this.swUpdate.available.subscribe(() => {
-        if (confirm('New version available. Load new version?')) {
-          window.location.reload();
-        }
-      });
-    }
     window.addEventListener('beforeinstallprompt', event => {
       console.debug('beforeinstallprompt caught', event);
     });
