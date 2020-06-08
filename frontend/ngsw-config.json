@@ -1,18 +1,16 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
   "index": "/index.html",
+  "appData": {
+    "version": "0.0.1",
+    "changelog": "updating works"
+  },
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "resources": {
-        "files": [
-          "/favicon.ico",
-          "/index.html",
-          "/manifest.webmanifest",
-          "/*.css",
-          "/*.js"
-        ]
+        "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
       }
     },
     {
@@ -20,34 +18,47 @@
       "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
-        "files": [
-          "/assets/**",
-          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
-        ]
+        "files": ["/assets/**", "/*.(eot|svg|cur|jpg|JPG|jpeg|png|webp|gif|otf|ttf|woff|woff2|ani)"]
       }
     }
   ],
   "dataGroups": [
     {
-      "name": "mnhn",
-      "urls": [
-        "https://taxref.mnhn.fr/api/media/*"
-      ],
+      "name": "programs",
+      "urls": ["/api/programs", "/api/programs/*"],
       "cacheConfig": {
         "maxSize": 32,
-        "maxAge": "1d",
+        "maxAge": "10m",
         "timeout": "30s",
         "strategy": "performance"
       }
     },
     {
+      "name": "observations",
+      "urls": ["/api/programs/*/observations"],
+      "cacheConfig": {
+        "maxSize": 25,
+        "maxAge": "10m",
+        "timeout": "30s",
+        "strategy": "freshness"
+      }
+    },
+    {
       "name": "taxonomy",
-      "urls": [
-        "/api/taxref/*"
-      ],
+      "urls": ["/api/taxonomy/lists/*/species", "/api/taxref/*"],
       "cacheConfig": {
         "maxSize": 128,
         "maxAge": "10m",
+        "timeout": "30s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "mnhn",
+      "urls": ["https://taxref.mnhn.fr/api/media/download/thumbnail/*"],
+      "cacheConfig": {
+        "maxSize": 256,
+        "maxAge": "1d",
         "timeout": "30s",
         "strategy": "performance"
       }

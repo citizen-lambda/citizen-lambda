@@ -3,6 +3,10 @@ import { SwUpdate } from '@angular/service-worker';
 import { interval, concat } from 'rxjs';
 import { first } from 'rxjs/operators';
 
+type myAppData = { [name: string]: string };
+
+const updateCheckIntervalSeconds = 10 * 1000; // mv to conf
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,24 +14,57 @@ export class UpdateService {
   constructor(private appRef: ApplicationRef, private updates: SwUpdate) {
     if (this.updates.isEnabled) {
       const appIsStable$ = this.appRef.isStable.pipe(first(stable => stable === true));
-      const everyHour$ = interval(60 * 60 * 1000);
-      const everyHourOnceAppIsStable$ = concat(appIsStable$, everyHour$);
+      const everySoOften$ = interval(updateCheckIntervalSeconds);
+      const everySoOftenOnceAppIsStable$ = concat(appIsStable$, everySoOften$);
 
-      everyHourOnceAppIsStable$.subscribe(() => updates.checkForUpdate());
-
-      this.updates.available.subscribe(event => {
-        console.info('current version is', event.current);
-        console.info('available version is', event.available);
-
-        if (confirm('New version available. Load new version?')) {
-          updates.activateUpdate().then(() => document.location.reload());
-        }
+      everySoOftenOnceAppIsStable$.subscribe(() => {
+        this.doCheckForUpdate();
       });
 
-      this.updates.activated.subscribe(event => {
-        console.info('old version was', event.previous);
-        console.info('new version is', event.current);
-      });
+      this.doListenForUpdate();
     }
+  }
+
+  doListenForUpdate(): void {
+    this.updates.available.subscribe(event => {
+      console.info('current version is', event.current, event.current.appData);
+      console.info('available version is', event.available, event.available.appData);
+
+      if (event && event.available && event.available.appData) {
+        const prompt = this.extractUpdateInfo(event.available.appData as myAppData);
+        if (confirm(prompt)) {
+          this.doAppUpdate();
+        }
+      }
+    });
+  }
+
+  extractUpdateInfo(info: myAppData): string {
+    let version: string | undefined;
+    let changelog: string | undefined;
+
+    if ('version' in info) {
+      version = info['version'] + ' ';
+    }
+
+    if ('changelog' in info) {
+      changelog = 'changelog:\n' + info['changelog'] + '\n';
+    }
+    return `New version ${version ? version : ''}available.\n${
+      changelog ? changelog : ''
+    }\nLoad new version?`;
+  }
+
+  doCheckForUpdate(): void {
+    console.debug(`Checking for new version @${new Date().toISOString()}`);
+    this.updates.checkForUpdate();
+  }
+
+  doAppUpdate() {
+    this.updates.activateUpdate().then(() => document.location.reload());
+    this.updates.activated.subscribe(event => {
+      console.info('old version was', event.previous);
+      console.info('new version is', event.current);
+    });
   }
 }
