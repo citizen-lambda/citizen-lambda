@@ -8,7 +8,7 @@ interface MyAppData {
   changelog?: string;
 }
 
-const updateCheckIntervalSeconds = 1 * 60 * 1000; // mv to conf
+const updateCheckIntervalSeconds = 6 * 60 * 1000; // mv to conf
 
 @Injectable({
   providedIn: 'root'
