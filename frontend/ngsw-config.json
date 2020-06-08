@@ -3,14 +3,15 @@
   "index": "/index.html",
   "appData": {
     "version": "0.0.1",
-    "changelog": "updating works"
+    "changelog": "  • updating works"
   },
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "resources": {
-        "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
+        "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"],
+        "urls": ["https://taxref.mnhn.fr/api/media/download/thumbnail/*"]
       }
     },
     {
@@ -24,16 +25,6 @@
   ],
   "dataGroups": [
     {
-      "name": "programs",
-      "urls": ["/api/programs", "/api/programs/*"],
-      "cacheConfig": {
-        "maxSize": 32,
-        "maxAge": "10m",
-        "timeout": "30s",
-        "strategy": "performance"
-      }
-    },
-    {
       "name": "observations",
       "urls": ["/api/programs/*/observations"],
       "cacheConfig": {
@@ -44,21 +35,21 @@
       }
     },
     {
-      "name": "taxonomy",
-      "urls": ["/api/taxonomy/lists/*/species", "/api/taxref/*"],
+      "name": "programs",
+      "urls": ["/api/programs", "/api/programs/*"],
       "cacheConfig": {
-        "maxSize": 128,
+        "maxSize": 32,
         "maxAge": "10m",
         "timeout": "30s",
         "strategy": "performance"
       }
     },
     {
-      "name": "mnhn",
-      "urls": ["https://taxref.mnhn.fr/api/media/download/thumbnail/*"],
+      "name": "taxonomy",
+      "urls": ["/api/taxonomy/lists/*/species", "/api/taxref/*"],
       "cacheConfig": {
-        "maxSize": 256,
-        "maxAge": "1d",
+        "maxSize": 128,
+        "maxAge": "10m",
         "timeout": "30s",
         "strategy": "performance"
       }

@@ -3,9 +3,12 @@ import { SwUpdate } from '@angular/service-worker';
 import { interval, concat } from 'rxjs';
 import { first } from 'rxjs/operators';
 
-type myAppData = { [name: string]: string };
+interface MyAppData {
+  version?: string;
+  changelog?: string;
+}
 
-const updateCheckIntervalSeconds = 10 * 1000; // mv to conf
+const updateCheckIntervalSeconds = 1 * 60 * 1000; // mv to conf
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +19,6 @@ export class UpdateService {
       const appIsStable$ = this.appRef.isStable.pipe(first(stable => stable === true));
       const everySoOften$ = interval(updateCheckIntervalSeconds);
       const everySoOftenOnceAppIsStable$ = concat(appIsStable$, everySoOften$);
-
       everySoOftenOnceAppIsStable$.subscribe(() => {
         this.doCheckForUpdate();
       });
@@ -31,7 +33,7 @@ export class UpdateService {
       console.info('available version is', event.available, event.available.appData);
 
       if (event && event.available && event.available.appData) {
-        const prompt = this.extractUpdateInfo(event.available.appData as myAppData);
+        const prompt = this.preparePromptContent(event.available.appData as MyAppData);
         if (confirm(prompt)) {
           this.doAppUpdate();
         }
@@ -39,20 +41,21 @@ export class UpdateService {
     });
   }
 
-  extractUpdateInfo(info: myAppData): string {
-    let version: string | undefined;
-    let changelog: string | undefined;
-
+  extractUpdateInfo(info: MyAppData): { swVersion: string; changelog: string } {
+    let swVersion = '';
+    let changelog = '';
     if ('version' in info) {
-      version = info['version'] + ' ';
+      swVersion = ` ${info.version}`;
     }
-
     if ('changelog' in info) {
-      changelog = 'changelog:\n' + info['changelog'] + '\n';
+      changelog = `changelog:\n${info.changelog}\n`;
     }
-    return `New version ${version ? version : ''}available.\n${
-      changelog ? changelog : ''
-    }\nLoad new version?`;
+    return { swVersion, changelog };
+  }
+
+  preparePromptContent(appData: MyAppData): string {
+    const { swVersion, changelog } = this.extractUpdateInfo(appData);
+    return `New version${swVersion} available.\n${changelog}\nLoad new version?`;
   }
 
   doCheckForUpdate(): void {
@@ -60,11 +63,10 @@ export class UpdateService {
     this.updates.checkForUpdate();
   }
 
-  doAppUpdate() {
+  doAppUpdate(): void {
     this.updates.activateUpdate().then(() => document.location.reload());
     this.updates.activated.subscribe(event => {
-      console.info('old version was', event.previous);
-      console.info('new version is', event.current);
+      console.info(`Done updating app from ${event.previous} to ${event.current}`);
     });
   }
 }
