@@ -78,7 +78,7 @@ export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit 
           if (items.length > 0) {
             try {
               const event = JSON.parse(items.toString());
-              if (event.program === programId) {
+              if (+event.program === +programId) {
                 if (event.NewObservation) {
                   this.facade.onNewObservation(event.NewObservation as ObsPostResponsePayload);
                 }
