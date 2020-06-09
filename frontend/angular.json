@@ -5,7 +5,12 @@
   "projects": {
     "frontend": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "viewEncapsulation": "None",
+          "changeDetection": "OnPush"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -89,9 +94,7 @@
               "ngswConfigPath": "ngsw-config.json"
             },
             "en": {
-              "localize": [
-                "en"
-              ]
+              "localize": ["en"]
             }
           }
         },
@@ -124,29 +127,17 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "styles": [
-              "src/styles.css"
-            ],
+            "styles": ["src/styles.css"],
             "scripts": [],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              "src/manifest.webmanifest"
-            ],
+            "assets": ["src/favicon.ico", "src/assets", "src/manifest.webmanifest"],
             "codeCoverage": true
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["src/tsconfig.app.json", "tsconfig.spec.json", "e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
@@ -154,9 +145,7 @@
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
             "devServerTarget": "frontend:serve",
-            "specs": [
-              "./e2e/app.e2e-spec.ts"
-            ]
+            "specs": ["./e2e/app.e2e-spec.ts"]
           },
           "configurations": {
             "production": {
@@ -164,15 +153,11 @@
             },
             "fr": {
               "devServerTarget": "frontend:serve:fr",
-              "specs": [
-                "./e2e/app.e2e-spec.ts"
-              ]
+              "specs": ["./e2e/app.e2e-spec.ts"]
             },
             "en": {
               "devServerTarget": "frontend:serve:en",
-              "specs": [
-                "./e2e/app.en.e2e-spec.ts"
-              ]
+              "specs": ["./e2e/app.en.e2e-spec.ts"]
             }
           }
         }
