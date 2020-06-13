@@ -4,6 +4,7 @@
       *cdkVirtualFor="let o of obs; trackBy: trackByObs"
       class="species obs-{{ o?.properties?.id_observation }}"
       (click)="onSelected(o)"
+      (keyup)="onSelected(o)"
     >
       <ng-container *ngIf="taxonService.getTaxon(o?.properties?.cd_nom) | async as taxon">
         <!-- mv to ng-template, refact with map popup, ngTemplateOutlet with implicit context -->

@@ -315,7 +315,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">47</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2ac6448c552ac79b5d52d4c864194460cabc2e32" datatype="html">
@@ -343,7 +343,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">78</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8cdc901a1feab1397692c71595c3abc31c79ef22" datatype="html">
@@ -367,7 +367,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">104</context>
         </context-group>
       </trans-unit>
       <trans-unit id="0cc4ccb27ad53b20e76fe92978dfbb49aac64f67" datatype="html">
@@ -415,7 +415,7 @@
         <target>Forgotten password?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">149</context>
+          <context context-type="linenumber">153</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3d9eeca9f16214492a09881aa5d598a3ca0a06c5" datatype="html">
@@ -427,7 +427,7 @@
     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">158</context>
+          <context context-type="linenumber">162</context>
         </context-group>
       </trans-unit>
       <trans-unit id="34ce76a79350dc319bac73eb7bcd8b0c6019a70d" datatype="html">
@@ -439,7 +439,7 @@
   </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/login/login.component.html</context>
-          <context context-type="linenumber">170</context>
+          <context context-type="linenumber">174</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8bb2de7f6921a36489739946966347bc1498b666" datatype="html">
@@ -491,7 +491,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c0ff9ffa1ebc237a92a2bab1c2c0c2b7b066eb80" datatype="html">
@@ -503,7 +503,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">89</context>
+          <context context-type="linenumber">93</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2812c860480e82ed15a1ba1dc87d50c96ef6bc03" datatype="html">
@@ -515,7 +515,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">114</context>
+          <context context-type="linenumber">118</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5666e385b5d6171d56aafef10e44afa0aac5664a" datatype="html">
@@ -527,7 +527,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">121</context>
+          <context context-type="linenumber">125</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5c3c2b63bece7215ee7d0217d4101a72eb7bb1b8" datatype="html">
@@ -539,7 +539,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">131</context>
+          <context context-type="linenumber">135</context>
         </context-group>
       </trans-unit>
       <trans-unit id="83d3d3364301ded37314f0e9307e2edc4b4110f9" datatype="html">
@@ -551,7 +551,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">138</context>
+          <context context-type="linenumber">142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2e0f16cd8b16e154885409b211c057526a0a4e00" datatype="html">
@@ -579,7 +579,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">158</context>
+          <context context-type="linenumber">162</context>
         </context-group>
       </trans-unit>
       <trans-unit id="83c243fb33445d5db02ab9f9d8df7ee59553c324" datatype="html">
@@ -599,7 +599,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">186</context>
+          <context context-type="linenumber">190</context>
         </context-group>
       </trans-unit>
       <trans-unit id="963816961c6d1a067196dac298708b1ff379057f" datatype="html">
@@ -685,7 +685,7 @@
         <target>Programs</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="408cb6073e60c5d966296a3207fc596adca75e01" datatype="html">
@@ -693,7 +693,7 @@
         <target>Admin</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="87503e5fb4821b88835697b038edda66df5046a7" datatype="html">
@@ -701,7 +701,7 @@
         <target>About</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">68</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6c33375431cc1a1fcd8eb8aa96c88c648d1ce901" datatype="html">
@@ -709,7 +709,7 @@
         <target>My dashboard</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">108</context>
+          <context context-type="linenumber">110</context>
         </context-group>
       </trans-unit>
       <trans-unit id="e5c4aa14604e404f735b8845b759693207e98a6f" datatype="html">
@@ -721,7 +721,7 @@
             </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">117</context>
+          <context context-type="linenumber">119</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7aafacee956fa4d87206a5e82d5643cdf4017795" datatype="html">
@@ -733,7 +733,7 @@
             </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">124</context>
+          <context context-type="linenumber">126</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5fb5e398de5ba5836b62f12d15e9b93b30806c83" datatype="html">
@@ -745,7 +745,7 @@
             </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/components/topbar/topbar.component.html</context>
-          <context context-type="linenumber">129</context>
+          <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="67e9aa100c75b7f37555609bc798b037587efc18" datatype="html">
@@ -1064,7 +1064,7 @@
         <target>Register <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>and contribute</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1eeb191c53f2171eb8b0d3a918e7f7d00d4ac9ce" datatype="html">
@@ -1072,7 +1072,7 @@
         <target>Continue <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>without registering</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c8763fd2b48453b39bfa3036658f0beb4eac7944" datatype="html">
@@ -1080,7 +1080,7 @@
         <target>Already have an account? Login!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/onboard/onboard.component.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c5c01b73689cc048f371314e26a59272551d5c8b" datatype="html">
@@ -1153,7 +1153,7 @@
         <target>Congratulations!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/reward/reward.component.ts</context>
-          <context context-type="linenumber">5</context>
+          <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="933c5302afe6287a4da50e09419d5e068ffe375c" datatype="html">
@@ -1165,7 +1165,7 @@
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/reward/reward.component.ts</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="afe14ed1ec6f5c6998a69dbe8b19a31588854460" datatype="html">
@@ -1174,7 +1174,7 @@
         <target>{VAR_PLURAL, plural, =1 {You have just won this badge } other {You have just won these badges } }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/modalflow/steps/reward/reward.component.ts</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c4ab9060a89f735768448dea64222ec390a09cbd" datatype="html">
@@ -1200,7 +1200,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/list/list.component.html</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="20c5b1edf9355d042fffbe3003aa99b59f6737d2" datatype="html">
@@ -1216,7 +1216,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/shared/observations-shared/list/list.component.html</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">52</context>
         </context-group>
       </trans-unit>
       <trans-unit id="95c6182ec2e43eea6b14a20c62282efc133636e6" datatype="html">
@@ -1287,7 +1287,7 @@
         <target>{VAR_PLURAL, plural, =0 {no observation} =1 {1 observation} other {<x id="INTERPOLATION" equiv-text="{{stats?.platform_attendance}}"/> observations} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">8</context>
+          <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="abc42d8d941fbee2984dd620f7b713c94626171e" datatype="html">
@@ -1295,7 +1295,7 @@
         <target>Your badges</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b49d5dec5d4a2bf7792eab18e06e16c141773b83" datatype="html">
@@ -1307,7 +1307,7 @@
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c15c9af05d17de7c1de2650616868d1a65a2454d" datatype="html">
@@ -1319,7 +1319,7 @@
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5f9cf5b0de9ffb422c279c7a5655b076d2672d29" datatype="html">
@@ -1327,7 +1327,7 @@
         <target>Update your infos</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="544e1b2927d83e41374f4f4cf448959c4eabe8c6" datatype="html">
@@ -1339,7 +1339,7 @@
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3364501f90cbd51b72a2637c2d17d7b5ac9850f3" datatype="html">
@@ -1351,7 +1351,7 @@
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">152</context>
+          <context context-type="linenumber">156</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b82e2eb5016a22205aeebeefea66412c326d3a6e" datatype="html">
@@ -1359,7 +1359,7 @@
         <target>Your new password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">164</context>
+          <context context-type="linenumber">168</context>
         </context-group>
       </trans-unit>
       <trans-unit id="cb30b7ef5622174b031fcc4a7a83410e6faf6363" datatype="html">
@@ -1367,7 +1367,7 @@
         <target>Confirm your new password</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">177</context>
+          <context context-type="linenumber">181</context>
         </context-group>
       </trans-unit>
       <trans-unit id="04e76bee9fbf46047f0ee80f84c8483e4fc0c02a" datatype="html">
@@ -1379,7 +1379,7 @@
       </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/features/user-dashboard/user-dashboard.component.html</context>
-          <context context-type="linenumber">200</context>
+          <context context-type="linenumber">204</context>
         </context-group>
       </trans-unit>
     </body>

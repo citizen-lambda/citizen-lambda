@@ -12,6 +12,7 @@ import { ViewportService } from '@services/viewport.service';
 })
 export class FullViewportImageComponent {
   @Input() image?: HTMLImageElement;
+  @Input() alt?: string;
   updatedImgStyle = new Subject<string>();
   show = false;
 

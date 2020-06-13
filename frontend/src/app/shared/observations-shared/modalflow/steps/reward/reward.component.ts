@@ -133,8 +133,12 @@ export class BadgeFacade {
   selector: 'app-reward',
   template: `
     <div *ngIf="reward$ | async as rewards">
-      <div class="modal-body new-badge" (click)="clicked('background')">
-        <div><img src="assets/user.jpg" /></div>
+      <div
+        class="modal-body new-badge"
+        (click)="clicked('background')"
+        (keyup)="clicked('background')"
+      >
+        <div><img src="assets/user.jpg" alt="avatar" /></div>
         <h5 i18n>Félicitations !</h5>
         <h6 i18n>
           { +rewards?.length, plural, =1 { Vous venez d&apos;obtenir ce badge } other { Vous venez

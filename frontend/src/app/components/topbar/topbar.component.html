@@ -40,7 +40,9 @@
       </li>
       <ng-container *ngIf="programService.programs$ | async as programs">
         <li *ngIf="programs?.length > 1" class="nav-item">
-          <a class="nav-link" (click)="programsModal()" i18n>Les programmes</a>
+          <a class="nav-link" (click)="programsModal()" (keyup)="programsModal()" i18n
+            >Les programmes</a
+          >
         </li>
       </ng-container>
       <ng-container *ngIf="userAuthState$ | async as userAuthState">
@@ -114,19 +116,19 @@
             </a>
           </li>
           <li>
-            <a class="my-2 my-sm-0" (click)="logout()" i18n>
+            <a class="my-2 my-sm-0" (click)="logout()" (keyup)="logout()" i18n>
               <i class="fa fa-fw fa-lock"></i> &nbsp;Se déconnecter
             </a>
           </li>
         </ng-container>
         <ng-template #disconnected>
           <li>
-            <a class="my-2 my-sm-0 rounded-0" (click)="login()" i18n>
+            <a class="my-2 my-sm-0 rounded-0" (click)="login()" (keyup)="login()" i18n>
               Se connecter
             </a>
           </li>
           <li>
-            <a class="my-2 my-sm-0 rounded-0" (click)="register()" i18n>
+            <a class="my-2 my-sm-0 rounded-0" (click)="register()" (keyup)="register()" i18n>
               S'inscrire
             </a>
           </li>

@@ -145,7 +145,11 @@
         />
       </div>
     </div>
-    <span id="recoveringPassword" (click)="recoveringPassword = true" i18n
+    <span
+      id="recoveringPassword"
+      (click)="recoveringPassword = true"
+      (keyup)="recoveringPassword = true"
+      i18n
       >Mot de passe oublié ?</span
     >
     <button

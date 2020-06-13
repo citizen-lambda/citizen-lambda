@@ -20,7 +20,7 @@
   Sorry, suggestions could not be loaded.
 </div>
 <ng-template #rt let-r="result" let-t="term">
-  <img [src]="r.icon" class="float-left mr-1 autocomplete-thumbs" />
+  <img [src]="r.icon" class="float-left mr-1 autocomplete-thumbs" [alt]="r.nom_vern" />
   <ng-container *ngFor="let field of autoCompleteFields; first as isFirst">
     <ngb-highlight [result]="r[field]" [term]="t"></ngb-highlight
     ><br *ngIf="isFirst; else separator" />

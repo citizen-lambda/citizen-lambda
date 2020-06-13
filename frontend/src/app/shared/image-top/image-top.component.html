@@ -1,9 +1,10 @@
-<div class="image-top-container" (click)="fullViewPortToggle()">
+<div class="image-top-container" (click)="fullViewPortToggle()" (keyup)="fullViewPortToggle()">
   <img
     #img
     [style.max-width]="img?.height > img?.width ? 'auto' : '100%'"
     [style.max-height]="imgMaxHeight"
     [src]="src ? src : 'assets/default_taxon.jpg'"
+    [alt]="alt"
   />
 </div>
-<app-full-viewport-image #fullViewportImage [image]="img"></app-full-viewport-image>
+<app-full-viewport-image #fullViewportImage [image]="img" [alt]="alt"></app-full-viewport-image>

@@ -3,12 +3,16 @@
     <div class="col-lg-12">
       <div class="row">
         <div class="user"></div>
-        <div class="user-infos" (click)="editInfos(personalInfos)">
+        <div
+          class="user-infos"
+          (click)="editInfos(personalInfos)"
+          (keyup)="editInfos(personalInfos)"
+        >
           <span i18n
             >{ +stats?.platform_attendance, plural, =0 { aucune observation} =1 {une observation}
             other {{{stats?.platform_attendance}} observations} }</span
           >
-          <img src="assets/user.jpg" />
+          <img src="assets/user.jpg" alt="avatar" />
           <p>{{ username }} <i class="fa fa-pencil"></i></p>
         </div>
       </div>
