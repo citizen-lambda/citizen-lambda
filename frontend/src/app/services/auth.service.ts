@@ -81,7 +81,7 @@ export class AuthService {
   }
 
   clearCredentials(): void {
-    this.router.navigateByUrl('/home');
+    // this.router.navigateByUrl('/home');
     this.authorized.next(false);
     localStorage.removeItem('access_token');
     this.authenticated.next(false);
@@ -97,7 +97,14 @@ export class AuthService {
       .pipe(
         map(payload => {
           this.clearCredentials();
-          this.router.navigate(['/home']);
+          // if current route in ['dashboard', 'admin' /* any protected route */] then redirect
+          // could discover if route canLoad
+          // but would then need to know that authGuard is an authGuard
+          // how can we tag authGuard as an authentification guard? typing ?
+          // + use redirectURL?
+          if (['/mydashboard', '/api/admin'].includes(this.router.routerState.snapshot.url)) {
+            this.router.navigateByUrl('/home');
+          }
           return payload;
         }),
         catchError(error => {
