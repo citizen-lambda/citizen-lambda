@@ -41,3 +41,5 @@ Thumbs.db
 .noseids
 
 /src/locale/_*.xlf
+../backend/client_id
+.browserslistrc
