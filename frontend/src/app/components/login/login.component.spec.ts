@@ -2,7 +2,7 @@
 import { DebugElement } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  async,
+  waitForAsync,
   ComponentFixture,
   TestBed,
   fakeAsync,
@@ -23,34 +23,39 @@ describe('LoginComponent', () => {
   let de: DebugElement;
   let el: HTMLElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        FormsModule,
-        ReactiveFormsModule
-      ],
-      providers: [AuthService, NgbActiveModal],
-      declarations: [LoginComponent]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          NgbModule,
+          HttpClientTestingModule,
+          RouterTestingModule,
+          FormsModule,
+          ReactiveFormsModule
+        ],
+        providers: [AuthService, NgbActiveModal],
+        declarations: [LoginComponent]
+      })
+        .compileComponents()
+        .then(() => {
+          fixture = TestBed.createComponent(LoginComponent);
+          component = fixture.componentInstance;
+          fixture.detectChanges();
+          de = fixture.debugElement;
+          el = de.nativeElement;
+        });
     })
-      .compileComponents()
-      .then(() => {
-        fixture = TestBed.createComponent(LoginComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-        de = fixture.debugElement;
-        el = de.nativeElement;
-      });
-  }));
+  );
 
-  it('should create', async(() => {
-    expect(component).toBeTruthy();
-  }));
+  it(
+    'should create',
+    waitForAsync(() => {
+      expect(component).toBeTruthy();
+    })
+  );
 
   /*
-  it('should be invalid if this an empty login form', async(() => {
+  it('should be invalid if this an empty login form', waitForAsync(() => {
     expect(component.recoveringPassword).toBeFalsy();
     fixture.detectChanges();
 

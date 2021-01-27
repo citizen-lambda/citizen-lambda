@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -9,12 +9,14 @@ describe('ProgramTeaserComponent', () => {
   let component: ProgramTeaserComponent;
   let fixture: ComponentFixture<ProgramTeaserComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule, NgbTooltipModule],
-      declarations: [ProgramTeaserComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule, NgbTooltipModule],
+        declarations: [ProgramTeaserComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProgramTeaserComponent);

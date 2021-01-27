@@ -31,16 +31,22 @@ export class DateComponent implements OnInit {
   @Input() default: string | Date | undefined;
   @Input() disabledNgbDates: ((date: NgbDate) => boolean) | undefined;
   @Input() specialDay: TemplateRef<DayTemplateContext> | undefined;
-  defaultDate = this.default ? new Date(this.default) : new Date();
-  defaultNgbDate = new NgbDate(
-    this.defaultDate.getFullYear(),
-    this.defaultDate.getMonth() + 1,
-    this.defaultDate.getDate()
-  );
+  defaultDate: Date;
+  defaultNgbDate: NgbDate;
 
-  date = new FormControl({
-    date: [this.defaultNgbDate]
-  });
+  date: FormControl;
+
+  constructor() {
+    this.defaultDate = this.default ? new Date(this.default) : new Date();
+    this.defaultNgbDate = new NgbDate(
+      this.defaultDate.getFullYear(),
+      this.defaultDate.getMonth() + 1,
+      this.defaultDate.getDate()
+    );
+    this.date = new FormControl({
+      date: [this.defaultNgbDate]
+    });
+  }
 
   ngOnInit(): void {
     this.date.setValue(this.defaultNgbDate);

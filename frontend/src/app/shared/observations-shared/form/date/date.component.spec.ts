@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
@@ -11,13 +11,15 @@ describe('DateComponent', () => {
 
   const formBuilder: FormBuilder = new FormBuilder();
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, NgbDatepickerModule],
-      declarations: [DateComponent],
-      providers: [{ provide: FormBuilder, useValue: formBuilder }]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule, NgbDatepickerModule],
+        declarations: [DateComponent],
+        providers: [{ provide: FormBuilder, useValue: formBuilder }]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DateComponent);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PhotoComponent } from './photo.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -8,13 +8,15 @@ describe('PhotoComponent', () => {
   let component: PhotoComponent;
   let fixture: ComponentFixture<PhotoComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [PhotoComponent],
-      providers: []
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule],
+        declarations: [PhotoComponent],
+        providers: []
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PhotoComponent);

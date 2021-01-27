@@ -23,7 +23,7 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": true,
-    "module": "esnext",
+    "module": "es2020",
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,

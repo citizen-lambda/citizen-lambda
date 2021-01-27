@@ -25,7 +25,7 @@ import {
   Municipality,
   SharedContext
 } from '@models/observation.model';
-import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
+import { UnsubscribeOnDestroyDirective } from '@helpers/unsubscribe-on-destroy';
 import { composeFnsAsync } from '@helpers/compose';
 import { groupBy } from '@helpers/groupby';
 import { sorted } from '@helpers/sorted';
@@ -43,7 +43,7 @@ let _state: ObsState = {
 @Injectable({
   providedIn: 'root'
 })
-export class ObservationsFacade extends UnsubscribeOnDestroy /* implements OnDestroy */ {
+export class ObservationsFacade extends UnsubscribeOnDestroyDirective /* implements OnDestroy */ {
   ConfigObsFeatures = (AppConfig as ConfigObsFeatures).OBSERVATIONS_FEATURES;
   private store = new BehaviorSubject<ObsState>(_state);
   private state$ = this.store.asObservable();

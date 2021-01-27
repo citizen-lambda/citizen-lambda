@@ -23,7 +23,7 @@ import { RegisterComponent } from '../register/register.component';
 import { ProgramsService } from '@services/programs.service';
 import { ProgramsModalComponent } from '@shared/programs-modal/programs-modal.component';
 import { UserFeatures, AnonymousUser } from '@models/user.model';
-import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
+import { UnsubscribeOnDestroyDirective } from '@helpers/unsubscribe-on-destroy';
 
 @Component({
   selector: 'app-topbar',
@@ -68,7 +68,7 @@ import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
   ],
   providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }]
 })
-export class TopbarComponent extends UnsubscribeOnDestroy implements OnInit {
+export class TopbarComponent extends UnsubscribeOnDestroyDirective implements OnInit {
   title: string = AppConfig.appName;
   collapsed = true;
   username = new AnonymousUser(this.localeId).username;

@@ -16,7 +16,11 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class CommentComponent implements OnInit {
   @Input() parentForm: FormGroup | undefined;
   @Input() default: string | undefined;
-  comment: FormControl = new FormControl(this.default);
+  comment: FormControl;
+
+  constructor() {
+    this.comment = new FormControl(this.default);
+  }
 
   ngOnInit(): void {
     if (this.default) {

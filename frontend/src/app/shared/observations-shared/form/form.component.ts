@@ -11,7 +11,7 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Validators, FormBuilder, ValidatorFn, AbstractControl } from '@angular/forms';
+import { Validators, FormBuilder, ValidatorFn, AbstractControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
@@ -64,15 +64,7 @@ export class ObsFormComponent implements OnChanges {
     this.today.getDate()
   );
 
-  obsForm = this.fb.group({
-    taxon_id: ['', Validators.compose([Validators.required])],
-    count: ['1', Validators.compose([Validators.required, Validators.pattern('[^0][0-9]*')])],
-    comment: [{ value: '', disabled: false }],
-    date: [{ value: this.today, disabled: false }, [Validators.required, ngbDateMaxIsToday()]],
-    photo: [{ value: '' /* null */, disabled: false }],
-    geometry: [this.data?.coords ? this.data.coords : '', [Validators.required]],
-    id_program: [this.programId]
-  });
+  obsForm: FormGroup;
 
   /* map */
   hasZoomAlert: boolean | undefined;
@@ -88,7 +80,17 @@ export class ObsFormComponent implements OnChanges {
     @Inject(LOCALE_ID) readonly localeId: string,
     private client: HttpClient,
     private fb: FormBuilder
-  ) {}
+  ) {
+    this.obsForm = this.fb.group({
+      taxon_id: ['', Validators.compose([Validators.required])],
+      count: ['1', Validators.compose([Validators.required, Validators.pattern('[^0][0-9]*')])],
+      comment: [{ value: '', disabled: false }],
+      date: [{ value: this.today, disabled: false }, [Validators.required, ngbDateMaxIsToday()]],
+      photo: [{ value: '' /* null */, disabled: false }],
+      geometry: [this.data?.coords ? this.data.coords : '', [Validators.required]],
+      id_program: [this.programId]
+    });
+  }
 
   get taxa(): Taxon[] {
     return this.data?.taxa ? Object.values(this.data?.taxa) : [];

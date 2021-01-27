@@ -20,7 +20,7 @@ import { Taxon } from '@models/taxonomy.model';
 import { ObservationData } from '@models/observation.model';
 import { TaxonomyService } from '@services/taxonomy.service';
 import { ShareData, WebshareComponent } from '@shared/webshare/webshare.component';
-import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
+import { UnsubscribeOnDestroyDirective } from '@helpers/unsubscribe-on-destroy';
 
 type Config = Pick<AppConfigInterface, 'API_ENDPOINT'>;
 
@@ -29,7 +29,7 @@ type Config = Pick<AppConfigInterface, 'API_ENDPOINT'>;
   encapsulation: ViewEncapsulation.None,
   templateUrl: 'observation-details.component.html'
 })
-export class ObservationDetailsComponent extends UnsubscribeOnDestroy
+export class ObservationDetailsComponent extends UnsubscribeOnDestroyDirective
   implements OnInit, AfterContentChecked {
   config: Config = AppConfig;
   navigator: Navigator = window.navigator;

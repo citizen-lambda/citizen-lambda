@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 
 import { CommentComponent } from './comment.component';
@@ -9,13 +9,15 @@ describe('CommentComponent', () => {
 
   const formBuilder: FormBuilder = new FormBuilder();
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [CommentComponent],
-      providers: [{ provide: FormBuilder, useValue: formBuilder }]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule],
+        declarations: [CommentComponent],
+        providers: [{ provide: FormBuilder, useValue: formBuilder }]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CommentComponent);
@@ -26,9 +28,12 @@ describe('CommentComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', async(() => {
-    fixture.whenStable().then(() => {
-      expect(component).toBeTruthy();
-    });
-  }));
+  it(
+    'should create',
+    waitForAsync(() => {
+      fixture.whenStable().then(() => {
+        expect(component).toBeTruthy();
+      });
+    })
+  );
 });

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -24,41 +24,43 @@ describe('ObsComponent', () => {
   let component: ObsComponent;
   let fixture: ComponentFixture<ObsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        BrowserTransferStateModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ScrollingModule,
-        NgbModule,
-        GreeterModule
-      ],
-      providers: [
-        NgbModal,
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({ id: 123 }),
-            fragment: of('programs')
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          BrowserTransferStateModule,
+          RouterTestingModule,
+          HttpClientTestingModule,
+          FormsModule,
+          ReactiveFormsModule,
+          ScrollingModule,
+          NgbModule,
+          GreeterModule
+        ],
+        providers: [
+          NgbModal,
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              params: of({ id: 123 }),
+              fragment: of('programs')
+            }
           }
-        }
-      ],
-      declarations: [
-        ProgramTeaserComponent,
-        ProgramContentComponent,
-        ObsComponent,
-        ObsFormComponent,
-        ObsListComponent,
-        ObsMapComponent,
-        ModalFlowComponent,
-        FormMapComponent,
-        FlowComponent
-      ]
-    }).compileComponents();
-  }));
+        ],
+        declarations: [
+          ProgramTeaserComponent,
+          ProgramContentComponent,
+          ObsComponent,
+          ObsFormComponent,
+          ObsListComponent,
+          ObsMapComponent,
+          ModalFlowComponent,
+          FormMapComponent,
+          FlowComponent
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ObsComponent);

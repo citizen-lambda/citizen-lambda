@@ -16,7 +16,7 @@ import L from 'leaflet';
 
 import { AppConfig } from '@conf/app.config';
 import { SeoService } from '@services/seo.service';
-import { UnsubscribeOnDestroy } from '@helpers/unsubscribe-on-destroy';
+import { UnsubscribeOnDestroyDirective } from '@helpers/unsubscribe-on-destroy';
 import { ObsMapComponent } from '@shared/observations-shared/map/map.component';
 import { ObsListComponent } from '@shared/observations-shared/list/list.component';
 import { ModalFlowService } from '@shared/observations-shared/modalflow/modalflow.service';
@@ -29,7 +29,7 @@ import { ConfigModalFlow, ObsPostResponsePayload } from '@models/observation.mod
   encapsulation: ViewEncapsulation.None,
   providers: [ModalFlowService, ObservationsFacade]
 })
-export class ObsComponent extends UnsubscribeOnDestroy implements AfterViewInit {
+export class ObsComponent extends UnsubscribeOnDestroyDirective implements AfterViewInit {
   readonly appConfig: ConfigModalFlow = AppConfig;
   AddAnObservationLabel = (this.appConfig.program_add_an_observation as { [name: string]: string })[
     this.localeId.startsWith('fr') ? 'fr' : 'en'

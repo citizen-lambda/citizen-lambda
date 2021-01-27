@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
-import { UnsubscribeOnDestroy } from './unsubscribe-on-destroy';
+import { UnsubscribeOnDestroyDirective } from './unsubscribe-on-destroy';
 import { ViewportService } from '@services/viewport.service';
 
 @Directive()
-export abstract class AnchorNavigationDirective extends UnsubscribeOnDestroy
+export abstract class AnchorNavigationDirective extends UnsubscribeOnDestroyDirective
   implements AfterViewInit {
   fragment$ = this.route.fragment.pipe(distinctUntilChanged());
   orient$ = this.viewportService.orientation;

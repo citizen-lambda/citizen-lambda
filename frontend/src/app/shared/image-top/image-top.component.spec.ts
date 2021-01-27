@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImageTopComponent } from './image-top.component';
 import { FullViewportImageModule } from '@shared/full-viewport-image/full-viewport-image.module';
@@ -7,12 +7,14 @@ describe('ImageTopComponent', () => {
   let component: ImageTopComponent;
   let fixture: ComponentFixture<ImageTopComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [FullViewportImageModule],
-      declarations: [ImageTopComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [FullViewportImageModule],
+        declarations: [ImageTopComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ImageTopComponent);

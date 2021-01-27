@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,25 +16,27 @@ describe('ObsFormComponent', () => {
   let component: ObsFormComponent;
   let fixture: ComponentFixture<ObsFormComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        NgbModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        ReactiveFormsModule,
-        FormsModule
-      ],
-      providers: [NgbActiveModal],
-      declarations: [
-        ObsFormComponent,
-        FormMapComponent,
-        CommentComponent,
-        DateComponent,
-        PhotoComponent
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          NgbModule,
+          HttpClientTestingModule,
+          RouterTestingModule,
+          ReactiveFormsModule,
+          FormsModule
+        ],
+        providers: [NgbActiveModal],
+        declarations: [
+          ObsFormComponent,
+          FormMapComponent,
+          CommentComponent,
+          DateComponent,
+          PhotoComponent
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ObsFormComponent);

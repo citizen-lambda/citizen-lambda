@@ -91,10 +91,13 @@ export class FormMapComponent implements OnInit, OnChanges {
   newObsMarker: L.Marker | undefined;
   programId: number | undefined;
   zoomAlertTimeout: number | undefined;
-  geometry = new FormControl({
-    geometry: [this.coords, geometryValidator()]
-  });
+  geometry: FormControl;
 
+  constructor() {
+    this.geometry = new FormControl({
+      geometry: [this.coords, geometryValidator()]
+    });
+  }
   // TODO: add a delete marker control
 
   ngOnInit(): void {
