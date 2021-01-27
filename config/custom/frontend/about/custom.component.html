@@ -1,4 +1,4 @@
-<ng-container *ngIf="localeId.startsWith('fr') else en">
+<ng-container *ngIf="localeId.startsWith('fr'); else en">
   <h2>La démonstration – structure et scénario</h2>
 
   Différents programmes de campagne de collecte d’informations à caractère
@@ -57,10 +57,12 @@
     réduite et la promotion de la réutilisation du code. Le processus de
     développement a impliqué la modularisation et la re-factorisation de la base
     de code complète, la mise à niveau du frontend vers la dernière version
-    <a href="https://next.angular.io/" target="_blank" rel="noopener noreferrer">Angular</a> (actuellement rc9), l'amélioration des performances de traitement et
-    de rendu grace a une arborescence des éléments du DOM moins profonde, une
-    maintenance et une personnalisation plus aisées du CSS (travail en cours sur
-    un système de conception).
+    <a href="https://next.angular.io/" target="_blank" rel="noopener noreferrer"
+      >Angular</a
+    >, l'amélioration des performances de traitement et de rendu grace a une
+    arborescence des éléments du DOM moins profonde, une maintenance et une
+    personnalisation plus aisées du CSS (travail en cours sur un système de
+    conception).
   </p>
 
   <p>
@@ -79,11 +81,46 @@
   </p>
 
   <p>
-    Le backend (<a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">python</a> / <a href="http://flask.palletsprojects.com/en/1.1.x/#" target="_blank" rel="noopener noreferrer">flask</a> + <a href="https://www.sqlalchemy.org/" target="_blank" rel="noopener noreferrer">sqlalchemy</a> + <a href="https://postgis.net/" target="_blank" rel="noopener noreferrer">postgis</a> + <a href="https://www.postgresql.org/" target="_blank" rel="noopener noreferrer">postgresql</a>) a été lui
-    aussi modularisé, rendu installable sans dépendance tierce à
+    Le backend (<a
+      href="https://www.python.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      >python</a
+    >
+    /
+    <a
+      href="http://flask.palletsprojects.com/en/1.1.x/#"
+      target="_blank"
+      rel="noopener noreferrer"
+      >flask</a
+    >
+    +
+    <a
+      href="https://www.sqlalchemy.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      >sqlalchemy</a
+    >
+    +
+    <a href="https://postgis.net/" target="_blank" rel="noopener noreferrer"
+      >postgis</a
+    >
+    +
+    <a
+      href="https://www.postgresql.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      >postgresql</a
+    >) a été lui aussi modularisé, rendu installable sans dépendance tierce à
     <a href="https://github.com/PnX-SI/TaxHub" target="_blank">TaxHub</a>: en
-    incorporant le référentiel de taxonomie standard français <a href="https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref" target="_blank" rel="noopener noreferrer">TaxRef</a> (avec des
-    médias de secours fournis via l'<a
+    incorporant le référentiel de taxonomie standard français
+    <a
+      href="https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref"
+      target="_blank"
+      rel="noopener noreferrer"
+      >TaxRef</a
+    >
+    (avec des médias de secours fournis via l'<a
       href="https://taxref.mnhn.fr/taxref-web/api/doc"
       target="_blank"
       >API REST du MNHN</a
@@ -95,8 +132,18 @@
     <a href="mailto:kappeler.patrick.jr@gmail.com" target="_blank"
       >Patrick "pépé" Kappeler</a
     >
-    est un développeur logiciel certifié par l’état (code RNCP 5927),
-    spécialiste du langage <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">python</a> et de la <a href="https://developer.mozilla.org/fr-FR/docs/Web" target="_blank" rel="noopener noreferrer">plateforme web</a>.
+    est un développeur d'application logiciel certifié par l’état (code RNCP
+    5927), spécialiste du langage
+    <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer"
+      >python</a
+    >
+    et de la
+    <a
+      href="https://developer.mozilla.org/fr-FR/docs/Web"
+      target="_blank"
+      rel="noopener noreferrer"
+      >plateforme web</a
+    >.
   </p>
 
   <p>
@@ -109,23 +156,26 @@
 <ng-template #en>
   <h2>The demonstration - structure and scenario</h2>
 
-  A choice of different ecological information campaigns is offered, based on the
-  selection of a specific geographic perimeter.<br />
+  A choice of different ecological information campaigns is offered, based on
+  the selection of a specific geographic perimeter.<br />
   Once the campaign has been selected, the contributor can add and document a
   specific observation that he, or she, has made. Documenting this observation
   consists of:
   <ol>
-    <li>describing the observation itself, including whenever possible a photo.</li>
     <li>
-      locating the place of the observation very precisely on the displayed satellite map.
+      describing the observation itself, including whenever possible a photo.
+    </li>
+    <li>
+      locating the place of the observation very precisely on the displayed
+      satellite map.
     </li>
   </ol>
 
   <p>
-    All the collected information will be stored into the database of the
-    server application. It is an interactive client / server application,
-    integrating different technologies for securing the exchange of information,
-    to operate and to maintain databases and to provide relevant and user-friendly user
+    All the collected information will be stored into the database of the server
+    application. It is an interactive client / server application, integrating
+    different technologies for securing the exchange of information, to operate
+    and to maintain databases and to provide relevant and user-friendly user
     interfaces. The application is gamified: badges are attributed when the
     submission of a new observation comes in excess of thresholds defined in
     configuration.
@@ -138,7 +188,8 @@
     >
     application, a tool of the
     <a href="https://geonature.fr/" target="_blank">GeoNature</a> project,
-    intended for participatory inventory. The GeoNature-citizen project emerge from the collaboration of the
+    intended for participatory inventory. The GeoNature-citizen project emerge
+    from the collaboration of the
     <a href="https://obs.mercantour-parcnational.fr/" target="_blank"
       >Mercantour</a
     >
@@ -158,36 +209,76 @@
 
   <p>
     A global architectural redesign was carried out (frontend and backend) for
-    implementing the demo, exploiting the robustness of the code base, aiming at reducing
-    complexity and promoting the reuse of the code. The development process
-    involved modularization and re-factorization of the complete code base,
-    upgrading the frontend to the latest <a href="https://next.angular.io/" target="_blank" rel="noopener noreferrer">Angular</a> version (currently 9-RC),
-    improving processing and rendering performance through to a shallower DOM
-    tree, making the maintenance and customization of CSS easier (work in progress on a
-    design system).
+    implementing the demo, exploiting the robustness of the code base, aiming at
+    reducing complexity and promoting the reuse of the code. The development
+    process involved modularization and re-factorization of the complete code
+    base, upgrading the frontend to the latest
+    <a href="https://next.angular.io/" target="_blank" rel="noopener noreferrer"
+      >Angular</a
+    >
+    version, improving processing and rendering performance through to a
+    shallower DOM tree, making the maintenance and customization of CSS easier
+    (work in progress on a design system).
   </p>
 
   <p>
-    Much better performances are thus obtained, reaching the theoretical
-    limit of the
+    Much better performances are thus obtained, reaching the theoretical limit
+    of the
     <a href="https://github.com/Leaflet/Leaflet.markercluster" target="_blank"
       >Leaflet-MarkerCluster</a
     >
-    library of 50,000 points with interactive conditions still fully acceptable to the client.
+    library of 50,000 points with interactive conditions still fully acceptable
+    to the client.
   </p>
   <p>
     This new architecture and the results obtained stem from the decision to use
-    modules by functionality, performing on demand loading and
-    integrating services and components, thus bringing the advantage of the
-    incremental hydration capacities to the application.
+    modules by functionality, performing on demand loading and integrating
+    services and components, thus bringing the advantage of the incremental
+    hydration capacities to the application.
   </p>
 
   <p>
-    The backend (<a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">python</a> / <a href="http://flask.palletsprojects.com/en/1.1.x/#" target="_blank" rel="noopener noreferrer">flask</a> + <a href="https://www.sqlalchemy.org/" target="_blank" rel="noopener noreferrer">sqlalchemy</a> + <a href="https://postgis.net/" target="_blank" rel="noopener noreferrer">postgis</a> + <a href="https://www.postgresql.org/" target="_blank" rel="noopener noreferrer">postgresql</a>) has also
-    been modularized and made installable without third-party dependence on
+    The backend (<a
+      href="https://www.python.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      >python</a
+    >
+    /
+    <a
+      href="http://flask.palletsprojects.com/en/1.1.x/#"
+      target="_blank"
+      rel="noopener noreferrer"
+      >flask</a
+    >
+    +
+    <a
+      href="https://www.sqlalchemy.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      >sqlalchemy</a
+    >
+    +
+    <a href="https://postgis.net/" target="_blank" rel="noopener noreferrer"
+      >postgis</a
+    >
+    +
+    <a
+      href="https://www.postgresql.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+      >postgresql</a
+    >) has also been modularized and made installable without third-party
+    dependence on
     <a href="https://github.com/PnX-SI/TaxHub" target="_blank">TaxHub</a> by
-    incorporating the French standard taxonomy repository <a href="https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref" target="_blank" rel="noopener noreferrer">TaxRef</a> (with backup
-    media provided via the
+    incorporating the French standard taxonomy repository
+    <a
+      href="https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref"
+      target="_blank"
+      rel="noopener noreferrer"
+      >TaxRef</a
+    >
+    (with backup media provided via the
     <a href="https://taxref.mnhn.fr/taxref-web/api/doc" target="_blank"
       >MNHN REST API</a
     >), management of taxonomy lists (defined by program / game / challenge) in
@@ -199,12 +290,21 @@
       >Patrick "pépé" Kappeler</a
     >
     is a state-certified software developer (RNCP code 5927), specializing in
-    <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">python</a> language and the <a href="https://developer.mozilla.org/en-US/docs/Web" target="_blank" rel="noopener noreferrer">web platform</a>.
+    <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer"
+      >python</a
+    >
+    language and the
+    <a
+      href="https://developer.mozilla.org/en-US/docs/Web"
+      target="_blank"
+      rel="noopener noreferrer"
+      >web platform</a
+    >.
   </p>
 
   <p>
     <a href="https://github.com/citizen-lambda/citizen-lambda" target="_blank"
-      >code repository <i class="fa fa-github"></i></a
-    >
+      >code repository <i class="fa fa-github"></i
+    ></a>
   </p>
 </ng-template>

@@ -44,10 +44,12 @@ const appRoutes: Routes = [
 ];
 
 export const routing: ModuleWithProviders<RouterModule> = RouterModule.forRoot(appRoutes, {
-  initialNavigation: 'enabled',
-  useHash: false,
-  // enableTracing: true,
-  scrollPositionRestoration: 'enabled',
-  anchorScrolling: 'enabled',
-  scrollOffset: [0, 65] // TODO: source from conf: router-outlet height
+    initialNavigation: 'enabled',
+    useHash: false,
+    // enableTracing: true,
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled',
+    scrollOffset: [0, 65] // TODO: source from conf: router-outlet height
+    ,
+    relativeLinkResolution: 'legacy'
 });
