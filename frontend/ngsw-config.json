@@ -22,7 +22,7 @@
           "/assets/**",
           "/*.(eot|svg|cur|jpg|JPG|jpeg|png|webp|gif|otf|ttf|woff|woff2|ani)"
         ],
-        "urls": ["https://taxref.mnhn.fr/api/media/download/thumbnail/*" /* PROGRAMS_IMAGES */]
+        "urls": ["https://taxref.mnhn.fr/api/media/download/thumbnail/*"]
       }
     }
   ],

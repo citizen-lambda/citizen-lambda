@@ -8,25 +8,26 @@ export class ErrorHandler {
     let errorMessage = '';
     if (error instanceof HttpErrorResponse) {
       if (!navigator.onLine) {
-        // Handle offline error .. to test
+        // Handle offline error
         errorMessage = `OffLineError: No connectivity.`;
       } else if (error.status >= 500 && error.status < 600) {
         // Unavailable
         errorMessage = `UnavailableError: ${error.status} - ${error.message}`;
       } else if (error.status !== 0) {
-        // tslint:disable-next-line: prefer-conditional-expression
-        if (error.error && error.error.message) {
-          // api or network-side
-          errorMessage = `${error.error.message}`;
+        if (error.error) {
+          if (error.error.message) {
+            // api or network-side
+            errorMessage = `${error.error.message}`;
+          } else {
+            if (error.error instanceof ProgressEvent) {
+              errorMessage = $localize`Backend is unreachable.`;
+            } else {
+              errorMessage = JSON.stringify(error);
+            }
+          }
         } else {
           // client-side
           errorMessage = `${error.status} - ${error.message}`;
-        }
-      } else {
-        if (error.error instanceof ProgressEvent) {
-          errorMessage = 'Backend is unreachable.';
-        } else {
-          errorMessage = JSON.stringify(error);
         }
       }
     } else {

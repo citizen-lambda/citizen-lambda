@@ -59,7 +59,12 @@
               "node_modules/leaflet-offline/dist/leaflet-offline.js",
               "node_modules/localforage/dist/localforage.js"
             ],
-            "i18nMissingTranslation": "error"
+            "allowedCommonJsDependencies": [
+              "@components/footer/footer.component",
+              "leaflet.locatecontrol",
+              "leaflet-offline"
+            ],
+            "i18nMissingTranslation": "warning"
           },
           "configurations": {
             "production": {
