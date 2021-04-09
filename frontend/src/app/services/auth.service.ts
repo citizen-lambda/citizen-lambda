@@ -2,7 +2,7 @@ import { Injectable, Inject, LOCALE_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
-import { share, map, catchError, pluck, flatMap } from 'rxjs/operators';
+import { share, map, catchError, pluck, mergeMap } from 'rxjs/operators';
 
 import { AnonymousUser, UserFeatures } from '@models/user.model';
 import {
@@ -39,7 +39,7 @@ export class AuthService {
       }
       return this.ensureAuthorized().pipe(pluck<UserFeaturesPayload, UserFeatures>('features'));
     }),
-    flatMap((user: Observable<AnonymousUser | UserFeatures>) => user)
+    mergeMap((user: Observable<AnonymousUser | UserFeatures>) => user)
   );
 
   constructor(

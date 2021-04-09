@@ -6,7 +6,7 @@ import {
   share,
   pluck,
   filter,
-  flatMap,
+  mergeMap,
   switchMap,
   take,
   takeUntil
@@ -99,7 +99,7 @@ export class ObservationsFacade extends UnsubscribeOnDestroyDirective /* impleme
         return [...acc, this.taxonomyService.getTaxon(item.properties?.cd_nom)];
       }, []);
     }),
-    flatMap(items => zip(...items)),
+    mergeMap(items => zip(...items)),
     map(taxa => {
       const prop = this.localeId.startsWith('fr') ? 'nom_vern' : 'nom_vern_eng';
       const r = taxa.sort(sorted(prop));
@@ -155,7 +155,7 @@ export class ObservationsFacade extends UnsubscribeOnDestroyDirective /* impleme
     this.programId$
       .pipe(
         filter(id => id > 0),
-        flatMap((pid: number) =>
+        mergeMap((pid: number) =>
           forkJoin([
             this.programService.getProgramTaxonomyList(pid),
             this.programService.getProgram(pid)
