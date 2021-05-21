@@ -6,11 +6,11 @@
   <section id="program-teaser" class="row">
     <app-program-teaser [program]="facade.program$ | async"></app-program-teaser>
   </section>
-  <section id="program-content" class="row">
+  <section id="program-content" class="row" style="content-visibility: auto;">
     <app-program-content [program]="facade.program$ | async"></app-program-content>
   </section>
   <!-- LES OBSERVATIONS -->
-  <section id="observations" class="observations row">
+  <section id="observations" class="observations row" style="content-visibility: auto;">
     <input
       id="slide-sidebar"
       type="checkbox"

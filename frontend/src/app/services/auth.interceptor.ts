@@ -91,10 +91,10 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (
+      !request.url.match(AppConfig.API_ENDPOINT) ||
       request.url.match(`${AppConfig.API_ENDPOINT}/token_refresh`) ||
       request.url.match(`${AppConfig.API_ENDPOINT}/registration`) ||
-      request.url.match(`${AppConfig.API_ENDPOINT}/login`) ||
-      !request.url.match(AppConfig.API_ENDPOINT)
+      request.url.match(`${AppConfig.API_ENDPOINT}/login`)
     ) {
       // QUESTION: 3rd party request(cookie!) logging ?
       return next.handle(request);

@@ -1,4 +1,4 @@
-<section id="programs" class="row">
+<section id="programs" class="row" style="content-visibility: auto;">
   <ng-container *ngIf="programs?.length > 1; else noprogramfound">
     <ng-container *ngTemplateOutlet="(wantGrid | async) ? programscards : programscarousel">
     </ng-container>
