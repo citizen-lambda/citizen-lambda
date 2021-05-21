@@ -1,9 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
 @font-face {
-  font-display: auto;
+  font-display: swap;
   font-family: 'Satisfy';
-  src: url('assets/Satisfy-Regular.ttf') format('truetype');
+  src: url('assets/Satisfy-Regular.woff2') format('woff2');
 }
 
 :root {
