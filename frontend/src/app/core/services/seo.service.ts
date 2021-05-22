@@ -20,11 +20,11 @@ export class SeoService {
   constructor(private readonly metaService: Meta, private readonly titleService: Title) {}
 
   setMetaTag(metaTag: { name: MetaNames; content: string }): void {
-    if (metaTag.content) {
+    const { name, content } = metaTag;
+    if (content?.length > 0) {
       this.metaService.updateTag(metaTag);
     } else {
-      const selector = `${MetaNamesStrings[name]}='${metaTag.content}'`;
-      this.metaService.removeTag(selector);
+      this.metaService.removeTag(`name='${name}'`);
     }
   }
 

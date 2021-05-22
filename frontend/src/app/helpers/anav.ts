@@ -43,6 +43,10 @@ export abstract class AnchorNavigationDirective extends UnsubscribeOnDestroyDire
   ngAfterViewInit(): void {
     combineLatest([this.fragment$, this.orient$])
       .pipe(takeUntil(this.onDestroy$))
-      .subscribe(([fragment]) => this.jumpTo(fragment));
+      .subscribe(([fragment]) => {
+        if (fragment) {
+          this.jumpTo(fragment);
+        }
+      });
   }
 }

@@ -60,7 +60,7 @@ export class ObsComponent extends UnsubscribeOnDestroyDirective implements After
     this.facade.program$.subscribe(program => {
       this.seo.setMetaTag({
         name: 'description',
-        content: program.short_desc
+        content: program.short_desc ?? ''
       });
       this.seo.setTitle(`${program.title}`);
     });
@@ -89,8 +89,7 @@ export class ObsComponent extends UnsubscribeOnDestroyDirective implements After
             }
           }
         },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        error => {
+        _error => {
           console.debug('SSE: disconnected');
         }
       );
