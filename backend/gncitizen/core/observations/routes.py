@@ -1,5 +1,5 @@
 # coding: utf-8
-from typing import Dict, List, Tuple, Union, cast
+from typing import Dict, List, Optional, Tuple, Union, cast
 import logging
 import uuid
 import dataclasses
@@ -13,11 +13,13 @@ from flask import (
     Response,
 )
 from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity
+import geojson
 from geojson import FeatureCollection, Feature
+from geoalchemy2 import func
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point, asShape
 
-from gncitizen.core.commons.models import FrontendBroadcastHandler
+from gncitizen.core.commons.models import FrontendBroadcastHandler, ProgramsModel
 from gncitizen.core.ref_geo.models import LAreas
 from gncitizen.core.observations.models import (
     ObservationMediaModel,
@@ -35,7 +37,7 @@ from gncitizen.utils import ReadRepository
 from gncitizen.utils.env import db, MEDIA_DIR
 from gncitizen.utils.errors import GeonatureApiError
 from gncitizen.utils.jwt import get_id_role_if_exists
-from gncitizen.utils.geo import get_municipality_id_from_wkb
+from gncitizen.utils.geo import get_municipality_id_from_wkb, point_in_polygon
 from gncitizen.utils.sqlalchemy import get_geojson_feature
 from gncitizen.utils.media import save_uploaded_files
 from gncitizen.utils.taxonomy import Taxon
@@ -305,6 +307,7 @@ def post_observation() -> Tuple[Dict, int]:
                   $ref: '#/definitions/Feature'
         """  # noqa: E501
     try:
+        geo_point: geojson.Point
         request_data = request.form
         data = dict()
         for k in request_data:
@@ -320,15 +323,37 @@ def post_observation() -> Tuple[Dict, int]:
 
         try:
             coord = json.loads(request_data["geometry"])
-            logger.debug(coord)
             if "x" in coord and "y" in coord:
                 point = Point(coord["x"], coord["y"])
+                geo_point = geojson.Point([coord["x"], coord["y"]])
+
             elif "lat" in coord and "lng" in coord:
                 point = Point(coord["lng"], coord["lat"])
+                geo_point = geojson.Point([coord["lng"], coord["lat"]])
             shape = asShape(point)
             newobs.geom = from_shape(Point(shape), srid=4326)
         except Exception as e:
             logger.error("[post_observation] geometry extraction failure: %s", str(e))
+            raise GeonatureApiError(e)
+
+        try:
+            # pip validation
+            _, geom = (
+                db.session.query(
+                    ProgramsModel,
+                    func.ST_AsGeoJSON(func.ST_Transform(ProgramsModel.geom, 4326)),
+                )
+                .filter(ProgramsModel.id_program == newobs.id_program)
+                .one()
+            )
+
+            if not (point_in_polygon(geo_point, json.loads(geom))):
+                raise GeonatureApiError("point not in program area.")
+        except Exception as e:
+            logger.error(
+                "[post_observation] Point in program area validation failure: %s",
+                str(e),
+            )
             raise GeonatureApiError(e)
 
         id_role = get_id_role_if_exists()
