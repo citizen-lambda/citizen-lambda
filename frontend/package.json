@@ -13,7 +13,7 @@
     "test:headless:nowatch": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
     "build": "ng build",
     "build:en": "ng build --configuration=en",
-    "build:i18n": "npm run ng -- --configuration production --localize build",
+    "build:i18n": "npm run ng -- --configuration=production --localize build",
     "postbuild:i18n": "npm run cp_robots_txt && npm run cp_favicon && npm run sed_webmanifest_desc && npm run brotli",
     "eslint:check": "eslint . --ext .ts",
     "prettier:check": "prettier --list-different \"src/**/*.ts\" \"src/**/*.html\" \"src/**/*.css\"",
