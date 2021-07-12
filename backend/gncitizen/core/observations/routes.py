@@ -12,7 +12,7 @@ from flask import (
     make_response,
     Response,
 )
-from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import geojson
 from geojson import FeatureCollection, Feature
 from geoalchemy2 import func
@@ -94,7 +94,7 @@ def generate_observation_geojson(id_observation: int) -> Feature:
 
 
 @routes.route("/observations", methods=["POST"])
-@jwt_optional
+@jwt_required(optional=True)
 def post_observation() -> Tuple[Dict, int]:
     """ Add an observation to the database
         ---
@@ -402,7 +402,7 @@ def post_observation() -> Tuple[Dict, int]:
 
 
 @routes.route("/observations", methods=["GET"])
-@jwt_required
+@jwt_required()
 def export_user_observations() -> Union[Response, Tuple[Dict, int]]:
     username = get_jwt_identity() or "Anonymous"
     try:

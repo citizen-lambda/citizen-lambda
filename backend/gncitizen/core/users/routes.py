@@ -6,28 +6,20 @@ from flask import request, Blueprint, current_app  # , json
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    get_raw_jwt,
+    get_jwt,
     get_jwt_identity,
-    jwt_refresh_token_required,
     jwt_required,
 )
 
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from gncitizen.utils.errors import GeonatureApiError
-from gncitizen.utils.env import db, jwt
-
+from gncitizen.utils.env import db
 from gncitizen.core.observations.models import ObservationModel
 from gncitizen.core.users.models import UserModel, RevokedTokenModel
 
 
 routes = Blueprint("users", __name__)
-
-
-@jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
-    jti = decrypted_token["jti"]
-    return RevokedTokenModel.is_jti_blacklisted(jti)
 
 
 @routes.route("/registration", methods=["POST"])
@@ -208,7 +200,7 @@ def login():
 
 
 @routes.route("/logout", methods=["POST"])
-@jwt_required
+@jwt_required()
 def logout():
     """
     User logout
@@ -237,7 +229,7 @@ def logout():
             description: user disconnected
     """
     try:
-        jti = get_raw_jwt()["jti"]
+        jti = get_jwt()["jti"]
         revoked_token = RevokedTokenModel(jti=jti)
         revoked_token.add()
         return {"message": "Successfully logged out"}, 200
@@ -246,7 +238,7 @@ def logout():
 
 
 @routes.route("/token_refresh", methods=["POST"])
-@jwt_refresh_token_required
+@jwt_required(refresh=True)
 def token_refresh():
     """Refresh token
     ---
@@ -265,7 +257,7 @@ def token_refresh():
 
 
 @routes.route("/user/info", methods=["GET", "POST"])
-@jwt_required
+@jwt_required()
 def user_info():
     """current user record
     ---
@@ -336,7 +328,7 @@ def user_info():
 
 
 @routes.route("/user/delete", methods=["DELETE"])
-@jwt_required
+@jwt_required()
 def delete_account():
     """delete user record
     ---
@@ -356,7 +348,7 @@ def delete_account():
         try:
             db.session.query(UserModel).filter(UserModel.username == username).delete()
             db.session.commit()
-            jti = get_raw_jwt()["jti"]
+            jti = get_jwt()["jti"]
             revoked_token = RevokedTokenModel(jti=jti)
             revoked_token.add()
             #

@@ -8,7 +8,8 @@ from functools import wraps
 from flask import current_app
 from flask_jwt_extended import get_jwt_identity
 
-from gncitizen.core.users.models import UserModel
+from gncitizen.core.users.models import UserModel, RevokedTokenModel
+from gncitizen.utils.env import jwt
 
 
 def get_id_role_if_exists():
@@ -43,3 +44,9 @@ def admin_required(func):
             return unauthorized_msg, 500
 
     return decorated_function
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(_, decrypted_token):
+    jti = decrypted_token["jti"]
+    return RevokedTokenModel.is_jti_blacklisted(jti)

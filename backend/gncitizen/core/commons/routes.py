@@ -3,7 +3,7 @@ import logging
 import json
 import urllib.parse
 from flask import Blueprint, request, current_app, stream_with_context
-from flask_jwt_extended import jwt_optional, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_admin.form import SecureForm
 from flask_admin.contrib.sqla import ModelView
 from geojson import FeatureCollection
@@ -14,19 +14,14 @@ from gncitizen.core.commons.models import (
     FrontendBroadcastHandler,
 )
 from gncitizen.core.users.models import UserModel
+from gncitizen.utils.jwt import check_if_token_in_blacklist
 
 
 try:
     from flask import _app_ctx_stack as ctx_stack  # type: ignore
 except ImportError:  # pragma: no cover
     from flask import _request_ctx_stack as ctx_stack  # type: ignore
-from flask_jwt_extended.utils import (
-    decode_token,
-    has_user_loader,
-    user_loader,
-    verify_token_not_blacklisted,
-)
-from flask_jwt_extended.exceptions import UserLoadError
+from flask_jwt_extended.utils import decode_token
 
 logger = current_app.logger
 
@@ -43,12 +38,13 @@ class ProgramView(ModelView):
             if not token:
                 token = urllib.parse.parse_qsl(request.args.get("url"))[0][1]
             decoded_token = decode_token(token)
-            verify_token_not_blacklisted(decoded_token, request_type="access")
+            if check_if_token_in_blacklist(decoded_token):
+                raise Exception("token is blocked")
             ctx_stack.top.jwt = decoded_token
-            if has_user_loader():
-                user = user_loader(ctx_stack.top.jwt["identity"])
+            if current_app.extensions["flask-jwt-extended"]:
+                user = getattr(ctx_stack.top, "jwt_user", None)
                 if user is None:
-                    raise UserLoadError("user_loader returned None for {}".format(user))
+                    raise Exception("user is None for {}".format(user))
                 ctx_stack.top.jwt_user = user
 
             current_user = get_jwt_identity()
@@ -184,8 +180,8 @@ frontend_broadcast.setLevel(logging.DEBUG)
 frontend_broadcast.addHandler(frontend_handler)
 
 
-@jwt_optional
 @routes.route("/programs/stream")
+@jwt_required(optional=True)
 def program_stream():
     # add get param … `since datetime` for (offline) reconnection
     # and handle the (todo) event log accordingly
